@@ -1,0 +1,41 @@
+{
+  "name": "@cmu-sei/sds-lite",
+  "version": "0.0.0",
+  "description": "SDS Lite: the dependency-free, framework-neutral core of the SEI Design System.",
+  "type": "module",
+  "files": [
+    "package"
+  ],
+  "exports": {
+    ".": {
+      "types": "./package/sds.d.ts",
+      "import": "./package/sds.js"
+    },
+    "./dialog": {
+      "types": "./package/elements/dialog.d.ts",
+      "import": "./package/dialog.js"
+    },
+    "./dropdown": {
+      "types": "./package/elements/dropdown.d.ts",
+      "import": "./package/dropdown.js"
+    },
+    "./tabs": {
+      "types": "./package/elements/tabs.d.ts",
+      "import": "./package/tabs.js"
+    },
+    "./toast": {
+      "types": "./package/elements/toast.d.ts",
+      "import": "./package/toast.js"
+    },
+    "./sds.css": "./package/sds.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && vite build --config vite.library.config.ts && vite build --config vite.elements.config.ts && tsc -p tsconfig.declarations.json",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  }
+}

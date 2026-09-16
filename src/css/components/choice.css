@@ -1,0 +1,104 @@
+@layer sds.components {
+  :where(
+    .sds-choice > input[type="checkbox"],
+    .sds-choice > input[type="radio"],
+    [data-sds-root] input[type="checkbox"],
+    [data-sds-root] input[type="radio"]
+  ) {
+    margin: 0;
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex: 0 0 auto;
+    border: 1px solid var(--sds-color-form-border);
+    color: var(--sds-white);
+    background-color: var(--sds-color-surface-default);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    appearance: none;
+  }
+
+  :where(
+    .sds-choice > input[type="checkbox"],
+    [data-sds-root] input[type="checkbox"]
+  ) {
+    border-radius: var(--sds-radius-control);
+  }
+
+  :where(
+    .sds-choice > input[type="radio"],
+    [data-sds-root] input[type="radio"]
+  ) {
+    border-radius: var(--sds-radius-full);
+  }
+
+  :where(
+    .sds-choice > input[type="checkbox"]:checked,
+    [data-sds-root] input[type="checkbox"]:checked
+  ) {
+    border-color: var(--sds-color-choice-checked);
+    background-color: var(--sds-color-choice-checked);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m4 8 2.5 2.5L12 5'/%3E%3C/svg%3E");
+  }
+
+  :where(
+    .sds-choice > input[type="radio"]:checked,
+    [data-sds-root] input[type="radio"]:checked
+  ) {
+    border-color: var(--sds-color-choice-checked);
+    background-color: var(--sds-color-choice-checked);
+    background-image: radial-gradient(
+      circle,
+      var(--sds-white) 0 30%,
+      transparent 32%
+    );
+  }
+
+  :where(
+    .sds-choice > input[type="checkbox"]:focus-visible,
+    .sds-choice > input[type="radio"]:focus-visible,
+    [data-sds-root] input[type="checkbox"]:focus-visible,
+    [data-sds-root] input[type="radio"]:focus-visible
+  ) {
+    box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
+  }
+
+  :where(
+    .sds-choice > input[type="checkbox"]:disabled,
+    .sds-choice > input[type="radio"]:disabled,
+    [data-sds-root] input[type="checkbox"]:disabled,
+    [data-sds-root] input[type="radio"]:disabled
+  ) {
+    border-color: var(--sds-color-form-disabled-text);
+    background-color: var(--sds-color-form-disabled-background);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  :where(
+    .sds-choice > input[type="checkbox"]:checked:disabled,
+    .sds-choice > input[type="radio"]:checked:disabled,
+    [data-sds-root] input[type="checkbox"]:checked:disabled,
+    [data-sds-root] input[type="radio"]:checked:disabled
+  ) {
+    background-color: var(--sds-color-form-disabled-text);
+  }
+
+  :where(.sds-choice) {
+    display: flex;
+    gap: var(--sds-space-sm);
+    align-items: flex-start;
+  }
+
+  :where(
+    .sds-choice > input[type="checkbox"],
+    .sds-choice > input[type="radio"]
+  ) {
+    margin-block-start: var(--sds-space-xs);
+  }
+
+  :where(.sds-choice:has(input:disabled)) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

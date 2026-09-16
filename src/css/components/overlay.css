@@ -1,0 +1,19 @@
+@layer sds.components {
+  :where(.sds-dialog, .sds-panel)::backdrop {
+    background: rgb(0 0 0 / 0%);
+    transition:
+      background var(--sds-duration-fast) var(--sds-easing-standard),
+      display var(--sds-duration-fast) allow-discrete,
+      overlay var(--sds-duration-fast) allow-discrete;
+  }
+
+  :where(.sds-dialog[open], .sds-panel[open])::backdrop {
+    background: rgb(0 0 0 / 50%);
+  }
+
+  @starting-style {
+    :where(.sds-dialog[open], .sds-panel[open])::backdrop {
+      background: rgb(0 0 0 / 0%);
+    }
+  }
+}

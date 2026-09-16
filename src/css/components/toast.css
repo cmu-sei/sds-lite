@@ -1,0 +1,100 @@
+@layer sds.components {
+  :where(sds-toast) {
+    display: none;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "icon title close"
+      "icon message close";
+    gap: var(--sds-space-xs) var(--sds-space-md);
+    inline-size: 100%;
+    max-inline-size: 24rem;
+    padding: var(--sds-space-lg);
+    border: 1px solid
+      light-dark(transparent, var(--sds-gray-700));
+    border-radius: var(--sds-radius-control);
+    color: var(--sds-color-text-default);
+    background: light-dark(var(--sds-white), var(--sds-gray-850));
+    box-shadow:
+      var(--sds-shadow-lg),
+      0 0 0 1px rgb(0 0 0 / 5%);
+    opacity: 0;
+    pointer-events: auto;
+    transform: translateY(var(--sds-space-sm));
+    transition:
+      opacity var(--sds-duration-normal) var(--sds-easing-standard),
+      transform var(--sds-duration-normal) var(--sds-easing-standard),
+      display var(--sds-duration-normal) allow-discrete;
+  }
+
+  :where(sds-toast[open]) {
+    display: grid;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  :where(sds-toast)::before {
+    display: grid;
+    grid-area: icon;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    place-items: center;
+    border-radius: var(--sds-radius-full);
+    color: var(--sds-tone-on-strong, var(--sds-color-info-on-strong));
+    background: var(--sds-tone-strong, var(--sds-color-info-strong));
+    font-size: 0.875rem;
+    font-weight: 700;
+    content: "i";
+  }
+
+  :where(sds-toast[data-tone="success"])::before {
+    content: "\2713";
+  }
+
+  :where(sds-toast[data-tone="warning"])::before,
+  :where(sds-toast[data-tone="danger"])::before {
+    content: "!";
+  }
+
+  :where(sds-toast > strong) {
+    grid-area: title;
+    align-self: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+  }
+
+  :where(sds-toast > :not(strong, [data-toast-close])) {
+    grid-area: message;
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  :where(sds-toast > [data-toast-close]) {
+    grid-area: close;
+  }
+
+  @starting-style {
+    :where(sds-toast[open]) {
+      opacity: 0;
+      transform: translateY(var(--sds-space-sm));
+    }
+  }
+
+  @media (min-width: 40rem) {
+    :where(sds-toast) {
+      transform: translateX(var(--sds-space-sm));
+    }
+
+    :where(sds-toast[open]) {
+      transform: translateX(0);
+    }
+
+    @starting-style {
+      :where(sds-toast[open]) {
+        transform: translateX(var(--sds-space-sm));
+      }
+    }
+  }
+
+}

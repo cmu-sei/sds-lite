@@ -1,0 +1,147 @@
+@layer sds.components {
+  :where(
+    .sds-input,
+    .sds-select,
+    [data-sds-root] input:is(
+        [type="text"],
+        [type="email"],
+        [type="tel"],
+        [type="url"],
+        [type="password"],
+        [type="number"],
+        [type="search"],
+        [type="date"],
+        [type="datetime-local"],
+        [type="time"],
+        [type="month"],
+        [type="week"],
+        :not([type])
+      ),
+    [data-sds-root] select,
+    [data-sds-root] textarea
+  ) {
+    display: block;
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding: var(--sds-space-sm) var(--sds-space-md);
+    border: 1px solid var(--sds-color-form-border);
+    border-radius: var(--sds-radius-control);
+    color: var(--sds-color-text-default);
+    background: var(--sds-color-surface-default);
+    font-size: 1rem;
+    transition:
+      color var(--sds-duration-normal) var(--sds-easing-standard),
+      border-color var(--sds-duration-normal) var(--sds-easing-standard),
+      background var(--sds-duration-normal) var(--sds-easing-standard),
+      box-shadow var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  :where(
+    [data-sds-root] input,
+    [data-sds-root] textarea
+  )::placeholder {
+    color: var(--sds-color-text-disabled);
+    font-style: italic;
+  }
+
+  :where(
+    [data-sds-root] input:disabled,
+    [data-sds-root] select:disabled,
+    [data-sds-root] textarea:disabled
+  ) {
+    color: var(--sds-color-form-disabled-text);
+    background: var(--sds-color-form-disabled-background);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  :where(
+    [data-sds-root] input[readonly],
+    [data-sds-root] textarea[readonly]
+  ) {
+    color: var(--sds-color-form-readonly-text);
+    background: var(--sds-color-form-readonly-background);
+  }
+
+  :where(
+    [data-sds-root] input[aria-invalid="true"],
+    [data-sds-root] select[aria-invalid="true"],
+    [data-sds-root] textarea[aria-invalid="true"]
+  ) {
+    border-color: var(--sds-color-form-invalid);
+  }
+
+  :where(
+    [data-sds-root] input[data-valid],
+    [data-sds-root] select[data-valid],
+    [data-sds-root] textarea[data-valid]
+  ) {
+    border-color: var(--sds-color-form-valid);
+  }
+
+  :where(
+    .sds-input[data-size="sm"],
+    .sds-select[data-size="sm"],
+    [data-sds-root] input[data-size="sm"],
+    [data-sds-root] select[data-size="sm"],
+    [data-sds-root] textarea[data-size="sm"]
+  ) {
+    padding: var(--sds-space-xs) var(--sds-space-sm);
+    font-size: 0.875rem;
+  }
+
+  :where(
+    .sds-input[data-size="lg"],
+    .sds-select[data-size="lg"],
+    [data-sds-root] input[data-size="lg"],
+    [data-sds-root] select[data-size="lg"],
+    [data-sds-root] textarea[data-size="lg"]
+  ) {
+    padding: var(--sds-space-md) var(--sds-space-lg);
+    border-radius: var(--sds-radius-container);
+    font-size: 1rem;
+  }
+
+  :where([data-sds-root] select, .sds-select) {
+    padding-inline-end: var(--sds-space-2xl);
+    background-image:
+      linear-gradient(
+        45deg,
+        transparent 50%,
+        var(--sds-color-form-chevron) 50%
+      ),
+      linear-gradient(
+        135deg,
+        var(--sds-color-form-chevron) 50%,
+        transparent 50%
+      );
+    background-position:
+      calc(100% - 1rem) 50%,
+      calc(100% - 0.75rem) 50%;
+    background-repeat: no-repeat;
+    background-size: 0.25rem 0.25rem;
+    appearance: none;
+  }
+
+  :where(
+    [data-sds-root] select[data-size="sm"],
+    .sds-select[data-size="sm"]
+  ) {
+    padding-inline-end: var(--sds-space-xl);
+  }
+
+  :where([data-sds-root] option) {
+    color: var(--sds-color-text-default);
+    background: var(--sds-color-surface-default);
+  }
+
+  :where(
+    .sds-input:focus-visible,
+    .sds-select:focus-visible,
+    [data-sds-root] input:focus-visible,
+    [data-sds-root] select:focus-visible,
+    [data-sds-root] textarea:focus-visible
+  ) {
+    box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
+  }
+}

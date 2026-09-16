@@ -1,0 +1,7 @@
+@layer sds.utilities {
+  :where(.sds-form) {
+    display: grid;
+    max-inline-size: 40rem;
+    gap: var(--sds-space-lg);
+  }
+}

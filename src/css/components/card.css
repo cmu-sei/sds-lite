@@ -1,0 +1,15 @@
+@layer sds.components {
+  :where(.sds-card) {
+    padding: var(--sds-space-xl);
+    border: 1px solid var(--sds-color-border-default);
+    border-radius: var(--sds-radius-container);
+    background: var(--sds-color-surface-raised);
+    box-shadow: var(--sds-shadow-raised);
+  }
+
+  :where(.sds-card-label) {
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+}

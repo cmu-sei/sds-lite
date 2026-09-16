@@ -1,0 +1,55 @@
+@layer sds.components {
+  :where(.sds-field) {
+    display: grid;
+    gap: var(--sds-space-sm);
+  }
+
+  :where(.sds-field > label) {
+    font-weight: 600;
+  }
+
+  :where(.sds-field > small) {
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+    font-style: italic;
+  }
+
+  :where(.sds-field[data-orientation="horizontal"]) {
+    grid-template-columns: minmax(8rem, 1fr) minmax(0, 3fr);
+    column-gap: var(--sds-space-lg);
+    align-items: start;
+  }
+
+  :where(.sds-field[data-orientation="horizontal"] > small) {
+    grid-column: 2;
+  }
+
+  :where(.sds-field > [data-field-required]) {
+    color: var(--sds-color-form-invalid);
+    font-size: 0.75rem;
+  }
+
+  :where(.sds-field > [data-field-optional]) {
+    color: var(--sds-color-text-muted);
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+
+  :where(.sds-field > [data-field-valid]) {
+    color: var(--sds-color-success-text);
+  }
+
+  :where(.sds-field > [data-field-invalid]) {
+    color: var(--sds-color-form-invalid);
+  }
+
+  @media (max-width: 40rem) {
+    :where(.sds-field[data-orientation="horizontal"]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    :where(.sds-field[data-orientation="horizontal"] > small) {
+      grid-column: auto;
+    }
+  }
+}

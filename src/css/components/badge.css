@@ -1,0 +1,71 @@
+@layer sds.components {
+  :where(.sds-badge) {
+    display: inline-flex;
+    max-inline-size: 100%;
+    gap: var(--sds-space-xs);
+    align-items: center;
+    justify-content: center;
+    padding: var(--sds-space-xs) var(--sds-space-sm);
+    overflow: hidden;
+    border: 1px solid
+      var(--sds-tone-strong, var(--sds-color-neutral-strong));
+    border-radius: var(--sds-radius-control);
+    color: var(
+      --sds-tone-on-strong,
+      var(--sds-color-neutral-on-strong)
+    );
+    background: var(--sds-tone-strong, var(--sds-color-neutral-strong));
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1rem;
+    text-align: center;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    vertical-align: baseline;
+    transition:
+      color var(--sds-duration-normal) var(--sds-easing-standard),
+      border-color var(--sds-duration-normal) var(--sds-easing-standard),
+      background var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  :where(.sds-badge[data-variant="light"]) {
+    border-color: transparent;
+    color: var(--sds-tone-text, var(--sds-color-neutral-text));
+    background: var(--sds-tone-surface, var(--sds-color-neutral-surface));
+  }
+
+  :where(.sds-badge[data-variant="light-border"]) {
+    border-color: currentColor;
+    color: var(--sds-tone-text, var(--sds-color-neutral-text));
+    background: var(--sds-tone-surface, var(--sds-color-neutral-surface));
+  }
+
+  :where(.sds-badge[data-variant="dark"]) {
+    border-color: var(--sds-gray-700);
+    color: var(--sds-white);
+    background: var(--sds-gray-700);
+  }
+
+  :where(.sds-badge[data-variant="dark"][data-tone="brand"]),
+  :where(.sds-badge[data-variant="dark"][data-tone="danger"]) {
+    border-color: var(--sds-red-700);
+    background: var(--sds-red-700);
+  }
+
+  :where(.sds-badge[data-variant="dark"][data-tone="info"]) {
+    border-color: var(--sds-blue-700);
+    background: var(--sds-blue-700);
+  }
+
+  :where(.sds-badge[data-variant="dark"][data-tone="success"]) {
+    border-color: var(--sds-green-700);
+    background: var(--sds-green-700);
+  }
+
+  :where(.sds-badge[data-variant="dark"][data-tone="warning"]) {
+    border-color: var(--sds-orange-600);
+    background: var(--sds-orange-600);
+  }
+}

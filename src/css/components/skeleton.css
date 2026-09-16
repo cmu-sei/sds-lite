@@ -1,0 +1,17 @@
+@layer sds.components {
+  :where(.sds-skeleton) {
+    min-block-size: 1rem;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: hidden;
+    border-radius: var(--sds-radius-control);
+    background: light-dark(var(--sds-gray-100), var(--sds-gray-800));
+    animation: sds-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes sds-pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+}

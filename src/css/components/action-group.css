@@ -1,0 +1,18 @@
+@layer sds.utilities {
+  :where(.sds-action-group) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-sm);
+    align-items: center;
+  }
+
+  @media (max-width: 48rem) {
+    :where(.sds-action-group) {
+      inline-size: 100%;
+    }
+
+    :where(.sds-page-header .sds-action-group > button) {
+      flex: 1;
+    }
+  }
+}

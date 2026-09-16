@@ -1,0 +1,1767 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Complete component catalog and implementation guide for SDS Lite."
+    />
+    <title>SDS Lite Component Catalog</title>
+  </head>
+  <body data-sds-root data-sds-theme="forge" data-sds-color-scheme="light">
+    <div class="sds-app" data-variant="application">
+      <header class="sds-app-mobile-header">
+        <a class="sds-app-brand" href="#top" aria-label="SDS Lite catalog">
+          <span class="sds-app-brand-prefix">SEI</span>
+          <span>SDS Lite</span>
+        </a>
+        <button
+          data-shape="icon"
+          popovertarget="catalog-sidebar"
+          aria-label="Open navigation"
+        >
+          &#9776;
+        </button>
+      </header>
+
+      <div class="sds-app-layout demo-catalog-layout">
+        <aside
+          id="catalog-sidebar"
+          class="sds-sidebar demo-catalog-sidebar"
+          popover="auto"
+          aria-label="Catalog navigation"
+        >
+          <header>
+            <a class="sds-app-brand" href="#top">
+              <span class="sds-app-brand-prefix">SEI</span>
+              <span>SDS Lite</span>
+            </a>
+            <strong>Component catalog</strong>
+            <small>Native HTML, CSS, and TypeScript</small>
+            <button
+              class="sds-sidebar-close"
+              data-shape="icon"
+              popovertarget="catalog-sidebar"
+              popovertargetaction="hide"
+              aria-label="Close navigation"
+            >
+              &times;
+            </button>
+          </header>
+          <nav aria-label="Catalog sections">
+            <ul>
+              <li><a href="#getting-started">Getting started</a></li>
+              <li><a href="#actions">Actions</a></li>
+              <li><a href="#forms">Forms</a></li>
+              <li><a href="#feedback">Feedback</a></li>
+              <li><a href="#content">Content</a></li>
+              <li><a href="#composition">Composition</a></li>
+              <li><a href="#prose">Prose</a></li>
+              <li><a href="#navigation">Navigation</a></li>
+              <li><a href="#structure">Overlays</a></li>
+              <li><a href="#loading">Loading</a></li>
+            </ul>
+          </nav>
+          <footer>
+            <small>Every example is ordinary, server-renderable HTML.</small>
+            <div class="sds-flex" data-orientation="vertical" data-gap="sm">
+              <label class="sds-sr-only" for="theme">Theme</label>
+              <select id="theme" aria-label="Theme">
+                <option value="forge">Forge</option>
+                <option value="plaid">Plaid</option>
+              </select>
+
+              <label class="sds-sr-only" for="color-scheme">
+                Color scheme
+              </label>
+              <select id="color-scheme" aria-label="Color scheme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="system">System</option>
+              </select>
+            </div>
+          </footer>
+        </aside>
+
+        <div class="sds-app-body">
+        <main id="top" class="sds-app-main">
+        <header class="sds-page-header">
+          <div>
+            <p class="sds-eyebrow">Complete catalog</p>
+            <h1>Native components and elements</h1>
+          </div>
+          <a class="sds-button" href="#getting-started">Get started</a>
+        </header>
+
+        <div class="sds-page demo-page">
+          <section class="demo-intro" aria-labelledby="intro-title">
+            <div>
+              <p class="sds-eyebrow">One import, sensible defaults</p>
+              <h2 id="intro-title">Everything currently in SDS Lite</h2>
+              <p>
+                Change the theme and color scheme above to inspect every
+                example. Ordinary HTML receives accessible defaults; classes
+                and data attributes only express intent.
+              </p>
+            </div>
+            <div class="sds-callout" data-tone="info">
+              <strong>Catalog coverage</strong>
+              <span>
+                This page includes every current component, custom element,
+                semantic tone, visual treatment, form state, and overlay
+                placement.
+              </span>
+            </div>
+          </section>
+
+          <section id="getting-started" class="sds-card">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Foundations</p>
+                <h2>Typography and layout</h2>
+                <p>
+                  Headings, body text, application shell, page header, page,
+                  sections, actions, forms, and responsive grids are all
+                  visible on this page.
+                </p>
+              </div>
+            </div>
+            <div class="demo-quick-start">
+              <div>
+                <strong>1. Import SDS Lite</strong>
+                <pre class="demo-code"><code>import '@cmu-sei/sds-lite/sds.css'
+import '@cmu-sei/sds-lite'</code></pre>
+              </div>
+              <div>
+                <strong>2. Mark the application root</strong>
+                <pre class="demo-code"><code>&lt;body data-sds-root data-sds-theme="forge"&gt;
+  &lt;button&gt;Save changes&lt;/button&gt;
+&lt;/body&gt;</code></pre>
+              </div>
+            </div>
+            <div class="demo-type">
+              <h1>Heading one</h1>
+              <h2>Heading two</h2>
+              <h3>Heading three</h3>
+              <p>
+                Body text uses Open Sans in Forge. Plaid switches headings to
+                Source Serif and removes theme-relative corner rounding.
+              </p>
+            </div>
+          </section>
+
+          <section id="actions" aria-labelledby="actions-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Actions</p>
+                <h2 id="actions-title">Buttons, links, and icon buttons</h2>
+                <p>Every button treatment is shown in every semantic tone.</p>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Button options">
+                <code>data-variant="secondary | tertiary | ghost"</code>
+                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>data-size="xs | sm | md | lg | xl"</code>
+                <code>data-density="compact"</code>
+                <code>data-shape="icon"</code>
+                <code>data-block</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy a button</summary>
+                <pre class="demo-code"><code>&lt;button data-variant="secondary" data-tone="danger"&gt;
+  Delete project
+&lt;/button&gt;</code></pre>
+              </details>
+            </div>
+
+            <article class="sds-card demo-stack">
+              <h3>Button variants by tone</h3>
+              <div class="demo-tone-matrix">
+                <div class="demo-tone-row" data-tone="neutral">
+                  <strong>Neutral</strong>
+                  <button>Primary</button>
+                  <button data-variant="secondary">Secondary</button>
+                  <button data-variant="tertiary">Tertiary</button>
+                  <button data-variant="ghost">Ghost</button>
+                </div>
+                <div class="demo-tone-row" data-tone="brand">
+                  <strong>Brand</strong>
+                  <button>Primary</button>
+                  <button data-variant="secondary">Secondary</button>
+                  <button data-variant="tertiary">Tertiary</button>
+                  <button data-variant="ghost">Ghost</button>
+                </div>
+                <div class="demo-tone-row" data-tone="info">
+                  <strong>Info</strong>
+                  <button>Primary</button>
+                  <button data-variant="secondary">Secondary</button>
+                  <button data-variant="tertiary">Tertiary</button>
+                  <button data-variant="ghost">Ghost</button>
+                </div>
+                <div class="demo-tone-row" data-tone="success">
+                  <strong>Success</strong>
+                  <button>Primary</button>
+                  <button data-variant="secondary">Secondary</button>
+                  <button data-variant="tertiary">Tertiary</button>
+                  <button data-variant="ghost">Ghost</button>
+                </div>
+                <div class="demo-tone-row" data-tone="warning">
+                  <strong>Warning</strong>
+                  <button>Primary</button>
+                  <button data-variant="secondary">Secondary</button>
+                  <button data-variant="tertiary">Tertiary</button>
+                  <button data-variant="ghost">Ghost</button>
+                </div>
+                <div class="demo-tone-row" data-tone="danger">
+                  <strong>Danger</strong>
+                  <button>Primary</button>
+                  <button data-variant="secondary">Secondary</button>
+                  <button data-variant="tertiary">Tertiary</button>
+                  <button data-variant="ghost">Ghost</button>
+                </div>
+              </div>
+            </article>
+
+            <div class="demo-grid">
+              <article class="sds-card demo-stack">
+                <h3>States and shapes</h3>
+                <div class="sds-action-group">
+                  <button>Default</button>
+                  <button disabled>Disabled</button>
+                  <button aria-busy="true">Saving</button>
+                  <a class="sds-button" href="#actions">Link button</a>
+                  <button data-shape="icon" aria-label="Add item">+</button>
+                  <button data-shape="icon" aria-label="Close">&times;</button>
+                </div>
+                <button data-block>Full-width button</button>
+              </article>
+
+              <article id="button-sizes" class="sds-card demo-stack">
+                <h3>Button sizes</h3>
+                <div class="sds-action-group">
+                  <button data-size="xs">Extra small</button>
+                  <button data-size="sm">Small</button>
+                  <button>Medium</button>
+                  <button data-size="lg">Large</button>
+                  <button data-size="xl">Extra large</button>
+                </div>
+              </article>
+
+              <article id="compact-buttons" class="sds-card demo-stack">
+                <h3>Compact variants and sizes</h3>
+                <div class="sds-action-group">
+                  <button data-density="compact">Ghost</button>
+                  <button data-density="compact" data-variant="secondary">Secondary</button>
+                  <button data-density="compact" data-variant="primary">Primary</button>
+                  <button data-density="compact" disabled>Disabled</button>
+                </div>
+                <div class="sds-action-group" aria-label="Compact button sizes">
+                  <button data-density="compact" data-size="xs">Extra small</button>
+                  <button data-density="compact" data-size="sm">Small</button>
+                  <button data-density="compact" data-size="md">Medium</button>
+                  <button data-density="compact" data-size="lg">Large</button>
+                  <button data-density="compact" data-size="xl">Extra large</button>
+                </div>
+              </article>
+
+              <article class="sds-card demo-stack">
+                <h3>Icon button sizes</h3>
+                <div class="sds-action-group">
+                  <button data-shape="icon" data-size="xs" aria-label="Extra-small add">+</button>
+                  <button data-shape="icon" data-size="sm" aria-label="Small add">+</button>
+                  <button data-shape="icon" aria-label="Medium add">+</button>
+                  <button data-shape="icon" data-size="lg" aria-label="Large add">+</button>
+                  <button data-shape="icon" data-size="xl" aria-label="Extra-large add">+</button>
+                  <button data-shape="icon" data-variant="primary" data-tone="danger" aria-label="Delete">&times;</button>
+                </div>
+              </article>
+
+              <article class="sds-card demo-stack">
+                <h3>Link variants</h3>
+                <div class="demo-link-list">
+                  <a class="sds-link" href="#actions">Primary</a>
+                  <a class="sds-link" data-variant="secondary" href="#actions">Secondary</a>
+                  <a class="sds-link" data-variant="tertiary" href="#actions">Tertiary</a>
+                  <a class="sds-link" data-variant="inline" href="#actions">Inline</a>
+                  <a class="sds-link" data-variant="cta" href="#actions">Call to action</a>
+                  <a class="sds-link" aria-disabled="true">Disabled</a>
+                </div>
+                <div class="demo-link-list" aria-label="Link sizes">
+                  <a class="sds-link" data-size="xs" href="#actions">Extra small</a>
+                  <a class="sds-link" data-size="sm" href="#actions">Small</a>
+                  <a class="sds-link" href="#actions">Medium</a>
+                  <a class="sds-link" data-size="lg" href="#actions">Large</a>
+                  <a class="sds-link" data-size="xl" href="#actions">Extra large</a>
+                </div>
+              </article>
+
+              <article class="sds-card demo-stack demo-span">
+                <h3>Link tones</h3>
+                <div class="demo-link-list">
+                  <a class="sds-link" data-tone="neutral" href="#actions">Neutral</a>
+                  <a class="sds-link" data-tone="brand" href="#actions">Brand</a>
+                  <a class="sds-link" data-tone="info" href="#actions">Info</a>
+                  <a class="sds-link" data-tone="success" href="#actions">Success</a>
+                  <a class="sds-link" data-tone="warning" href="#actions">Warning</a>
+                  <a class="sds-link" data-tone="danger" href="#actions">Danger</a>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="forms" aria-labelledby="forms-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Forms</p>
+                <h2 id="forms-title">Native controls and states</h2>
+                <p>
+                  Labels and native attributes provide semantics, validation,
+                  autofill, and keyboard behavior.
+                </p>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Form options">
+                <code>.sds-field</code>
+                <code>data-size="sm | lg"</code>
+                <code>data-orientation="horizontal"</code>
+                <code>disabled</code>
+                <code>readonly</code>
+                <code>aria-invalid="true"</code>
+                <code>data-valid</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy a field</summary>
+                <pre class="demo-code"><code>&lt;div class="sds-field"&gt;
+  &lt;label for="project-name"&gt;Project name&lt;/label&gt;
+  &lt;input id="project-name" name="project-name" required&gt;
+  &lt;small&gt;Use a short, recognizable name.&lt;/small&gt;
+&lt;/div&gt;</code></pre>
+              </details>
+            </div>
+
+            <form class="sds-card demo-form-grid">
+              <div class="sds-field">
+                <label for="text-input">Text</label>
+                <input class="sds-input" id="text-input" name="text" data-size="sm" placeholder="Enter text" />
+                <small>Helpful text belongs directly below the field.</small>
+              </div>
+              <div class="sds-field">
+                <label for="email-input">Email</label>
+                <input id="email-input" type="email" placeholder="name@example.com" />
+              </div>
+              <div class="sds-field">
+                <label for="password-input">Password</label>
+                <input id="password-input" type="password" data-size="lg" value="password" />
+              </div>
+              <div class="sds-field">
+                <label for="search-input">Search</label>
+                <input id="search-input" type="search" placeholder="Search" />
+              </div>
+              <div class="sds-field">
+                <label for="tel-input">Telephone</label>
+                <input id="tel-input" type="tel" placeholder="412-555-0100" />
+              </div>
+              <div class="sds-field">
+                <label for="url-input">URL</label>
+                <input id="url-input" type="url" placeholder="https://example.com" />
+              </div>
+              <div class="sds-field">
+                <label for="number-input">Number</label>
+                <input id="number-input" type="number" value="12" />
+              </div>
+              <div class="sds-field">
+                <label for="date-input">Date</label>
+                <input id="date-input" type="date" value="2026-09-16" />
+              </div>
+              <div class="sds-field">
+                <label for="datetime-input">Date and time</label>
+                <input id="datetime-input" type="datetime-local" value="2026-09-16T09:00" />
+              </div>
+              <div class="sds-field">
+                <label for="time-input">Time</label>
+                <input id="time-input" type="time" value="09:00" />
+              </div>
+              <div class="sds-field">
+                <label for="month-input">Month</label>
+                <input id="month-input" type="month" value="2026-09" />
+              </div>
+              <div class="sds-field">
+                <label for="week-input">Week</label>
+                <input id="week-input" type="week" value="2026-W38" />
+              </div>
+              <div class="sds-field">
+                <label for="select-input">Select</label>
+                <select class="sds-select" id="select-input">
+                  <option>Choose an option</option>
+                  <option>First option</option>
+                  <option>Second option</option>
+                </select>
+              </div>
+              <div class="sds-field demo-span">
+                <label for="textarea-input">Textarea</label>
+                <textarea id="textarea-input" rows="3">A longer response.</textarea>
+              </div>
+              <div class="sds-field">
+                <label for="readonly-input">Readonly</label>
+                <input id="readonly-input" value="Cannot be edited" readonly />
+              </div>
+              <div class="sds-field">
+                <label for="disabled-input">Disabled</label>
+                <input id="disabled-input" value="Unavailable" disabled />
+              </div>
+              <div class="sds-field">
+                <label for="invalid-input">Invalid</label>
+                <input
+                  id="invalid-input"
+                  value="Invalid value"
+                  aria-invalid="true"
+                  aria-describedby="invalid-message"
+                />
+                <small id="invalid-message" class="demo-error">
+                  Correct this value before continuing.
+                </small>
+              </div>
+              <div class="sds-field">
+                <label for="valid-input">Valid</label>
+                <input id="valid-input" value="Validated value" data-valid />
+                <small data-field-valid>This value is ready to submit.</small>
+              </div>
+              <div class="sds-field demo-span" data-orientation="horizontal">
+                <label for="horizontal-input">Horizontal field</label>
+                <input id="horizontal-input" placeholder="Label and control share a row" />
+                <small>Horizontal fields return to one column when space is constrained.</small>
+              </div>
+              <fieldset class="demo-fieldset">
+                <legend>Checkboxes</legend>
+                <label class="sds-choice">
+                  <input type="checkbox" checked />
+                  Checked
+                </label>
+                <label class="sds-choice">
+                  <input type="checkbox" />
+                  Unchecked
+                </label>
+                <label class="sds-choice">
+                  <input type="checkbox" disabled />
+                  Disabled
+                </label>
+              </fieldset>
+              <fieldset class="demo-fieldset">
+                <legend>Radio buttons</legend>
+                <label class="sds-choice">
+                  <input type="radio" name="radio-example" checked />
+                  Selected
+                </label>
+                <label class="sds-choice">
+                  <input type="radio" name="radio-example" />
+                  Unselected
+                </label>
+                <label class="sds-choice">
+                  <input type="radio" name="radio-example" disabled />
+                  Disabled
+                </label>
+              </fieldset>
+              <div class="sds-action-group demo-span">
+                <button type="submit">Submit</button>
+                <button type="reset" data-variant="secondary">Reset</button>
+              </div>
+            </form>
+          </section>
+
+          <section id="feedback" aria-labelledby="feedback-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Feedback</p>
+                <h2 id="feedback-title">Badges, callouts, and toasts</h2>
+                <p>
+                  Upstream treatment sets are available in every semantic tone.
+                </p>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Feedback options">
+                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>badge: light | light-border | medium | dark</code>
+                <code>callout: subtle | outline | bold</code>
+                <code>callout data-size="xs | sm | md | lg"</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy a callout</summary>
+                <pre class="demo-code"><code>&lt;div class="sds-callout" data-tone="warning"&gt;
+  &lt;strong&gt;Review needed&lt;/strong&gt;
+  &lt;span&gt;Check this setting before continuing.&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+              </details>
+            </div>
+
+            <article class="sds-card demo-stack">
+              <h3>Badges</h3>
+              <div class="demo-feedback-grid">
+                <div class="demo-tone-sample">
+                  <strong>Neutral</strong>
+                  <span class="sds-badge" data-tone="neutral" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="neutral" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="neutral">Medium</span>
+                  <span class="sds-badge" data-tone="neutral" data-variant="dark">Dark</span>
+                </div>
+                <div class="demo-tone-sample">
+                  <strong>Brand</strong>
+                  <span class="sds-badge" data-tone="brand" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="brand" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="brand">Medium</span>
+                  <span class="sds-badge" data-tone="brand" data-variant="dark">Dark</span>
+                </div>
+                <div class="demo-tone-sample">
+                  <strong>Info</strong>
+                  <span class="sds-badge" data-tone="info" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="info" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="info">Medium</span>
+                  <span class="sds-badge" data-tone="info" data-variant="dark">Dark</span>
+                </div>
+                <div class="demo-tone-sample">
+                  <strong>Success</strong>
+                  <span class="sds-badge" data-tone="success" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="success" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="success">Medium</span>
+                  <span class="sds-badge" data-tone="success" data-variant="dark">Dark</span>
+                </div>
+                <div class="demo-tone-sample">
+                  <strong>Warning</strong>
+                  <span class="sds-badge" data-tone="warning" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="warning" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="warning">Medium</span>
+                  <span class="sds-badge" data-tone="warning" data-variant="dark">Dark</span>
+                </div>
+                <div class="demo-tone-sample">
+                  <strong>Danger</strong>
+                  <span class="sds-badge" data-tone="danger" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="danger" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="danger">Medium</span>
+                  <span class="sds-badge" data-tone="danger" data-variant="dark">Dark</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="sds-card demo-stack">
+              <h3>Toasts</h3>
+              <p>
+                Toasts announce brief feedback, dismiss automatically, and
+                pause while hovered or focused.
+              </p>
+              <div class="sds-action-group">
+                <button data-tone="neutral" data-toast-open="toast-neutral">Show neutral</button>
+                <button data-tone="brand" data-toast-open="toast-brand">Show brand</button>
+                <button data-tone="success" data-toast-open="toast-success">Show success</button>
+                <button data-tone="info" data-toast-open="toast-info">Show info</button>
+                <button data-tone="warning" data-toast-open="toast-warning">Show warning</button>
+                <button data-tone="danger" data-toast-open="toast-danger">Show danger</button>
+              </div>
+            </article>
+
+            <div class="demo-callout-grid">
+              <div class="sds-callout" data-tone="neutral">
+                <strong>Neutral subtle</strong><span>General supporting information.</span>
+              </div>
+              <div class="sds-callout" data-tone="neutral" data-variant="outline">
+                <strong>Neutral outline</strong><span>General supporting information.</span>
+              </div>
+              <div class="sds-callout" data-tone="neutral" data-variant="bold">
+                <strong>Neutral bold</strong><span>General supporting information.</span>
+              </div>
+              <div class="sds-callout" data-tone="brand">
+                <strong>Brand subtle</strong><span>Information associated with SEI.</span>
+              </div>
+              <div class="sds-callout" data-tone="brand" data-variant="outline">
+                <strong>Brand outline</strong><span>Information associated with SEI.</span>
+              </div>
+              <div class="sds-callout" data-tone="brand" data-variant="bold">
+                <strong>Brand bold</strong><span>Information associated with SEI.</span>
+              </div>
+              <div class="sds-callout" data-tone="info">
+                <strong>Info subtle</strong><span>Something useful to know.</span>
+              </div>
+              <div class="sds-callout" data-tone="info" data-variant="outline">
+                <strong>Info outline</strong><span>Something useful to know.</span>
+              </div>
+              <div class="sds-callout" data-tone="info" data-variant="bold">
+                <strong>Info bold</strong><span>Something useful to know.</span>
+              </div>
+              <div class="sds-callout" data-tone="success">
+                <strong>Success subtle</strong><span>The operation completed.</span>
+              </div>
+              <div class="sds-callout" data-tone="success" data-variant="outline">
+                <strong>Success outline</strong><span>The operation completed.</span>
+              </div>
+              <div class="sds-callout" data-tone="success" data-variant="bold">
+                <strong>Success bold</strong><span>The operation completed.</span>
+              </div>
+              <div class="sds-callout" data-tone="warning">
+                <strong>Warning subtle</strong><span>Review this before continuing.</span>
+              </div>
+              <div class="sds-callout" data-tone="warning" data-variant="outline">
+                <strong>Warning outline</strong><span>Review this before continuing.</span>
+              </div>
+              <div class="sds-callout" data-tone="warning" data-variant="bold">
+                <strong>Warning bold</strong><span>Review this before continuing.</span>
+              </div>
+              <div class="sds-callout" data-tone="danger">
+                <strong>Danger subtle</strong><span>The operation could not finish.</span>
+              </div>
+              <div class="sds-callout" data-tone="danger" data-variant="outline">
+                <strong>Danger outline</strong><span>The operation could not finish.</span>
+              </div>
+              <div class="sds-callout" data-tone="danger" data-variant="bold">
+                <strong>Danger bold</strong><span>The operation could not finish.</span>
+              </div>
+            </div>
+
+            <article class="sds-card demo-stack">
+              <h3>Callout sizes and anatomy</h3>
+              <div class="demo-callout-grid">
+                <div class="sds-callout" data-tone="info" data-size="xs">
+                  <strong>Extra small</strong><span>Compact supporting text.</span>
+                </div>
+                <div class="sds-callout" data-tone="info" data-size="sm">
+                  <strong>Small</strong><span>Supporting text for dense layouts.</span>
+                </div>
+                <div class="sds-callout" data-tone="info">
+                  <strong>Medium</strong><span>The default callout size.</span>
+                  <span class="sds-callout-timestamp">Updated just now</span>
+                </div>
+                <div class="sds-callout" data-tone="info" data-size="lg" data-inset>
+                  <strong>Large and inset</strong><span>An edge-to-edge treatment without rounded corners.</span>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section id="content" aria-labelledby="content-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Content</p>
+                <h2 id="content-title">Cards, datapoints, tables, and empty states</h2>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Content options">
+                <code>datapoint data-size="sm | md | lg"</code>
+                <code>table data-size="sm | lg"</code>
+                <code>data-row-highlight</code>
+                <code>data-standalone</code>
+                <code>data-sticky="start | end"</code>
+                <code>.sds-sr-only on &lt;thead&gt;</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy a datapoint</summary>
+                <pre class="demo-code"><code>&lt;div class="sds-datapoint" data-size="lg" data-tone="success"&gt;
+  &lt;span&gt;Resolved findings&lt;/span&gt;
+  &lt;div&gt;&lt;strong&gt;104&lt;/strong&gt;&lt;span&gt;this month&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+              </details>
+            </div>
+
+            <div class="sds-grid">
+              <article class="sds-card">
+                <div class="sds-datapoint">
+                  <span>Default</span>
+                  <div><strong>82</strong><span>total</span></div>
+                </div>
+              </article>
+              <article class="sds-card">
+                <div class="sds-datapoint" data-size="sm" data-tone="neutral">
+                  <span>Neutral</span>
+                  <div><strong>9</strong><span>drafts</span></div>
+                </div>
+              </article>
+              <article class="sds-card">
+                <div class="sds-datapoint" data-size="lg" data-tone="brand">
+                  <span>Brand</span>
+                  <div><strong>16</strong><span>programs</span></div>
+                </div>
+              </article>
+              <article class="sds-card">
+                <div class="sds-datapoint" data-tone="info">
+                  <span>Information</span>
+                  <div><strong>24</strong><span>updates</span></div>
+                </div>
+              </article>
+              <article class="sds-card">
+                <div class="sds-datapoint" data-size="sm" data-tone="success">
+                  <span>Success</span>
+                  <div><strong>12</strong><span>on track</span></div>
+                </div>
+              </article>
+              <article class="sds-card">
+                <div class="sds-datapoint" data-tone="warning">
+                  <span>Warning</span>
+                  <div><strong>37</strong><span>need review</span></div>
+                </div>
+              </article>
+              <article class="sds-card">
+                <div class="sds-datapoint" data-size="lg" data-tone="danger">
+                  <span>Danger</span>
+                  <div><strong>3</strong><span>blocked</span></div>
+                </div>
+              </article>
+            </div>
+
+            <div class="sds-table-container">
+              <table class="sds-table" data-row-highlight data-standalone>
+                <caption>Current projects</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" data-sticky="start">Project</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col" data-sticky="end">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td data-sticky="start"><a class="sds-link" href="#content">Atlas</a></td>
+                    <td>Alex Morgan</td>
+                    <td data-sticky="end"><span class="sds-badge" data-tone="success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td data-sticky="start"><a class="sds-link" href="#content">Northstar</a></td>
+                    <td>Sam Rivera</td>
+                    <td data-sticky="end"><span class="sds-badge" data-tone="warning">Review</span></td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3">2 projects shown</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div class="demo-grid">
+              <article class="sds-card demo-stack">
+                <h3>Small table with a visually hidden header</h3>
+                <div class="sds-table-container">
+                  <table class="sds-table" data-size="sm">
+                    <thead class="sds-sr-only"><tr><th scope="col">Check</th><th scope="col">Result</th></tr></thead>
+                    <tbody>
+                      <tr><td>Accessibility</td><td>Passed</td></tr>
+                      <tr><td>Performance</td><td>Passed</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+              <article class="sds-card demo-stack">
+                <h3>Large table rows</h3>
+                <div class="sds-table-container">
+                  <table class="sds-table" data-size="lg">
+                    <thead><tr><th scope="col">Owner</th><th scope="col">Work</th></tr></thead>
+                    <tbody>
+                      <tr><td>Alex Morgan</td><td>Architecture review</td></tr>
+                      <tr><td>Sam Rivera</td><td>Release approval</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+            </div>
+
+            <div class="sds-empty-state">
+              <h3>No archived projects</h3>
+              <p>Archived projects will appear here.</p>
+            </div>
+          </section>
+
+          <section id="composition" aria-labelledby="composition-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Composition</p>
+                <h2 id="composition-title">Sidebar, lists, and timelines</h2>
+                <p>
+                  Semantic HTML creates polished application layouts without
+                  component JavaScript or generated markup.
+                </p>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Composition options">
+                <code>.sds-sidebar-layout + .sds-sidebar</code>
+                <code>.sds-grid[data-columns]</code>
+                <code>.sds-grid[data-orientation="vertical"]</code>
+                <code>.sds-flex</code>
+                <code>.sds-list[data-divided]</code>
+                <code>.sds-list-marker</code>
+                <code>timeline data-orientation="horizontal"</code>
+                <code>aria-current="step"</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy a sidebar layout</summary>
+                <pre class="demo-code"><code>&lt;div class="sds-sidebar-layout"&gt;
+  &lt;aside class="sds-sidebar"&gt;
+    &lt;header&gt;&lt;strong&gt;Project Atlas&lt;/strong&gt;&lt;/header&gt;
+    &lt;nav aria-label="Project"&gt;
+      &lt;ul&gt;&lt;li&gt;&lt;a href="/" aria-current="page"&gt;Overview&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/aside&gt;
+  &lt;main&gt;Project content&lt;/main&gt;
+&lt;/div&gt;</code></pre>
+              </details>
+            </div>
+
+            <article class="sds-card demo-stack">
+              <h3>Easy grid and flex layouts</h3>
+              <div class="sds-grid" data-columns="3">
+                <div class="sds-card">
+                  <span class="sds-card-label">First column</span>
+                  Column one
+                </div>
+                <div class="sds-card">Column two</div>
+                <div class="sds-card">Column three</div>
+              </div>
+              <div class="sds-flex" data-wrap data-align="center" data-justify="between">
+                <strong data-grow>Flexible content</strong>
+                <button data-no-shrink>Action</button>
+              </div>
+            </article>
+
+            <article class="sds-card demo-stack">
+              <h3>Application</h3>
+              <div class="sds-app demo-app-preview" data-variant="application">
+                <header class="sds-app-mobile-header">
+                  <a class="sds-app-brand" href="#composition">
+                    <span class="sds-app-brand-prefix">SEI</span>
+                    SDS Lite
+                  </a>
+                  <button
+                    data-shape="icon"
+                    popovertarget="application-preview-sidebar"
+                    aria-label="Open preview navigation"
+                  >
+                    &#9776;
+                  </button>
+                </header>
+                <div
+                  class="sds-app-layout"
+                  style="--sds-sidebar-width: 12rem"
+                >
+                  <aside
+                    id="application-preview-sidebar"
+                    class="sds-sidebar"
+                    popover="auto"
+                    aria-label="Application preview navigation"
+                  >
+                    <header>
+                      <a class="sds-app-brand" href="#composition">
+                        <span class="sds-app-brand-prefix">SEI</span>
+                        SDS Lite
+                      </a>
+                      <strong>Project Atlas</strong>
+                      <button
+                        class="sds-sidebar-close"
+                        data-shape="icon"
+                        popovertarget="application-preview-sidebar"
+                        popovertargetaction="hide"
+                        aria-label="Close preview navigation"
+                      >
+                        &times;
+                      </button>
+                    </header>
+                    <nav aria-label="Application preview">
+                      <ul>
+                        <li>
+                          <a href="#composition" aria-current="page">Overview</a>
+                        </li>
+                        <li><a href="#composition">Reviews</a></li>
+                        <li><a href="#composition">Team</a></li>
+                      </ul>
+                    </nav>
+                    <footer>Signed in as Alex</footer>
+                  </aside>
+                  <div class="sds-app-body">
+                    <main class="sds-app-main">
+                      <header class="sds-page-header">
+                        <h1>Project overview</h1>
+                        <button>Create review</button>
+                      </header>
+                      <div class="sds-page">
+                        <div class="sds-card">Full application content</div>
+                      </div>
+                    </main>
+                    <footer class="sds-app-footer">
+                      <div class="sds-app-footer-content">
+                        <div class="sds-app-footer-brand">
+                          <a
+                            href="https://sei.cmu.edu"
+                            aria-label="Software Engineering Institute"
+                          >
+                            <span class="sds-sei-wordmark" aria-hidden="true"></span>
+                          </a>
+                        </div>
+                        <div class="sds-app-footer-legal">
+                          <p>&copy; <time datetime="2026">2026</time> Carnegie Mellon University</p>
+                          <p>Proprietary. SEI Internal Use Only</p>
+                        </div>
+                      </div>
+                    </footer>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="sds-card demo-stack">
+              <h3>Simple Application</h3>
+              <div class="sds-app demo-app-preview" data-variant="simple">
+                <header class="sds-app-header">
+                  <a class="sds-app-brand" href="#composition">
+                    <span class="sds-app-brand-prefix">SEI</span>
+                    SDS Lite
+                  </a>
+                  <button data-density="compact">Alex Morgan</button>
+                </header>
+                <div class="sds-app-body">
+                  <main class="sds-app-main">
+                    <header class="sds-page-header">
+                      <h1>Project settings</h1>
+                      <button>Save</button>
+                    </header>
+                    <div class="sds-page">
+                      <div class="sds-card">Simple application content</div>
+                    </div>
+                  </main>
+                  <footer class="sds-app-footer">
+                    <div class="sds-app-footer-top">Application-specific links</div>
+                    <div class="sds-app-footer-content">
+                      <div class="sds-app-footer-brand">
+                        <a
+                          href="https://sei.cmu.edu"
+                          aria-label="Software Engineering Institute"
+                        >
+                          <span class="sds-sei-wordmark" aria-hidden="true"></span>
+                        </a>
+                      </div>
+                      <div class="sds-app-footer-middle">Application information</div>
+                      <div class="sds-app-footer-legal">
+                        <p>&copy; <time datetime="2026">2026</time> Carnegie Mellon University</p>
+                        <p>Proprietary. SEI Internal Use Only</p>
+                      </div>
+                    </div>
+                  </footer>
+                  <aside
+                    class="sds-app-action-bar sds-flex"
+                    aria-label="Preview actions"
+                  >
+                    <strong data-grow>Unsaved changes</strong>
+                    <button data-variant="ghost">Discard</button>
+                    <button>Save</button>
+                  </aside>
+                </div>
+              </div>
+            </article>
+
+            <article class="sds-card demo-stack">
+              <h3>Brochure Site</h3>
+              <div class="sds-app demo-brochure-preview" data-variant="brochure">
+                <main>
+                  <header class="sds-brochure-header">
+                    <div class="sds-brochure-masthead">
+                      <div class="sds-brochure-container">Carnegie Mellon University</div>
+                    </div>
+                    <div class="sds-brochure-navigation sds-brochure-container">
+                      <a class="sds-brochure-brand" href="#composition">
+                        Software Engineering Institute
+                        <small>CERT Coordination Center</small>
+                      </a>
+                      <nav aria-label="Brochure preview">
+                        <ul>
+                          <li><a href="#composition" aria-current="page">Home</a></li>
+                          <li><a href="#composition">Research</a></li>
+                        </ul>
+                      </nav>
+                    </div>
+                  </header>
+                  <div class="sds-brochure-main sds-brochure-container">
+                    <h2>Public-facing content</h2>
+                  </div>
+                </main>
+                <footer>
+                  <div class="sds-brochure-footer-links">
+                    <div class="sds-brochure-container">Subscribe to SEI updates</div>
+                  </div>
+                  <div class="sds-brochure-footer-main">
+                    <div class="sds-brochure-container">Software Engineering Institute</div>
+                  </div>
+                  <div class="sds-brochure-footer-legal">
+                    <div class="sds-brochure-container">Carnegie Mellon University</div>
+                  </div>
+                </footer>
+              </div>
+            </article>
+
+            <article class="sds-card demo-stack">
+              <h3>Persistent sidebar</h3>
+              <div class="sds-sidebar-layout demo-sidebar-layout">
+                <aside class="sds-sidebar">
+                  <header><strong>Project Atlas</strong></header>
+                  <nav aria-label="Project navigation">
+                    <ul>
+                      <li>
+                        <a href="#composition">Overview</a>
+                      </li>
+                      <li>
+                        <details>
+                          <summary>Reviews</summary>
+                          <ul>
+                            <li>
+                              <a href="#composition" aria-current="page">Open</a>
+                            </li>
+                            <li><a href="#composition">Complete</a></li>
+                          </ul>
+                        </details>
+                      </li>
+                      <li><a href="#composition">Team</a></li>
+                      <li><a aria-disabled="true">Archive</a></li>
+                    </ul>
+                  </nav>
+                  <footer><small>Updated a moment ago</small></footer>
+                </aside>
+                <main class="demo-sidebar-main">
+                  <p class="sds-eyebrow">Reviews</p>
+                  <h3>Open reviews</h3>
+                  <p>
+                    A standalone sidebar stacks above content on narrow
+                    screens. The application shell uses native Popover for
+                    dismissible mobile navigation.
+                  </p>
+                </main>
+              </div>
+            </article>
+
+            <div class="demo-grid">
+              <article class="sds-card demo-stack">
+                <h3>Divided list with markers</h3>
+                <ul class="sds-list" data-divided>
+                  <li class="sds-list-item">
+                    <span class="sds-list-marker">
+                      <span class="sds-badge" data-tone="success">1</span>
+                    </span>
+                    <div>
+                      <h3>Application review</h3>
+                      <p>Track review work as it moves forward.</p>
+                    </div>
+                  </li>
+                  <li class="sds-list-item">
+                    <span class="sds-list-marker">
+                      <span class="sds-badge" data-tone="info">2</span>
+                    </span>
+                    <div>
+                      <h3>Supporting material</h3>
+                      <p>Collect documentation and decision notes.</p>
+                      <span class="sds-badge" data-tone="success">Complete</span>
+                    </div>
+                  </li>
+                  <li class="sds-list-item">
+                    <span class="sds-list-marker">
+                      <span class="sds-badge" data-tone="warning">3</span>
+                    </span>
+                    <div>
+                      <h3>Stakeholder follow-up</h3>
+                      <p>Confirm the approval date before closing the record.</p>
+                    </div>
+                  </li>
+                </ul>
+              </article>
+
+              <article class="sds-card demo-stack">
+                <h3>Simple list</h3>
+                <ul class="sds-list">
+                  <li class="sds-list-item">
+                    <h3>Primary reviewer</h3>
+                    <p>Owns technical validation and reviewer handoff.</p>
+                  </li>
+                  <li class="sds-list-item">
+                    <h3>Backup reviewer</h3>
+                    <p>Reviews escalations when the primary is unavailable.</p>
+                  </li>
+                  <li class="sds-list-item">
+                    <h3>Audit team</h3>
+                    <p>Checks supporting evidence before release.</p>
+                  </li>
+                </ul>
+              </article>
+            </div>
+
+            <div class="demo-grid">
+              <article class="sds-card demo-stack">
+                <h3>Timeline tones and current step</h3>
+                <ol class="sds-timeline">
+                  <li class="sds-timeline-item" data-tone="neutral">
+                    <h3>Created</h3>
+                    <p>The project record was created.</p>
+                    <time datetime="2026-09-16T08:00:00-04:00">8:00 AM</time>
+                  </li>
+                  <li class="sds-timeline-item" data-tone="brand">
+                    <h3>Submitted</h3>
+                    <p>The review package entered the queue.</p>
+                    <time datetime="2026-09-16T09:00:00-04:00">9:00 AM</time>
+                  </li>
+                  <li class="sds-timeline-item" data-tone="info">
+                    <h3>Assigned</h3>
+                    <p>A reviewer accepted the package.</p>
+                  </li>
+                  <li class="sds-timeline-item" data-tone="success" aria-current="step">
+                    <h3>Security review</h3>
+                    <p>The security team is reviewing the package.</p>
+                    <time datetime="2026-09-16T10:30:00-04:00">Now</time>
+                  </li>
+                  <li class="sds-timeline-item" data-tone="warning">
+                    <h3>Final approval</h3>
+                    <p>Waiting for the review to finish.</p>
+                  </li>
+                  <li class="sds-timeline-item" data-tone="danger">
+                    <h3>Escalation</h3>
+                    <p>Shown when an event needs urgent attention.</p>
+                  </li>
+                </ol>
+              </article>
+
+              <article class="sds-card demo-stack">
+                <h3>Horizontal timeline with a custom marker</h3>
+                <ol class="sds-timeline" data-orientation="horizontal" aria-label="Release progress">
+                  <li class="sds-timeline-item" data-tone="success">
+                    <h3>Build</h3>
+                    <p>Checks passed.</p>
+                  </li>
+                  <li class="sds-timeline-item">
+                    <span class="sds-timeline-marker" aria-hidden="true">
+                      <span class="sds-badge" data-tone="info">QA</span>
+                    </span>
+                    <h3>Quality review</h3>
+                    <p>Review in progress.</p>
+                  </li>
+                  <li class="sds-timeline-item">
+                    <h3>Release</h3>
+                    <p>Ready after approval.</p>
+                  </li>
+                </ol>
+              </article>
+            </div>
+          </section>
+
+          <section id="prose" aria-labelledby="prose-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Prose</p>
+                <h2 id="prose-title">Long-form content</h2>
+                <p>
+                  Dependency-free typography for articles, documentation, and
+                  generated rich text.
+                </p>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Prose options">
+                <code>.sds-prose</code>
+                <code>data-size="sm"</code>
+                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>.not-prose</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy a prose container</summary>
+                <pre class="demo-code"><code>&lt;article class="sds-prose" data-tone="info"&gt;
+  &lt;h1&gt;Article title&lt;/h1&gt;
+  &lt;p class="lead"&gt;A short introduction.&lt;/p&gt;
+  &lt;p&gt;Semantic HTML receives the complete typography treatment.&lt;/p&gt;
+&lt;/article&gt;</code></pre>
+              </details>
+            </div>
+
+            <article class="sds-card">
+              <div class="sds-prose">
+                <h1>Building resilient software</h1>
+                <p class="lead">
+                  Good systems make the correct path obvious while retaining
+                  the flexibility experts need.
+                </p>
+                <p>
+                  Prose supports <strong>strong text</strong>,
+                  <em>emphasis</em>, <a href="#prose">inline links</a>,
+                  <code>inline code</code>, and keyboard input such as
+                  <kbd>Command</kbd> + <kbd>K</kbd>.
+                </p>
+                <h2>Clear information hierarchy</h2>
+                <p>
+                  Headings, paragraphs, lists, quotations, code, media, and
+                  tables share predictable vertical rhythm.
+                </p>
+                <h3>Ordered work</h3>
+                <ol>
+                  <li>Define the outcome.</li>
+                  <li>
+                    Implement the smallest complete path.
+                    <ol>
+                      <li>Preserve native semantics.</li>
+                      <li>Verify observable behavior.</li>
+                    </ol>
+                  </li>
+                  <li>Document the interface.</li>
+                </ol>
+                <h3>Supporting principles</h3>
+                <ul>
+                  <li>Keep interfaces small.</li>
+                  <li>Keep related implementation local.</li>
+                  <li>Prefer browser standards.</li>
+                </ul>
+                <blockquote>
+                  A design system should reduce the knowledge required to
+                  produce a consistent interface.
+                </blockquote>
+                <h4>Terms</h4>
+                <dl>
+                  <dt>Module</dt>
+                  <dd>A focused capability behind a clear interface.</dd>
+                  <dt>Token</dt>
+                  <dd>A named design decision shared by multiple recipes.</dd>
+                </dl>
+                <h5>Code example</h5>
+                <pre><code>import '@cmu-sei/sds-lite/sds.css'
+import '@cmu-sei/sds-lite'</code></pre>
+                <h6>Rendered media</h6>
+                <figure>
+                  <svg viewBox="0 0 640 240" role="img" aria-labelledby="prose-figure-title">
+                    <title id="prose-figure-title">Three connected system modules</title>
+                    <rect width="640" height="240" fill="currentColor" opacity=".08"></rect>
+                    <circle cx="130" cy="120" r="52" fill="currentColor" opacity=".2"></circle>
+                    <circle cx="320" cy="120" r="52" fill="currentColor" opacity=".35"></circle>
+                    <circle cx="510" cy="120" r="52" fill="currentColor" opacity=".5"></circle>
+                    <path d="M182 120h86M372 120h86" stroke="currentColor" stroke-width="8"></path>
+                  </svg>
+                  <figcaption>
+                    Related modules share stable seams instead of duplicated
+                    implementation.
+                  </figcaption>
+                </figure>
+                <hr />
+                <table>
+                  <thead>
+                    <tr><th>Capability</th><th>Native element</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Disclosure</td><td><code>details</code></td></tr>
+                    <tr><td>Modal</td><td><code>dialog</code></td></tr>
+                  </tbody>
+                </table>
+                <div class="not-prose sds-callout" data-tone="info">
+                  <strong>Excluded region</strong>
+                  <span>Components inside <code>.not-prose</code> retain their own styling.</span>
+                </div>
+              </div>
+            </article>
+
+            <div class="demo-grid">
+              <article class="sds-card">
+                <div class="sds-prose" data-size="sm">
+                  <h2>Small prose</h2>
+                  <p>
+                    Compact typography is useful for narrow documentation
+                    panels and supporting content.
+                  </p>
+                </div>
+              </article>
+              <article class="sds-card demo-stack">
+                <h3>Prose tones</h3>
+                <div class="demo-link-list">
+                  <div class="sds-prose" data-tone="neutral"><a href="#prose">Neutral</a></div>
+                  <div class="sds-prose" data-tone="brand"><a href="#prose">Brand</a></div>
+                  <div class="sds-prose" data-tone="info"><a href="#prose">Info</a></div>
+                  <div class="sds-prose" data-tone="success"><a href="#prose">Success</a></div>
+                  <div class="sds-prose" data-tone="warning"><a href="#prose">Warning</a></div>
+                  <div class="sds-prose" data-tone="danger"><a href="#prose">Danger</a></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="navigation" aria-labelledby="navigation-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Navigation</p>
+                <h2 id="navigation-title">Keyboard-accessible tabs</h2>
+                <p>Arrow keys, Home, and End change the selected tab.</p>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Tab options">
+                <code>data-variant="folder | block | underline"</code>
+                <code>data-size="md | lg"</code>
+                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>disabled</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy SSR-ready tabs</summary>
+                <pre class="demo-code"><code>&lt;sds-tabs data-variant="underline"&gt;
+  &lt;div class="sds-tab-list" role="tablist"&gt;
+    &lt;button id="tab-1" class="sds-tab" role="tab"
+      aria-controls="panel-1" aria-selected="true"&gt;Overview&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;section id="panel-1" class="sds-tab-panel" role="tabpanel"
+    aria-labelledby="tab-1"&gt;Overview content&lt;/section&gt;
+&lt;/sds-tabs&gt;</code></pre>
+              </details>
+            </div>
+
+            <div class="demo-tabs-grid">
+              <sds-tabs data-tone="neutral">
+                <div class="sds-tab-list" role="tablist" aria-label="Neutral tabs">
+                  <button id="neutral-tab-1" class="sds-tab" role="tab" aria-controls="neutral-panel-1" aria-selected="true" tabindex="0">Neutral</button>
+                  <button id="neutral-tab-2" class="sds-tab" role="tab" aria-controls="neutral-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button id="neutral-tab-3" class="sds-tab" role="tab" aria-controls="neutral-panel-3" aria-selected="false" tabindex="-1" disabled>Disabled</button>
+                </div>
+                <section id="neutral-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-1">Neutral tab content</section>
+                <section id="neutral-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-2" hidden>Second tab content</section>
+                <section id="neutral-panel-3" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-3" hidden>Disabled content</section>
+              </sds-tabs>
+              <sds-tabs data-tone="brand">
+                <div class="sds-tab-list" role="tablist" aria-label="Brand tabs">
+                  <button id="brand-tab-1" class="sds-tab" role="tab" aria-controls="brand-panel-1" aria-selected="true" tabindex="0">Brand</button>
+                  <button id="brand-tab-2" class="sds-tab" role="tab" aria-controls="brand-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="brand-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="brand-tab-1">Brand tab content</section>
+                <section id="brand-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="brand-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-tone="info">
+                <div class="sds-tab-list" role="tablist" aria-label="Info tabs">
+                  <button id="info-tab-1" class="sds-tab" role="tab" aria-controls="info-panel-1" aria-selected="true" tabindex="0">Info</button>
+                  <button id="info-tab-2" class="sds-tab" role="tab" aria-controls="info-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="info-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="info-tab-1">Info tab content</section>
+                <section id="info-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="info-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-tone="success">
+                <div class="sds-tab-list" role="tablist" aria-label="Success tabs">
+                  <button id="success-tab-1" class="sds-tab" role="tab" aria-controls="success-panel-1" aria-selected="true" tabindex="0">Success</button>
+                  <button id="success-tab-2" class="sds-tab" role="tab" aria-controls="success-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="success-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="success-tab-1">Success tab content</section>
+                <section id="success-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="success-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-tone="warning">
+                <div class="sds-tab-list" role="tablist" aria-label="Warning tabs">
+                  <button id="warning-tab-1" class="sds-tab" role="tab" aria-controls="warning-panel-1" aria-selected="true" tabindex="0">Warning</button>
+                  <button id="warning-tab-2" class="sds-tab" role="tab" aria-controls="warning-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="warning-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="warning-tab-1">Warning tab content</section>
+                <section id="warning-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="warning-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-tone="danger">
+                <div class="sds-tab-list" role="tablist" aria-label="Danger tabs">
+                  <button id="danger-tab-1" class="sds-tab" role="tab" aria-controls="danger-panel-1" aria-selected="true" tabindex="0">Danger</button>
+                  <button id="danger-tab-2" class="sds-tab" role="tab" aria-controls="danger-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="danger-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="danger-tab-1">Danger tab content</section>
+                <section id="danger-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="danger-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-variant="underline" data-tone="info" data-size="lg">
+                <div class="sds-tab-list" role="tablist" aria-label="Underline tabs">
+                  <button id="underline-tab-1" class="sds-tab" role="tab" aria-controls="underline-panel-1" aria-selected="true" tabindex="0">Underline</button>
+                  <button id="underline-tab-2" class="sds-tab" role="tab" aria-controls="underline-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="underline-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-1">Large underline tab content</section>
+                <section id="underline-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-variant="block" data-tone="brand">
+                <div class="sds-tab-list" role="tablist" aria-label="Block tabs">
+                  <button id="block-tab-1" class="sds-tab" role="tab" aria-controls="block-panel-1" aria-selected="true" tabindex="0">Block</button>
+                  <button id="block-tab-2" class="sds-tab" role="tab" aria-controls="block-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="block-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-tab-1">Block tab content</section>
+                <section id="block-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-variant="underline" data-tone="success">
+                <div class="sds-tab-list" role="tablist" aria-label="Small underline tabs">
+                  <button id="underline-sm-tab-1" class="sds-tab" role="tab" aria-controls="underline-sm-panel-1" aria-selected="true" tabindex="0">Small underline</button>
+                  <button id="underline-sm-tab-2" class="sds-tab" role="tab" aria-controls="underline-sm-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="underline-sm-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-sm-tab-1">Small underline content</section>
+                <section id="underline-sm-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-sm-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-variant="folder" data-size="lg" data-tone="danger">
+                <div class="sds-tab-list" role="tablist" aria-label="Large folder tabs">
+                  <button id="folder-lg-tab-1" class="sds-tab" role="tab" aria-controls="folder-lg-panel-1" aria-selected="true" tabindex="0">Large folder</button>
+                  <button id="folder-lg-tab-2" class="sds-tab" role="tab" aria-controls="folder-lg-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="folder-lg-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="folder-lg-tab-1">Large folder content</section>
+                <section id="folder-lg-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="folder-lg-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+              <sds-tabs data-variant="block" data-size="lg" data-tone="neutral">
+                <div class="sds-tab-list" role="tablist" aria-label="Large block tabs">
+                  <button id="block-lg-tab-1" class="sds-tab" role="tab" aria-controls="block-lg-panel-1" aria-selected="true" tabindex="0">Large block</button>
+                  <button id="block-lg-tab-2" class="sds-tab" role="tab" aria-controls="block-lg-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                </div>
+                <section id="block-lg-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-lg-tab-1">Large block content</section>
+                <section id="block-lg-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-lg-tab-2" hidden>Second tab content</section>
+              </sds-tabs>
+            </div>
+          </section>
+
+          <section id="structure" aria-labelledby="structure-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Structure and behavior</p>
+                <h2 id="structure-title">Dropdowns, disclosures, and overlays</h2>
+                <p>
+                  Browser primitives provide the semantics; SDS adds a small
+                  declarative enhancement layer.
+                </p>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Behavioral element options">
+                <code>dropdown data-size="sm | md | lg | xl | 2xl | auto"</code>
+                <code>data-placement="top-start | top-end | bottom-start | bottom-end"</code>
+                <code>dialog data-size="sm | md | lg | xl | 2xl"</code>
+                <code>panel data-side="left | right | bottom"</code>
+                <code>panel data-size="sm | md | lg | xl"</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy a dropdown</summary>
+                <pre class="demo-code"><code>&lt;sds-dropdown data-size="sm"&gt;
+  &lt;button aria-haspopup="menu" aria-controls="menu"
+    aria-expanded="false" popovertarget="menu"&gt;Actions&lt;/button&gt;
+  &lt;menu id="menu" class="sds-dropdown-menu" popover="auto" role="menu"&gt;
+    &lt;li&gt;&lt;button role="menuitem" tabindex="-1"&gt;Edit&lt;/button&gt;&lt;/li&gt;
+  &lt;/menu&gt;
+&lt;/sds-dropdown&gt;</code></pre>
+              </details>
+            </div>
+
+            <div class="demo-grid">
+              <article class="sds-card demo-stack">
+                <h3>Dropdowns</h3>
+                <div class="sds-action-group">
+                  <sds-dropdown data-size="sm">
+                    <button aria-haspopup="menu" aria-controls="primary-menu" aria-expanded="false" popovertarget="primary-menu">Primary menu</button>
+                    <menu id="primary-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
+                      <li><span class="sds-dropdown-label">Actions</span></li>
+                      <li><button role="menuitem" tabindex="-1">Edit project</button></li>
+                      <li><a href="#structure" role="menuitem" tabindex="-1">View details</a></li>
+                      <li><hr class="sds-dropdown-divider" /></li>
+                      <li><button role="menuitem" tabindex="-1" data-tone="danger">Delete project</button></li>
+                    </menu>
+                  </sds-dropdown>
+                  <sds-dropdown data-size="md">
+                    <button data-variant="secondary" aria-haspopup="menu" aria-controls="secondary-menu" aria-expanded="false" popovertarget="secondary-menu">Secondary menu</button>
+                    <menu id="secondary-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
+                      <li><button role="menuitem" tabindex="-1">First action</button></li>
+                      <li><button role="menuitem" tabindex="-1">Second action</button></li>
+                    </menu>
+                  </sds-dropdown>
+                  <sds-dropdown data-size="lg" data-placement="bottom-end">
+                    <button data-variant="ghost" aria-haspopup="menu" aria-controls="ghost-menu" aria-expanded="false" popovertarget="ghost-menu">Ghost menu</button>
+                    <menu id="ghost-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
+                      <li><button role="menuitem" tabindex="-1">First action</button></li>
+                      <li><button role="menuitem" tabindex="-1">Second action</button></li>
+                    </menu>
+                  </sds-dropdown>
+                  <sds-dropdown data-size="xl" data-placement="top-start">
+                    <button data-variant="secondary" aria-haspopup="menu" aria-controls="xl-menu" aria-expanded="false" popovertarget="xl-menu">Extra large · top</button>
+                    <menu id="xl-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
+                      <li><button role="menuitem" tabindex="-1">First action</button></li>
+                      <li><button role="menuitem" tabindex="-1">Second action</button></li>
+                    </menu>
+                  </sds-dropdown>
+                  <sds-dropdown data-size="2xl" data-placement="top-end">
+                    <button data-variant="secondary" aria-haspopup="menu" aria-controls="2xl-menu" aria-expanded="false" popovertarget="2xl-menu">2XL · top end</button>
+                    <menu id="2xl-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
+                      <li><button role="menuitem" tabindex="-1">First action</button></li>
+                      <li><button role="menuitem" tabindex="-1">Second action</button></li>
+                    </menu>
+                  </sds-dropdown>
+                  <sds-dropdown data-size="auto" data-placement="bottom-end">
+                    <button data-variant="ghost" aria-haspopup="menu" aria-controls="auto-menu" aria-expanded="false" popovertarget="auto-menu">Auto width</button>
+                    <menu id="auto-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
+                      <li><button role="menuitem" tabindex="-1">Fits the longest menu item</button></li>
+                    </menu>
+                  </sds-dropdown>
+                </div>
+              </article>
+
+              <article class="sds-card demo-stack">
+                <h3>Disclosures</h3>
+                <div>
+                  <details class="sds-disclosure" open>
+                    <summary>Open by default</summary>
+                    <p>This content is visible when the page loads.</p>
+                  </details>
+                  <details class="sds-disclosure">
+                    <summary>Closed by default</summary>
+                    <p>This content appears when the summary is activated.</p>
+                  </details>
+                </div>
+              </article>
+            </div>
+
+            <article class="sds-card demo-stack">
+              <h3>Dialog and panel placements</h3>
+              <div class="sds-action-group">
+                <button commandfor="dialog-sm" command="show-modal">Dialog · small</button>
+                <button commandfor="catalog-dialog" command="show-modal">Dialog · medium</button>
+                <button commandfor="dialog-lg" command="show-modal">Dialog · large</button>
+                <button commandfor="dialog-xl" command="show-modal">Dialog · extra large</button>
+                <button commandfor="dialog-2xl" command="show-modal">Dialog · 2XL</button>
+                <button data-variant="secondary" commandfor="panel-left-sm" command="show-modal">
+                  Left · small
+                </button>
+                <button data-variant="secondary" commandfor="panel-right-md" command="show-modal">
+                  Right · medium
+                </button>
+                <button data-variant="secondary" commandfor="panel-right-lg" command="show-modal">
+                  Right · large
+                </button>
+                <button data-variant="secondary" commandfor="panel-bottom" command="show-modal">
+                  Bottom
+                </button>
+                <button data-variant="secondary" commandfor="panel-right-xl" command="show-modal">
+                  Right · extra large
+                </button>
+              </div>
+            </article>
+          </section>
+
+          <section id="loading" aria-labelledby="loading-title">
+            <div class="sds-section-header">
+              <div>
+                <p class="sds-eyebrow">Loading</p>
+                <h2 id="loading-title">Spinners and skeletons</h2>
+              </div>
+            </div>
+            <div class="demo-reference">
+              <div class="demo-api" aria-label="Loading options">
+                <code>spinner data-size="sm | md | lg"</code>
+                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>.sds-skeleton</code>
+              </div>
+              <details class="sds-disclosure">
+                <summary>Copy loading feedback</summary>
+                <pre class="demo-code"><code>&lt;span class="sds-spinner" data-size="sm"
+  role="status" aria-label="Loading"&gt;&lt;/span&gt;
+&lt;div class="sds-skeleton" aria-hidden="true"&gt;&lt;/div&gt;</code></pre>
+              </details>
+            </div>
+            <div class="demo-grid">
+              <article class="sds-card demo-stack">
+                <h3>Spinner tones and sizes</h3>
+                <div class="demo-spinner-row">
+                  <span class="sds-spinner" data-size="sm" data-tone="neutral" role="status" aria-label="Loading neutral"></span>
+                  <span class="sds-spinner" data-tone="brand" role="status" aria-label="Loading brand"></span>
+                  <span class="sds-spinner" data-tone="info" role="status" aria-label="Loading info"></span>
+                  <span class="sds-spinner" data-tone="success" role="status" aria-label="Loading success"></span>
+                  <span class="sds-spinner" data-tone="warning" role="status" aria-label="Loading warning"></span>
+                  <span class="sds-spinner" data-size="lg" data-tone="danger" role="status" aria-label="Loading danger"></span>
+                </div>
+              </article>
+              <article class="sds-card demo-stack">
+                <h3>Skeleton</h3>
+                <div class="demo-skeletons" aria-label="Loading content">
+                  <div class="sds-skeleton" aria-hidden="true"></div>
+                  <div class="sds-skeleton" aria-hidden="true"></div>
+                  <div class="sds-skeleton" aria-hidden="true"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+        </main>
+        <footer class="sds-app-footer">
+          <div class="sds-app-footer-content">
+            <div class="sds-app-footer-brand">
+              <a
+                href="https://sei.cmu.edu"
+                aria-label="Software Engineering Institute"
+              >
+                <span class="sds-sei-wordmark" aria-hidden="true"></span>
+              </a>
+            </div>
+            <div class="sds-app-footer-middle">Complete SDS Lite catalog</div>
+            <div class="sds-app-footer-legal">
+              <p>&copy; <time datetime="2026">2026</time> Carnegie Mellon University</p>
+              <p>Proprietary. SEI Internal Use Only</p>
+            </div>
+          </div>
+        </footer>
+        </div>
+      </div>
+    </div>
+
+    <dialog
+      id="dialog-sm"
+      class="sds-dialog"
+      data-size="sm"
+      closedby="any"
+      aria-labelledby="dialog-sm-title"
+    >
+      <div class="sds-dialog-header">
+        <h2 id="dialog-sm-title">Small dialog</h2>
+        <button data-shape="icon" commandfor="dialog-sm" command="request-close" aria-label="Close small dialog">&times;</button>
+      </div>
+      <p>Use a small dialog for a short, focused decision.</p>
+      <div class="sds-dialog-footer">
+        <button commandfor="dialog-sm" command="close">Done</button>
+      </div>
+    </dialog>
+
+    <dialog
+      id="catalog-dialog"
+      class="sds-dialog"
+      data-size="md"
+      closedby="any"
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
+    >
+      <div class="sds-dialog-header">
+        <div>
+          <h2 id="dialog-title">Native dialog</h2>
+          <p id="dialog-description">
+            Escape, the backdrop, and either button can close this dialog.
+          </p>
+        </div>
+        <button data-shape="icon" commandfor="catalog-dialog" command="request-close" aria-label="Close dialog">
+          &times;
+        </button>
+      </div>
+      <div class="sds-callout" data-tone="info">
+        <strong>Browser powered</strong>
+        <span>Focus and top-layer behavior come from native dialog.</span>
+      </div>
+      <div class="sds-dialog-footer">
+        <button data-variant="secondary" commandfor="catalog-dialog" command="close">Cancel</button>
+        <button commandfor="catalog-dialog" command="close" data-return-value="continue">Continue</button>
+      </div>
+    </dialog>
+
+    <dialog id="dialog-lg" class="sds-dialog" data-size="lg" closedby="any" aria-labelledby="dialog-lg-title">
+      <div class="sds-dialog-header">
+        <h2 id="dialog-lg-title">Large dialog</h2>
+        <button data-shape="icon" commandfor="dialog-lg" command="request-close" aria-label="Close large dialog">&times;</button>
+      </div>
+      <p>Large dialogs provide more room for structured tasks.</p>
+      <div class="sds-dialog-footer"><button commandfor="dialog-lg" command="close">Done</button></div>
+    </dialog>
+
+    <dialog id="dialog-xl" class="sds-dialog" data-size="xl" closedby="any" aria-labelledby="dialog-xl-title">
+      <div class="sds-dialog-header">
+        <h2 id="dialog-xl-title">Extra-large dialog</h2>
+        <button data-shape="icon" commandfor="dialog-xl" command="request-close" aria-label="Close extra-large dialog">&times;</button>
+      </div>
+      <p>Extra-large dialogs support broad forms and comparisons.</p>
+      <div class="sds-dialog-footer"><button commandfor="dialog-xl" command="close">Done</button></div>
+    </dialog>
+
+    <dialog id="dialog-2xl" class="sds-dialog" data-size="2xl" closedby="any" aria-labelledby="dialog-2xl-title">
+      <div class="sds-dialog-header">
+        <h2 id="dialog-2xl-title">2XL dialog</h2>
+        <button data-shape="icon" commandfor="dialog-2xl" command="request-close" aria-label="Close 2XL dialog">&times;</button>
+      </div>
+      <p>The widest dialog is available for data-heavy workflows.</p>
+      <div class="sds-dialog-footer"><button commandfor="dialog-2xl" command="close">Done</button></div>
+    </dialog>
+
+    <dialog id="panel-left-sm" class="sds-panel" data-side="left" data-size="sm" closedby="any" aria-labelledby="panel-left-title">
+      <header>
+        <h2 id="panel-left-title">Small left panel</h2>
+        <button data-shape="icon" commandfor="panel-left-sm" command="request-close" aria-label="Close panel">&times;</button>
+      </header>
+      <main><p>Small panels work well for concise navigation or filters.</p></main>
+      <footer><button commandfor="panel-left-sm" command="close">Done</button></footer>
+    </dialog>
+
+    <dialog id="panel-right-md" class="sds-panel" data-side="right" data-size="md" closedby="any" aria-labelledby="panel-right-title">
+      <header>
+        <h2 id="panel-right-title">Medium right panel</h2>
+        <button data-shape="icon" commandfor="panel-right-md" command="request-close" aria-label="Close panel">&times;</button>
+      </header>
+      <main><p>The default panel placement and size support focused tasks.</p></main>
+      <footer>
+        <button data-variant="secondary" commandfor="panel-right-md" command="close">Cancel</button>
+        <button commandfor="panel-right-md" command="close" data-return-value="save">Save</button>
+      </footer>
+    </dialog>
+
+    <dialog id="panel-right-lg" class="sds-panel" data-side="right" data-size="lg" closedby="any" aria-labelledby="panel-large-title">
+      <header>
+        <h2 id="panel-large-title">Large right panel</h2>
+        <button data-shape="icon" commandfor="panel-right-lg" command="request-close" aria-label="Close panel">&times;</button>
+      </header>
+      <main>
+        <div class="sds-form">
+          <div class="sds-field">
+            <label for="panel-project-name">Project name</label>
+            <input id="panel-project-name" value="Atlas assessment" />
+          </div>
+          <div class="sds-field">
+            <label for="panel-project-owner">Owner</label>
+            <select id="panel-project-owner">
+              <option>Alex Morgan</option>
+              <option>Sam Rivera</option>
+            </select>
+          </div>
+        </div>
+      </main>
+      <footer>
+        <button data-variant="secondary" commandfor="panel-right-lg" command="close">Cancel</button>
+        <button commandfor="panel-right-lg" command="close" data-return-value="save">Save project</button>
+      </footer>
+    </dialog>
+
+    <dialog id="panel-right-xl" class="sds-panel" data-side="right" data-size="xl" closedby="any" aria-labelledby="panel-xl-title">
+      <header>
+        <h2 id="panel-xl-title">Extra-large right panel</h2>
+        <button data-shape="icon" commandfor="panel-right-xl" command="request-close" aria-label="Close extra-large panel">&times;</button>
+      </header>
+      <main><p>The widest panel supports complex, focused workflows.</p></main>
+      <footer><button commandfor="panel-right-xl" command="close">Done</button></footer>
+    </dialog>
+
+    <dialog id="panel-bottom" class="sds-panel" data-side="bottom" data-size="md" closedby="any" aria-labelledby="panel-bottom-title">
+      <header>
+        <h2 id="panel-bottom-title">Bottom panel</h2>
+        <button data-shape="icon" commandfor="panel-bottom" command="request-close" aria-label="Close panel">&times;</button>
+      </header>
+      <main><p>Bottom panels are useful on narrow screens and touch devices.</p></main>
+      <footer><button commandfor="panel-bottom" command="close">Done</button></footer>
+    </dialog>
+
+    <sds-toaster aria-label="Notifications">
+      <sds-toast id="toast-neutral" data-tone="neutral" role="status" aria-atomic="true">
+        <strong>Draft updated</strong>
+        <span>Your local changes are current.</span>
+        <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
+      </sds-toast>
+      <sds-toast id="toast-brand" data-tone="brand" role="status" aria-atomic="true">
+        <strong>SEI guidance available</strong>
+        <span>New design guidance is ready to review.</span>
+        <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
+      </sds-toast>
+      <sds-toast id="toast-success" data-tone="success" role="status" aria-atomic="true">
+        <strong>Changes saved</strong>
+        <span>Your project settings are up to date.</span>
+        <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
+      </sds-toast>
+      <sds-toast id="toast-info" data-tone="info" role="status" aria-atomic="true">
+        <strong>New version available</strong>
+        <span>Refresh when you are ready to update.</span>
+        <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
+      </sds-toast>
+      <sds-toast id="toast-warning" data-tone="warning" role="alert" aria-atomic="true">
+        <strong>Session ending soon</strong>
+        <span>Save your work in the next five minutes.</span>
+        <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
+      </sds-toast>
+      <sds-toast id="toast-danger" data-tone="danger" role="alert" aria-atomic="true" data-persistent>
+        <strong>Could not save</strong>
+        <span>Check your connection and try again.</span>
+        <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
+      </sds-toast>
+    </sds-toaster>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

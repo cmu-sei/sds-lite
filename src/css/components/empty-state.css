@@ -1,0 +1,11 @@
+@layer sds.components {
+  :where(.sds-empty-state) {
+    padding: var(--sds-space-3xl);
+    color: var(--sds-color-text-muted);
+    text-align: center;
+  }
+
+  :where(.sds-empty-state h3) {
+    margin-block-end: var(--sds-space-xs);
+  }
+}
