@@ -21,7 +21,7 @@ function r(e) {
 		let i = t(r);
 		if (!i) return;
 		let a = r.getAttribute("command");
-		if ((a === "show-modal" || a === "close" || a === "request-close") && e.preventDefault(), a === "show-modal" && n(i, !0), a === "show-modal") n(i, !0);
+		if ((a === "show-modal" || a === "close" || a === "request-close") && e.preventDefault(), a === "show-modal") n(i, !0);
 		else if (a === "close") i.close(r.dataset.returnValue);
 		else if (a === "request-close") {
 			let e = Reflect.get(i, "requestClose");
@@ -61,41 +61,169 @@ function o() {
 }
 o();
 //#endregion
+//#region src/elements/floating.ts
+var s = [
+	"top",
+	"right",
+	"bottom",
+	"left"
+], c = {
+	top: "bottom",
+	right: "left",
+	bottom: "top",
+	left: "right"
+};
+function l(e, t) {
+	let [n, r] = e.split("-");
+	return {
+		side: s.includes(n) ? n : l(t, "bottom-start").side,
+		alignment: r === "start" || r === "end" ? r : "center"
+	};
+}
+function u(e, t) {
+	return t === "center" ? e : `${e}-${t}`;
+}
+function d(e, t, n) {
+	return Math.max(0, -e) + Math.max(0, e + t - n);
+}
+function f(e, t, n, r, i) {
+	let a = {
+		start: e.left,
+		center: e.left + (e.width - t.width) / 2,
+		end: e.right - t.width
+	}, o = {
+		start: e.top,
+		center: e.top + (e.height - t.height) / 2,
+		end: e.bottom - t.height
+	};
+	return n === "top" ? {
+		top: e.top - t.height - i,
+		left: a[r]
+	} : n === "bottom" ? {
+		top: e.bottom + i,
+		left: a[r]
+	} : n === "left" ? {
+		top: o[r],
+		left: e.left - t.width - i
+	} : {
+		top: o[r],
+		left: e.right + i
+	};
+}
+function p(e, t, n, r) {
+	return r === "top" || r === "bottom" ? d(e.top, t.height, n.height) : d(e.left, t.width, n.width);
+}
+function m(e, t, n, r) {
+	return r === "top" || r === "bottom" ? d(e.left, t.width, n.width) : d(e.top, t.height, n.height);
+}
+function h(e, t) {
+	return e.reduce((e, n) => t(n) < t(e) ? n : e);
+}
+function g({ anchor: e, surface: t, viewport: n, preferredPlacement: r, previousPlacement: i, offset: a }) {
+	let o = l(r, "bottom-start"), s = i ? l(i, "bottom-start") : null, d = s?.side ?? o.side, g = [d, c[d]], _ = (r) => p(f(e, t, r, o.alignment, a), t, n, r), v = s && _(d) === 0 ? d : h(g, _), y = s?.alignment ?? o.alignment, b = y === "center" ? [
+		"center",
+		"start",
+		"end"
+	] : [y, y === "start" ? "end" : "start"], x = (r) => m(f(e, t, v, r, a), t, n, v), S = s && x(y) === 0 ? y : h(b, x);
+	return {
+		...f(e, t, v, S, a),
+		side: v,
+		placement: u(v, S)
+	};
+}
+function _(e, t) {
+	if (e === void 0 || e.trim() === "") return t;
+	let n = Number(e);
+	return Number.isFinite(n) && n >= 0 ? n : t;
+}
+var v = class {
+	previousPlacement = null;
+	preferredPlacement = "";
+	anchor;
+	surface;
+	getPlacement;
+	getOffset;
+	defaultOffset;
+	constructor(e, t, n, r, i = 5) {
+		this.anchor = e, this.surface = t, this.getPlacement = n, this.getOffset = r, this.defaultOffset = i;
+	}
+	observe(e) {
+		window.addEventListener("resize", this.position, { signal: e }), window.addEventListener("scroll", this.position, {
+			capture: !0,
+			signal: e
+		});
+	}
+	reset() {
+		this.previousPlacement = null, this.preferredPlacement = "";
+	}
+	position = () => {
+		let e = this.getPlacement();
+		e !== this.preferredPlacement && (this.previousPlacement = null, this.preferredPlacement = e);
+		let t = this.anchor.getBoundingClientRect(), n = g({
+			anchor: t,
+			surface: {
+				width: this.surface.offsetWidth,
+				height: this.surface.offsetHeight
+			},
+			viewport: {
+				width: window.innerWidth,
+				height: window.innerHeight
+			},
+			preferredPlacement: e,
+			previousPlacement: this.previousPlacement,
+			offset: _(this.getOffset(), this.defaultOffset)
+		});
+		this.previousPlacement = n.placement, this.surface.style.left = `${n.left}px`, this.surface.style.top = `${n.top}px`, this.surface.setAttribute("data-side", n.side);
+		let r = Math.min(Math.max(t.left + t.width / 2 - n.left, 12), Math.max(12, this.surface.offsetWidth - 12)), i = Math.min(Math.max(t.top + t.height / 2 - n.top, 12), Math.max(12, this.surface.offsetHeight - 12));
+		this.surface.style.setProperty("--sds-floating-arrow-x", `${r}px`), this.surface.style.setProperty("--sds-floating-arrow-y", `${i}px`);
+	};
+}, y = 0;
+function b(e, t) {
+	if (e.id) return e.id;
+	let n;
+	do
+		y += 1, n = `${t}-${y}`;
+	while (document.getElementById(n));
+	return e.id = n, n;
+}
+function x(e) {
+	return Array.from(e.children).filter((e) => e instanceof HTMLElement);
+}
+//#endregion
 //#region src/elements/dropdown.ts
-var s = typeof HTMLElement > "u" ? class {} : HTMLElement, c = class extends s {
+var S = typeof HTMLElement > "u" ? class {} : HTMLElement, C = class extends S {
 	trigger = null;
 	menu = null;
 	items = [];
+	positioner = null;
 	controller = null;
 	connectedCallback() {
 		this.controller?.abort(), this.controller = new AbortController();
-		let e = Array.from(this.children).find((e) => e instanceof HTMLButtonElement && e.hasAttribute("popovertarget")), t = e?.getAttribute("popovertarget"), n = t ? Array.from(this.children).find((e) => e instanceof HTMLElement && e.id === t) : null;
-		if (!e || !n || !n.hasAttribute("popover") || e.getAttribute("aria-controls") !== n.id) {
-			console.warn("<sds-dropdown> requires an authored popovertarget, matching menu id, popover, and aria-controls.", this);
+		let e = x(this), t = e.find((e) => e instanceof HTMLButtonElement), n = t?.getAttribute("popovertarget"), r = e.filter((e) => e !== t), i = e.find((e) => e.id === n) ?? r.find((e) => e.matches("menu, [popover], .sds-dropdown-menu")) ?? (r.length === 1 ? r[0] : null) ?? null;
+		if (!t || !i) {
+			console.warn("<sds-dropdown> requires one direct child button and one direct child menu or popover.", this);
 			return;
 		}
-		this.trigger = e, this.menu = n, this.items = this.dataset.mode === "popover" ? [] : Array.from(n.querySelectorAll("[role=\"menuitem\"]:not([aria-disabled=\"true\"])")).filter((e) => !(e instanceof HTMLButtonElement) || !e.disabled), e.addEventListener("keydown", this.handleTriggerKeydown, { signal: this.controller.signal }), n.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: this.controller.signal }), n.addEventListener("toggle", this.handleToggle, { signal: this.controller.signal }), n.addEventListener("keydown", this.handleMenuKeydown, { signal: this.controller.signal }), n.addEventListener("click", this.handleMenuClick, { signal: this.controller.signal }), window.addEventListener("resize", this.positionMenu, { signal: this.controller.signal }), window.addEventListener("scroll", this.positionMenu, {
-			capture: !0,
-			signal: this.controller.signal
-		});
+		let a = b(i, "sds-dropdown"), o = this.dataset.mode !== "popover";
+		i.classList.add("sds-dropdown-menu"), i.setAttribute("popover", i.getAttribute("popover") || "auto"), t.setAttribute("popovertarget", a), t.setAttribute("aria-controls", a), t.setAttribute("aria-expanded", String(i.matches(":popover-open"))), t.hasAttribute("aria-haspopup") || t.setAttribute("aria-haspopup", o ? "menu" : "dialog"), o && (i.setAttribute("role", "menu"), i.hasAttribute("aria-orientation") || i.setAttribute("aria-orientation", "vertical")), this.trigger = t, this.menu = i, this.positioner = new v(t, i, () => this.dataset.placement ?? "bottom-start", () => this.dataset.offset), this.items = o ? Array.from(i.querySelectorAll("button, a[href], [role=\"menuitem\"]")).filter((e) => !e.closest("[role=\"menuitem\"] [role=\"menuitem\"]")).map((e) => (e.setAttribute("role", "menuitem"), e.tabIndex = -1, e)).filter((e) => e.getAttribute("aria-disabled") !== "true" && (!(e instanceof HTMLButtonElement) || !e.disabled)) : [], t.addEventListener("keydown", this.handleTriggerKeydown, { signal: this.controller.signal }), i.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: this.controller.signal }), i.addEventListener("toggle", this.handleToggle, { signal: this.controller.signal }), i.addEventListener("keydown", this.handleMenuKeydown, { signal: this.controller.signal }), i.addEventListener("click", this.handleMenuClick, { signal: this.controller.signal }), this.positioner.observe(this.controller.signal);
 	}
 	disconnectedCallback() {
-		this.controller?.abort();
+		this.controller?.abort(), this.positioner = null;
 	}
 	isOpen() {
 		return this.menu?.matches(":popover-open") ?? !1;
 	}
 	open(e = 0) {
-		this.menu && !this.isOpen() && (this.menu.showPopover(), this.positionMenu(), this.items[e]?.focus());
+		this.menu && !this.isOpen() && (this.positioner?.reset(), this.menu.showPopover(), this.positioner?.position(), this.items[e]?.focus());
 	}
 	close(e = !1) {
 		this.menu && this.isOpen() && (this.menu.hidePopover(), e && this.trigger?.focus());
 	}
 	handleToggle = () => {
-		this.isOpen() && this.positionMenu();
+		this.isOpen() ? this.positioner?.position() : this.positioner?.reset();
 	};
 	handleBeforeToggle = (e) => {
-		this.trigger?.setAttribute("aria-expanded", String(e.newState === "open"));
+		e.newState === "open" && this.positioner?.reset(), this.trigger?.setAttribute("aria-expanded", String(e.newState === "open"));
 	};
 	handleTriggerKeydown = (e) => {
 		if (this.dataset.mode === "popover") return;
@@ -117,39 +245,121 @@ var s = typeof HTMLElement > "u" ? class {} : HTMLElement, c = class extends s {
 	handleMenuClick = (e) => {
 		e.target instanceof Element && e.target.closest("[role=\"menuitem\"]") && this.close();
 	};
-	positionMenu = () => {
-		if (!this.trigger || !this.menu || !this.isOpen()) return;
-		let e = this.trigger.getBoundingClientRect(), t = this.menu.offsetWidth, n = this.menu.offsetHeight, r = this.dataset.offset, i = r === void 0 || r.trim() === "" ? NaN : Number(r), a = Number.isFinite(i) && i >= 0 ? i : 5, o = this.dataset.placement ?? "bottom-start", s = o.endsWith("-end"), c = o.startsWith("top"), l = s ? e.right - t : e.left, u = c ? e.top - n - a : e.bottom + a, d = Math.min(l, window.innerWidth - t - 8), f = Math.min(u, window.innerHeight - n - 8);
-		this.menu.style.top = `${Math.max(8, f)}px`, this.menu.style.left = `${Math.max(8, d)}px`;
+};
+function w() {
+	typeof customElements < "u" && !customElements.get("sds-dropdown") && customElements.define("sds-dropdown", C);
+}
+w();
+//#endregion
+//#region src/elements/popover.ts
+var T = typeof HTMLElement > "u" ? class {} : HTMLElement, E = 500, D = 250, O = class extends T {
+	trigger = null;
+	content = null;
+	positioner = null;
+	controller = null;
+	openTimer = null;
+	closeTimer = null;
+	pointerInside = !1;
+	connectedCallback() {
+		this.controller?.abort(), this.clearTimers(), this.controller = new AbortController();
+		let e = x(this), t = e.find((e) => e instanceof HTMLButtonElement), n = t?.getAttribute("popovertarget"), r = e.filter((e) => e !== t), i = e.find((e) => e.id === n) ?? r.find((e) => e.matches("[popover], .sds-popover-content")) ?? (r.length === 1 ? r[0] : null) ?? null;
+		if (!t || !i) {
+			console.warn("<sds-popover> requires one direct child button and one direct child content element.", this);
+			return;
+		}
+		let a = b(i, "sds-popover");
+		i.classList.add("sds-popover-content"), i.setAttribute("popover", "manual"), t.removeAttribute("popovertarget"), t.setAttribute("aria-controls", a), t.setAttribute("aria-expanded", String(i.matches(":popover-open"))), t.hasAttribute("aria-haspopup") || t.setAttribute("aria-haspopup", "dialog"), this.trigger = t, this.content = i, this.positioner = new v(t, i, () => this.dataset.placement ?? "bottom-start", () => this.dataset.offset, 10), t.addEventListener("pointerenter", this.handlePointerEnter, { signal: this.controller.signal }), t.addEventListener("pointerleave", this.handlePointerLeave, { signal: this.controller.signal }), i.addEventListener("pointerenter", this.handlePointerEnter, { signal: this.controller.signal }), i.addEventListener("pointerleave", this.handlePointerLeave, { signal: this.controller.signal }), this.addEventListener("focusin", this.handleFocusIn, { signal: this.controller.signal }), this.addEventListener("focusout", this.handleFocusOut, { signal: this.controller.signal }), document.addEventListener("keydown", this.handleKeydown, { signal: this.controller.signal }), document.addEventListener("pointerdown", this.handleDocumentPointerDown, {
+			capture: !0,
+			signal: this.controller.signal
+		}), i.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: this.controller.signal }), i.addEventListener("toggle", this.handleToggle, { signal: this.controller.signal }), this.positioner.observe(this.controller.signal);
+	}
+	disconnectedCallback() {
+		this.controller?.abort(), this.clearTimers(), this.positioner = null;
+	}
+	isOpen() {
+		return this.content?.matches(":popover-open") ?? !1;
+	}
+	clearTimers() {
+		this.openTimer !== null && clearTimeout(this.openTimer), this.closeTimer !== null && clearTimeout(this.closeTimer), this.openTimer = null, this.closeTimer = null;
+	}
+	show() {
+		this.openTimer = null, this.content && !this.isOpen() && (this.positioner?.reset(), this.content.showPopover(), this.positioner?.position());
+	}
+	scheduleOpen(e) {
+		this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, !(this.isOpen() || this.openTimer !== null) && (this.openTimer = setTimeout(() => this.show(), e));
+	}
+	scheduleClose() {
+		this.openTimer !== null && clearTimeout(this.openTimer), this.openTimer = null, this.isOpen() && this.closeTimer === null && (this.closeTimer = setTimeout(() => {
+			this.closeTimer = null, !this.pointerInside && !this.contains(document.activeElement) && this.content?.hidePopover();
+		}, D));
+	}
+	handlePointerEnter = () => {
+		this.pointerInside = !0, this.scheduleOpen(E);
+	};
+	handlePointerLeave = () => {
+		this.pointerInside = !1, this.scheduleClose();
+	};
+	handleFocusIn = () => {
+		this.scheduleOpen(0);
+	};
+	handleFocusOut = () => {
+		this.scheduleClose();
+	};
+	handleKeydown = (e) => {
+		if (e.key !== "Escape" || !this.isOpen()) return;
+		e.preventDefault(), this.clearTimers();
+		let t = this.content?.contains(document.activeElement);
+		this.content?.hidePopover(), t && this.trigger?.focus();
+	};
+	handleDocumentPointerDown = (e) => {
+		this.isOpen() && e.target instanceof Node && !this.contains(e.target) && (this.clearTimers(), this.content?.hidePopover());
+	};
+	handleBeforeToggle = (e) => {
+		e.newState === "open" && this.positioner?.reset(), this.trigger?.setAttribute("aria-expanded", String(e.newState === "open"));
+	};
+	handleToggle = () => {
+		this.isOpen() ? this.positioner?.position() : this.positioner?.reset();
 	};
 };
-function l() {
-	typeof customElements < "u" && !customElements.get("sds-dropdown") && customElements.define("sds-dropdown", c);
+function k() {
+	typeof customElements < "u" && !customElements.get("sds-popover") && customElements.define("sds-popover", O);
 }
-l();
+k();
 //#endregion
 //#region src/elements/tabs.ts
-var u = "sds-change", d = typeof HTMLElement > "u" ? class {} : HTMLElement, f = class extends d {
+var A = "sds-change", j = typeof HTMLElement > "u" ? class {} : HTMLElement, M = class extends j {
 	tabs = [];
 	panels = /* @__PURE__ */ new Map();
 	controller = null;
 	connectedCallback() {
 		this.controller?.abort(), this.controller = new AbortController();
-		let e = this.querySelector(".sds-tab-list[role=\"tablist\"]");
-		this.tabs = Array.from(this.querySelectorAll(".sds-tab[role=\"tab\"]")), this.panels.clear();
-		for (let e of this.tabs) {
-			let t = e.getAttribute("aria-controls"), n = t ? this.querySelector(`#${CSS.escape(t)}`) : null;
-			if (!e.id || !n || n.getAttribute("role") !== "tabpanel" || n.getAttribute("aria-labelledby") !== e.id) {
-				console.warn("<sds-tabs> requires authored tab ids, aria-controls, tabpanel ids, and aria-labelledby.", this);
-				return;
-			}
-			this.panels.set(e, n);
-		}
-		if (!e || this.tabs.length === 0) {
-			console.warn("<sds-tabs> requires a .sds-tab-list[role=\"tablist\"] and tabs with role=\"tab\".", this);
+		let e = x(this), t = e.find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")) ?? e[0] ?? null;
+		if (this.tabs = t ? x(t).filter((e) => e instanceof HTMLButtonElement || e instanceof HTMLAnchorElement) : [], this.panels.clear(), !t || this.tabs.length === 0) {
+			console.warn("<sds-tabs> requires a tab-list container with button or link children.", this);
 			return;
 		}
-		e.addEventListener("click", this.handleClick, { signal: this.controller.signal }), e.addEventListener("keydown", this.handleKeydown, { signal: this.controller.signal });
+		let n = e.filter((e) => e !== t);
+		if (n.length < this.tabs.length) {
+			console.warn("<sds-tabs> requires one panel for every tab.", this);
+			return;
+		}
+		t.classList.add("sds-tab-list"), t.setAttribute("role", "tablist"), !t.hasAttribute("aria-label") && !t.hasAttribute("aria-labelledby") && t.setAttribute("aria-label", "Tabs");
+		let r = new Set(n);
+		for (let [e, t] of this.tabs.entries()) {
+			let i = t.getAttribute("aria-controls"), a = n.find((e) => e.id === i) ?? null, o = a && r.has(a) ? a : n[e] && r.has(n[e]) ? n[e] : r.values().next().value;
+			if (!o) continue;
+			r.delete(o);
+			let s = b(t, "sds-tab"), c = b(o, "sds-tab-panel");
+			t.classList.add("sds-tab"), t.setAttribute("role", "tab"), t.setAttribute("aria-controls", c), o.classList.add("sds-tab-panel"), o.setAttribute("role", "tabpanel"), o.setAttribute("aria-labelledby", s), this.panels.set(t, o);
+		}
+		let i = this.tabs.find((e) => e.getAttribute("aria-selected") === "true" && !this.isDisabled(e)) ?? this.tabs.find((e) => !this.isDisabled(e)) ?? null;
+		for (let e of this.tabs) {
+			let t = e === i;
+			e.setAttribute("aria-selected", String(t)), e.tabIndex = t ? 0 : -1;
+			let n = this.panels.get(e);
+			n && (n.hidden = !t);
+		}
+		t.addEventListener("click", this.handleClick, { signal: this.controller.signal }), t.addEventListener("keydown", this.handleKeydown, { signal: this.controller.signal });
 	}
 	disconnectedCallback() {
 		this.controller?.abort();
@@ -164,7 +374,7 @@ var u = "sds-change", d = typeof HTMLElement > "u" ? class {} : HTMLElement, f =
 			e.setAttribute("aria-selected", String(t)), e.tabIndex = t ? 0 : -1;
 			let n = this.panels.get(e);
 			n && (n.hidden = !t);
-		}), t && r.focus(), n && this.dispatchEvent(new CustomEvent(u, {
+		}), t && r.focus(), n && this.dispatchEvent(new CustomEvent(A, {
 			bubbles: !0,
 			composed: !0,
 			detail: {
@@ -191,13 +401,76 @@ var u = "sds-change", d = typeof HTMLElement > "u" ? class {} : HTMLElement, f =
 		this.dataset.activation === "manual" || s instanceof HTMLAnchorElement ? s.focus() : this.select(c, !0);
 	};
 };
-function p() {
-	typeof customElements < "u" && !customElements.get("sds-tabs") && customElements.define("sds-tabs", f);
+function N() {
+	typeof customElements < "u" && !customElements.get("sds-tabs") && customElements.define("sds-tabs", M);
 }
-p();
+N();
+//#endregion
+//#region src/elements/tooltip.ts
+var P = typeof HTMLElement > "u" ? class {} : HTMLElement, F = 0, I = 0, L = class extends P {
+	trigger = null;
+	content = null;
+	positioner = null;
+	controller = null;
+	openTimer = null;
+	closeTimer = null;
+	pointerInside = !1;
+	connectedCallback() {
+		this.controller?.abort(), this.clearTimers(), this.controller = new AbortController();
+		let e = x(this), t = e.find((e) => e.matches("[role=\"tooltip\"], .sds-tooltip-content, [popover]")) ?? (e.length === 2 ? e[1] : null) ?? null, n = e.find((e) => e !== t) ?? null;
+		if (!n || !t) {
+			console.warn("<sds-tooltip> requires one direct child trigger and one direct child text element.", this);
+			return;
+		}
+		let r = b(t, "sds-tooltip"), i = new Set((n.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean));
+		i.add(r), t.classList.add("sds-tooltip-content"), t.setAttribute("role", "tooltip"), t.setAttribute("popover", "manual"), n.setAttribute("aria-describedby", [...i].join(" ")), this.trigger = n, this.content = t, this.positioner = new v(n, t, () => this.dataset.placement ?? "top", () => this.dataset.offset, 10), n.addEventListener("pointerenter", this.handlePointerEnter, { signal: this.controller.signal }), n.addEventListener("pointerleave", this.handlePointerLeave, { signal: this.controller.signal }), n.addEventListener("focusin", this.handleFocusIn, { signal: this.controller.signal }), n.addEventListener("focusout", this.handleFocusOut, { signal: this.controller.signal }), document.addEventListener("keydown", this.handleKeydown, { signal: this.controller.signal }), t.addEventListener("pointerenter", this.handlePointerEnter, { signal: this.controller.signal }), t.addEventListener("pointerleave", this.handlePointerLeave, { signal: this.controller.signal }), t.addEventListener("toggle", this.handleToggle, { signal: this.controller.signal }), this.positioner.observe(this.controller.signal);
+	}
+	disconnectedCallback() {
+		this.controller?.abort(), this.clearTimers(), this.positioner = null;
+	}
+	isOpen() {
+		return this.content?.matches(":popover-open") ?? !1;
+	}
+	clearTimers() {
+		this.openTimer !== null && clearTimeout(this.openTimer), this.closeTimer !== null && clearTimeout(this.closeTimer), this.openTimer = null, this.closeTimer = null;
+	}
+	show() {
+		this.openTimer = null, this.content && !this.isOpen() && (this.positioner?.reset(), this.content.showPopover(), this.positioner?.position());
+	}
+	scheduleOpen(e) {
+		this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, !(this.isOpen() || this.openTimer !== null) && (this.openTimer = setTimeout(() => this.show(), e));
+	}
+	scheduleClose() {
+		this.openTimer !== null && clearTimeout(this.openTimer), this.openTimer = null, this.isOpen() && this.closeTimer === null && (this.closeTimer = setTimeout(() => {
+			this.closeTimer = null, !this.pointerInside && !this.trigger?.contains(document.activeElement) && this.content?.hidePopover();
+		}, I));
+	}
+	handlePointerEnter = () => {
+		this.pointerInside = !0, this.scheduleOpen(F);
+	};
+	handlePointerLeave = () => {
+		this.pointerInside = !1, this.scheduleClose();
+	};
+	handleFocusIn = () => {
+		this.scheduleOpen(0);
+	};
+	handleFocusOut = () => {
+		this.scheduleClose();
+	};
+	handleKeydown = (e) => {
+		e.key === "Escape" && this.isOpen() && (e.preventDefault(), this.clearTimers(), this.content?.hidePopover());
+	};
+	handleToggle = () => {
+		this.isOpen() ? this.positioner?.position() : this.positioner?.reset();
+	};
+};
+function R() {
+	typeof customElements < "u" && !customElements.get("sds-tooltip") && customElements.define("sds-tooltip", L);
+}
+R();
 //#endregion
 //#region src/elements/toast.ts
-var m = 5e3, h = typeof HTMLElement > "u" ? class {} : HTMLElement, g = class extends h {
+var z = 5e3, B = 250, V = typeof HTMLElement > "u" ? class {} : HTMLElement, H = class extends V {
 	static observedAttributes = ["open"];
 	hideTimer = null;
 	get open() {
@@ -207,7 +480,7 @@ var m = 5e3, h = typeof HTMLElement > "u" ? class {} : HTMLElement, g = class ex
 		this.toggleAttribute("open", e);
 	}
 	connectedCallback() {
-		(!this.hasAttribute("role") || this.getAttribute("aria-atomic") !== "true") && console.warn("<sds-toast> requires an authored role and aria-atomic=\"true\" for SSR accessibility.", this), this.addEventListener("click", this.handleClick), this.addEventListener("focusin", this.pauseAutoHide), this.addEventListener("focusout", this.handleFocusOut), this.addEventListener("pointerenter", this.pauseAutoHide), this.addEventListener("pointerleave", this.resumeAutoHide), this.open && this.scheduleAutoHide();
+		this.hasAttribute("role") || this.setAttribute("role", "status"), this.hasAttribute("aria-atomic") || this.setAttribute("aria-atomic", "true"), this.addEventListener("click", this.handleClick), this.addEventListener("focusin", this.pauseAutoHide), this.addEventListener("focusout", this.handleFocusOut), this.addEventListener("pointerenter", this.pauseAutoHide), this.addEventListener("pointerleave", this.resumeAutoHide), this.open && this.scheduleAutoHide();
 	}
 	disconnectedCallback() {
 		this.clearAutoHide(), this.removeEventListener("click", this.handleClick), this.removeEventListener("focusin", this.pauseAutoHide), this.removeEventListener("focusout", this.handleFocusOut), this.removeEventListener("pointerenter", this.pauseAutoHide), this.removeEventListener("pointerleave", this.resumeAutoHide);
@@ -234,7 +507,7 @@ var m = 5e3, h = typeof HTMLElement > "u" ? class {} : HTMLElement, g = class ex
 	}
 	scheduleAutoHide() {
 		if (this.clearAutoHide(), !this.open || this.hasAttribute("data-persistent")) return;
-		let e = Number(this.dataset.duration), t = Number.isFinite(e) && e > 0 ? e : m;
+		let e = Number(this.dataset.duration), t = Number.isFinite(e) && e > 0 ? e : z;
 		this.hideTimer = window.setTimeout(() => this.close("timeout"), t);
 	}
 	clearAutoHide() {
@@ -252,17 +525,34 @@ var m = 5e3, h = typeof HTMLElement > "u" ? class {} : HTMLElement, g = class ex
 	handleFocusOut = (e) => {
 		(!(e.relatedTarget instanceof Node) || !this.contains(e.relatedTarget)) && this.resumeAutoHide();
 	};
-}, _ = !1;
-function v() {
-	_ || typeof document > "u" || (_ = !0, document.addEventListener("click", (e) => {
+}, U = !1;
+function W() {
+	U || typeof document > "u" || (U = !0, document.addEventListener("click", (e) => {
 		if (!(e.target instanceof Element)) return;
 		let t = e.target.closest("[data-toast-open]")?.dataset.toastOpen, n = t ? document.getElementById(t) : null;
-		n instanceof g && n.show();
+		n instanceof H && n.show();
 	}));
 }
-function y() {
-	typeof customElements < "u" && !customElements.get("sds-toast") && customElements.define("sds-toast", g), v();
+function G() {
+	typeof customElements < "u" && !customElements.get("sds-toast") && customElements.define("sds-toast", H), W();
 }
-y();
+G();
+function K(e, t = {}) {
+	if (typeof document > "u") throw Error("notify() can only be called in a browser.");
+	let n = document.querySelector("sds-toaster");
+	if (!n) {
+		n = document.createElement("sds-toaster"), n.setAttribute("aria-label", "Notifications");
+		let e = document.querySelector("[data-sds-root]");
+		e || (n.dataset.sdsRoot = ""), (e ?? document.body).append(n);
+	}
+	let r = document.createElement("sds-toast");
+	r.dataset.tone = t.tone ?? "info", r.setAttribute("role", t.urgent ? "alert" : "status"), r.setAttribute("aria-atomic", "true"), t.duration !== void 0 && (r.dataset.duration = String(t.duration)), t.persistent && (r.dataset.persistent = "");
+	let i = document.createElement("strong");
+	i.textContent = t.title ?? "Notification";
+	let a = document.createElement("span");
+	a.textContent = e;
+	let o = document.createElement("button");
+	return o.type = "button", o.dataset.shape = "icon", o.dataset.toastClose = "", o.setAttribute("aria-label", "Dismiss notification"), o.textContent = "×", r.append(i, a, o), r.addEventListener("sds-close", () => window.setTimeout(() => r.remove(), B), { once: !0 }), n.append(r), r.show(), r;
+}
 //#endregion
-export { o as registerSdsDialog, l as registerSdsDropdown, p as registerSdsTabs, y as registerSdsToast };
+export { K as notify, o as registerSdsDialog, w as registerSdsDropdown, k as registerSdsPopover, N as registerSdsTabs, G as registerSdsToast, R as registerSdsTooltip };

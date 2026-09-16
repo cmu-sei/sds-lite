@@ -1,10 +1,26 @@
 const DEFAULT_DURATION = 5000
+const REMOVE_DELAY = 250
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
     ? (class {} as typeof HTMLElement)
     : HTMLElement
 
 export type SdsToastCloseReason = 'dismiss' | 'programmatic' | 'timeout'
+export type SdsToastTone =
+  | 'neutral'
+  | 'accent'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
+
+export interface SdsNotifyOptions {
+  title?: string
+  tone?: SdsToastTone
+  duration?: number
+  persistent?: boolean
+  urgent?: boolean
+}
 
 export class SdsToastElement extends HTMLElementBase {
   static observedAttributes = ['open']
@@ -20,14 +36,9 @@ export class SdsToastElement extends HTMLElementBase {
   }
 
   connectedCallback(): void {
-    if (
-      !this.hasAttribute('role') ||
-      this.getAttribute('aria-atomic') !== 'true'
-    ) {
-      console.warn(
-        '<sds-toast> requires an authored role and aria-atomic="true" for SSR accessibility.',
-        this,
-      )
+    if (!this.hasAttribute('role')) this.setAttribute('role', 'status')
+    if (!this.hasAttribute('aria-atomic')) {
+      this.setAttribute('aria-atomic', 'true')
     }
 
     this.addEventListener('click', this.handleClick)
@@ -168,3 +179,52 @@ export function registerSdsToast(): void {
 }
 
 registerSdsToast()
+
+export function notify(
+  message: string,
+  options: SdsNotifyOptions = {},
+): SdsToastElement {
+  if (typeof document === 'undefined') {
+    throw new Error('notify() can only be called in a browser.')
+  }
+
+  let toaster = document.querySelector<HTMLElement>('sds-toaster')
+  if (!toaster) {
+    toaster = document.createElement('sds-toaster')
+    toaster.setAttribute('aria-label', 'Notifications')
+    const root = document.querySelector<HTMLElement>('[data-sds-root]')
+    if (!root) toaster.dataset.sdsRoot = ''
+    const toastHost = root ?? document.body
+    toastHost.append(toaster)
+  }
+
+  const toast = document.createElement('sds-toast')
+  toast.dataset.tone = options.tone ?? 'info'
+  toast.setAttribute('role', options.urgent ? 'alert' : 'status')
+  toast.setAttribute('aria-atomic', 'true')
+  if (options.duration !== undefined) {
+    toast.dataset.duration = String(options.duration)
+  }
+  if (options.persistent) toast.dataset.persistent = ''
+
+  const title = document.createElement('strong')
+  title.textContent = options.title ?? 'Notification'
+  const body = document.createElement('span')
+  body.textContent = message
+  const closeButton = document.createElement('button')
+  closeButton.type = 'button'
+  closeButton.dataset.shape = 'icon'
+  closeButton.dataset.toastClose = ''
+  closeButton.setAttribute('aria-label', 'Dismiss notification')
+  closeButton.textContent = '\u00d7'
+
+  toast.append(title, body, closeButton)
+  toast.addEventListener(
+    'sds-close',
+    () => window.setTimeout(() => toast.remove(), REMOVE_DELAY),
+    { once: true },
+  )
+  toaster.append(toast)
+  toast.show()
+  return toast
+}

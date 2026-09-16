@@ -9,6 +9,7 @@
 @import './css/components/form-control.css';
 @import './css/components/choice.css';
 @import './css/components/badge.css';
+@import './css/components/tag.css';
 @import './css/components/callout.css';
 @import './css/components/toaster.css';
 @import './css/components/toast.css';
@@ -24,6 +25,7 @@
 @import './css/components/table.css';
 @import './css/components/empty-state.css';
 @import './css/components/tabs.css';
+@import './css/components/floating.css';
 @import './css/components/dropdown.css';
 @import './css/components/disclosure.css';
 @import './css/components/overlay.css';

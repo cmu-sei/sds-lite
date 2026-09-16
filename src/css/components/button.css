@@ -76,6 +76,12 @@
       line-height: 1;
     }
 
+    &[data-shape="icon"] > svg {
+      display: block;
+      inline-size: 1em;
+      block-size: 1em;
+    }
+
     &[data-variant="secondary"] {
       --sds-button-background: var(--sds-color-surface-default);
       --sds-button-border: var(

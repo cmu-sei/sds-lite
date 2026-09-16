@@ -1,3 +1,5 @@
+import { directElementChildren, ensureId } from './internals.js'
+
 const CHANGE_EVENT = 'sds-change'
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
@@ -13,41 +15,91 @@ export class SdsTabsElement extends HTMLElementBase {
     this.controller?.abort()
     this.controller = new AbortController()
 
-    const tabList = this.querySelector<HTMLElement>(
-      '.sds-tab-list[role="tablist"]',
-    )
-    this.tabs = Array.from(
-      this.querySelectorAll<HTMLElement>('.sds-tab[role="tab"]'),
-    )
-    this.panels.clear()
-
-    for (const tab of this.tabs) {
-      const panelId = tab.getAttribute('aria-controls')
-      const panel = panelId
-        ? this.querySelector<HTMLElement>(`#${CSS.escape(panelId)}`)
-        : null
-
-      if (
-        !tab.id ||
-        !panel ||
-        panel.getAttribute('role') !== 'tabpanel' ||
-        panel.getAttribute('aria-labelledby') !== tab.id
-      ) {
-        console.warn(
-          '<sds-tabs> requires authored tab ids, aria-controls, tabpanel ids, and aria-labelledby.',
-          this,
+    const children = directElementChildren(this)
+    const tabList =
+      children.find((child) =>
+        child.matches('.sds-tab-list, [role="tablist"]'),
+      ) ??
+      children[0] ??
+      null
+    this.tabs = tabList
+      ? directElementChildren(tabList).filter(
+          (tab) =>
+            tab instanceof HTMLButtonElement ||
+            tab instanceof HTMLAnchorElement,
         )
-        return
-      }
-      this.panels.set(tab, panel)
-    }
+      : []
+    this.panels.clear()
 
     if (!tabList || this.tabs.length === 0) {
       console.warn(
-        '<sds-tabs> requires a .sds-tab-list[role="tablist"] and tabs with role="tab".',
+        '<sds-tabs> requires a tab-list container with button or link children.',
         this,
       )
       return
+    }
+
+    const availablePanels = children.filter((child) => child !== tabList)
+    if (availablePanels.length < this.tabs.length) {
+      console.warn(
+        '<sds-tabs> requires one panel for every tab.',
+        this,
+      )
+      return
+    }
+
+    tabList.classList.add('sds-tab-list')
+    tabList.setAttribute('role', 'tablist')
+    if (
+      !tabList.hasAttribute('aria-label') &&
+      !tabList.hasAttribute('aria-labelledby')
+    ) {
+      tabList.setAttribute('aria-label', 'Tabs')
+    }
+
+    const unassignedPanels = new Set(availablePanels)
+    for (const [index, tab] of this.tabs.entries()) {
+      const requestedPanelId = tab.getAttribute('aria-controls')
+      const requestedPanel =
+        availablePanels.find((candidate) => candidate.id === requestedPanelId) ??
+        null
+      const panel =
+        requestedPanel && unassignedPanels.has(requestedPanel)
+          ? requestedPanel
+          : availablePanels[index] &&
+              unassignedPanels.has(availablePanels[index])
+            ? availablePanels[index]
+            : unassignedPanels.values().next().value
+
+      if (!panel) continue
+      unassignedPanels.delete(panel)
+
+      const tabId = ensureId(tab, 'sds-tab')
+      const panelId = ensureId(panel, 'sds-tab-panel')
+      tab.classList.add('sds-tab')
+      tab.setAttribute('role', 'tab')
+      tab.setAttribute('aria-controls', panelId)
+      panel.classList.add('sds-tab-panel')
+      panel.setAttribute('role', 'tabpanel')
+      panel.setAttribute('aria-labelledby', tabId)
+      this.panels.set(tab, panel)
+    }
+
+    const selectedTab =
+      this.tabs.find(
+        (tab) =>
+          tab.getAttribute('aria-selected') === 'true' &&
+          !this.isDisabled(tab),
+      ) ??
+      this.tabs.find((tab) => !this.isDisabled(tab)) ??
+      null
+
+    for (const tab of this.tabs) {
+      const selected = tab === selectedTab
+      tab.setAttribute('aria-selected', String(selected))
+      tab.tabIndex = selected ? 0 : -1
+      const panel = this.panels.get(tab)
+      if (panel) panel.hidden = !selected
     }
 
     tabList.addEventListener('click', this.handleClick, {

@@ -52,7 +52,6 @@ function handleClick(event: MouseEvent): void {
       event.preventDefault()
     }
     if (command === 'show-modal') openDialog(dialog, true)
-    if (command === 'show-modal') openDialog(dialog, true)
     else if (command === 'close') dialog.close(trigger.dataset.returnValue)
     else if (command === 'request-close') {
       const requestClose = Reflect.get(dialog, 'requestClose')

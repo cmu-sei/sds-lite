@@ -65,7 +65,7 @@
     line-height: 1.75rem;
   }
 
-  :where(.sds-dialog-footer) {
+  :where(.sds-dialog-footer, .sds-panel > footer) {
     display: flex;
     flex-wrap: wrap;
     gap: var(--sds-space-sm);
@@ -73,12 +73,14 @@
   }
 
   :where(
-    .sds-dialog-footer
+    .sds-dialog-footer,
+    .sds-panel > footer
+  )
       > :is(button, .sds-button):is(
         :not([data-variant]),
         [data-variant="primary"]
       )
-  ) {
+  {
     order: 1;
   }
 

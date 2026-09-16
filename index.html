@@ -12,17 +12,19 @@
   <body data-sds-root data-sds-theme="forge" data-sds-color-scheme="light">
     <div class="sds-app" data-variant="application">
       <header class="sds-app-mobile-header">
-        <a class="sds-app-brand" href="#top" aria-label="SDS Lite catalog">
-          <span class="sds-app-brand-prefix">SEI</span>
-          <span>SDS Lite</span>
-        </a>
         <button
           data-shape="icon"
           popovertarget="catalog-sidebar"
           aria-label="Open navigation"
         >
-          &#9776;
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+          </svg>
         </button>
+        <a class="sds-app-brand" href="#top" aria-label="SDS Lite catalog">
+          <span class="sds-app-brand-prefix">SEI</span>
+          <span>SDS Lite</span>
+        </a>
       </header>
 
       <div class="sds-app-layout demo-catalog-layout">
@@ -162,7 +164,7 @@ import '@cmu-sei/sds-lite'</code></pre>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Button options">
                 <code>data-variant="secondary | tertiary | ghost"</code>
-                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>data-size="xs | sm | md | lg | xl"</code>
                 <code>data-density="compact"</code>
                 <code>data-shape="icon"</code>
@@ -186,8 +188,8 @@ import '@cmu-sei/sds-lite'</code></pre>
                   <button data-variant="tertiary">Tertiary</button>
                   <button data-variant="ghost">Ghost</button>
                 </div>
-                <div class="demo-tone-row" data-tone="brand">
-                  <strong>Brand</strong>
+                <div class="demo-tone-row" data-tone="accent">
+                  <strong>Accent</strong>
                   <button>Primary</button>
                   <button data-variant="secondary">Secondary</button>
                   <button data-variant="tertiary">Tertiary</button>
@@ -301,7 +303,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <h3>Link tones</h3>
                 <div class="demo-link-list">
                   <a class="sds-link" data-tone="neutral" href="#actions">Neutral</a>
-                  <a class="sds-link" data-tone="brand" href="#actions">Brand</a>
+                  <a class="sds-link" data-tone="accent" href="#actions">Accent</a>
                   <a class="sds-link" data-tone="info" href="#actions">Info</a>
                   <a class="sds-link" data-tone="success" href="#actions">Success</a>
                   <a class="sds-link" data-tone="warning" href="#actions">Warning</a>
@@ -475,7 +477,7 @@ import '@cmu-sei/sds-lite'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Feedback</p>
-                <h2 id="feedback-title">Badges, callouts, and toasts</h2>
+                <h2 id="feedback-title">Badges, tags, callouts, and toasts</h2>
                 <p>
                   Upstream treatment sets are available in every semantic tone.
                 </p>
@@ -483,8 +485,9 @@ import '@cmu-sei/sds-lite'</code></pre>
             </div>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Feedback options">
-                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>badge: light | light-border | medium | dark</code>
+                <code>tag data-size="sm | md"</code>
                 <code>callout: subtle | outline | bold</code>
                 <code>callout data-size="xs | sm | md | lg"</code>
               </div>
@@ -508,11 +511,11 @@ import '@cmu-sei/sds-lite'</code></pre>
                   <span class="sds-badge" data-tone="neutral" data-variant="dark">Dark</span>
                 </div>
                 <div class="demo-tone-sample">
-                  <strong>Brand</strong>
-                  <span class="sds-badge" data-tone="brand" data-variant="light">Light</span>
-                  <span class="sds-badge" data-tone="brand" data-variant="light-border">Light border</span>
-                  <span class="sds-badge" data-tone="brand">Medium</span>
-                  <span class="sds-badge" data-tone="brand" data-variant="dark">Dark</span>
+                  <strong>Accent</strong>
+                  <span class="sds-badge" data-tone="accent" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="accent" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="accent">Medium</span>
+                  <span class="sds-badge" data-tone="accent" data-variant="dark">Dark</span>
                 </div>
                 <div class="demo-tone-sample">
                   <strong>Info</strong>
@@ -546,6 +549,29 @@ import '@cmu-sei/sds-lite'</code></pre>
             </article>
 
             <article class="sds-card demo-stack">
+              <h3>Tags</h3>
+              <p>
+                Compose tags from native text, links, counters, and buttons.
+              </p>
+              <div class="sds-action-group">
+                <span class="sds-tag">Research</span>
+                <a class="sds-tag" href="#feedback">Linked tag</a>
+                <span class="sds-tag">
+                  <span class="sds-tag-counter">12</span>
+                  <a class="sds-tag-label" href="#feedback">Open projects</a>
+                </span>
+                <span class="sds-tag" data-size="md">
+                  <a class="sds-tag-label" href="#feedback">Security</a>
+                  <button class="sds-tag-action" data-tone="danger" type="button" aria-label="Remove Security tag">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </span>
+                <button class="sds-tag" type="button">Filter by active</button>
+                <button class="sds-tag" type="button" disabled>Disabled</button>
+              </div>
+            </article>
+
+            <article class="sds-card demo-stack">
               <h3>Toasts</h3>
               <p>
                 Toasts announce brief feedback, dismiss automatically, and
@@ -553,7 +579,7 @@ import '@cmu-sei/sds-lite'</code></pre>
               </p>
               <div class="sds-action-group">
                 <button data-tone="neutral" data-toast-open="toast-neutral">Show neutral</button>
-                <button data-tone="brand" data-toast-open="toast-brand">Show brand</button>
+                <button data-tone="accent" data-toast-open="toast-accent">Show accent</button>
                 <button data-tone="success" data-toast-open="toast-success">Show success</button>
                 <button data-tone="info" data-toast-open="toast-info">Show info</button>
                 <button data-tone="warning" data-toast-open="toast-warning">Show warning</button>
@@ -571,14 +597,14 @@ import '@cmu-sei/sds-lite'</code></pre>
               <div class="sds-callout" data-tone="neutral" data-variant="bold">
                 <strong>Neutral bold</strong><span>General supporting information.</span>
               </div>
-              <div class="sds-callout" data-tone="brand">
-                <strong>Brand subtle</strong><span>Information associated with SEI.</span>
+              <div class="sds-callout" data-tone="accent">
+                <strong>Accent subtle</strong><span>Highlighted supporting information.</span>
               </div>
-              <div class="sds-callout" data-tone="brand" data-variant="outline">
-                <strong>Brand outline</strong><span>Information associated with SEI.</span>
+              <div class="sds-callout" data-tone="accent" data-variant="outline">
+                <strong>Accent outline</strong><span>Highlighted supporting information.</span>
               </div>
-              <div class="sds-callout" data-tone="brand" data-variant="bold">
-                <strong>Brand bold</strong><span>Information associated with SEI.</span>
+              <div class="sds-callout" data-tone="accent" data-variant="bold">
+                <strong>Accent bold</strong><span>Highlighted supporting information.</span>
               </div>
               <div class="sds-callout" data-tone="info">
                 <strong>Info subtle</strong><span>Something useful to know.</span>
@@ -677,8 +703,8 @@ import '@cmu-sei/sds-lite'</code></pre>
                 </div>
               </article>
               <article class="sds-card">
-                <div class="sds-datapoint" data-size="lg" data-tone="brand">
-                  <span>Brand</span>
+                <div class="sds-datapoint" data-size="lg" data-tone="accent">
+                  <span>Accent</span>
                   <div><strong>16</strong><span>programs</span></div>
                 </div>
               </article>
@@ -827,17 +853,19 @@ import '@cmu-sei/sds-lite'</code></pre>
               <h3>Application</h3>
               <div class="sds-app demo-app-preview" data-variant="application">
                 <header class="sds-app-mobile-header">
-                  <a class="sds-app-brand" href="#composition">
-                    <span class="sds-app-brand-prefix">SEI</span>
-                    SDS Lite
-                  </a>
                   <button
                     data-shape="icon"
                     popovertarget="application-preview-sidebar"
                     aria-label="Open preview navigation"
                   >
-                    &#9776;
+                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                      <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                    </svg>
                   </button>
+                  <a class="sds-app-brand" href="#composition">
+                    <span class="sds-app-brand-prefix">SEI</span>
+                    SDS Lite
+                  </a>
                 </header>
                 <div
                   class="sds-app-layout"
@@ -959,14 +987,18 @@ import '@cmu-sei/sds-lite'</code></pre>
 
             <article class="sds-card demo-stack">
               <h3>Brochure Site</h3>
-              <div class="sds-app demo-brochure-preview" data-variant="brochure">
+              <div id="brochure-preview-top" class="sds-app demo-brochure-preview" data-variant="brochure">
                 <main>
                   <header class="sds-brochure-header">
                     <div class="sds-brochure-masthead">
-                      <div class="sds-brochure-container">Carnegie Mellon University</div>
+                      <div class="sds-brochure-container">
+                        <a href="https://www.cmu.edu/" target="_self" aria-label="Carnegie Mellon University">
+                          <span class="sds-cmu-wordmark" aria-hidden="true"></span>
+                        </a>
+                      </div>
                     </div>
                     <div class="sds-brochure-navigation sds-brochure-container">
-                      <a class="sds-brochure-brand" href="#composition">
+                      <a class="sds-brochure-brand" href="https://sei.cmu.edu/">
                         Software Engineering Institute
                         <small>CERT Coordination Center</small>
                       </a>
@@ -984,13 +1016,85 @@ import '@cmu-sei/sds-lite'</code></pre>
                 </main>
                 <footer>
                   <div class="sds-brochure-footer-links">
-                    <div class="sds-brochure-container">Subscribe to SEI updates</div>
+                    <ul class="sds-brochure-container sds-brochure-footer-actions">
+                      <li>
+                        <a class="sds-link" data-variant="cta" data-tone="danger" href="https://www.kb.cert.org/vuls/report/">
+                          Report a Vulnerability
+                        </a>
+                      </li>
+                      <li>
+                        <a class="sds-link" data-variant="cta" data-tone="danger" href="https://sei.cmu.edu/subscribe-to-sei-bulletin/">
+                          Subscribe to SEI Bulletin
+                        </a>
+                      </li>
+                      <li>
+                        <a class="sds-link" data-variant="cta" data-tone="danger" href="https://sei.cmu.edu/legal/request-permission-to-use-sei-material">
+                          Request Permission to Use SEI Material
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                   <div class="sds-brochure-footer-main">
-                    <div class="sds-brochure-container">Software Engineering Institute</div>
+                    <div class="sds-brochure-container sds-brochure-footer-content">
+                      <div class="sds-brochure-footer-about">
+                        <a href="https://sei.cmu.edu/" aria-label="Software Engineering Institute">
+                          <span class="sds-sei-wordmark" aria-hidden="true"></span>
+                        </a>
+                        <p>
+                          <strong>Advancing Software for National Security</strong><br />
+                          Sponsored by the Department of War, the SEI is a federally funded
+                          research and development center managed by Carnegie Mellon University.
+                        </p>
+                        <address>
+                          <strong>Main Office</strong><br />
+                          4500 Fifth Avenue<br />
+                          Pittsburgh, PA 15213-2612<br />
+                          <a href="tel:+14122685800">412-268-5800</a>
+                        </address>
+                      </div>
+                      <nav class="sds-brochure-footer-navigation" aria-label="SEI footer">
+                        <details open>
+                          <summary>SEI</summary>
+                          <ul>
+                            <li><a href="https://sei.cmu.edu/about/">About</a></li>
+                            <li><a href="https://sei.cmu.edu/research-development/">Research and Development</a></li>
+                            <li><a href="https://sei.cmu.edu/publications-media/">Publications and Media</a></li>
+                            <li><a href="https://sei.cmu.edu/education/">Education</a></li>
+                            <li><a href="https://sei.cmu.edu/careers/">Careers</a></li>
+                          </ul>
+                        </details>
+                        <details open>
+                          <summary>Helpful links</summary>
+                          <ul>
+                            <li><a href="https://sei.cmu.edu/library/">Digital Library</a></li>
+                            <li><a href="https://sei.cmu.edu/blog/">Blog</a></li>
+                            <li><a href="https://sei.cmu.edu/podcasts/">Podcasts</a></li>
+                          </ul>
+                        </details>
+                        <details open>
+                          <summary>Connect</summary>
+                          <ul>
+                            <li><a href="https://www.facebook.com/SEICMU/" target="_blank" rel="noopener noreferrer nofollow">Facebook</a></li>
+                            <li><a href="https://www.linkedin.com/company/software-engineering-institute" target="_blank" rel="noopener noreferrer nofollow">LinkedIn</a></li>
+                            <li><a href="https://x.com/SEI_CMU" target="_blank" rel="noopener noreferrer nofollow">X</a></li>
+                            <li><a href="https://www.youtube.com/user/TheSEICMU" target="_blank" rel="noopener noreferrer nofollow">YouTube</a></li>
+                          </ul>
+                        </details>
+                      </nav>
+                    </div>
                   </div>
                   <div class="sds-brochure-footer-legal">
-                    <div class="sds-brochure-container">Carnegie Mellon University</div>
+                    <div class="sds-brochure-container">
+                      <p>&copy; <time datetime="2026">2026</time> <a href="https://www.cmu.edu/">Carnegie Mellon University</a></p>
+                      <ul>
+                        <li><a href="https://sei.cmu.edu/contact-us/" target="_blank" rel="noopener noreferrer nofollow">Contact Us</a></li>
+                        <li><a href="https://sei.cmu.edu/locations/" target="_blank" rel="noopener noreferrer nofollow">Office Locations</a></li>
+                        <li><a href="https://sei.cmu.edu/legal/privacy-notice/" target="_blank" rel="noopener noreferrer nofollow">Privacy Notice</a></li>
+                        <li><a href="https://sei.cmu.edu/legal/" target="_blank" rel="noopener noreferrer nofollow">Legal</a></li>
+                        <li><a href="https://www.cmu.edu/" target="_blank" rel="noopener noreferrer nofollow">www.cmu.edu</a></li>
+                      </ul>
+                      <a href="#brochure-preview-top" aria-label="Scroll to top">&uarr;</a>
+                    </div>
                   </div>
                 </footer>
               </div>
@@ -1098,7 +1202,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                     <p>The project record was created.</p>
                     <time datetime="2026-09-16T08:00:00-04:00">8:00 AM</time>
                   </li>
-                  <li class="sds-timeline-item" data-tone="brand">
+                  <li class="sds-timeline-item" data-tone="accent">
                     <h3>Submitted</h3>
                     <p>The review package entered the queue.</p>
                     <time datetime="2026-09-16T09:00:00-04:00">9:00 AM</time>
@@ -1161,7 +1265,7 @@ import '@cmu-sei/sds-lite'</code></pre>
               <div class="demo-api" aria-label="Prose options">
                 <code>.sds-prose</code>
                 <code>data-size="sm"</code>
-                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>.not-prose</code>
               </div>
               <details class="sds-disclosure">
@@ -1270,7 +1374,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <h3>Prose tones</h3>
                 <div class="demo-link-list">
                   <div class="sds-prose" data-tone="neutral"><a href="#prose">Neutral</a></div>
-                  <div class="sds-prose" data-tone="brand"><a href="#prose">Brand</a></div>
+                  <div class="sds-prose" data-tone="accent"><a href="#prose">Accent</a></div>
                   <div class="sds-prose" data-tone="info"><a href="#prose">Info</a></div>
                   <div class="sds-prose" data-tone="success"><a href="#prose">Success</a></div>
                   <div class="sds-prose" data-tone="warning"><a href="#prose">Warning</a></div>
@@ -1292,7 +1396,7 @@ import '@cmu-sei/sds-lite'</code></pre>
               <div class="demo-api" aria-label="Tab options">
                 <code>data-variant="folder | block | underline"</code>
                 <code>data-size="md | lg"</code>
-                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>disabled</code>
               </div>
               <details class="sds-disclosure">
@@ -1319,13 +1423,13 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <section id="neutral-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-2" hidden>Second tab content</section>
                 <section id="neutral-panel-3" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-3" hidden>Disabled content</section>
               </sds-tabs>
-              <sds-tabs data-tone="brand">
-                <div class="sds-tab-list" role="tablist" aria-label="Brand tabs">
-                  <button id="brand-tab-1" class="sds-tab" role="tab" aria-controls="brand-panel-1" aria-selected="true" tabindex="0">Brand</button>
-                  <button id="brand-tab-2" class="sds-tab" role="tab" aria-controls="brand-panel-2" aria-selected="false" tabindex="-1">Second</button>
+              <sds-tabs data-tone="accent">
+                <div class="sds-tab-list" role="tablist" aria-label="Accent tabs">
+                  <button id="accent-tab-1" class="sds-tab" role="tab" aria-controls="accent-panel-1" aria-selected="true" tabindex="0">Accent</button>
+                  <button id="accent-tab-2" class="sds-tab" role="tab" aria-controls="accent-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
-                <section id="brand-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="brand-tab-1">Brand tab content</section>
-                <section id="brand-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="brand-tab-2" hidden>Second tab content</section>
+                <section id="accent-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="accent-tab-1">Accent tab content</section>
+                <section id="accent-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="accent-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs data-tone="info">
                 <div class="sds-tab-list" role="tablist" aria-label="Info tabs">
@@ -1367,7 +1471,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <section id="underline-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-1">Large underline tab content</section>
                 <section id="underline-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-2" hidden>Second tab content</section>
               </sds-tabs>
-              <sds-tabs data-variant="block" data-tone="brand">
+              <sds-tabs data-variant="block" data-tone="accent">
                 <div class="sds-tab-list" role="tablist" aria-label="Block tabs">
                   <button id="block-tab-1" class="sds-tab" role="tab" aria-controls="block-panel-1" aria-selected="true" tabindex="0">Block</button>
                   <button id="block-tab-2" class="sds-tab" role="tab" aria-controls="block-panel-2" aria-selected="false" tabindex="-1">Second</button>
@@ -1406,7 +1510,7 @@ import '@cmu-sei/sds-lite'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Structure and behavior</p>
-                <h2 id="structure-title">Dropdowns, disclosures, and overlays</h2>
+                <h2 id="structure-title">Dropdowns, floating content, disclosures, and overlays</h2>
                 <p>
                   Browser primitives provide the semantics; SDS adds a small
                   declarative enhancement layer.
@@ -1416,7 +1520,8 @@ import '@cmu-sei/sds-lite'</code></pre>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Behavioral element options">
                 <code>dropdown data-size="sm | md | lg | xl | 2xl | auto"</code>
-                <code>data-placement="top-start | top-end | bottom-start | bottom-end"</code>
+                <code>floating data-placement="top | right | bottom | left" with optional -start | -end</code>
+                <code>popover data-size="sm | md | lg | xl | 2xl | auto"</code>
                 <code>dialog data-size="sm | md | lg | xl | 2xl"</code>
                 <code>panel data-side="left | right | bottom"</code>
                 <code>panel data-size="sm | md | lg | xl"</code>
@@ -1497,6 +1602,45 @@ import '@cmu-sei/sds-lite'</code></pre>
                   </details>
                 </div>
               </article>
+
+              <article class="sds-card demo-stack">
+                <h3>Tooltips and popovers</h3>
+                <p>
+                  Tooltips appear immediately. Popovers appear after a short
+                  hover delay and remain open while their content is in use.
+                </p>
+                <div class="sds-action-group">
+                  <sds-tooltip data-placement="top">
+                    <button type="button" data-variant="secondary" aria-describedby="status-help">Status help</button>
+                    <span id="status-help" class="sds-tooltip-content" role="tooltip" popover="manual">
+                      Status shows where the project is in review.
+                    </span>
+                  </sds-tooltip>
+
+                  <sds-popover data-size="lg" data-placement="bottom-start">
+                    <button
+                      type="button"
+                      aria-controls="project-details"
+                      aria-expanded="false"
+                      aria-haspopup="dialog"
+                    >
+                      Project details
+                    </button>
+                    <section id="project-details" class="sds-popover-content" popover="manual">
+                      <h3>Project Atlas</h3>
+                      <p>Updated five minutes ago by Alex Morgan.</p>
+                      <button
+                        type="button"
+                        data-variant="ghost"
+                        popovertarget="project-details"
+                        popovertargetaction="hide"
+                      >
+                        Close
+                      </button>
+                    </section>
+                  </sds-popover>
+                </div>
+              </article>
             </div>
 
             <article class="sds-card demo-stack">
@@ -1536,7 +1680,7 @@ import '@cmu-sei/sds-lite'</code></pre>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Loading options">
                 <code>spinner data-size="sm | md | lg"</code>
-                <code>data-tone="neutral | brand | info | success | warning | danger"</code>
+                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>.sds-skeleton</code>
               </div>
               <details class="sds-disclosure">
@@ -1551,7 +1695,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <h3>Spinner tones and sizes</h3>
                 <div class="demo-spinner-row">
                   <span class="sds-spinner" data-size="sm" data-tone="neutral" role="status" aria-label="Loading neutral"></span>
-                  <span class="sds-spinner" data-tone="brand" role="status" aria-label="Loading brand"></span>
+                  <span class="sds-spinner" data-tone="accent" role="status" aria-label="Loading accent"></span>
                   <span class="sds-spinner" data-tone="info" role="status" aria-label="Loading info"></span>
                   <span class="sds-spinner" data-tone="success" role="status" aria-label="Loading success"></span>
                   <span class="sds-spinner" data-tone="warning" role="status" aria-label="Loading warning"></span>
@@ -1632,7 +1776,7 @@ import '@cmu-sei/sds-lite'</code></pre>
         <span>Focus and top-layer behavior come from native dialog.</span>
       </div>
       <div class="sds-dialog-footer">
-        <button data-variant="secondary" commandfor="catalog-dialog" command="close">Cancel</button>
+        <button data-variant="ghost" commandfor="catalog-dialog" command="close">Cancel</button>
         <button commandfor="catalog-dialog" command="close" data-return-value="continue">Continue</button>
       </div>
     </dialog>
@@ -1680,7 +1824,7 @@ import '@cmu-sei/sds-lite'</code></pre>
       </header>
       <main><p>The default panel placement and size support focused tasks.</p></main>
       <footer>
-        <button data-variant="secondary" commandfor="panel-right-md" command="close">Cancel</button>
+        <button data-variant="ghost" commandfor="panel-right-md" command="close">Cancel</button>
         <button commandfor="panel-right-md" command="close" data-return-value="save">Save</button>
       </footer>
     </dialog>
@@ -1706,7 +1850,7 @@ import '@cmu-sei/sds-lite'</code></pre>
         </div>
       </main>
       <footer>
-        <button data-variant="secondary" commandfor="panel-right-lg" command="close">Cancel</button>
+        <button data-variant="ghost" commandfor="panel-right-lg" command="close">Cancel</button>
         <button commandfor="panel-right-lg" command="close" data-return-value="save">Save project</button>
       </footer>
     </dialog>
@@ -1735,9 +1879,9 @@ import '@cmu-sei/sds-lite'</code></pre>
         <span>Your local changes are current.</span>
         <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
-      <sds-toast id="toast-brand" data-tone="brand" role="status" aria-atomic="true">
-        <strong>SEI guidance available</strong>
-        <span>New design guidance is ready to review.</span>
+      <sds-toast id="toast-accent" data-tone="accent" role="status" aria-atomic="true">
+        <strong>Featured guidance available</strong>
+        <span>New highlighted guidance is ready to review.</span>
         <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
       <sds-toast id="toast-success" data-tone="success" role="status" aria-atomic="true">

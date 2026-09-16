@@ -1,3 +1,6 @@
+import { FloatingPositioner } from './floating.js'
+import { directElementChildren, ensureId } from './internals.js'
+
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
     ? (class {} as typeof HTMLElement)
@@ -7,51 +10,83 @@ export class SdsDropdownElement extends HTMLElementBase {
   private trigger: HTMLButtonElement | null = null
   private menu: HTMLElement | null = null
   private items: HTMLElement[] = []
+  private positioner: FloatingPositioner | null = null
   private controller: AbortController | null = null
 
   connectedCallback(): void {
     this.controller?.abort()
     this.controller = new AbortController()
 
-    const trigger = Array.from(this.children).find(
+    const children = directElementChildren(this)
+    const trigger = children.find(
       (child): child is HTMLButtonElement =>
-        child instanceof HTMLButtonElement &&
-        child.hasAttribute('popovertarget'),
+        child instanceof HTMLButtonElement,
     )
-    const menuId = trigger?.getAttribute('popovertarget')
-    const menu = menuId
-      ? Array.from(this.children).find(
-          (child): child is HTMLElement =>
-            child instanceof HTMLElement && child.id === menuId,
-        )
-      : null
+    const requestedMenuId = trigger?.getAttribute('popovertarget')
+    const remainingChildren = children.filter((child) => child !== trigger)
+    const menu =
+      children.find((child) => child.id === requestedMenuId) ??
+      remainingChildren.find((child) =>
+        child.matches('menu, [popover], .sds-dropdown-menu'),
+      ) ??
+      (remainingChildren.length === 1 ? remainingChildren[0] : null) ??
+      null
 
-    if (
-      !trigger ||
-      !menu ||
-      !menu.hasAttribute('popover') ||
-      trigger.getAttribute('aria-controls') !== menu.id
-    ) {
+    if (!trigger || !menu) {
       console.warn(
-        '<sds-dropdown> requires an authored popovertarget, matching menu id, popover, and aria-controls.',
+        '<sds-dropdown> requires one direct child button and one direct child menu or popover.',
         this,
       )
       return
     }
 
+    const menuId = ensureId(menu, 'sds-dropdown')
+    const menuMode = this.dataset.mode !== 'popover'
+    menu.classList.add('sds-dropdown-menu')
+    menu.setAttribute('popover', menu.getAttribute('popover') || 'auto')
+    trigger.setAttribute('popovertarget', menuId)
+    trigger.setAttribute('aria-controls', menuId)
+    trigger.setAttribute(
+      'aria-expanded',
+      String(menu.matches(':popover-open')),
+    )
+    if (!trigger.hasAttribute('aria-haspopup')) {
+      trigger.setAttribute('aria-haspopup', menuMode ? 'menu' : 'dialog')
+    }
+
+    if (menuMode) {
+      menu.setAttribute('role', 'menu')
+      if (!menu.hasAttribute('aria-orientation')) {
+        menu.setAttribute('aria-orientation', 'vertical')
+      }
+    }
+
     this.trigger = trigger
     this.menu = menu
-    this.items =
-      this.dataset.mode === 'popover'
-        ? []
-        : Array.from(
-            menu.querySelectorAll<HTMLElement>(
-              '[role="menuitem"]:not([aria-disabled="true"])',
-            ),
-          ).filter(
+    this.positioner = new FloatingPositioner(
+      trigger,
+      menu,
+      () => this.dataset.placement ?? 'bottom-start',
+      () => this.dataset.offset,
+    )
+    this.items = menuMode
+      ? Array.from(
+          menu.querySelectorAll<HTMLElement>(
+            'button, a[href], [role="menuitem"]',
+          ),
+        )
+          .filter((item) => !item.closest('[role="menuitem"] [role="menuitem"]'))
+          .map((item) => {
+            item.setAttribute('role', 'menuitem')
+            item.tabIndex = -1
+            return item
+          })
+          .filter(
             (item) =>
-              !(item instanceof HTMLButtonElement) || !item.disabled,
+              item.getAttribute('aria-disabled') !== 'true' &&
+              (!(item instanceof HTMLButtonElement) || !item.disabled),
           )
+      : []
 
     trigger.addEventListener('keydown', this.handleTriggerKeydown, {
       signal: this.controller.signal,
@@ -68,17 +103,12 @@ export class SdsDropdownElement extends HTMLElementBase {
     menu.addEventListener('click', this.handleMenuClick, {
       signal: this.controller.signal,
     })
-    window.addEventListener('resize', this.positionMenu, {
-      signal: this.controller.signal,
-    })
-    window.addEventListener('scroll', this.positionMenu, {
-      capture: true,
-      signal: this.controller.signal,
-    })
+    this.positioner.observe(this.controller.signal)
   }
 
   disconnectedCallback(): void {
     this.controller?.abort()
+    this.positioner = null
   }
 
   private isOpen(): boolean {
@@ -88,8 +118,9 @@ export class SdsDropdownElement extends HTMLElementBase {
   private open(focusIndex = 0): void {
     if (!this.menu || this.isOpen()) return
 
+    this.positioner?.reset()
     this.menu.showPopover()
-    this.positionMenu()
+    this.positioner?.position()
     this.items[focusIndex]?.focus()
   }
 
@@ -101,10 +132,15 @@ export class SdsDropdownElement extends HTMLElementBase {
   }
 
   private handleToggle = (): void => {
-    if (this.isOpen()) this.positionMenu()
+    if (this.isOpen()) {
+      this.positioner?.position()
+    } else {
+      this.positioner?.reset()
+    }
   }
 
   private handleBeforeToggle = (event: ToggleEvent): void => {
+    if (event.newState === 'open') this.positioner?.reset()
     this.trigger?.setAttribute(
       'aria-expanded',
       String(event.newState === 'open'),
@@ -162,36 +198,6 @@ export class SdsDropdownElement extends HTMLElementBase {
     if (event.target.closest('[role="menuitem"]')) this.close()
   }
 
-  private positionMenu = (): void => {
-    if (!this.trigger || !this.menu || !this.isOpen()) return
-
-    const triggerRect = this.trigger.getBoundingClientRect()
-    const menuWidth = this.menu.offsetWidth
-    const menuHeight = this.menu.offsetHeight
-    const rawOffset = this.dataset.offset
-    const requestedOffset =
-      rawOffset === undefined || rawOffset.trim() === ''
-        ? Number.NaN
-        : Number(rawOffset)
-    const offset =
-      Number.isFinite(requestedOffset) && requestedOffset >= 0
-        ? requestedOffset
-        : 5
-    const placement = this.dataset.placement ?? 'bottom-start'
-    const alignEnd = placement.endsWith('-end')
-    const placeAbove = placement.startsWith('top')
-    const requestedLeft = alignEnd
-      ? triggerRect.right - menuWidth
-      : triggerRect.left
-    const requestedTop = placeAbove
-      ? triggerRect.top - menuHeight - offset
-      : triggerRect.bottom + offset
-    const left = Math.min(requestedLeft, window.innerWidth - menuWidth - 8)
-    const top = Math.min(requestedTop, window.innerHeight - menuHeight - 8)
-
-    this.menu.style.top = `${Math.max(8, top)}px`
-    this.menu.style.left = `${Math.max(8, left)}px`
-  }
 }
 
 declare global {

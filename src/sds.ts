@@ -1,4 +1,12 @@
-export { registerSdsDialog } from './elements/dialog.ts'
-export { registerSdsDropdown } from './elements/dropdown.ts'
-export { registerSdsTabs } from './elements/tabs.ts'
-export { registerSdsToast } from './elements/toast.ts'
+export { registerSdsDialog } from './elements/dialog.js'
+export { registerSdsDropdown } from './elements/dropdown.js'
+export { registerSdsPopover } from './elements/popover.js'
+export { registerSdsTabs } from './elements/tabs.js'
+export { registerSdsTooltip } from './elements/tooltip.js'
+export {
+  notify,
+  registerSdsToast,
+  type SdsNotifyOptions,
+  type SdsToastCloseReason,
+  type SdsToastTone,
+} from './elements/toast.js'

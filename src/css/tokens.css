@@ -232,27 +232,27 @@
       var(--sds-white),
       var(--sds-black)
     );
-    --sds-color-brand-surface: light-dark(
+    --sds-color-accent-surface: light-dark(
       var(--sds-red-25),
       var(--sds-red-900)
     );
-    --sds-color-brand-border: light-dark(
+    --sds-color-accent-border: light-dark(
       var(--sds-red-600),
       var(--sds-red-300)
     );
-    --sds-color-brand-text: light-dark(
+    --sds-color-accent-text: light-dark(
       var(--sds-red-600),
       var(--sds-red-300)
     );
-    --sds-color-brand-strong: light-dark(
+    --sds-color-accent-strong: light-dark(
       var(--sds-red-600),
       var(--sds-red-400)
     );
-    --sds-color-brand-strong-hover: light-dark(
+    --sds-color-accent-strong-hover: light-dark(
       var(--sds-red-500),
       var(--sds-red-300)
     );
-    --sds-color-brand-on-strong: light-dark(
+    --sds-color-accent-on-strong: light-dark(
       var(--sds-white),
       var(--sds-black)
     );
@@ -352,13 +352,13 @@
     --sds-tone-on-strong: var(--sds-color-neutral-on-strong);
   }
 
-  :where([data-tone="brand"]) {
-    --sds-tone-surface: var(--sds-color-brand-surface);
-    --sds-tone-border: var(--sds-color-brand-border);
-    --sds-tone-text: var(--sds-color-brand-text);
-    --sds-tone-strong: var(--sds-color-brand-strong);
-    --sds-tone-strong-hover: var(--sds-color-brand-strong-hover);
-    --sds-tone-on-strong: var(--sds-color-brand-on-strong);
+  :where([data-tone="accent"]) {
+    --sds-tone-surface: var(--sds-color-accent-surface);
+    --sds-tone-border: var(--sds-color-accent-border);
+    --sds-tone-text: var(--sds-color-accent-text);
+    --sds-tone-strong: var(--sds-color-accent-strong);
+    --sds-tone-strong-hover: var(--sds-color-accent-strong-hover);
+    --sds-tone-on-strong: var(--sds-color-accent-on-strong);
   }
 
   :where([data-tone="info"]) {

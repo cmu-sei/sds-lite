@@ -44,8 +44,13 @@
     display: none;
     align-items: center;
     gap: var(--sds-space-sm);
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: var(--sds-space-md);
+  }
+
+  :where(.sds-app-mobile-header > [popovertarget]) {
+    flex: 0 0 auto;
+    order: -1;
   }
 
   :where(.sds-app-brand) {
@@ -211,8 +216,20 @@
   }
 
   :where(.sds-brochure-masthead a) {
+    display: block;
+    inline-size: min(20rem, 100%);
     color: inherit;
     text-decoration: none;
+  }
+
+  :where(.sds-cmu-wordmark) {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 728.14 / 64.49;
+    background-color: currentColor;
+    -webkit-mask: url("../../assets/sei-wordmark.svg") left top / 117% auto
+      no-repeat;
+    mask: url("../../assets/sei-wordmark.svg") left top / 117% auto no-repeat;
   }
 
   :where(.sds-brochure-navigation) {
@@ -281,6 +298,15 @@
     background: light-dark(var(--sds-gray-25), var(--sds-gray-950));
   }
 
+  :where(.sds-brochure-footer-actions) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-lg) var(--sds-space-2xl);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
   :where(.sds-brochure-footer-main, .sds-brochure-footer-legal) {
     color: var(--sds-gray-300);
     background: var(--sds-black);
@@ -290,9 +316,84 @@
     padding-block: var(--sds-space-4xl);
   }
 
+  :where(.sds-brochure-footer-content) {
+    display: grid;
+    gap: var(--sds-space-4xl);
+  }
+
+  :where(.sds-brochure-footer-about) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-2xl);
+  }
+
+  :where(.sds-brochure-footer-about .sds-sei-wordmark) {
+    inline-size: min(24rem, 100%);
+    block-size: auto;
+    aspect-ratio: 851.9 / 144.2;
+    color: var(--sds-white);
+  }
+
+  :where(.sds-brochure-footer-about p, .sds-brochure-footer-about address) {
+    margin: 0;
+  }
+
+  :where(.sds-brochure-footer-about strong) {
+    display: inline-block;
+    margin-block-end: var(--sds-space-sm);
+    color: var(--sds-gray-50);
+  }
+
+  :where(.sds-brochure-footer-about address) {
+    font-style: normal;
+  }
+
+  :where(.sds-brochure-footer-navigation) {
+    display: grid;
+    align-content: start;
+  }
+
+  :where(.sds-brochure-footer-navigation details) {
+    border-block-end: 1px solid var(--sds-gray-700);
+  }
+
+  :where(.sds-brochure-footer-navigation summary) {
+    padding-block: var(--sds-space-sm);
+    color: var(--sds-gray-50);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  :where(.sds-brochure-footer-navigation ul, .sds-brochure-footer-legal ul) {
+    margin: 0;
+    padding: 0 0 var(--sds-space-sm);
+    list-style: none;
+  }
+
+  :where(.sds-brochure-footer-navigation a) {
+    display: block;
+    padding-block: var(--sds-space-xs);
+  }
+
   :where(.sds-brochure-footer-legal) {
     padding-block: var(--sds-space-2xl);
     border-block-start: 1px solid var(--sds-gray-700);
+  }
+
+  :where(.sds-brochure-footer-legal > .sds-brochure-container) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-lg);
+  }
+
+  :where(.sds-brochure-footer-legal p) {
+    margin: 0;
+  }
+
+  :where(.sds-brochure-footer-legal ul) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-lg) var(--sds-space-2xl);
   }
 
   :where(.sds-brochure-footer-main a, .sds-brochure-footer-legal a) {
@@ -326,6 +427,48 @@
 
     :where(.sds-app-footer-legal) {
       text-align: end;
+    }
+
+    :where(.sds-brochure-footer-content) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+
+    :where(.sds-brochure-footer-navigation) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--sds-space-4xl);
+    }
+
+    :where(.sds-brochure-footer-navigation details) {
+      border: 0;
+    }
+
+    :where(.sds-brochure-footer-navigation summary) {
+      padding-block-start: 0;
+      cursor: default;
+      list-style: none;
+    }
+
+    :where(.sds-brochure-footer-navigation summary)::-webkit-details-marker {
+      display: none;
+    }
+
+    :where(.sds-brochure-footer-navigation details > :not(summary)) {
+      display: block;
+    }
+
+    :where(.sds-brochure-footer-actions) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    :where(.sds-brochure-footer-legal > .sds-brochure-container) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    :where(.sds-brochure-footer-legal ul) {
+      flex-direction: row;
+      justify-content: flex-end;
     }
   }
 

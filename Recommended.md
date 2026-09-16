@@ -173,7 +173,7 @@ orthogonal attributes:
 <button
   class="sds-button"
   data-variant="primary"
-  data-tone="brand"
+  data-tone="accent"
   data-size="md"
 >
   Save changes
@@ -190,7 +190,7 @@ Use these attribute categories consistently:
 | Attribute | Meaning | Recommended values |
 |---|---|---|
 | `data-variant` | Visual hierarchy or treatment | `primary`, `secondary`, `tertiary`, `ghost`; recipe-specific values only where necessary |
-| `data-tone` | Semantic color intent | `neutral`, `brand`, `info`, `success`, `warning`, `danger` |
+| `data-tone` | Semantic color intent | `neutral`, `accent`, `info`, `success`, `warning`, `danger` |
 | `data-size` | Control or recipe size | `xs`, `sm`, `md`, `lg`; add `xl` only where current use supports it |
 | `data-orientation` | Layout direction | `horizontal`, `vertical` |
 | `data-placement` | Floating-element placement | Logical values such as `block-start`, `inline-end` |
@@ -250,7 +250,7 @@ and sort controls share one interaction interface.
 .sds-button[data-variant="ghost"] {}
 
 .sds-button[data-tone="neutral"] {}
-.sds-button[data-tone="brand"] {}
+.sds-button[data-tone="accent"] {}
 .sds-button[data-tone="info"] {}
 .sds-button[data-tone="success"] {}
 .sds-button[data-tone="warning"] {}
@@ -286,7 +286,7 @@ inline, CTA, up, and down combinations. The condensed interface should be:
 .sds-link[data-variant="tertiary"] {}
 .sds-link[data-variant="inline"] {}
 .sds-link[data-variant="cta"] {}
-.sds-link[data-tone="brand"] {}
+.sds-link[data-tone="accent"] {}
 .sds-link[data-tone="danger"] {}
 ```
 
@@ -800,6 +800,7 @@ Example:
   <div class="sds-dialog-footer">
     <button
       class="sds-button"
+      data-variant="ghost"
       commandfor="delete-confirmation"
       command="close"
     >

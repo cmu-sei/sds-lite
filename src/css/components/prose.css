@@ -57,7 +57,7 @@
   }
 
   :where(
-    .sds-prose[data-tone="brand"],
+    .sds-prose[data-tone="accent"],
     .sds-prose[data-tone="danger"]
   ) {
     --sds-prose-link: light-dark(var(--sds-red-600), var(--sds-red-400));

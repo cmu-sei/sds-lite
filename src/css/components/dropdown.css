@@ -1,8 +1,4 @@
 @layer sds.components {
-  :where(sds-dropdown) {
-    display: inline-block;
-  }
-
   :where(sds-dropdown > button)::after {
     display: inline-block;
     inline-size: 0.5rem;
@@ -18,65 +14,6 @@
 
   :where(sds-dropdown > button[aria-expanded="true"])::after {
     transform: translateY(0.125rem) rotate(225deg);
-  }
-
-  :where(.sds-dropdown-menu) {
-    position: fixed;
-    inset: auto;
-    inline-size: min(14rem, calc(100vw - 1rem));
-    max-inline-size: calc(100vw - 1rem);
-    margin: 0;
-    padding: var(--sds-space-sm) 0;
-    border: 1px solid var(--sds-color-border-default);
-    border-radius: var(--sds-radius-md);
-    color: var(--sds-color-text-default);
-    background: light-dark(var(--sds-white), var(--sds-gray-950));
-    box-shadow:
-      0 4px 6px -1px rgb(0 0 0 / 10%),
-      0 2px 4px -2px rgb(0 0 0 / 10%);
-    list-style: none;
-    opacity: 0;
-    transform: translateY(-0.25rem) scale(0.98);
-    transform-origin: top left;
-    transition:
-      opacity var(--sds-duration-normal) var(--sds-easing-exit),
-      transform var(--sds-duration-normal) var(--sds-easing-exit),
-      display var(--sds-duration-normal) allow-discrete,
-      overlay var(--sds-duration-normal) allow-discrete;
-  }
-
-  :where(sds-dropdown[data-size="sm"] .sds-dropdown-menu) {
-    inline-size: min(12rem, calc(100vw - 1rem));
-  }
-
-  :where(sds-dropdown[data-size="lg"] .sds-dropdown-menu) {
-    inline-size: min(16rem, calc(100vw - 1rem));
-  }
-
-  :where(sds-dropdown[data-size="xl"] .sds-dropdown-menu) {
-    inline-size: min(18rem, calc(100vw - 1rem));
-  }
-
-  :where(sds-dropdown[data-size="2xl"] .sds-dropdown-menu) {
-    inline-size: min(20rem, calc(100vw - 1rem));
-  }
-
-  :where(sds-dropdown[data-size="auto"] .sds-dropdown-menu) {
-    inline-size: max-content;
-  }
-
-  :where(.sds-dropdown-menu:popover-open) {
-    display: block;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-timing-function: var(--sds-easing-enter);
-  }
-
-  @starting-style {
-    :where(.sds-dropdown-menu:popover-open) {
-      opacity: 0;
-      transform: translateY(-0.25rem) scale(0.98);
-    }
   }
 
   :where(.sds-dropdown-menu > li) {

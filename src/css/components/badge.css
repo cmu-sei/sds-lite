@@ -48,7 +48,7 @@
     background: var(--sds-gray-700);
   }
 
-  :where(.sds-badge[data-variant="dark"][data-tone="brand"]),
+  :where(.sds-badge[data-variant="dark"][data-tone="accent"]),
   :where(.sds-badge[data-variant="dark"][data-tone="danger"]) {
     border-color: var(--sds-red-700);
     background: var(--sds-red-700);

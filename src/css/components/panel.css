@@ -119,9 +119,6 @@
   :where(.sds-panel > footer) {
     position: sticky;
     inset-block-end: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sds-space-sm);
     background: color-mix(
       in srgb,
       var(--sds-color-surface-raised) 50%,

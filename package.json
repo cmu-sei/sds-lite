@@ -1,10 +1,31 @@
 {
   "name": "@cmu-sei/sds-lite",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "SDS Lite: the dependency-free, framework-neutral core of the SEI Design System.",
   "type": "module",
+  "types": "./package/sds.d.ts",
+  "module": "./package/sds.js",
+  "style": "./package/sds.css",
+  "keywords": [
+    "design-system",
+    "css",
+    "web-components",
+    "accessibility",
+    "framework-neutral"
+  ],
+  "sideEffects": [
+    "**/*.css",
+    "./src/sds.ts",
+    "./src/elements/*.ts",
+    "./package/*.js",
+    "./package/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
-    "package"
+    "package",
+    "REFERENCE.md"
   ],
   "exports": {
     ".": {
@@ -19,20 +40,31 @@
       "types": "./package/elements/dropdown.d.ts",
       "import": "./package/dropdown.js"
     },
+    "./popover": {
+      "types": "./package/elements/popover.d.ts",
+      "import": "./package/popover.js"
+    },
     "./tabs": {
       "types": "./package/elements/tabs.d.ts",
       "import": "./package/tabs.js"
+    },
+    "./tooltip": {
+      "types": "./package/elements/tooltip.d.ts",
+      "import": "./package/tooltip.js"
     },
     "./toast": {
       "types": "./package/elements/toast.d.ts",
       "import": "./package/toast.js"
     },
-    "./sds.css": "./package/sds.css"
+    "./sds.css": "./package/sds.css",
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && vite build --config vite.library.config.ts && vite build --config vite.elements.config.ts && tsc -p tsconfig.declarations.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "npm run build && node --test",
+    "prepublishOnly": "npm test"
   },
   "devDependencies": {
     "typescript": "~6.0.2",
