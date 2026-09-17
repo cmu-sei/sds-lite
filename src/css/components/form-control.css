@@ -135,13 +135,4 @@
     background: var(--sds-color-surface-default);
   }
 
-  :where(
-    .sds-input:focus-visible,
-    .sds-select:focus-visible,
-    [data-sds-root] input:focus-visible,
-    [data-sds-root] select:focus-visible,
-    [data-sds-root] textarea:focus-visible
-  ) {
-    box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
-  }
 }

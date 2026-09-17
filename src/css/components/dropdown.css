@@ -48,9 +48,16 @@
       .sds-dropdown-menu button:hover,
       .sds-dropdown-menu a[role="menuitem"]:hover
     ) {
-      color: var(--sds-color-text-default);
       background: var(--sds-color-interactive-subtle-hover);
     }
+  }
+
+  :where(
+    .sds-dropdown-menu button:focus-visible,
+    .sds-dropdown-menu a[role="menuitem"]:focus-visible
+  ) {
+    background: var(--sds-color-interactive-subtle-hover);
+    box-shadow: none;
   }
 
   :where(

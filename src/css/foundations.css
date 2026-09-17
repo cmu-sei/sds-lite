@@ -68,8 +68,8 @@
   }
 
   :where([data-sds-root] :focus-visible) {
-    outline: 2px solid var(--sds-color-focus-ring);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
   }
 
   :where([data-sds-root]) ::selection {
@@ -93,7 +93,9 @@
 
   @media (forced-colors: active) {
     :where([data-sds-root] :focus-visible) {
-      outline-color: Highlight;
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+      box-shadow: none;
     }
   }
 }
