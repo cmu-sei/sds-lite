@@ -1,4 +1,11 @@
+import { readFileSync } from 'node:fs'
+
 import { defineConfig } from 'vite'
+
+const wordmark = readFileSync(
+  new URL('./src/assets/sei-wordmark.svg', import.meta.url),
+  'utf8',
+)
 
 export default defineConfig({
   publicDir: false,
@@ -15,6 +22,38 @@ export default defineConfig({
           source: stylesheet.source,
         })
         delete bundle['auto.css']
+      },
+    },
+    {
+      name: 'externalize-wordmark',
+      generateBundle(_options, bundle) {
+        const wordmarkDataUrl =
+          /url\("data:image\/svg\+xml,[^"]*data-id='sds-sei-wordmark'[^"]*"\)/g
+        let referenced = false
+
+        for (const output of Object.values(bundle)) {
+          if (
+            output.type !== 'asset' ||
+            !output.fileName.endsWith('.css') ||
+            typeof output.source !== 'string'
+          ) {
+            continue
+          }
+
+          const source = output.source.replace(wordmarkDataUrl, () => {
+            referenced = true
+            return 'url("./assets/sei-wordmark.svg")'
+          })
+          output.source = source
+        }
+
+        if (referenced) {
+          this.emitFile({
+            type: 'asset',
+            fileName: 'assets/sei-wordmark.svg',
+            source: wordmark,
+          })
+        }
       },
     },
   ],

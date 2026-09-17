@@ -5,7 +5,7 @@
   "type": "module",
   "types": "./package/sds.d.ts",
   "module": "./package/sds.js",
-  "style": "./package/sds.css",
+  "style": "./sds.css",
   "customElements": "./custom-elements.json",
   "keywords": [
     "design-system",
@@ -16,14 +16,20 @@
   ],
   "sideEffects": [
     "**/*.css",
-    "./src/auto.ts",
+    "./auto.js",
     "./package/auto.js"
   ],
   "publishConfig": {
     "access": "public"
   },
   "files": [
+    "auto.js",
+    "brand.css",
+    "core.css",
+    "layouts.css",
     "package",
+    "prose.css",
+    "sds.css",
     "REFERENCE.md",
     "custom-elements.json"
   ],
@@ -60,16 +66,16 @@
       "types": "./package/elements/toast.d.ts",
       "import": "./package/toast.js"
     },
-    "./sds.css": "./package/sds.css",
-    "./core.css": "./package/core.css",
-    "./layouts.css": "./package/layouts.css",
-    "./prose.css": "./package/prose.css",
-    "./brand.css": "./package/brand.css",
+    "./sds.css": "./sds.css",
+    "./core.css": "./core.css",
+    "./layouts.css": "./layouts.css",
+    "./prose.css": "./prose.css",
+    "./brand.css": "./brand.css",
     "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && vite build --config vite.library.config.ts && tsc -p tsconfig.declarations.json",
+    "build": "tsc && vite build && vite build --config vite.library.config.ts && tsc -p tsconfig.declarations.json && node scripts/prepare-package.mjs",
     "preview": "vite preview",
     "test": "npm run build && node --test && playwright test",
     "test:browser": "playwright test",

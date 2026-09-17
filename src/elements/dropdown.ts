@@ -2,6 +2,7 @@ import { FloatingPositioner } from './floating.js'
 import {
   defineCustomElement,
   directElementChildren,
+  ElementConnection,
   ensureId,
 } from './internals.js'
 
@@ -15,15 +16,14 @@ export class SdsDropdownElement extends HTMLElementBase {
   private menu: HTMLElement | null = null
   private items: HTMLElement[] = []
   private positioner: FloatingPositioner | null = null
-  private controller: AbortController | null = null
-  private observer: MutationObserver | null = null
+  private connection = new ElementConnection()
 
   connectedCallback(): void {
-    this.controller?.abort()
-    this.observer?.disconnect()
-    this.controller = new AbortController()
-    this.observer = new MutationObserver(() => this.connectedCallback())
-    this.observer.observe(this, { childList: true })
+    const signal = this.connection.connect(
+      this,
+      () => this.connectedCallback(),
+      { childList: true },
+    )
 
     const children = directElementChildren(this)
     const trigger = children.find(
@@ -77,26 +77,25 @@ export class SdsDropdownElement extends HTMLElementBase {
     this.collectItems()
 
     trigger.addEventListener('keydown', this.handleTriggerKeydown, {
-      signal: this.controller.signal,
+      signal,
     })
     menu.addEventListener('beforetoggle', this.handleBeforeToggle, {
-      signal: this.controller.signal,
+      signal,
     })
     menu.addEventListener('toggle', this.handleToggle, {
-      signal: this.controller.signal,
+      signal,
     })
     menu.addEventListener('keydown', this.handleMenuKeydown, {
-      signal: this.controller.signal,
+      signal,
     })
     menu.addEventListener('click', this.handleMenuClick, {
-      signal: this.controller.signal,
+      signal,
     })
-    this.positioner.observe(this.controller.signal)
+    this.positioner.observe(signal)
   }
 
   disconnectedCallback(): void {
-    this.controller?.abort()
-    this.observer?.disconnect()
+    this.connection.disconnect()
     this.positioner = null
   }
 
@@ -226,7 +225,6 @@ export class SdsDropdownElement extends HTMLElementBase {
     }
     this.close()
   }
-
 }
 
 declare global {

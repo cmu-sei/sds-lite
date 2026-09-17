@@ -149,6 +149,35 @@
               "description": "neutral, accent, info, success, warning, or danger."
             }
           ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Reflects the open attribute."
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "description": "Opens the toast, starts its timer, and dispatches sds-open."
+            },
+            {
+              "kind": "method",
+              "name": "close",
+              "description": "Closes the toast and dispatches sds-close.",
+              "parameters": [
+                {
+                  "name": "reason",
+                  "type": {
+                    "text": "SdsToastCloseReason"
+                  },
+                  "default": "'programmatic'"
+                }
+              ]
+            }
+          ],
           "events": [
             {
               "name": "sds-open",

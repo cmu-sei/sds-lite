@@ -46,7 +46,9 @@ import '@cmu-sei/sds-lite/auto'
 ```
 
 The `/auto` entry registers dialogs, panels, dropdowns, tooltips, popovers,
-tabs, and toasts. Use it for static sites and client-only applications.
+tabs, and toasts. Use it for static sites and client-only applications. The
+default stylesheet contains common controls, content recipes, layouts, and
+prose. Import `brand.css` separately for SEI application and brochure shells.
 
 The root entry is side-effect-free. Server-rendered applications import
 `defineSds()` from it and call the function after hydration:
@@ -83,7 +85,7 @@ registerSdsTabs()
 | `@cmu-sei/sds-lite/tabs` | Tabs class and registration function |
 | `@cmu-sei/sds-lite/tooltip` | Tooltip class and registration function |
 | `@cmu-sei/sds-lite/toast` | Toast class, helper, types, and registration function |
-| `@cmu-sei/sds-lite/sds.css` | Every visual recipe, token, and utility |
+| `@cmu-sei/sds-lite/sds.css` | Common recipes, layouts, prose, tokens, and utilities |
 | `@cmu-sei/sds-lite/core.css` | Foundations and common recipes |
 | `@cmu-sei/sds-lite/layouts.css` | Grid, flex, page, action, and sidebar layouts |
 | `@cmu-sei/sds-lite/prose.css` | Long-form content |
@@ -93,12 +95,17 @@ The JavaScript entries share their implementations and are safe to combine.
 
 ### Plain HTML without a bundler
 
-Copy `package/sds.css` and `package/auto.js` from the installed package into
-your public assets:
+Use the stable top-level CDN files:
 
 ```html
-<link rel="stylesheet" href="/assets/sds.css">
-<script type="module" src="/assets/auto.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/sds.css"
+>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/auto.js"
+></script>
 ```
 
 CSS-only pages may omit the script. Dialogs, panels, dropdowns, popovers, tabs,
@@ -263,6 +270,7 @@ attributes are not duplicated.
 | `.sds-timeline` | `<ol>` | Vertical or horizontal event sequence |
 | `.sds-timeline-item` | Direct child `<li>` | Timeline event |
 | `.sds-timeline-marker` | First item child | Optional custom timeline marker |
+| `.sds-toaster` | Notification container | Fixed region that owns toast elements |
 | `.sds-tooltip-content` | Tooltip text element | Anchored descriptive text |
 
 ### Custom elements
@@ -273,7 +281,6 @@ attributes are not duplicated.
 | `<sds-popover>` | Delayed-hover interactive anchored content | `/popover` |
 | `<sds-tabs>` | Tab selection and keyboard interaction | `/tabs` |
 | `<sds-tooltip>` | Hover and focus description positioning | `/tooltip` |
-| `<sds-toaster>` | Fixed notification region | CSS only |
 | `<sds-toast>` | Timed or persistent notification | `/toast` |
 
 There are intentionally no custom elements for buttons, links, inputs, tags,
@@ -930,6 +937,12 @@ When headers should not be visible, keep them in the accessibility tree:
 ```
 
 ## Application and page layouts
+
+These specialized SEI shells require the optional brand stylesheet:
+
+```ts
+import '@cmu-sei/sds-lite/brand.css'
+```
 
 `.sds-app` has three layouts matching the full SDS shells:
 
@@ -1868,7 +1881,7 @@ Place all notifications in one labeled toaster:
 ```html
 <button type="button" data-toast-open="saved-toast">Save project</button>
 
-<sds-toaster aria-label="Notifications">
+<div class="sds-toaster" aria-label="Notifications">
   <sds-toast
     id="saved-toast"
     data-tone="success"
@@ -1886,7 +1899,7 @@ Place all notifications in one labeled toaster:
       &times;
     </button>
   </sds-toast>
-</sds-toaster>
+</div>
 ```
 
 | Toast interface | Values | Default |
@@ -1942,11 +1955,12 @@ notify('Your project was saved.', {
 | `persistent` | Boolean | `false` |
 | `urgent` | Boolean; uses `role="alert"` when true | `false` |
 
-`notify()` accepts either a `<sds-toaster>` or a container that owns one, and
+`notify()` accepts either an `.sds-toaster` or a container that owns one, and
 reuses that toaster when supplied. Otherwise it uses the first document
 toaster or creates one inside the first SDS root. If no root exists, it creates
-a self-contained SDS root for the toaster. A supplied `duration` that is not a
-positive finite number throws `RangeError`.
+a self-contained SDS root for the toaster. It registers `<sds-toast>` itself,
+so `/auto` or `defineSds()` is not required. A supplied `duration` that is not
+a positive finite number throws `RangeError`.
 It must be called in a browser, although importing it during server rendering
 is safe. A toast created by `notify()` is removed from the DOM 250 milliseconds
 after its `sds-close` event.
@@ -2062,15 +2076,10 @@ import {
 defineSds()
 ```
 
-Pass `include` to register a subset. Repeated calls are safe:
-
-```ts
-defineSds({ include: ['dropdown', 'tabs'] })
-```
-
-An unknown behavior name throws `RangeError`. If another implementation has
-already registered one of the same custom-element names, registration throws
-rather than mixing incompatible constructors.
+Repeated calls are safe. To register a subset and download only its
+implementation, use the individual entries below. If another implementation
+has already registered one of the same custom-element names, registration
+throws rather than mixing incompatible constructors.
 
 Individual entries expose their element class and idempotent registration
 function for specialized integrations:
@@ -2084,9 +2093,9 @@ function for specialized integrations:
 | `/tooltip` | `SdsTooltipElement`, `registerSdsTooltip()` |
 | `/toast` | `SdsToastElement`, `SdsToastCloseReason`, `SdsToastTone`, `SdsNotifyOptions`, `notify()`, `registerSdsToast()` |
 
-The root entry also exports `notify()`, `DefineSdsOptions`, `SdsBehavior`,
-`SdsNotifyOptions`, `SdsTabsChangeDetail`, `SdsToastCloseReason`, and
-`SdsToastTone`. Import custom-element classes from their individual entries.
+The root entry also exports `notify()`, `SdsNotifyOptions`,
+`SdsTabsChangeDetail`, `SdsToastCloseReason`, and `SdsToastTone`. Import
+custom-element classes from their individual entries.
 
 ### Events
 

@@ -62,6 +62,35 @@ test('the automatic entry and root entry share behavior modules', async () => {
   assert.match(root, /from "\.\/toast\.js"/)
 })
 
+test('the CDN entries use stable top-level paths', async () => {
+  assert.equal(await readFile('auto.js', 'utf8'), "import './package/auto.js'\n")
+  const stylesheet = await readFile('sds.css', 'utf8')
+  assert.match(stylesheet, /@layer sds\.tokens/)
+})
+
+test('the default stylesheet omits specialized brand shells', async () => {
+  const stylesheet = await readFile('sds.css', 'utf8')
+  const brand = await readFile('brand.css', 'utf8')
+
+  assert.doesNotMatch(stylesheet, /\.sds-app-header/)
+  assert.doesNotMatch(stylesheet, /\.sds-brochure/)
+  assert.match(brand, /\.sds-app-header/)
+  assert.match(brand, /\.sds-brochure/)
+})
+
+test('brand styles share one external wordmark asset', async () => {
+  const brand = await readFile('brand.css', 'utf8')
+
+  assert.doesNotMatch(brand, /data-id='sds-sei-wordmark'/)
+  assert.match(brand, /url\("\.\/package\/assets\/sei-wordmark\.svg"\)/)
+  await access('package/assets/sei-wordmark.svg')
+})
+
+test('internal TypeScript declarations are not published', async () => {
+  await assert.rejects(access('package/elements/floating.d.ts'))
+  await assert.rejects(access('package/elements/internals.d.ts'))
+})
+
 test('the package remains dependency-free', () => {
   assert.equal(packageJson.dependencies, undefined)
   assert.equal(packageJson.peerDependencies, undefined)
@@ -87,4 +116,12 @@ test('custom-element metadata describes every registered element', () => {
   assert.equal(attributes.includes('data-mode'), false)
   assert.equal(attributes.includes('data-valid'), false)
   assert.equal(attributes.includes('data-field-required'), false)
+
+  const toast = declarations.find(
+    (declaration) => declaration.tagName === 'sds-toast',
+  )
+  assert.deepEqual(
+    toast.members?.map((member) => member.name),
+    ['open', 'show', 'close'],
+  )
 })

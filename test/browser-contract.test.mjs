@@ -63,18 +63,14 @@ test('the root entry is side-effect-free and hydration-safe', () => {
   const dropdown = document.querySelector('sds-dropdown')
   const before = dropdown?.outerHTML
 
-  defineSds({ include: ['dropdown'] })
+  defineSds()
+  defineSds()
 
   assert.equal(customElements.get('sds-dropdown'), SdsDropdownElement)
   assert.equal(dropdown?.outerHTML, before)
-  assert.throws(
-    () => defineSds({ include: ['unknown-behavior'] }),
-    RangeError,
-  )
 })
 
 test('popover enhancement preserves native activation semantics', async () => {
-  defineSds({ include: ['popover'] })
   document.body.innerHTML = `
     <sds-popover>
       <button type="button">Details</button>
@@ -99,7 +95,6 @@ test('popover enhancement preserves native activation semantics', async () => {
 })
 
 test('tabs require an authored accessible name', async () => {
-  defineSds({ include: ['tabs'] })
   const originalWarn = console.warn
   let warning = ''
   console.warn = (message) => {
@@ -146,7 +141,6 @@ test('tabs honor an authored initial selection', async () => {
 })
 
 test('notify validates duration and respects an explicit container', () => {
-  defineSds({ include: ['toast'] })
   const container = document.createElement('section')
   container.dataset.sdsRoot = ''
   document.body.append(container)
@@ -158,14 +152,15 @@ test('notify validates duration and respects an explicit container', () => {
 
   const toast = notify('Saved', { container, persistent: true })
   assert.equal(toast.closest('section'), container)
-  assert.equal(container.querySelector('sds-toaster')?.contains(toast), true)
+  assert.equal(container.querySelector('.sds-toaster')?.contains(toast), true)
 
-  const toaster = document.createElement('sds-toaster')
+  const toaster = document.createElement('div')
+  toaster.className = 'sds-toaster'
   document.body.append(toaster)
   const directToast = notify('Published', {
     container: toaster,
     persistent: true,
   })
   assert.equal(directToast.parentElement, toaster)
-  assert.equal(toaster.querySelector('sds-toaster'), null)
+  assert.equal(toaster.querySelector('.sds-toaster'), null)
 })

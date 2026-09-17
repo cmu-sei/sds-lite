@@ -19,6 +19,30 @@ export function directElementChildren(element: Element): HTMLElement[] {
   )
 }
 
+export class ElementConnection {
+  private controller: AbortController | null = null
+  private observer: MutationObserver | null = null
+
+  connect(
+    element: Element,
+    reconnect: () => void,
+    options: MutationObserverInit,
+  ): AbortSignal {
+    this.disconnect()
+    this.controller = new AbortController()
+    this.observer = new MutationObserver(reconnect)
+    this.observer.observe(element, options)
+    return this.controller.signal
+  }
+
+  disconnect(): void {
+    this.controller?.abort()
+    this.observer?.disconnect()
+    this.controller = null
+    this.observer = null
+  }
+}
+
 export function defineCustomElement(
   name: string,
   constructor: CustomElementConstructor,

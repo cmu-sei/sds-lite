@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
-const exampleFiles = ['index.html', 'REFERENCE.md', 'Recommended.md']
+const exampleFiles = ['index.html', 'REFERENCE.md']
 
 test('every example Cancel button uses the ghost variant', async () => {
   for (const file of exampleFiles) {

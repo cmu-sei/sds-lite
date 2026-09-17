@@ -12,7 +12,7 @@ Install it:
 npm install @cmu-sei/sds-lite
 ```
 
-Import the complete styles and automatic browser behavior once:
+Import the common styles and automatic browser behavior once:
 
 ```js
 import '@cmu-sei/sds-lite/sds.css'
@@ -31,6 +31,10 @@ Add `data-sds-root` around the part of the page SDS Lite should style:
 
 That is enough for headings, text, links, buttons, inputs, selects,
 checkboxes, and radio buttons.
+
+Most applications need only those two imports, `data-sds-root`, semantic HTML,
+and the copy-paste recipes below. The long interface reference is for looking
+up a specific recipe, not a vocabulary you need to learn first.
 
 ## Copy-paste examples
 
@@ -125,6 +129,9 @@ notify('Your project was saved.', {
 })
 ```
 
+`notify()` registers its own behavior; it does not require `/auto` or a prior
+`defineSds()` call.
+
 ## Themes
 
 Forge is the default. Change the theme or color scheme on any SDS root:
@@ -141,6 +148,16 @@ Forge is the default. Change the theme or color scheme on any SDS root:
 
 Themes are `forge` and `plaid`. Color schemes are `light`, `dark`, and
 `system`.
+
+SEI application and brochure shells are specialized, so their styles are
+separate from the lightweight default:
+
+```js
+import '@cmu-sei/sds-lite/brand.css'
+```
+
+For plain HTML, load the same file from
+`https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/brand.css`.
 
 ## Server rendering
 
@@ -179,11 +196,11 @@ Use a version-pinned CDN URL:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/package/sds.css"
+  href="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/sds.css"
 >
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/package/auto.js"
+  src="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/auto.js"
 ></script>
 
 <main data-sds-root>

@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 package
+/auto.js
+/brand.css
+/core.css
+/layouts.css
+/prose.css
+/sds.css
 
 # Editor directories and files
 .vscode/*

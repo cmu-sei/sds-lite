@@ -196,13 +196,18 @@ export function notify(
     throw new RangeError('notify() duration must be a positive number.')
   }
 
+  registerSdsToast()
+
   const scope = options.container ?? document
+  const containerIsToaster =
+    options.container?.matches('.sds-toaster, sds-toaster') ?? false
   let toaster =
-    options.container?.localName === 'sds-toaster'
+    containerIsToaster
       ? options.container
-      : scope.querySelector<HTMLElement>('sds-toaster')
+      : scope.querySelector<HTMLElement>('.sds-toaster, sds-toaster')
   if (!toaster) {
-    toaster = document.createElement('sds-toaster')
+    toaster = document.createElement('div')
+    toaster.className = 'sds-toaster'
     toaster.setAttribute('aria-label', 'Notifications')
     const root =
       options.container ??

@@ -1,6 +1,7 @@
 import {
   defineCustomElement,
   directElementChildren,
+  ElementConnection,
   ensureId,
 } from './internals.js'
 
@@ -18,15 +19,14 @@ export interface SdsTabsChangeDetail {
 export class SdsTabsElement extends HTMLElementBase {
   private tabs: HTMLElement[] = []
   private panels = new Map<HTMLElement, HTMLElement>()
-  private controller: AbortController | null = null
-  private observer: MutationObserver | null = null
+  private connection = new ElementConnection()
 
   connectedCallback(): void {
-    this.controller?.abort()
-    this.observer?.disconnect()
-    this.controller = new AbortController()
-    this.observer = new MutationObserver(() => this.connectedCallback())
-    this.observer.observe(this, { childList: true, subtree: true })
+    const signal = this.connection.connect(
+      this,
+      () => this.connectedCallback(),
+      { childList: true, subtree: true },
+    )
 
     const children = directElementChildren(this)
     const tabList =
@@ -119,16 +119,15 @@ export class SdsTabsElement extends HTMLElementBase {
     }
 
     tabList.addEventListener('click', this.handleClick, {
-      signal: this.controller.signal,
+      signal,
     })
     tabList.addEventListener('keydown', this.handleKeydown, {
-      signal: this.controller.signal,
+      signal,
     })
   }
 
   disconnectedCallback(): void {
-    this.controller?.abort()
-    this.observer?.disconnect()
+    this.connection.disconnect()
   }
 
   private isDisabled(tab: HTMLElement): boolean {

@@ -5,6 +5,7 @@ import {
 import {
   defineCustomElement,
   directElementChildren,
+  ElementConnection,
   ensureId,
 } from './internals.js'
 
@@ -16,16 +17,15 @@ const HTMLElementBase: typeof HTMLElement =
 export class SdsTooltipElement extends HTMLElementBase {
   private positioner: FloatingPositioner | null = null
   private hoverController: FloatingHoverController | null = null
-  private controller: AbortController | null = null
-  private observer: MutationObserver | null = null
+  private connection = new ElementConnection()
 
   connectedCallback(): void {
-    this.controller?.abort()
-    this.observer?.disconnect()
     this.hoverController?.disconnect()
-    this.controller = new AbortController()
-    this.observer = new MutationObserver(() => this.connectedCallback())
-    this.observer.observe(this, { childList: true })
+    const signal = this.connection.connect(
+      this,
+      () => this.connectedCallback(),
+      { childList: true },
+    )
 
     const children = directElementChildren(this)
     const content =
@@ -73,13 +73,12 @@ export class SdsTooltipElement extends HTMLElementBase {
         hoverOpenDelay: 0,
       },
     )
-    this.hoverController.observe(this.controller.signal)
-    this.positioner.observe(this.controller.signal)
+    this.hoverController.observe(signal)
+    this.positioner.observe(signal)
   }
 
   disconnectedCallback(): void {
-    this.controller?.abort()
-    this.observer?.disconnect()
+    this.connection.disconnect()
     this.hoverController?.disconnect()
     this.hoverController = null
     this.positioner = null

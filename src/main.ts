@@ -1,4 +1,5 @@
 import './style.css'
+import './brand.css'
 import './demo.css'
 import { defineSds } from './sds.ts'
 
