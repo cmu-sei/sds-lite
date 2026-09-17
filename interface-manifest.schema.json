@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cmu-sei.github.io/sds-lite/interface-manifest.schema.json",
+  "title": "SDS Lite interface manifest",
+  "type": "object",
+  "required": ["schemaVersion", "globalAttributes", "optionFamilies", "recipes", "customElements"],
+  "properties": {
+    "schemaVersion": {"type": "string"},
+    "globalAttributes": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/attribute"}
+    },
+    "optionFamilies": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["description", "values"],
+        "properties": {
+          "nativeName": {"type": "string"},
+          "description": {"type": "string"},
+          "values": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "recipes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "category", "classes", "description", "options"],
+        "properties": {
+          "name": {"type": "string"},
+          "category": {"type": "string"},
+          "classes": {"type": "array", "items": {"type": "string"}},
+          "elements": {"type": "array", "items": {"type": "string"}},
+          "description": {"type": "string"},
+          "options": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "customElements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tagName", "className", "module", "description", "content", "attributes", "members"],
+        "properties": {
+          "tagName": {"type": "string"},
+          "className": {"type": "string"},
+          "module": {"type": "string"},
+          "description": {"type": "string"},
+          "content": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "attributes": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/attribute"}
+          },
+          "members": {"type": "array"},
+          "events": {"type": "array"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "attribute": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "type": {"type": "string"},
+        "family": {"type": "string"},
+        "values": {"type": "array", "items": {"type": "string"}},
+        "default": {"type": "string"}
+      }
+    }
+  }
+}

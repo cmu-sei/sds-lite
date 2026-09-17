@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "strict": true,
+    "skipLibCheck": false,
+    "noEmit": true
+  },
+  "files": [
+    "./framework-stubs.d.ts",
+    "./framework-types.tsx"
+  ]
+}

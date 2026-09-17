@@ -1,0 +1,716 @@
+{
+  "version": 1.1,
+  "globalAttributes": [
+    {
+      "name": "data-sds-root",
+      "description": "Scopes SDS Lite foundations, recipes, and tokens."
+    },
+    {
+      "name": "data-sds-theme",
+      "description": "Selects an SDS Lite theme.",
+      "values": [
+        {
+          "name": "forge"
+        },
+        {
+          "name": "plaid"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-color-scheme",
+      "description": "Selects a light, dark, or system color scheme.",
+      "values": [
+        {
+          "name": "light"
+        },
+        {
+          "name": "dark"
+        },
+        {
+          "name": "system"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-unstyled",
+      "description": "Opts a link out of automatic SDS Lite styling."
+    },
+    {
+      "name": "data-sds-tone",
+      "description": "Semantic color intent.",
+      "values": [
+        {
+          "name": "neutral"
+        },
+        {
+          "name": "accent"
+        },
+        {
+          "name": "info"
+        },
+        {
+          "name": "success"
+        },
+        {
+          "name": "warning"
+        },
+        {
+          "name": "danger"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-size",
+      "description": "Visual scale.",
+      "values": [
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-width",
+      "description": "Recipe or overlay width.",
+      "values": [
+        {
+          "name": "auto"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-orientation",
+      "description": "Layout or interaction orientation.",
+      "values": [
+        {
+          "name": "horizontal"
+        },
+        {
+          "name": "vertical"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-gap",
+      "description": "Layout spacing.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-align",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "center"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "start"
+        },
+        {
+          "name": "stretch"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-avatar",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-block",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-callout-close",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-columns",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "1"
+        },
+        {
+          "name": "2"
+        },
+        {
+          "name": "3"
+        },
+        {
+          "name": "4"
+        },
+        {
+          "name": "5"
+        },
+        {
+          "name": "6"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-density",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "compact"
+        },
+        {
+          "name": "condensed"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-divided",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-grow",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-inset",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-justify",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "between"
+        },
+        {
+          "name": "center"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "start"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-no-shrink",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-return-value",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-row-highlight",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-shape",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "circle"
+        },
+        {
+          "name": "icon"
+        },
+        {
+          "name": "portrait"
+        },
+        {
+          "name": "square"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-side",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "bottom"
+        },
+        {
+          "name": "left"
+        },
+        {
+          "name": "right"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-standalone",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-sticky",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "end"
+        },
+        {
+          "name": "start"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-toast-close",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-toast-open",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-variant",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "application"
+        },
+        {
+          "name": "bold"
+        },
+        {
+          "name": "brochure"
+        },
+        {
+          "name": "cta"
+        },
+        {
+          "name": "dark"
+        },
+        {
+          "name": "ghost"
+        },
+        {
+          "name": "inline"
+        },
+        {
+          "name": "light"
+        },
+        {
+          "name": "light-border"
+        },
+        {
+          "name": "outline"
+        },
+        {
+          "name": "primary"
+        },
+        {
+          "name": "secondary"
+        },
+        {
+          "name": "simple"
+        },
+        {
+          "name": "solid"
+        },
+        {
+          "name": "subtle"
+        },
+        {
+          "name": "tertiary"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-wrap",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    }
+  ],
+  "tags": [
+    {
+      "name": "sds-dropdown",
+      "description": "Enhances a direct child button and menu with Popover positioning and menu keyboard behavior. One direct child button trigger. One direct child menu or Popover surface.",
+      "attributes": [
+        {
+          "name": "open",
+          "description": "Whether the menu is open."
+        },
+        {
+          "name": "placement",
+          "description": "Preferred logical floating placement.",
+          "values": [
+            {
+              "name": "block-start"
+            },
+            {
+              "name": "block-start-start"
+            },
+            {
+              "name": "block-start-end"
+            },
+            {
+              "name": "block-end"
+            },
+            {
+              "name": "block-end-start"
+            },
+            {
+              "name": "block-end-end"
+            },
+            {
+              "name": "inline-start"
+            },
+            {
+              "name": "inline-start-start"
+            },
+            {
+              "name": "inline-start-end"
+            },
+            {
+              "name": "inline-end"
+            },
+            {
+              "name": "inline-end-start"
+            },
+            {
+              "name": "inline-end-end"
+            }
+          ]
+        },
+        {
+          "name": "offset",
+          "description": "Nonnegative offset in CSS pixels."
+        },
+        {
+          "name": "width",
+          "description": "Recipe or overlay width.",
+          "values": [
+            {
+              "name": "auto"
+            },
+            {
+              "name": "sm"
+            },
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            },
+            {
+              "name": "xl"
+            },
+            {
+              "name": "2xl"
+            }
+          ]
+        },
+        {
+          "name": "hide-caret",
+          "description": "Hides the visual caret."
+        }
+      ]
+    },
+    {
+      "name": "sds-popover",
+      "description": "Enhances a direct child button and rich Popover surface with delayed hover and focus behavior. One direct child button trigger. One direct child rich-content Popover surface.",
+      "attributes": [
+        {
+          "name": "open",
+          "description": "Whether the popover is open."
+        },
+        {
+          "name": "placement",
+          "description": "Preferred logical floating placement.",
+          "values": [
+            {
+              "name": "block-start"
+            },
+            {
+              "name": "block-start-start"
+            },
+            {
+              "name": "block-start-end"
+            },
+            {
+              "name": "block-end"
+            },
+            {
+              "name": "block-end-start"
+            },
+            {
+              "name": "block-end-end"
+            },
+            {
+              "name": "inline-start"
+            },
+            {
+              "name": "inline-start-start"
+            },
+            {
+              "name": "inline-start-end"
+            },
+            {
+              "name": "inline-end"
+            },
+            {
+              "name": "inline-end-start"
+            },
+            {
+              "name": "inline-end-end"
+            }
+          ]
+        },
+        {
+          "name": "offset",
+          "description": "Nonnegative offset in CSS pixels."
+        },
+        {
+          "name": "width",
+          "description": "Recipe or overlay width.",
+          "values": [
+            {
+              "name": "auto"
+            },
+            {
+              "name": "sm"
+            },
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            },
+            {
+              "name": "xl"
+            },
+            {
+              "name": "2xl"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sds-tabs",
+      "description": "Coordinates a tab list and one panel per tab. A direct child tab-list container with button or link children. One direct child panel for every tab.",
+      "attributes": [
+        {
+          "name": "value",
+          "description": "Value of the selected tab."
+        },
+        {
+          "name": "activation",
+          "description": "Whether focus automatically selects a tab.",
+          "values": [
+            {
+              "name": "automatic"
+            },
+            {
+              "name": "manual"
+            }
+          ]
+        },
+        {
+          "name": "orientation",
+          "description": "Layout or interaction orientation.",
+          "values": [
+            {
+              "name": "horizontal"
+            },
+            {
+              "name": "vertical"
+            }
+          ]
+        },
+        {
+          "name": "size",
+          "description": "Visual scale.",
+          "values": [
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            }
+          ]
+        },
+        {
+          "name": "tone",
+          "description": "Semantic color intent.",
+          "values": [
+            {
+              "name": "neutral"
+            },
+            {
+              "name": "accent"
+            },
+            {
+              "name": "info"
+            },
+            {
+              "name": "success"
+            },
+            {
+              "name": "warning"
+            },
+            {
+              "name": "danger"
+            }
+          ]
+        },
+        {
+          "name": "variant",
+          "description": "Visual treatment.",
+          "values": [
+            {
+              "name": "folder"
+            },
+            {
+              "name": "block"
+            },
+            {
+              "name": "underline"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sds-tooltip",
+      "description": "Enhances a direct child trigger and short description with accessible tooltip behavior. One direct child trigger. One direct child text description.",
+      "attributes": [
+        {
+          "name": "placement",
+          "description": "Preferred logical floating placement.",
+          "values": [
+            {
+              "name": "block-start"
+            },
+            {
+              "name": "block-start-start"
+            },
+            {
+              "name": "block-start-end"
+            },
+            {
+              "name": "block-end"
+            },
+            {
+              "name": "block-end-start"
+            },
+            {
+              "name": "block-end-end"
+            },
+            {
+              "name": "inline-start"
+            },
+            {
+              "name": "inline-start-start"
+            },
+            {
+              "name": "inline-start-end"
+            },
+            {
+              "name": "inline-end"
+            },
+            {
+              "name": "inline-end-start"
+            },
+            {
+              "name": "inline-end-end"
+            }
+          ]
+        },
+        {
+          "name": "offset",
+          "description": "Nonnegative offset in CSS pixels."
+        }
+      ]
+    },
+    {
+      "name": "sds-toast",
+      "description": "A timed or persistent notification. A direct child strong title. Message content. A close control for persistent notifications.",
+      "attributes": [
+        {
+          "name": "open",
+          "description": "Whether the toast is visible."
+        },
+        {
+          "name": "tone",
+          "description": "Semantic color intent.",
+          "values": [
+            {
+              "name": "neutral"
+            },
+            {
+              "name": "accent"
+            },
+            {
+              "name": "info"
+            },
+            {
+              "name": "success"
+            },
+            {
+              "name": "warning"
+            },
+            {
+              "name": "danger"
+            }
+          ]
+        },
+        {
+          "name": "duration",
+          "description": "Positive duration in milliseconds."
+        },
+        {
+          "name": "persistent",
+          "description": "Disables automatic dismissal."
+        }
+      ]
+    }
+  ]
+}
