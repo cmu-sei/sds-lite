@@ -39,55 +39,67 @@ npm install @cmu-sei/sds-lite
 
 ### Easiest setup
 
-Import the stylesheet once and import the eager JavaScript entry once:
+Import the stylesheet once and import the automatic browser entry once:
 
 ```ts
 import '@cmu-sei/sds-lite/sds.css'
-import '@cmu-sei/sds-lite'
+import '@cmu-sei/sds-lite/auto'
 ```
 
-The root entry registers dialogs, panels, dropdowns, tooltips, popovers, tabs,
-and toasts. It is safe to import during server rendering because registration
-checks for browser globals before using them. Server and browser bundles
-evaluate the entry separately; importing it does not install browser behavior
-into an SSR process.
+The `/auto` entry registers dialogs, panels, dropdowns, tooltips, popovers,
+tabs, and toasts. Use it for static sites and client-only applications.
+
+The root entry is side-effect-free. Server-rendered applications import
+`defineSds()` from it and call the function after hydration:
+
+```ts
+import { defineSds } from '@cmu-sei/sds-lite'
+
+hydrateApplication()
+defineSds()
+```
 
 ### Load only behavior you use
 
-Always import the same stylesheet. Replace the eager JavaScript entry with one
-or more behavior entries:
+Import `core.css` and any optional stylesheets you need. Register only the
+behaviors used by the page:
 
 ```ts
-import '@cmu-sei/sds-lite/sds.css'
-import '@cmu-sei/sds-lite/dropdown'
-import '@cmu-sei/sds-lite/tooltip'
-import '@cmu-sei/sds-lite/tabs'
+import '@cmu-sei/sds-lite/core.css'
+import '@cmu-sei/sds-lite/layouts.css'
+import { registerSdsDropdown } from '@cmu-sei/sds-lite/dropdown'
+import { registerSdsTabs } from '@cmu-sei/sds-lite/tabs'
+
+registerSdsDropdown()
+registerSdsTabs()
 ```
 
-| Import | Enables |
+| Import | Provides |
 |---|---|
-| `@cmu-sei/sds-lite` | Every behavior module |
-| `@cmu-sei/sds-lite/dialog` | `.sds-dialog` and `.sds-panel` behavior |
-| `@cmu-sei/sds-lite/dropdown` | `<sds-dropdown>` |
-| `@cmu-sei/sds-lite/popover` | `<sds-popover>` |
-| `@cmu-sei/sds-lite/tabs` | `<sds-tabs>` |
-| `@cmu-sei/sds-lite/tooltip` | `<sds-tooltip>` |
-| `@cmu-sei/sds-lite/toast` | `<sds-toast>` and declarative toast triggers |
+| `@cmu-sei/sds-lite` | Side-effect-free `defineSds()` and notification helpers |
+| `@cmu-sei/sds-lite/auto` | Automatically registers every behavior module |
+| `@cmu-sei/sds-lite/dialog` | Dialog registration function |
+| `@cmu-sei/sds-lite/dropdown` | Dropdown class and registration function |
+| `@cmu-sei/sds-lite/popover` | Popover class and registration function |
+| `@cmu-sei/sds-lite/tabs` | Tabs class and registration function |
+| `@cmu-sei/sds-lite/tooltip` | Tooltip class and registration function |
+| `@cmu-sei/sds-lite/toast` | Toast class, helper, types, and registration function |
 | `@cmu-sei/sds-lite/sds.css` | Every visual recipe, token, and utility |
+| `@cmu-sei/sds-lite/core.css` | Foundations and common recipes |
+| `@cmu-sei/sds-lite/layouts.css` | Grid, flex, page, action, and sidebar layouts |
+| `@cmu-sei/sds-lite/prose.css` | Long-form content |
+| `@cmu-sei/sds-lite/brand.css` | Application and brochure shells, including wordmarks |
 
-Choose either the eager JavaScript entry or individual behavior entries for a
-page. Do not mix them: the published entries are independently bundled, so
-mixing them can duplicate code and produce different exported custom-element
-constructors.
+The JavaScript entries share their implementations and are safe to combine.
 
 ### Plain HTML without a bundler
 
-Copy `package/sds.css` and `package/sds.js` from the installed package into
+Copy `package/sds.css` and `package/auto.js` from the installed package into
 your public assets:
 
 ```html
 <link rel="stylesheet" href="/assets/sds.css">
-<script type="module" src="/assets/sds.js"></script>
+<script type="module" src="/assets/auto.js"></script>
 ```
 
 CSS-only pages may omit the script. Dialogs, panels, dropdowns, popovers, tabs,
@@ -127,8 +139,12 @@ a native-dialog feature; SDS Lite only adds backdrop dismissal for
 Common semantic tones are:
 
 ```text
-neutral | primary | success | info | warning | danger
+neutral | accent | info | success | warning | danger
 ```
+
+`accent` is the blue emphasis tone. `primary` is not a semantic tone; it is
+reserved for action hierarchy through `data-variant="primary"` (or the default
+button treatment).
 
 Apply `data-tone` to the recipe that should carry the tone:
 
@@ -147,7 +163,8 @@ SDS-specific options use the same attribute vocabulary everywhere:
 |---|---|
 | `data-variant` | Visual treatment |
 | `data-tone` | Semantic color intent |
-| `data-size` | Size or width tier |
+| `data-size` | Visual scale |
+| `data-width` | Width or overlay extent |
 | `data-orientation` | Horizontal or vertical layout |
 | `data-placement` | Floating-surface placement |
 | `data-gap` | Layout spacing |
@@ -224,8 +241,8 @@ attributes are not duplicated.
 | `.sds-panel` | Native `<dialog>` | Edge-attached overlay panel |
 | `.sds-popover-content` | Popover content element | Interactive anchored content |
 | `.sds-prose` | `<article>` or content container | Long-form semantic typography |
-| `.lead` | Descendant of `.sds-prose` | Introductory lead paragraph |
-| `.not-prose` | Descendant of `.sds-prose` | Excludes a subtree from prose styling |
+| `.sds-prose-lead` | Descendant of `.sds-prose` | Introductory lead paragraph |
+| `.sds-not-prose` | Descendant of `.sds-prose` | Excludes a subtree from prose styling |
 | `.sds-section-header` | `<header>` | Section title, description, and actions |
 | `.sds-sei-wordmark` | Empty `<span>` | Official SEI wordmark rendered in the application footer |
 | `.sds-select` | Native `<select>` | Explicit select styling hook |
@@ -254,7 +271,7 @@ attributes are not duplicated.
 | Public element | Purpose | Behavior import |
 |---|---|---|
 | `<sds-dropdown>` | Popover positioning and menu keyboard interaction | `/dropdown` |
-| `<sds-popover>` | Delayed-hover anchored content | `/popover` |
+| `<sds-popover>` | Delayed-hover interactive anchored content | `/popover` |
 | `<sds-tabs>` | Tab selection and keyboard interaction | `/tabs` |
 | `<sds-tooltip>` | Hover and focus description positioning | `/tooltip` |
 | `<sds-toaster>` | Fixed notification region | CSS only |
@@ -323,7 +340,7 @@ Use `.sds-button` on a link only when navigation should look like a button:
 | Button interface | Values | Default |
 |---|---|---|
 | `data-variant` | `primary`, `secondary`, `tertiary`, `ghost` | `primary` |
-| `data-tone` | All six common tones | Primary action blue |
+| `data-tone` | All six common tones | Accent action color |
 | `data-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
 | `data-density` | `compact` | Comfortable |
 | `data-shape` | `icon` | Text button |
@@ -382,13 +399,15 @@ the available width.
 
 ### Link
 
-Unclassed links are styled automatically inside an SDS root. Use `.sds-link`
-when applying a variant or size, or when another class is already present.
-`data-tone` is the only link option that also works on an unclassed link.
+Links are styled automatically inside an SDS root, even when they carry
+application classes. SDS recipe classes such as `.sds-button` and `.sds-tag`
+take precedence. Use `.sds-link` when applying a link variant or size, and use
+`data-sds-unstyled` to opt out of the default link recipe.
 
 ```html
 <a href="/projects">Projects</a>
 <a class="sds-link" href="/projects">Projects</a>
+<a class="third-party-widget" data-sds-unstyled href="/projects">Projects</a>
 ```
 
 | Link interface | Values | Default |
@@ -445,19 +464,12 @@ grid. It stacks automatically below 40rem:
 </div>
 ```
 
-Field marker and message hooks must be direct children of `.sds-field`:
-
-| Hook | Meaning |
-|---|---|
-| `data-field-required` | Visible required marker |
-| `data-field-optional` | Visible optional marker |
-| `data-field-valid` | Positive validation message |
-| `data-field-invalid` | Error validation message |
+Put required or optional text inside the label. Validation messages are direct
+`<small>` children and use the shared tone vocabulary:
 
 ```html
 <div class="sds-field">
-  <label for="email">Email</label>
-  <span data-field-required>Required</span>
+  <label for="email">Email <small data-tone="danger">Required</small></label>
   <input
     id="email"
     name="email"
@@ -466,25 +478,31 @@ Field marker and message hooks must be direct children of `.sds-field`:
     aria-describedby="email-error"
     required
   >
-  <small id="email-error" data-field-invalid>
+  <small id="email-error" data-tone="danger">
     Enter a valid email address.
   </small>
 </div>
 ```
 
-For a successfully validated control, pair `data-valid` with a visible
-message:
+Native `:user-valid` supplies the positive validation appearance after the
+user interacts with a constrained control. Pair it with a visible message
+when the application has useful success feedback:
 
 ```html
 <div class="sds-field">
   <label for="slug">Project URL</label>
-  <input id="slug" name="slug" value="atlas" data-valid aria-describedby="slug-ok">
-  <small id="slug-ok" data-field-valid>This URL is available.</small>
+  <input
+    id="slug"
+    name="slug"
+    value="atlas"
+    pattern="[a-z0-9-]+"
+    aria-describedby="slug-ok"
+  >
+  <small id="slug-ok" data-tone="success">This URL is available.</small>
 </div>
 ```
 
-`data-valid` is visual state. It does not change native validity or announce
-anything by itself. `aria-invalid="true"` is the supported invalid state.
+Use `aria-invalid="true"` when application validation finds an error.
 
 ### Text inputs, selects, and textareas
 
@@ -521,7 +539,6 @@ need the same recipe:
 | `disabled` | Native disabled state | Enabled |
 | `readonly` | Native read-only state on input/textarea | Editable |
 | `aria-invalid="true"` | Invalid appearance and semantics | Valid/unknown |
-| `data-valid` | Positive validation appearance | Valid/unknown |
 
 ### Checkbox and radio choices
 
@@ -1202,7 +1219,7 @@ Brochure Site uses Plaid typography and square corners automatically:
     <div class="sds-brochure-main sds-brochure-container">
       <article class="sds-prose">
         <h1>Publications and research</h1>
-        <p class="lead">Practical guidance for software-driven systems.</p>
+        <p class="sds-prose-lead">Practical guidance for software-driven systems.</p>
       </article>
     </div>
   </main>
@@ -1410,11 +1427,11 @@ state when the element upgrades:
 </sds-dropdown>
 ```
 
-For complete semantics before JavaScript loads, servers may author every
+For complete semantics before JavaScript loads, servers should author every
 relationship explicitly:
 
 ```html
-<sds-dropdown data-size="md" data-placement="bottom-start">
+<sds-dropdown data-width="md" data-placement="block-end-start">
   <button
     type="button"
     data-variant="ghost"
@@ -1433,11 +1450,11 @@ relationship explicitly:
     role="menu"
     aria-orientation="vertical"
   >
-    <li><span class="sds-dropdown-label">Project</span></li>
-    <li><button type="button" role="menuitem" tabindex="-1">Rename</button></li>
-    <li><a href="/duplicate" role="menuitem" tabindex="-1">Duplicate</a></li>
-    <li><hr class="sds-dropdown-divider"></li>
-    <li>
+    <li role="none"><span class="sds-dropdown-label">Project</span></li>
+    <li role="none"><button type="button" role="menuitem" tabindex="-1">Rename</button></li>
+    <li role="none"><a href="/duplicate" role="menuitem" tabindex="-1">Duplicate</a></li>
+    <li role="none"><hr class="sds-dropdown-divider"></li>
+    <li role="none">
       <button type="button" role="menuitem" tabindex="-1" data-tone="danger">
         Delete
       </button>
@@ -1448,12 +1465,11 @@ relationship explicitly:
 
 | Dropdown interface | Values | Default |
 |---|---|---|
-| `data-size` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
-| `data-placement` | `top`, `right`, `bottom`, `left`, optionally followed by `-start` or `-end` | `bottom-start` |
+| `data-width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
+| `data-placement` | `block-start`, `block-end`, `inline-start`, `inline-end`, optionally followed by `-start` or `-end` | `block-end-start` |
 | `data-offset` | Nonnegative pixel number | `5` |
-| `data-mode` | `menu`, `popover` | `menu` |
 
-Menu mode provides:
+Dropdowns provide:
 
 - trigger toggle behavior;
 - Enter, Space, Arrow Down, or Arrow Up to open and focus an item;
@@ -1476,35 +1492,13 @@ edge because doing so would detach it from its trigger.
 Disabled menu items must use native `disabled` on buttons or
 `aria-disabled="true"` on other menu-item elements.
 
-Older markup may use `data-mode="popover"` for arbitrary non-menu content. It
-retains positioning and ARIA synchronization without menu keyboard behavior:
-
-```html
-<sds-dropdown data-mode="popover" data-size="lg">
-  <button
-    type="button"
-    popovertarget="filter-help"
-    aria-controls="filter-help"
-    aria-expanded="false"
-    aria-haspopup="dialog"
-  >
-    Filter help
-  </button>
-  <section id="filter-help" class="sds-dropdown-menu" popover="auto">
-    <h2>Filter projects</h2>
-    <p>Choose one or more project statuses.</p>
-  </section>
-</sds-dropdown>
-```
-
 The trigger and target must be direct children. A valid authored target ID and
 Popover mode are retained. SDS Lite adds the menu class and synchronizes the
-trigger's `popovertarget`, `aria-controls`, and `aria-expanded`; in menu mode
-it also sets the menu and menu-item roles and tab order. An authored
-`aria-haspopup` value is retained. Structures without both a direct button and
-an unambiguous target are not enhanced and produce a console warning.
-
-Prefer the dedicated `<sds-popover>` interface for new non-menu content.
+trigger's `popovertarget`, `aria-controls`, and `aria-expanded`. It sets menu
+and menu-item roles, removes structural list items from the accessibility tree,
+and maintains tab order whenever items change. Structures without both a
+direct button and an unambiguous target are not enhanced and produce a console
+warning. Use `<sds-popover>` for non-menu content.
 
 ### Tooltip
 
@@ -1519,16 +1513,16 @@ the description second:
 ```
 
 SDS Lite adds the tooltip ID, `role`, class, manual Popover mode, and
-`aria-describedby` relationship. Pointer hover and keyboard focus open
-immediately. Pointer leave or focus loss closes immediately, and Escape closes
-an open tooltip. An 8px arrow tracks the trigger when the tooltip flips or
-moves. Keep tooltip content short and noninteractive; use a popover when
-content contains controls.
+`aria-describedby` relationship. Pointer hover opens after a short delay;
+keyboard focus opens immediately. Pointer leave or focus loss closes
+immediately, and Escape closes an open tooltip. An 8px arrow points to the
+trigger and tracks it when the tooltip flips or moves. Keep tooltip content
+short and noninteractive; use a popover when content contains controls.
 
 For hydration-safe SSR, author the completed relationship:
 
 ```html
-<sds-tooltip data-placement="top">
+<sds-tooltip data-placement="block-start">
   <button type="button" aria-describedby="slug-help">
     What is a slug?
   </button>
@@ -1545,13 +1539,11 @@ For hydration-safe SSR, author the completed relationship:
 
 ### Popover
 
-Popovers contain richer text or interactive content. They open after the
-pointer rests on the trigger for 500 milliseconds and close 250 milliseconds
-after the pointer leaves both trigger and content. That close delay lets the
-pointer cross the gap into the popover without dismissing it. Keyboard focus
-opens immediately, focus may move into the content, and Escape closes the
-popover. Pointer activation outside the popover also dismisses it, including on
-touch devices:
+Popovers contain richer text or interactive content. Hovering or focusing the
+trigger opens the surface after a short delay; moving between the trigger and
+surface keeps it open. Leaving both closes it after a brief grace period. The
+trigger also retains native click, touch, keyboard, Escape, and light-dismiss
+behavior through the Popover API:
 
 ```html
 <sds-popover>
@@ -1566,19 +1558,17 @@ touch devices:
 For hydration-safe SSR, author the completed relationship:
 
 ```html
-<sds-popover data-size="lg" data-placement="bottom-start">
+<sds-popover data-width="lg" data-placement="block-end-start">
   <button
     type="button"
-    aria-controls="project-details"
-    aria-expanded="false"
-    aria-haspopup="dialog"
+    popovertarget="project-details"
   >
     Project details
   </button>
   <section
     id="project-details"
     class="sds-popover-content"
-    popover="manual"
+    popover="auto"
   >
     <h2>Project Atlas</h2>
     <p>Updated five minutes ago.</p>
@@ -1586,8 +1576,9 @@ For hydration-safe SSR, author the completed relationship:
 </sds-popover>
 ```
 
-Dropdowns, tooltips, and popovers share one positioning implementation and the
-same placement vocabulary. Popovers support the dropdown `data-size`,
+Dropdowns, tooltips, and popovers share one positioning implementation and a
+logical placement vocabulary that follows writing mode and text direction.
+Popovers support the dropdown `data-width`,
 `data-placement`, and `data-offset` values. Tooltips support
 `data-placement` and `data-offset`. Tooltip and popover offsets default to
 `10`; the dropdown offset defaults to `5`. The tooltip's 8px arrow and
@@ -1632,8 +1623,9 @@ full initial state. Exactly one enabled tab should have
 `aria-selected="true"` and `tabindex="0"`; its panel is visible. Other tabs use
 `aria-selected="false"` and `tabindex="-1"`; their panels use `hidden`.
 When no enabled tab is authored as selected, SDS Lite selects the first enabled
-tab during upgrade. If the tab list has neither `aria-label` nor
-`aria-labelledby`, it receives the fallback label `"Tabs"`.
+tab during upgrade. The tab list must have an `aria-label` or
+`aria-labelledby`; SDS Lite warns when its accessible name is missing rather
+than guessing an English label.
 
 ```html
 <sds-tabs data-variant="underline" data-activation="automatic">
@@ -1727,7 +1719,8 @@ link selected and panel visible.
 ## Dialogs and panels
 
 The dialog behavior entry powers both native-dialog recipes. It supplies
-Invoker Command fallback behavior, backdrop dismissal, and SDS events.
+Invoker Command fallback behavior and backdrop dismissal while preserving
+native dialog events.
 
 ### Dialog
 
@@ -1739,7 +1732,7 @@ Invoker Command fallback behavior, backdrop dismissal, and SDS events.
 <dialog
   id="confirm-dialog"
   class="sds-dialog"
-  data-size="md"
+  data-width="md"
   closedby="any"
   aria-labelledby="confirm-title"
   aria-describedby="confirm-description"
@@ -1784,7 +1777,7 @@ Invoker Command fallback behavior, backdrop dismissal, and SDS events.
 </dialog>
 ```
 
-`data-size` accepts `sm`, `md`, `lg`, `xl`, or `2xl`; `md` is the default.
+`data-width` accepts `sm`, `md`, `lg`, `xl`, or `2xl`; `md` is the default.
 The header and footer classes are optional anatomy, but use them for the
 standard title/close and action layouts. A modal dialog starts 4rem from the
 top on viewports at least 48rem wide and 0.5rem from the top on narrower
@@ -1805,7 +1798,7 @@ Use direct native `<header>`, `<main>`, and `<footer>` children:
   id="help-panel"
   class="sds-panel"
   data-side="right"
-  data-size="md"
+  data-width="md"
   closedby="any"
   aria-labelledby="help-title"
 >
@@ -1835,7 +1828,7 @@ Use direct native `<header>`, `<main>`, and `<footer>` children:
 | Panel interface | Values | Default |
 |---|---|---|
 | `data-side` | `left`, `right`, `bottom` | `right` |
-| `data-size` | `sm`, `md`, `lg`, `xl` | `md` |
+| `data-width` | `sm`, `md`, `lg`, `xl` | `md` |
 
 For side panels, size changes width. For bottom panels, size changes height.
 The panel header and footer stay visible while `<main>` consumes the flexible
@@ -1938,14 +1931,18 @@ notify('Your project was saved.', {
 
 | `notify()` option | Values | Default |
 |---|---|---|
+| `container` | An `HTMLElement` that owns the toaster | First SDS root, then `body` |
 | `title` | Any string | `Notification` |
 | `tone` | All six common tones | `info` |
 | `duration` | Positive milliseconds | `5000` |
 | `persistent` | Boolean | `false` |
 | `urgent` | Boolean; uses `role="alert"` when true | `false` |
 
-`notify()` reuses the first `<sds-toaster>` or creates one inside the first SDS
-root. If no root exists, it creates a self-contained SDS root for the toaster.
+`notify()` accepts either a `<sds-toaster>` or a container that owns one, and
+reuses that toaster when supplied. Otherwise it uses the first document
+toaster or creates one inside the first SDS root. If no root exists, it creates
+a self-contained SDS root for the toaster. A supplied `duration` that is not a
+positive finite number throws `RangeError`.
 It must be called in a browser, although importing it during server rendering
 is safe. A toast created by `notify()` is removed from the DOM 250 milliseconds
 after its `sds-close` event.
@@ -1962,7 +1959,7 @@ dispatching those events.
 ```html
 <article class="sds-prose">
   <h1>Article title</h1>
-  <p class="lead">A short introduction to the article.</p>
+  <p class="sds-prose-lead">A short introduction to the article.</p>
 
   <p>
     Body text supports <a href="/details">links</a>,
@@ -2000,15 +1997,15 @@ svg, video, hr, table, caption, thead, tbody, tfoot, tr, th, td
 | `data-size` | `sm`, `md` | `md` |
 | `data-tone` | All six common tones | Neutral text links |
 | `data-sds-theme` | `forge`, `plaid` | Inherited root theme |
-| `.lead` | Class on introductory text | Normal paragraph |
-| `.not-prose` | Class on excluded subtree | Prose styles apply |
+| `.sds-prose-lead` | Class on introductory text | Normal paragraph |
+| `.sds-not-prose` | Class on excluded subtree | Prose styles apply |
 
-Use `.not-prose` when embedding another SDS recipe:
+Use `.sds-not-prose` when embedding another SDS recipe:
 
 ```html
 <article class="sds-prose">
   <p>Article text.</p>
-  <aside class="sds-callout not-prose" data-tone="info">
+  <aside class="sds-callout sds-not-prose" data-tone="info">
     <strong>Related information</strong>
     <span>This callout keeps its own typography.</span>
   </aside>
@@ -2050,22 +2047,29 @@ find-in-page behavior that reveals matching content.
 
 ## JavaScript exports and events
 
-All registration functions are idempotent and run automatically when their
-module is imported. Calling them manually is optional:
+The root entry is side-effect-free and exposes one registration function:
 
 ```ts
 import {
+  defineSds,
   notify,
-  registerSdsDialog,
-  registerSdsDropdown,
-  registerSdsPopover,
-  registerSdsTabs,
-  registerSdsTooltip,
-  registerSdsToast,
 } from '@cmu-sei/sds-lite'
+
+defineSds()
 ```
 
-Individual entries export:
+Pass `include` to register a subset. Repeated calls are safe:
+
+```ts
+defineSds({ include: ['dropdown', 'tabs'] })
+```
+
+An unknown behavior name throws `RangeError`. If another implementation has
+already registered one of the same custom-element names, registration throws
+rather than mixing incompatible constructors.
+
+Individual entries expose their element class and idempotent registration
+function for specialized integrations:
 
 | Entry | Exports |
 |---|---|
@@ -2076,48 +2080,41 @@ Individual entries export:
 | `/tooltip` | `SdsTooltipElement`, `registerSdsTooltip()` |
 | `/toast` | `SdsToastElement`, `SdsToastCloseReason`, `SdsToastTone`, `SdsNotifyOptions`, `notify()`, `registerSdsToast()` |
 
-The root entry exports the six registration functions plus `notify()`,
-`SdsNotifyOptions`, `SdsToastCloseReason`, and `SdsToastTone`. It does not
-export the custom-element classes; import those from their individual entries.
+The root entry also exports `notify()`, `DefineSdsOptions`, `SdsBehavior`,
+`SdsNotifyOptions`, `SdsTabsChangeDetail`, `SdsToastCloseReason`, and
+`SdsToastTone`. Import custom-element classes from their individual entries.
 
 ### Events
 
-All SDS custom events bubble and cross shadow roots.
+SDS custom events bubble and cross shadow roots. Native dialogs continue to
+use their standard `cancel`, `close`, `beforetoggle`, and `toggle` events;
+read `dialog.returnValue` after `close`.
 
 | Event | Target | Detail | When it fires |
 |---|---|---|---|
-| `sds-open` | Dialog or panel | None | SDS command handling opens it |
-| `sds-close` | Dialog or panel | `{ returnValue: string }` | Native dialog `close` fires |
-| `sds-cancel` | Dialog or panel | None | Before native cancellation; cancelable |
 | `sds-change` | `<sds-tabs>` | `{ index: number, value: string }` | SDS selects a new tab |
 | `sds-open` | `<sds-toast>` | None | `show()` opens a closed toast |
 | `sds-close` | `<sds-toast>` | `{ reason: 'dismiss' \| 'programmatic' \| 'timeout' }` | Toast closes |
 
-Prevent `sds-cancel` to keep a dialog or panel open:
+Prevent native `cancel` to keep a dialog or panel open:
 
 ```ts
-document.querySelector('#editor')?.addEventListener('sds-cancel', (event) => {
+document.querySelector('#editor')?.addEventListener('cancel', (event) => {
   if (hasUnsavedChanges) event.preventDefault()
 })
 ```
 
-Read typed event details with a narrow event type:
+SDS augments `HTMLElementEventMap`, so custom event details are inferred:
 
 ```ts
 document.querySelector('sds-tabs')?.addEventListener('sds-change', (event) => {
-  const { index, value } = (event as CustomEvent<{
-    index: number
-    value: string
-  }>).detail
-
+  const { index, value } = event.detail
   console.log(index, value)
 })
 ```
 
 Dropdown, popover, and tooltip visibility uses the platform `beforetoggle` and
-`toggle` events from each Popover element rather than custom events. Popovers
-use manual Popover mode because their delayed hover and focus lifecycle is
-controlled by `<sds-popover>`.
+`toggle` events from each Popover element rather than custom events.
 
 ## CSS customization
 
@@ -2234,7 +2231,7 @@ Every semantic tone provides the same six roles:
 --sds-color-{tone}-on-strong
 ```
 
-Replace `{tone}` with `neutral`, `primary`, `success`, `info`, `warning`, or
+Replace `{tone}` with `neutral`, `accent`, `info`, `success`, `warning`, or
 `danger`.
 
 ### Public primitive colors

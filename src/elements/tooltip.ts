@@ -1,27 +1,31 @@
-import { FloatingPositioner } from './floating.js'
-import { directElementChildren, ensureId } from './internals.js'
+import {
+  FloatingHoverController,
+  FloatingPositioner,
+} from './floating.js'
+import {
+  defineCustomElement,
+  directElementChildren,
+  ensureId,
+} from './internals.js'
 
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
     ? (class {} as typeof HTMLElement)
     : HTMLElement
 
-const hoverOpenDelay = 0
-const closeDelay = 0
-
 export class SdsTooltipElement extends HTMLElementBase {
-  private trigger: HTMLElement | null = null
-  private content: HTMLElement | null = null
   private positioner: FloatingPositioner | null = null
+  private hoverController: FloatingHoverController | null = null
   private controller: AbortController | null = null
-  private openTimer: ReturnType<typeof setTimeout> | null = null
-  private closeTimer: ReturnType<typeof setTimeout> | null = null
-  private pointerInside = false
+  private observer: MutationObserver | null = null
 
   connectedCallback(): void {
     this.controller?.abort()
-    this.clearTimers()
+    this.observer?.disconnect()
+    this.hoverController?.disconnect()
     this.controller = new AbortController()
+    this.observer = new MutationObserver(() => this.connectedCallback())
+    this.observer.observe(this, { childList: true })
 
     const children = directElementChildren(this)
     const content =
@@ -53,124 +57,33 @@ export class SdsTooltipElement extends HTMLElementBase {
     content.setAttribute('popover', 'manual')
     trigger.setAttribute('aria-describedby', [...descriptions].join(' '))
 
-    this.trigger = trigger
-    this.content = content
     this.positioner = new FloatingPositioner(
       trigger,
       content,
-      () => this.dataset.placement ?? 'top',
+      () => this.dataset.placement ?? 'block-start',
       () => this.dataset.offset,
       10,
     )
-
-    trigger.addEventListener('pointerenter', this.handlePointerEnter, {
-      signal: this.controller.signal,
-    })
-    trigger.addEventListener('pointerleave', this.handlePointerLeave, {
-      signal: this.controller.signal,
-    })
-    trigger.addEventListener('focusin', this.handleFocusIn, {
-      signal: this.controller.signal,
-    })
-    trigger.addEventListener('focusout', this.handleFocusOut, {
-      signal: this.controller.signal,
-    })
-    document.addEventListener('keydown', this.handleKeydown, {
-      signal: this.controller.signal,
-    })
-    content.addEventListener('pointerenter', this.handlePointerEnter, {
-      signal: this.controller.signal,
-    })
-    content.addEventListener('pointerleave', this.handlePointerLeave, {
-      signal: this.controller.signal,
-    })
-    content.addEventListener('toggle', this.handleToggle, {
-      signal: this.controller.signal,
-    })
+    this.hoverController = new FloatingHoverController(
+      trigger,
+      content,
+      this.positioner,
+      {
+        closeDelay: 0,
+      },
+    )
+    this.hoverController.observe(this.controller.signal)
     this.positioner.observe(this.controller.signal)
   }
 
   disconnectedCallback(): void {
     this.controller?.abort()
-    this.clearTimers()
+    this.observer?.disconnect()
+    this.hoverController?.disconnect()
+    this.hoverController = null
     this.positioner = null
   }
-
-  private isOpen(): boolean {
-    return this.content?.matches(':popover-open') ?? false
-  }
-
-  private clearTimers(): void {
-    if (this.openTimer !== null) clearTimeout(this.openTimer)
-    if (this.closeTimer !== null) clearTimeout(this.closeTimer)
-    this.openTimer = null
-    this.closeTimer = null
-  }
-
-  private show(): void {
-    this.openTimer = null
-    if (!this.content || this.isOpen()) return
-    this.positioner?.reset()
-    this.content.showPopover()
-    this.positioner?.position()
-  }
-
-  private scheduleOpen(delay: number): void {
-    if (this.closeTimer !== null) clearTimeout(this.closeTimer)
-    this.closeTimer = null
-    if (this.isOpen() || this.openTimer !== null) return
-    this.openTimer = setTimeout(() => this.show(), delay)
-  }
-
-  private scheduleClose(): void {
-    if (this.openTimer !== null) clearTimeout(this.openTimer)
-    this.openTimer = null
-    if (!this.isOpen() || this.closeTimer !== null) return
-    this.closeTimer = setTimeout(() => {
-      this.closeTimer = null
-      if (
-        !this.pointerInside &&
-        !this.trigger?.contains(document.activeElement)
-      ) {
-        this.content?.hidePopover()
-      }
-    }, closeDelay)
-  }
-
-  private handlePointerEnter = (): void => {
-    this.pointerInside = true
-    this.scheduleOpen(hoverOpenDelay)
-  }
-
-  private handlePointerLeave = (): void => {
-    this.pointerInside = false
-    this.scheduleClose()
-  }
-
-  private handleFocusIn = (): void => {
-    this.scheduleOpen(0)
-  }
-
-  private handleFocusOut = (): void => {
-    this.scheduleClose()
-  }
-
-  private handleKeydown = (event: KeyboardEvent): void => {
-    if (event.key !== 'Escape' || !this.isOpen()) return
-    event.preventDefault()
-    this.clearTimers()
-    this.content?.hidePopover()
-  }
-
-  private handleToggle = (): void => {
-    if (this.isOpen()) {
-      this.positioner?.position()
-    } else {
-      this.positioner?.reset()
-    }
-  }
 }
-
 declare global {
   interface HTMLElementTagNameMap {
     'sds-tooltip': SdsTooltipElement
@@ -178,12 +91,5 @@ declare global {
 }
 
 export function registerSdsTooltip(): void {
-  if (
-    typeof customElements !== 'undefined' &&
-    !customElements.get('sds-tooltip')
-  ) {
-    customElements.define('sds-tooltip', SdsTooltipElement)
-  }
+  defineCustomElement('sds-tooltip', SdsTooltipElement)
 }
-
-registerSdsTooltip()

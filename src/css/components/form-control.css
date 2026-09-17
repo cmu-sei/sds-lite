@@ -72,9 +72,9 @@
   }
 
   :where(
-    [data-sds-root] input[data-valid],
-    [data-sds-root] select[data-valid],
-    [data-sds-root] textarea[data-valid]
+    [data-sds-root] input:user-valid,
+    [data-sds-root] select:user-valid,
+    [data-sds-root] textarea:user-valid
   ) {
     border-color: var(--sds-color-form-valid);
   }

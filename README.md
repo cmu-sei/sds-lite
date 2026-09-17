@@ -12,11 +12,11 @@ Install it:
 npm install @cmu-sei/sds-lite
 ```
 
-Import the styles and behavior once in your application entry:
+Import the complete styles and automatic browser behavior once:
 
 ```js
 import '@cmu-sei/sds-lite/sds.css'
-import '@cmu-sei/sds-lite'
+import '@cmu-sei/sds-lite/auto'
 ```
 
 Add `data-sds-root` around the part of the page SDS Lite should style:
@@ -87,8 +87,9 @@ Put the trigger first and its short description second:
 
 ### A popover
 
-Use a popover for richer or interactive content. It opens after a short hover
-delay and remains open while the pointer is over its content:
+Use a popover for richer or interactive content. Hovering or focusing its
+button opens the content after a short delay. The button also supports native
+click and touch activation:
 
 ```html
 <sds-popover>
@@ -143,12 +144,19 @@ Every JavaScript entry is safe to import when `window`, `document`,
 `HTMLElement`, and `customElements` do not exist. Calling `notify()` during
 server rendering throws a clear error because it creates browser DOM.
 
-The short examples above can be emitted by a server and are completed when
-their custom elements upgrade in the browser. Hydrating frameworks should
-render the complete IDs, roles, ARIA relationships, classes, and state so the
-DOM does not change before hydration. This also provides accessibility and
-correct interactive state before JavaScript loads. SDS Lite preserves valid
-authored values and only fills in missing details.
+The root module has no registration side effects. Hydrating applications
+should render complete IDs, roles, relationships, classes, and state, hydrate,
+then register behavior:
+
+```js
+import { defineSds } from '@cmu-sei/sds-lite'
+
+hydrateApplication()
+defineSds()
+```
+
+This keeps custom-element upgrades from changing the DOM before hydration.
+Static and client-only applications may use the `/auto` entry instead.
 
 Import CSS through the framework's normal stylesheet entry so the server can
 include it in the initial page:
@@ -171,7 +179,7 @@ Use a version-pinned CDN URL:
 >
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/package/sds.js"
+  src="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/package/auto.js"
 ></script>
 
 <main data-sds-root>

@@ -1,7 +1,3 @@
-const OPEN_EVENT = 'sds-open'
-const CLOSE_EVENT = 'sds-close'
-const CANCEL_EVENT = 'sds-cancel'
-
 let registered = false
 
 function findDialog(trigger: Element): HTMLDialogElement | null {
@@ -25,10 +21,6 @@ function openDialog(dialog: HTMLDialogElement, modal: boolean): void {
 
   if (modal) dialog.showModal()
   else dialog.show()
-
-  dialog.dispatchEvent(
-    new CustomEvent(OPEN_EVENT, { bubbles: true, composed: true }),
-  )
 }
 
 function handleClick(event: MouseEvent): void {
@@ -84,49 +76,9 @@ function handleClick(event: MouseEvent): void {
   }
 }
 
-function handleClose(event: Event): void {
-  const dialog = event.target
-  if (
-    !(dialog instanceof HTMLDialogElement) ||
-    !dialog.matches('.sds-dialog, .sds-panel')
-  ) {
-    return
-  }
-
-  dialog.dispatchEvent(
-    new CustomEvent(CLOSE_EVENT, {
-      bubbles: true,
-      composed: true,
-      detail: { returnValue: dialog.returnValue },
-    }),
-  )
-}
-
-function handleCancel(event: Event): void {
-  const dialog = event.target
-  if (
-    !(dialog instanceof HTMLDialogElement) ||
-    !dialog.matches('.sds-dialog, .sds-panel')
-  ) {
-    return
-  }
-
-  const cancelEvent = new CustomEvent(CANCEL_EVENT, {
-    bubbles: true,
-    cancelable: true,
-    composed: true,
-  })
-
-  if (!dialog.dispatchEvent(cancelEvent)) event.preventDefault()
-}
-
 export function registerSdsDialog(): void {
   if (registered || typeof document === 'undefined') return
 
   registered = true
   document.addEventListener('click', handleClick)
-  document.addEventListener('close', handleClose, true)
-  document.addEventListener('cancel', handleCancel, true)
 }
-
-registerSdsDialog()

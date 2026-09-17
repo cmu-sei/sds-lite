@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "README.md",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "package/dropdown.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "name": "SdsDropdownElement",
+          "tagName": "sds-dropdown",
+          "description": "Enhances a direct child button and menu with Popover positioning and menu keyboard behavior.",
+          "attributes": [
+            {
+              "name": "data-placement",
+              "description": "Logical preferred placement: block-start, block-end, inline-start, or inline-end, optionally followed by -start or -end."
+            },
+            {
+              "name": "data-offset",
+              "description": "Nonnegative offset in CSS pixels."
+            },
+            {
+              "name": "data-width",
+              "description": "Surface width: auto, sm, md, lg, xl, or 2xl."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "package/popover.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "name": "SdsPopoverElement",
+          "tagName": "sds-popover",
+          "description": "Opens interactive content after a short hover or focus delay while retaining native click, touch, keyboard, and light-dismiss behavior.",
+          "attributes": [
+            {
+              "name": "data-placement",
+              "description": "Logical preferred placement."
+            },
+            {
+              "name": "data-offset",
+              "description": "Nonnegative offset in CSS pixels."
+            },
+            {
+              "name": "data-width",
+              "description": "Surface width: auto, sm, md, lg, xl, or 2xl."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "package/tabs.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "name": "SdsTabsElement",
+          "tagName": "sds-tabs",
+          "description": "Coordinates a tab list and its panels.",
+          "attributes": [
+            {
+              "name": "data-activation",
+              "description": "automatic or manual."
+            },
+            {
+              "name": "data-orientation",
+              "description": "horizontal or vertical."
+            },
+            {
+              "name": "data-size",
+              "description": "md or lg."
+            },
+            {
+              "name": "data-tone",
+              "description": "neutral, accent, info, success, warning, or danger."
+            },
+            {
+              "name": "data-variant",
+              "description": "folder, block, or underline."
+            }
+          ],
+          "events": [
+            {
+              "name": "sds-change",
+              "type": {
+                "text": "CustomEvent<SdsTabsChangeDetail>"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "package/tooltip.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "name": "SdsTooltipElement",
+          "tagName": "sds-tooltip",
+          "description": "Adds an accessible, positioned description to its direct child trigger.",
+          "attributes": [
+            {
+              "name": "data-placement",
+              "description": "Logical preferred placement."
+            },
+            {
+              "name": "data-offset",
+              "description": "Nonnegative offset in CSS pixels."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "package/toast.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "name": "SdsToastElement",
+          "tagName": "sds-toast",
+          "description": "A timed or persistent notification.",
+          "attributes": [
+            {
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "name": "data-duration",
+              "description": "Positive duration in milliseconds."
+            },
+            {
+              "name": "data-persistent",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "name": "data-tone",
+              "description": "neutral, accent, info, success, warning, or danger."
+            }
+          ],
+          "events": [
+            {
+              "name": "sds-open",
+              "type": {
+                "text": "CustomEvent<void>"
+              }
+            },
+            {
+              "name": "sds-close",
+              "type": {
+                "text": "CustomEvent<{ reason: SdsToastCloseReason }>"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

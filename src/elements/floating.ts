@@ -4,6 +4,15 @@ export type FloatingPlacement =
   | FloatingSide
   | `${FloatingSide}-start`
   | `${FloatingSide}-end`
+export type LogicalFloatingSide =
+  | 'block-start'
+  | 'block-end'
+  | 'inline-start'
+  | 'inline-end'
+export type LogicalFloatingPlacement =
+  | LogicalFloatingSide
+  | `${LogicalFloatingSide}-start`
+  | `${LogicalFloatingSide}-end`
 
 export interface FloatingRect {
   top: number
@@ -41,6 +50,71 @@ const oppositeSide: Record<FloatingSide, FloatingSide> = {
   right: 'left',
   bottom: 'top',
   left: 'right',
+}
+
+export function resolveFloatingPlacement(
+  value: string,
+  direction: CSSStyleDeclaration['direction'],
+  writingMode: CSSStyleDeclaration['writingMode'],
+): FloatingPlacement {
+  const requestedSide = (
+    ['block-start', 'block-end', 'inline-start', 'inline-end'] as const
+  ).find((side) => value === side || value.startsWith(`${side}-`))
+  const requestedAlignment = requestedSide
+    ? value.slice(requestedSide.length + 1)
+    : ''
+  const alignment: FloatingAlignment =
+    requestedAlignment === 'start' || requestedAlignment === 'end'
+      ? requestedAlignment
+      : 'center'
+  const vertical = writingMode.startsWith('vertical')
+  const blockStartsRight = writingMode === 'vertical-rl'
+  const inlineStartsAtEnd = direction === 'rtl'
+
+  let side: FloatingSide
+  let resolvedAlignment = alignment
+
+  if (!requestedSide) return 'bottom-start'
+
+  if (!vertical) {
+    if (requestedSide === 'block-start') side = 'top'
+    else if (requestedSide === 'block-end') side = 'bottom'
+    else if (requestedSide === 'inline-start') {
+      side = direction === 'rtl' ? 'right' : 'left'
+    } else {
+      side = direction === 'rtl' ? 'left' : 'right'
+    }
+
+    if (
+      (side === 'top' || side === 'bottom') &&
+      direction === 'rtl' &&
+      alignment !== 'center'
+    ) {
+      resolvedAlignment = alignment === 'start' ? 'end' : 'start'
+    }
+  } else {
+    if (requestedSide === 'block-start') {
+      side = blockStartsRight ? 'right' : 'left'
+    } else if (requestedSide === 'block-end') {
+      side = blockStartsRight ? 'left' : 'right'
+    } else if (requestedSide === 'inline-start') {
+      side = inlineStartsAtEnd ? 'bottom' : 'top'
+    } else {
+      side = inlineStartsAtEnd ? 'top' : 'bottom'
+    }
+
+    if (alignment !== 'center') {
+      const reverse =
+        side === 'top' || side === 'bottom'
+          ? blockStartsRight
+          : inlineStartsAtEnd
+      if (reverse) {
+        resolvedAlignment = alignment === 'start' ? 'end' : 'start'
+      }
+    }
+  }
+
+  return formatPlacement(side, resolvedAlignment)
 }
 
 function parsePlacement(
@@ -242,7 +316,12 @@ export class FloatingPositioner {
   }
 
   position = (): void => {
-    const preferredPlacement = this.getPlacement()
+    const style = getComputedStyle(this.anchor)
+    const preferredPlacement = resolveFloatingPlacement(
+      this.getPlacement(),
+      style.direction,
+      style.writingMode,
+    )
     if (preferredPlacement !== this.preferredPlacement) {
       this.previousPlacement = null
       this.preferredPlacement = preferredPlacement
@@ -291,5 +370,145 @@ export class FloatingPositioner {
       '--sds-floating-arrow-y',
       `${arrowY}px`,
     )
+  }
+}
+
+interface FloatingHoverOptions {
+  closeDelay?: number
+  focusOpenDelay?: number
+  hoverOpenDelay?: number
+}
+
+export class FloatingHoverController {
+  private anchor: HTMLElement
+  private surface: HTMLElement
+  private positioner: FloatingPositioner
+  private closeDelay: number
+  private focusOpenDelay: number
+  private hoverOpenDelay: number
+  private openTimer: ReturnType<typeof setTimeout> | null = null
+  private closeTimer: ReturnType<typeof setTimeout> | null = null
+  private pointerInside = false
+
+  constructor(
+    anchor: HTMLElement,
+    surface: HTMLElement,
+    positioner: FloatingPositioner,
+    options: FloatingHoverOptions = {},
+  ) {
+    this.anchor = anchor
+    this.surface = surface
+    this.positioner = positioner
+    this.closeDelay = options.closeDelay ?? 120
+    this.focusOpenDelay = options.focusOpenDelay ?? 0
+    this.hoverOpenDelay = options.hoverOpenDelay ?? 300
+  }
+
+  observe(signal: AbortSignal): void {
+    this.anchor.addEventListener('pointerenter', this.handlePointerEnter, {
+      signal,
+    })
+    this.anchor.addEventListener('pointerleave', this.handlePointerLeave, {
+      signal,
+    })
+    this.anchor.addEventListener('focusin', this.handleFocusIn, { signal })
+    this.anchor.addEventListener('focusout', this.handleFocusOut, { signal })
+    this.surface.addEventListener('pointerenter', this.handlePointerEnter, {
+      signal,
+    })
+    this.surface.addEventListener('pointerleave', this.handlePointerLeave, {
+      signal,
+    })
+    this.surface.addEventListener('focusin', this.handleFocusIn, { signal })
+    this.surface.addEventListener('focusout', this.handleFocusOut, { signal })
+    this.surface.addEventListener('beforetoggle', this.handleBeforeToggle, {
+      signal,
+    })
+    this.surface.addEventListener('toggle', this.handleToggle, { signal })
+    document.addEventListener('keydown', this.handleKeydown, { signal })
+  }
+
+  disconnect(): void {
+    this.clearTimers()
+  }
+
+  private isOpen(): boolean {
+    return this.surface.matches(':popover-open')
+  }
+
+  private clearTimers(): void {
+    if (this.openTimer !== null) clearTimeout(this.openTimer)
+    if (this.closeTimer !== null) clearTimeout(this.closeTimer)
+    this.openTimer = null
+    this.closeTimer = null
+  }
+
+  private show(): void {
+    this.openTimer = null
+    if (this.isOpen()) return
+    this.positioner.reset()
+    this.surface.showPopover()
+    this.positioner.position()
+  }
+
+  private scheduleOpen(delay: number): void {
+    if (this.closeTimer !== null) clearTimeout(this.closeTimer)
+    this.closeTimer = null
+    if (this.isOpen() || this.openTimer !== null) return
+    this.openTimer = setTimeout(() => this.show(), delay)
+  }
+
+  private scheduleClose(): void {
+    if (this.openTimer !== null) clearTimeout(this.openTimer)
+    this.openTimer = null
+    if (!this.isOpen() || this.closeTimer !== null) return
+    this.closeTimer = setTimeout(() => {
+      this.closeTimer = null
+      const focusedElement = document.activeElement
+      if (
+        !this.pointerInside &&
+        !this.anchor.contains(focusedElement) &&
+        !this.surface.contains(focusedElement)
+      ) {
+        this.surface.hidePopover()
+      }
+    }, this.closeDelay)
+  }
+
+  private handlePointerEnter = (): void => {
+    this.pointerInside = true
+    this.scheduleOpen(this.hoverOpenDelay)
+  }
+
+  private handlePointerLeave = (): void => {
+    this.pointerInside = false
+    this.scheduleClose()
+  }
+
+  private handleFocusIn = (): void => {
+    this.scheduleOpen(this.focusOpenDelay)
+  }
+
+  private handleFocusOut = (): void => {
+    this.scheduleClose()
+  }
+
+  private handleBeforeToggle = (event: ToggleEvent): void => {
+    if (event.newState === 'open') this.positioner.reset()
+  }
+
+  private handleToggle = (): void => {
+    if (this.isOpen()) {
+      this.positioner.position()
+    } else {
+      this.positioner.reset()
+    }
+  }
+
+  private handleKeydown = (event: KeyboardEvent): void => {
+    if (event.key !== 'Escape' || !this.isOpen()) return
+    event.preventDefault()
+    this.clearTimers()
+    this.surface.hidePopover()
   }
 }

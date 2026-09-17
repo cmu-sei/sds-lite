@@ -2,10 +2,11 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
-const [tooltip, popover, dropdown, tagCss, demo] = await Promise.all([
+const [tooltip, popover, dropdown, floating, tagCss, demo] = await Promise.all([
   readFile('src/elements/tooltip.ts', 'utf8'),
   readFile('src/elements/popover.ts', 'utf8'),
   readFile('src/elements/dropdown.ts', 'utf8'),
+  readFile('src/elements/floating.ts', 'utf8'),
   readFile('src/css/components/tag.css', 'utf8'),
   readFile('index.html', 'utf8'),
 ])
@@ -17,23 +18,28 @@ test('all anchored surfaces use the shared positioner', () => {
 })
 
 test('tooltips support pointer, focus, Escape, and accessible descriptions', () => {
-  assert.match(tooltip, /pointerenter/)
-  assert.match(tooltip, /focusin/)
-  assert.match(tooltip, /event\.key !== 'Escape'/)
+  assert.match(tooltip, /FloatingHoverController/)
+  assert.match(floating, /pointerenter/)
+  assert.match(floating, /focusin/)
+  assert.match(floating, /event\.key !== 'Escape'/)
   assert.match(tooltip, /aria-describedby/)
   assert.match(tooltip, /setAttribute\('role', 'tooltip'\)/)
 })
 
-test('popovers use the upstream delayed hover interaction', () => {
-  assert.match(popover, /hoverOpenDelay = 500/)
-  assert.match(popover, /hoverCloseDelay = 250/)
-  assert.match(popover, /pointerenter/)
-  assert.match(popover, /pointerleave/)
-  assert.match(popover, /handleDocumentPointerDown/)
-  assert.match(popover, /setAttribute\('popover', 'manual'\)/)
-  assert.match(popover, /removeAttribute\('popovertarget'\)/)
-  assert.match(popover, /aria-expanded/)
-  assert.match(popover, /aria-haspopup', 'dialog'/)
+test('popovers support delayed hover and preserve native activation', () => {
+  assert.match(popover, /setAttribute\('popovertarget', contentId\)/)
+  assert.match(popover, /getAttribute\('popover'\) \|\| 'auto'/)
+  assert.match(popover, /FloatingHoverController/)
+  assert.match(floating, /hoverOpenDelay \?\? 300/)
+  assert.doesNotMatch(popover, /aria-haspopup/)
+})
+
+test('dropdowns produce a complete ARIA menu structure', () => {
+  assert.match(dropdown, /setAttribute\('role', 'menu'\)/)
+  assert.match(dropdown, /setAttribute\('role', 'menuitem'\)/)
+  assert.match(dropdown, /setAttribute\('role', 'none'\)/)
+  assert.match(dropdown, /this\.collectItems\(\)/)
+  assert.doesNotMatch(dropdown, /dataset\.mode/)
 })
 
 test('tooltips and popovers expose positioned arrows', async () => {

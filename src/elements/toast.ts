@@ -1,3 +1,5 @@
+import { defineCustomElement } from './internals.js'
+
 const DEFAULT_DURATION = 5000
 const REMOVE_DELAY = 250
 const HTMLElementBase: typeof HTMLElement =
@@ -8,13 +10,14 @@ const HTMLElementBase: typeof HTMLElement =
 export type SdsToastCloseReason = 'dismiss' | 'programmatic' | 'timeout'
 export type SdsToastTone =
   | 'neutral'
-  | 'primary'
-  | 'success'
+  | 'accent'
   | 'info'
+  | 'success'
   | 'warning'
   | 'danger'
 
 export interface SdsNotifyOptions {
+  container?: HTMLElement
   title?: string
   tone?: SdsToastTone
   duration?: number
@@ -149,6 +152,11 @@ declare global {
   interface HTMLElementTagNameMap {
     'sds-toast': SdsToastElement
   }
+
+  interface HTMLElementEventMap {
+    'sds-open': CustomEvent<void>
+    'sds-close': CustomEvent<{ reason: SdsToastCloseReason }>
+  }
 }
 
 let triggersRegistered = false
@@ -169,16 +177,9 @@ function registerToastTriggers(): void {
 }
 
 export function registerSdsToast(): void {
-  if (
-    typeof customElements !== 'undefined' &&
-    !customElements.get('sds-toast')
-  ) {
-    customElements.define('sds-toast', SdsToastElement)
-  }
+  defineCustomElement('sds-toast', SdsToastElement)
   registerToastTriggers()
 }
-
-registerSdsToast()
 
 export function notify(
   message: string,
@@ -188,11 +189,24 @@ export function notify(
     throw new Error('notify() can only be called in a browser.')
   }
 
-  let toaster = document.querySelector<HTMLElement>('sds-toaster')
+  if (
+    options.duration !== undefined &&
+    (!Number.isFinite(options.duration) || options.duration <= 0)
+  ) {
+    throw new RangeError('notify() duration must be a positive number.')
+  }
+
+  const scope = options.container ?? document
+  let toaster =
+    options.container?.localName === 'sds-toaster'
+      ? options.container
+      : scope.querySelector<HTMLElement>('sds-toaster')
   if (!toaster) {
     toaster = document.createElement('sds-toaster')
     toaster.setAttribute('aria-label', 'Notifications')
-    const root = document.querySelector<HTMLElement>('[data-sds-root]')
+    const root =
+      options.container ??
+      document.querySelector<HTMLElement>('[data-sds-root]')
     if (!root) toaster.dataset.sdsRoot = ''
     const toastHost = root ?? document.body
     toastHost.append(toaster)

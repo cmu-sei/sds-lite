@@ -1,4 +1,8 @@
-import { directElementChildren, ensureId } from './internals.js'
+import {
+  defineCustomElement,
+  directElementChildren,
+  ensureId,
+} from './internals.js'
 
 const CHANGE_EVENT = 'sds-change'
 const HTMLElementBase: typeof HTMLElement =
@@ -6,14 +10,23 @@ const HTMLElementBase: typeof HTMLElement =
     ? (class {} as typeof HTMLElement)
     : HTMLElement
 
+export interface SdsTabsChangeDetail {
+  index: number
+  value: string
+}
+
 export class SdsTabsElement extends HTMLElementBase {
   private tabs: HTMLElement[] = []
   private panels = new Map<HTMLElement, HTMLElement>()
   private controller: AbortController | null = null
+  private observer: MutationObserver | null = null
 
   connectedCallback(): void {
     this.controller?.abort()
+    this.observer?.disconnect()
     this.controller = new AbortController()
+    this.observer = new MutationObserver(() => this.connectedCallback())
+    this.observer.observe(this, { childList: true, subtree: true })
 
     const children = directElementChildren(this)
     const tabList =
@@ -54,7 +67,10 @@ export class SdsTabsElement extends HTMLElementBase {
       !tabList.hasAttribute('aria-label') &&
       !tabList.hasAttribute('aria-labelledby')
     ) {
-      tabList.setAttribute('aria-label', 'Tabs')
+      console.warn(
+        '<sds-tabs> requires an accessible name on its tab list.',
+        tabList,
+      )
     }
 
     const unassignedPanels = new Set(availablePanels)
@@ -112,6 +128,7 @@ export class SdsTabsElement extends HTMLElementBase {
 
   disconnectedCallback(): void {
     this.controller?.abort()
+    this.observer?.disconnect()
   }
 
   private isDisabled(tab: HTMLElement): boolean {
@@ -204,15 +221,12 @@ declare global {
   interface HTMLElementTagNameMap {
     'sds-tabs': SdsTabsElement
   }
-}
 
-export function registerSdsTabs(): void {
-  if (
-    typeof customElements !== 'undefined' &&
-    !customElements.get('sds-tabs')
-  ) {
-    customElements.define('sds-tabs', SdsTabsElement)
+  interface HTMLElementEventMap {
+    'sds-change': CustomEvent<SdsTabsChangeDetail>
   }
 }
 
-registerSdsTabs()
+export function registerSdsTabs(): void {
+  defineCustomElement('sds-tabs', SdsTabsElement)
+}

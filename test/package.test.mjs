@@ -3,6 +3,9 @@ import { access, readFile, readdir } from 'node:fs/promises'
 import test from 'node:test'
 
 const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
+const customElementsManifest = JSON.parse(
+  await readFile('custom-elements.json', 'utf8'),
+)
 
 test('every public package target exists', async () => {
   for (const target of Object.values(packageJson.exports)) {
@@ -14,6 +17,7 @@ test('every public package target exists', async () => {
 test('all JavaScript entries are safe to import during SSR', async () => {
   const entries = [
     '@cmu-sei/sds-lite',
+    '@cmu-sei/sds-lite/auto',
     '@cmu-sei/sds-lite/dialog',
     '@cmu-sei/sds-lite/dropdown',
     '@cmu-sei/sds-lite/popover',
@@ -24,9 +28,7 @@ test('all JavaScript entries are safe to import during SSR', async () => {
 
   const modules = await Promise.all(entries.map((entry) => import(entry)))
   assert.equal(typeof modules[0].notify, 'function')
-  assert.equal(typeof modules[0].registerSdsPopover, 'function')
-  assert.equal(typeof modules[0].registerSdsTabs, 'function')
-  assert.equal(typeof modules[0].registerSdsTooltip, 'function')
+  assert.equal(typeof modules[0].defineSds, 'function')
 })
 
 test('browser-only helpers fail clearly when called during SSR', async () => {
@@ -51,6 +53,15 @@ test('the application build retains automatic registration', async () => {
   assert.match(source, /sds-toast/)
 })
 
+test('the automatic entry and root entry share behavior modules', async () => {
+  const auto = await readFile('package/auto.js', 'utf8')
+  const root = await readFile('package/sds.js', 'utf8')
+
+  assert.match(auto, /from "\.\/sds\.js"/)
+  assert.match(root, /from "\.\/dropdown\.js"/)
+  assert.match(root, /from "\.\/toast\.js"/)
+})
+
 test('the package remains dependency-free', () => {
   assert.equal(packageJson.dependencies, undefined)
   assert.equal(packageJson.peerDependencies, undefined)
@@ -58,4 +69,22 @@ test('the package remains dependency-free', () => {
 
 test('linked reference documentation is published', () => {
   assert.ok(packageJson.files.includes('REFERENCE.md'))
+})
+
+test('custom-element metadata describes every registered element', () => {
+  const declarations = customElementsManifest.modules.flatMap(
+    (module) => module.declarations ?? [],
+  )
+  assert.deepEqual(
+    declarations.map((declaration) => declaration.tagName).sort(),
+    ['sds-dropdown', 'sds-popover', 'sds-tabs', 'sds-toast', 'sds-tooltip'],
+  )
+
+  const attributes = declarations.flatMap(
+    (declaration) =>
+      declaration.attributes?.map((attribute) => attribute.name) ?? [],
+  )
+  assert.equal(attributes.includes('data-mode'), false)
+  assert.equal(attributes.includes('data-valid'), false)
+  assert.equal(attributes.includes('data-field-required'), false)
 })

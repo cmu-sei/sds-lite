@@ -1,5 +1,9 @@
 import { FloatingPositioner } from './floating.js'
-import { directElementChildren, ensureId } from './internals.js'
+import {
+  defineCustomElement,
+  directElementChildren,
+  ensureId,
+} from './internals.js'
 
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
@@ -12,10 +16,14 @@ export class SdsDropdownElement extends HTMLElementBase {
   private items: HTMLElement[] = []
   private positioner: FloatingPositioner | null = null
   private controller: AbortController | null = null
+  private observer: MutationObserver | null = null
 
   connectedCallback(): void {
     this.controller?.abort()
+    this.observer?.disconnect()
     this.controller = new AbortController()
+    this.observer = new MutationObserver(() => this.connectedCallback())
+    this.observer.observe(this, { childList: true })
 
     const children = directElementChildren(this)
     const trigger = children.find(
@@ -41,7 +49,6 @@ export class SdsDropdownElement extends HTMLElementBase {
     }
 
     const menuId = ensureId(menu, 'sds-dropdown')
-    const menuMode = this.dataset.mode !== 'popover'
     menu.classList.add('sds-dropdown-menu')
     menu.setAttribute('popover', menu.getAttribute('popover') || 'auto')
     trigger.setAttribute('popovertarget', menuId)
@@ -51,14 +58,12 @@ export class SdsDropdownElement extends HTMLElementBase {
       String(menu.matches(':popover-open')),
     )
     if (!trigger.hasAttribute('aria-haspopup')) {
-      trigger.setAttribute('aria-haspopup', menuMode ? 'menu' : 'dialog')
+      trigger.setAttribute('aria-haspopup', 'menu')
     }
 
-    if (menuMode) {
-      menu.setAttribute('role', 'menu')
-      if (!menu.hasAttribute('aria-orientation')) {
-        menu.setAttribute('aria-orientation', 'vertical')
-      }
+    menu.setAttribute('role', 'menu')
+    if (!menu.hasAttribute('aria-orientation')) {
+      menu.setAttribute('aria-orientation', 'vertical')
     }
 
     this.trigger = trigger
@@ -66,27 +71,10 @@ export class SdsDropdownElement extends HTMLElementBase {
     this.positioner = new FloatingPositioner(
       trigger,
       menu,
-      () => this.dataset.placement ?? 'bottom-start',
+      () => this.dataset.placement ?? 'block-end-start',
       () => this.dataset.offset,
     )
-    this.items = menuMode
-      ? Array.from(
-          menu.querySelectorAll<HTMLElement>(
-            'button, a[href], [role="menuitem"]',
-          ),
-        )
-          .filter((item) => !item.closest('[role="menuitem"] [role="menuitem"]'))
-          .map((item) => {
-            item.setAttribute('role', 'menuitem')
-            item.tabIndex = -1
-            return item
-          })
-          .filter(
-            (item) =>
-              item.getAttribute('aria-disabled') !== 'true' &&
-              (!(item instanceof HTMLButtonElement) || !item.disabled),
-          )
-      : []
+    this.collectItems()
 
     trigger.addEventListener('keydown', this.handleTriggerKeydown, {
       signal: this.controller.signal,
@@ -108,6 +96,7 @@ export class SdsDropdownElement extends HTMLElementBase {
 
   disconnectedCallback(): void {
     this.controller?.abort()
+    this.observer?.disconnect()
     this.positioner = null
   }
 
@@ -115,9 +104,38 @@ export class SdsDropdownElement extends HTMLElementBase {
     return this.menu?.matches(':popover-open') ?? false
   }
 
+  private collectItems(): void {
+    if (!this.menu) {
+      this.items = []
+      return
+    }
+
+    for (const item of this.menu.querySelectorAll(':scope > li')) {
+      if (!item.hasAttribute('role')) item.setAttribute('role', 'none')
+    }
+
+    this.items = Array.from(
+      this.menu.querySelectorAll<HTMLElement>(
+        'button, a[href], [role="menuitem"]',
+      ),
+    )
+      .filter((item) => !item.closest('[role="menuitem"] [role="menuitem"]'))
+      .map((item) => {
+        item.setAttribute('role', 'menuitem')
+        item.tabIndex = -1
+        return item
+      })
+      .filter(
+        (item) =>
+          item.getAttribute('aria-disabled') !== 'true' &&
+          (!(item instanceof HTMLButtonElement) || !item.disabled),
+      )
+  }
+
   private open(focusIndex = 0): void {
     if (!this.menu || this.isOpen()) return
 
+    this.collectItems()
     this.positioner?.reset()
     this.menu.showPopover()
     this.positioner?.position()
@@ -140,7 +158,10 @@ export class SdsDropdownElement extends HTMLElementBase {
   }
 
   private handleBeforeToggle = (event: ToggleEvent): void => {
-    if (event.newState === 'open') this.positioner?.reset()
+    if (event.newState === 'open') {
+      this.collectItems()
+      this.positioner?.reset()
+    }
     this.trigger?.setAttribute(
       'aria-expanded',
       String(event.newState === 'open'),
@@ -148,8 +169,6 @@ export class SdsDropdownElement extends HTMLElementBase {
   }
 
   private handleTriggerKeydown = (event: KeyboardEvent): void => {
-    if (this.dataset.mode === 'popover') return
-
     const focusIndex =
       event.key === 'ArrowUp' ? this.items.length - 1 : 0
     const opensMenu =
@@ -169,6 +188,7 @@ export class SdsDropdownElement extends HTMLElementBase {
   }
 
   private handleMenuKeydown = (event: KeyboardEvent): void => {
+    this.collectItems()
     const currentIndex = this.items.findIndex(
       (item) => item === document.activeElement,
     )
@@ -195,7 +215,16 @@ export class SdsDropdownElement extends HTMLElementBase {
 
   private handleMenuClick = (event: MouseEvent): void => {
     if (!(event.target instanceof Element)) return
-    if (event.target.closest('[role="menuitem"]')) this.close()
+    const item = event.target.closest<HTMLElement>('[role="menuitem"]')
+    if (!item) return
+    if (
+      item.getAttribute('aria-disabled') === 'true' ||
+      (item instanceof HTMLButtonElement && item.disabled)
+    ) {
+      event.preventDefault()
+      return
+    }
+    this.close()
   }
 
 }
@@ -207,12 +236,5 @@ declare global {
 }
 
 export function registerSdsDropdown(): void {
-  if (
-    typeof customElements !== 'undefined' &&
-    !customElements.get('sds-dropdown')
-  ) {
-    customElements.define('sds-dropdown', SdsDropdownElement)
-  }
+  defineCustomElement('sds-dropdown', SdsDropdownElement)
 }
-
-registerSdsDropdown()

@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { computeFloatingPosition } from '../package/floating.js'
+import {
+  computeFloatingPosition,
+  resolveFloatingPlacement,
+} from '../package/floating.js'
 
 const viewport = { width: 800, height: 640 }
 const surface = { width: 180, height: 120 }
@@ -86,4 +89,23 @@ test('cardinal placements align and flip on both axes', () => {
   assert.equal(position.side, 'left')
   assert.equal(position.left, 505)
   assert.equal(position.top, 500)
+})
+
+test('logical placements follow direction and writing mode', () => {
+  assert.equal(
+    resolveFloatingPlacement('block-end-start', 'ltr', 'horizontal-tb'),
+    'bottom-start',
+  )
+  assert.equal(
+    resolveFloatingPlacement('block-end-start', 'rtl', 'horizontal-tb'),
+    'bottom-end',
+  )
+  assert.equal(
+    resolveFloatingPlacement('inline-start-end', 'ltr', 'horizontal-tb'),
+    'left-end',
+  )
+  assert.equal(
+    resolveFloatingPlacement('block-start-start', 'ltr', 'vertical-rl'),
+    'right-start',
+  )
 })

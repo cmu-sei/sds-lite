@@ -6,6 +6,7 @@
   "types": "./package/sds.d.ts",
   "module": "./package/sds.js",
   "style": "./package/sds.css",
+  "customElements": "./custom-elements.json",
   "keywords": [
     "design-system",
     "css",
@@ -15,22 +16,25 @@
   ],
   "sideEffects": [
     "**/*.css",
-    "./src/sds.ts",
-    "./src/elements/*.ts",
-    "./package/*.js",
-    "./package/*.css"
+    "./src/auto.ts",
+    "./package/auto.js"
   ],
   "publishConfig": {
     "access": "public"
   },
   "files": [
     "package",
-    "REFERENCE.md"
+    "REFERENCE.md",
+    "custom-elements.json"
   ],
   "exports": {
     ".": {
       "types": "./package/sds.d.ts",
       "import": "./package/sds.js"
+    },
+    "./auto": {
+      "types": "./package/auto.d.ts",
+      "import": "./package/auto.js"
     },
     "./dialog": {
       "types": "./package/elements/dialog.d.ts",
@@ -57,16 +61,23 @@
       "import": "./package/toast.js"
     },
     "./sds.css": "./package/sds.css",
+    "./core.css": "./package/core.css",
+    "./layouts.css": "./package/layouts.css",
+    "./prose.css": "./package/prose.css",
+    "./brand.css": "./package/brand.css",
     "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && vite build --config vite.library.config.ts && vite build --config vite.elements.config.ts && tsc -p tsconfig.declarations.json",
+    "build": "tsc && vite build && vite build --config vite.library.config.ts && tsc -p tsconfig.declarations.json",
     "preview": "vite preview",
-    "test": "npm run build && node --test",
+    "test": "npm run build && node --test && playwright test",
+    "test:browser": "playwright test",
     "prepublishOnly": "npm test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "happy-dom": "^20.14.5",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
   }

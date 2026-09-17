@@ -38,7 +38,7 @@
     );
   }
 
-  :where(.sds-datapoint[data-tone="primary"]) {
+  :where(.sds-datapoint[data-tone="accent"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-blue-600),
       var(--sds-blue-400)

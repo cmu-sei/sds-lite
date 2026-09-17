@@ -20,7 +20,7 @@
     );
   }
 
-  :where(sds-tabs[data-tone="primary"]) {
+  :where(sds-tabs[data-tone="accent"]) {
     --sds-tab-active-background: light-dark(
       var(--sds-blue-700),
       var(--sds-blue-200)

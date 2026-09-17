@@ -9,5 +9,5 @@
     "rewriteRelativeImportExtensions": true,
     "rootDir": "src"
   },
-  "include": ["src/sds.ts", "src/elements/*.ts"]
+  "include": ["src/auto.ts", "src/sds.ts", "src/elements/*.ts"]
 }

@@ -1,27 +1,31 @@
-import { FloatingPositioner } from './floating.js'
-import { directElementChildren, ensureId } from './internals.js'
+import {
+  FloatingHoverController,
+  FloatingPositioner,
+} from './floating.js'
+import {
+  defineCustomElement,
+  directElementChildren,
+  ensureId,
+} from './internals.js'
 
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
     ? (class {} as typeof HTMLElement)
     : HTMLElement
 
-const hoverOpenDelay = 500
-const hoverCloseDelay = 250
-
 export class SdsPopoverElement extends HTMLElementBase {
-  private trigger: HTMLButtonElement | null = null
-  private content: HTMLElement | null = null
   private positioner: FloatingPositioner | null = null
+  private hoverController: FloatingHoverController | null = null
   private controller: AbortController | null = null
-  private openTimer: ReturnType<typeof setTimeout> | null = null
-  private closeTimer: ReturnType<typeof setTimeout> | null = null
-  private pointerInside = false
+  private observer: MutationObserver | null = null
 
   connectedCallback(): void {
     this.controller?.abort()
-    this.clearTimers()
+    this.observer?.disconnect()
+    this.hoverController?.disconnect()
     this.controller = new AbortController()
+    this.observer = new MutationObserver(() => this.connectedCallback())
+    this.observer.observe(this, { childList: true })
 
     const children = directElementChildren(this)
     const trigger = children.find(
@@ -48,161 +52,34 @@ export class SdsPopoverElement extends HTMLElementBase {
 
     const contentId = ensureId(content, 'sds-popover')
     content.classList.add('sds-popover-content')
-    content.setAttribute('popover', 'manual')
-    trigger.removeAttribute('popovertarget')
-    trigger.setAttribute('aria-controls', contentId)
-    trigger.setAttribute(
-      'aria-expanded',
-      String(content.matches(':popover-open')),
-    )
-    if (!trigger.hasAttribute('aria-haspopup')) {
-      trigger.setAttribute('aria-haspopup', 'dialog')
-    }
+    content.setAttribute('popover', content.getAttribute('popover') || 'auto')
+    trigger.setAttribute('popovertarget', contentId)
 
-    this.trigger = trigger
-    this.content = content
     this.positioner = new FloatingPositioner(
       trigger,
       content,
-      () => this.dataset.placement ?? 'bottom-start',
+      () => this.dataset.placement ?? 'block-end-start',
       () => this.dataset.offset,
       10,
     )
-
-    trigger.addEventListener('pointerenter', this.handlePointerEnter, {
-      signal: this.controller.signal,
-    })
-    trigger.addEventListener('pointerleave', this.handlePointerLeave, {
-      signal: this.controller.signal,
-    })
-    content.addEventListener('pointerenter', this.handlePointerEnter, {
-      signal: this.controller.signal,
-    })
-    content.addEventListener('pointerleave', this.handlePointerLeave, {
-      signal: this.controller.signal,
-    })
-    this.addEventListener('focusin', this.handleFocusIn, {
-      signal: this.controller.signal,
-    })
-    this.addEventListener('focusout', this.handleFocusOut, {
-      signal: this.controller.signal,
-    })
-    document.addEventListener('keydown', this.handleKeydown, {
-      signal: this.controller.signal,
-    })
-    document.addEventListener('pointerdown', this.handleDocumentPointerDown, {
-      capture: true,
-      signal: this.controller.signal,
-    })
-    content.addEventListener('beforetoggle', this.handleBeforeToggle, {
-      signal: this.controller.signal,
-    })
-    content.addEventListener('toggle', this.handleToggle, {
-      signal: this.controller.signal,
-    })
+    this.hoverController = new FloatingHoverController(
+      trigger,
+      content,
+      this.positioner,
+      {
+        focusOpenDelay: 300,
+      },
+    )
+    this.hoverController.observe(this.controller.signal)
     this.positioner.observe(this.controller.signal)
   }
 
   disconnectedCallback(): void {
     this.controller?.abort()
-    this.clearTimers()
+    this.observer?.disconnect()
+    this.hoverController?.disconnect()
+    this.hoverController = null
     this.positioner = null
-  }
-
-  private isOpen(): boolean {
-    return this.content?.matches(':popover-open') ?? false
-  }
-
-  private clearTimers(): void {
-    if (this.openTimer !== null) clearTimeout(this.openTimer)
-    if (this.closeTimer !== null) clearTimeout(this.closeTimer)
-    this.openTimer = null
-    this.closeTimer = null
-  }
-
-  private show(): void {
-    this.openTimer = null
-    if (!this.content || this.isOpen()) return
-    this.positioner?.reset()
-    this.content.showPopover()
-    this.positioner?.position()
-  }
-
-  private scheduleOpen(delay: number): void {
-    if (this.closeTimer !== null) clearTimeout(this.closeTimer)
-    this.closeTimer = null
-    if (this.isOpen() || this.openTimer !== null) return
-    this.openTimer = setTimeout(() => this.show(), delay)
-  }
-
-  private scheduleClose(): void {
-    if (this.openTimer !== null) clearTimeout(this.openTimer)
-    this.openTimer = null
-    if (!this.isOpen() || this.closeTimer !== null) return
-    this.closeTimer = setTimeout(() => {
-      this.closeTimer = null
-      if (
-        !this.pointerInside &&
-        !this.contains(document.activeElement)
-      ) {
-        this.content?.hidePopover()
-      }
-    }, hoverCloseDelay)
-  }
-
-  private handlePointerEnter = (): void => {
-    this.pointerInside = true
-    this.scheduleOpen(hoverOpenDelay)
-  }
-
-  private handlePointerLeave = (): void => {
-    this.pointerInside = false
-    this.scheduleClose()
-  }
-
-  private handleFocusIn = (): void => {
-    this.scheduleOpen(0)
-  }
-
-  private handleFocusOut = (): void => {
-    this.scheduleClose()
-  }
-
-  private handleKeydown = (event: KeyboardEvent): void => {
-    if (event.key !== 'Escape' || !this.isOpen()) return
-    event.preventDefault()
-    this.clearTimers()
-    const restoreFocus = this.content?.contains(document.activeElement)
-    this.content?.hidePopover()
-    if (restoreFocus) this.trigger?.focus()
-  }
-
-  private handleDocumentPointerDown = (event: PointerEvent): void => {
-    if (
-      !this.isOpen() ||
-      !(event.target instanceof Node) ||
-      this.contains(event.target)
-    ) {
-      return
-    }
-    this.clearTimers()
-    this.content?.hidePopover()
-  }
-
-  private handleBeforeToggle = (event: ToggleEvent): void => {
-    if (event.newState === 'open') this.positioner?.reset()
-    this.trigger?.setAttribute(
-      'aria-expanded',
-      String(event.newState === 'open'),
-    )
-  }
-
-  private handleToggle = (): void => {
-    if (this.isOpen()) {
-      this.positioner?.position()
-    } else {
-      this.positioner?.reset()
-    }
   }
 }
 
@@ -213,12 +90,5 @@ declare global {
 }
 
 export function registerSdsPopover(): void {
-  if (
-    typeof customElements !== 'undefined' &&
-    !customElements.get('sds-popover')
-  ) {
-    customElements.define('sds-popover', SdsPopoverElement)
-  }
+  defineCustomElement('sds-popover', SdsPopoverElement)
 }
-
-registerSdsPopover()

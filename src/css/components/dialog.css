@@ -1,5 +1,7 @@
 @layer sds.components {
   :where(.sds-dialog) {
+    display: grid;
+    gap: var(--sds-space-xl);
     inline-size: calc(100% - 1rem);
     max-inline-size: 36rem;
     max-block-size: calc(100dvh - 4rem);
@@ -23,28 +25,30 @@
     margin-block: var(--sds-space-sm) auto;
   }
 
-  :where(.sds-dialog[data-size="sm"]) {
+  :where(.sds-dialog[data-width="sm"]) {
     max-inline-size: 24rem;
   }
 
-  :where(.sds-dialog[data-size="lg"]) {
+  :where(.sds-dialog[data-width="lg"]) {
     max-inline-size: 42rem;
   }
 
-  :where(.sds-dialog[data-size="xl"]) {
+  :where(.sds-dialog[data-width="xl"]) {
     max-inline-size: 56rem;
   }
 
-  :where(.sds-dialog[data-size="2xl"]) {
+  :where(.sds-dialog[data-width="2xl"]) {
     max-inline-size: 72rem;
   }
 
   :where(.sds-dialog[open]) {
-    display: grid;
-    gap: var(--sds-space-xl);
     opacity: 1;
     transform: scale(1);
     transition-timing-function: var(--sds-easing-enter);
+  }
+
+  :where(.sds-dialog:not([open])) {
+    display: none;
   }
 
   :where(.sds-dialog-header) {

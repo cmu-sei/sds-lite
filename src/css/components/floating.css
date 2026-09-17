@@ -52,27 +52,27 @@
     list-style: none;
   }
 
-  :where(sds-dropdown, sds-popover)[data-size="sm"]
+  :where(sds-dropdown, sds-popover)[data-width="sm"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(12rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-size="lg"]
+  :where(sds-dropdown, sds-popover)[data-width="lg"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(16rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-size="xl"]
+  :where(sds-dropdown, sds-popover)[data-width="xl"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(18rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-size="2xl"]
+  :where(sds-dropdown, sds-popover)[data-width="2xl"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(20rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-size="auto"]
+  :where(sds-dropdown, sds-popover)[data-width="auto"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: max-content;
   }

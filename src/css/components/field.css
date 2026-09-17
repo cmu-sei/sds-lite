@@ -24,23 +24,15 @@
     grid-column: 2;
   }
 
-  :where(.sds-field > [data-field-required]) {
-    color: var(--sds-color-form-invalid);
-    font-size: 0.75rem;
-  }
-
-  :where(.sds-field > [data-field-optional]) {
-    color: var(--sds-color-text-muted);
+  :where(.sds-field > label small) {
+    margin-inline-start: var(--sds-space-xs);
     font-size: 0.75rem;
     font-style: italic;
   }
 
-  :where(.sds-field > [data-field-valid]) {
-    color: var(--sds-color-success-text);
-  }
-
-  :where(.sds-field > [data-field-invalid]) {
-    color: var(--sds-color-form-invalid);
+  :where(.sds-field > small[data-tone]) {
+    color: var(--sds-tone-text);
+    font-style: normal;
   }
 
   @media (max-width: 40rem) {

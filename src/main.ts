@@ -1,6 +1,8 @@
 import './style.css'
-import './sds.ts'
 import './demo.css'
+import { defineSds } from './sds.ts'
+
+defineSds()
 
 const root = document.querySelector<HTMLElement>('[data-sds-root]')
 const themeSelect = document.querySelector<HTMLSelectElement>('#theme')

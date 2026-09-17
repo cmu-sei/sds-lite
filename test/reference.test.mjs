@@ -26,12 +26,12 @@ test('reference lists every public CSS class', async () => {
   const css = (
     await Promise.all(files.map((file) => readFile(file, 'utf8')))
   ).join('\n')
-  const classes = matches(css, /\.((?:sds-[a-z0-9-]+)|(?:not-prose))\b/g)
+  const classes = matches(css, /\.((?:sds-[a-z0-9-]+)|(?:sds-not-prose))\b/g)
 
   for (const className of classes) {
     assert.match(reference, new RegExp(`\\.${className}\\b`), className)
   }
-  assert.match(reference, /`\.lead`/)
+  assert.match(reference, /`\.sds-prose-lead`/)
 })
 
 test('reference lists every public data attribute', async () => {

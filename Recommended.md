@@ -57,13 +57,12 @@ publish ordinary, precompiled CSS and dependency-free browser JavaScript.
 
 | Module | CDN artifact | Responsibility |
 |---|---|---|
-| Tokens | `tokens.css`, `tokens.json` | Color, type, spacing, radius, elevation, motion, and breakpoints |
-| Foundations | `foundations.css` | Font faces, typography, focus behavior, and narrowly scoped browser defaults |
-| Recipes | `components/*.css` source, aggregated into `sds.css` | One file per button, control, badge, callout, table, navigation, or other visual pattern |
-| Layout | Co-located with each owning recipe | Application, page, form, action-group, grid, and flex composition |
-| Themes | `themes/forge.css`, `themes/plaid.css` | Theme-specific semantic token assignments |
-| Behavior elements | `sds.js` and individual element exports | Idempotent enhancement for dialogs, panels, tabs, menus, and toasts |
-| Complete bundle | `sds.css`, `sds.js` | One-link and one-script onboarding |
+| Core styles | `core.css` | Tokens, foundations, controls, and common visual recipes |
+| Layout styles | `layouts.css` | Application, page, form, action-group, grid, and flex composition |
+| Prose styles | `prose.css` | Optional long-form content typography |
+| Brand styles | `brand.css` | Optional SEI application and brochure shells, including wordmarks |
+| Behavior modules | Side-effect-free `sds.js` and individual exports | Explicit, idempotent enhancement for dialogs, panels, tabs, menus, and toasts |
+| Complete bundle | `sds.css`, `auto.js` | One-link and one-script onboarding for non-hydrating pages |
 | Optional adapters | Separate npm packages | Vue or React convenience wrappers, where demand justifies them |
 | Optional visualization | `visualization.css`, `visualization.js` | Charts and their larger categorical palette |
 
@@ -76,7 +75,7 @@ The complete beginner installation should be:
 >
 <script
   type="module"
-  src="https://design.sei.cmu.edu/sds/5.0.0/sds.min.js"
+  src="https://design.sei.cmu.edu/sds/5.0.0/auto.min.js"
 ></script>
 ```
 
@@ -148,7 +147,6 @@ The recommended root and theme selectors are:
 :where([data-sds-theme="plaid"]) {}
 :where([data-sds-color-scheme="light"]) {}
 :where([data-sds-color-scheme="dark"]) {}
-:where([data-sds-density="compact"]) {}
 ```
 
 Themes must work on containers rather than only on `html` or `body`. This
@@ -276,12 +274,11 @@ orthogonal modifiers rather than separate button modules.
 
 ### Links
 
-The current link family uses primary, secondary, tertiary, blue, red, white,
-inline, CTA, up, and down combinations. The condensed interface should be:
+Links use secondary, tertiary, inline, and call-to-action treatments. Semantic
+color is independent of visual treatment:
 
 ```css
 .sds-link {}
-.sds-link[data-variant="primary"] {}
 .sds-link[data-variant="secondary"] {}
 .sds-link[data-variant="tertiary"] {}
 .sds-link[data-variant="inline"] {}
@@ -349,8 +346,9 @@ account for most repeated status styling:
 .sds-callout[data-variant="bold"] {}
 ```
 
-The default tones should be semantic: `neutral`, `info`, `success`, `warning`,
-and `danger`. Arbitrary hue names should not be the primary interface for
+The default tones should be semantic: `neutral`, `accent`, `info`, `success`,
+`warning`, and `danger`. `primary` remains an action-hierarchy variant, not a
+semantic tone. Arbitrary hue names should not be the primary interface for
 messages because color alone does not communicate meaning.
 
 ### Content and containers
@@ -825,10 +823,10 @@ The dialog's stable interface includes:
 ```text
 Element: native HTMLDialogElement
 Classes: sds-dialog or sds-panel
-Attributes: open, closedby, size, side, aria-labelledby, aria-describedby
-Commands: show, show-modal, close, request-close
+Attributes: open, closedby, data-width, data-side (panels), aria-labelledby, aria-describedby
+Commands: show-modal, close, request-close
 Methods: show(), showModal(), close(), requestClose()
-Events: sds-open, sds-close, sds-cancel
+Events: cancel, close, beforetoggle, toggle
 ```
 
 ## Distribution and compatibility
@@ -837,11 +835,12 @@ Publish immutable, versioned assets:
 
 ```text
 /sds/5.0.0/sds.min.css
-/sds/5.0.0/sds.min.js
-/sds/5.0.0/tokens.min.css
-/sds/5.0.0/foundations.min.css
-/sds/5.0.0/components.min.css
-/sds/5.0.0/layout.min.css
+/sds/5.0.0/auto.min.js
+/sds/5.0.0/sds.js
+/sds/5.0.0/core.min.css
+/sds/5.0.0/layouts.min.css
+/sds/5.0.0/prose.min.css
+/sds/5.0.0/brand.min.css
 /sds/5.0.0/themes/forge.min.css
 /sds/5.0.0/themes/plaid.min.css
 /sds/5.0.0/elements/dialog.js

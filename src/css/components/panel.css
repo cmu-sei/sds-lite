@@ -3,6 +3,8 @@
     position: fixed;
     inset-block: 0;
     inset-inline: auto 0;
+    display: flex;
+    flex-direction: column;
     inline-size: 91.666667%;
     max-inline-size: none;
     max-block-size: none;
@@ -25,10 +27,12 @@
   }
 
   :where(.sds-panel[open]) {
-    display: flex;
-    flex-direction: column;
     transform: translateX(0);
     transition-timing-function: var(--sds-easing-enter);
+  }
+
+  :where(.sds-panel:not([open])) {
+    display: none;
   }
 
   :where(.sds-panel[data-side="left"]) {
@@ -60,34 +64,34 @@
     transform: translateY(0);
   }
 
-  :where(.sds-panel:not([data-side="bottom"])[data-size="sm"]) {
+  :where(.sds-panel:not([data-side="bottom"])[data-width="sm"]) {
     max-inline-size: 24rem;
   }
 
   :where(
-    .sds-panel:not([data-side="bottom"]):not([data-size]),
-    .sds-panel:not([data-side="bottom"])[data-size="md"]
+    .sds-panel:not([data-side="bottom"]):not([data-width]),
+    .sds-panel:not([data-side="bottom"])[data-width="md"]
   ) {
     max-inline-size: 28rem;
   }
 
-  :where(.sds-panel:not([data-side="bottom"])[data-size="lg"]) {
+  :where(.sds-panel:not([data-side="bottom"])[data-width="lg"]) {
     max-inline-size: 32rem;
   }
 
-  :where(.sds-panel:not([data-side="bottom"])[data-size="xl"]) {
+  :where(.sds-panel:not([data-side="bottom"])[data-width="xl"]) {
     max-inline-size: 36rem;
   }
 
-  :where(.sds-panel[data-side="bottom"][data-size="sm"]) {
+  :where(.sds-panel[data-side="bottom"][data-width="sm"]) {
     block-size: 40dvh;
   }
 
-  :where(.sds-panel[data-side="bottom"][data-size="lg"]) {
+  :where(.sds-panel[data-side="bottom"][data-width="lg"]) {
     block-size: 75dvh;
   }
 
-  :where(.sds-panel[data-side="bottom"][data-size="xl"]) {
+  :where(.sds-panel[data-side="bottom"][data-width="xl"]) {
     block-size: 90dvh;
   }
 
@@ -137,6 +141,7 @@
     :where(.sds-panel[open]) {
       transform: translateX(100%);
     }
+
     :where(.sds-panel[data-side="left"][open]) {
       transform: translateX(-100%);
     }
@@ -145,4 +150,5 @@
       transform: translateY(100%);
     }
   }
+
 }

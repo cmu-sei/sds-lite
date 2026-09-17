@@ -48,7 +48,7 @@
     background: var(--sds-gray-700);
   }
 
-  :where(.sds-badge[data-variant="dark"][data-tone="primary"]) {
+  :where(.sds-badge[data-variant="dark"][data-tone="accent"]) {
     border-color: var(--sds-blue-700);
     background: var(--sds-blue-700);
   }
