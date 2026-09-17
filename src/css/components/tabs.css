@@ -119,7 +119,6 @@
   ) {
     color: var(--sds-tab-accent);
     background: var(--sds-color-surface-default);
-    border-block-end-width: 0;
     box-shadow: 0 1px 0 var(--sds-color-surface-default);
   }
 
