@@ -19,12 +19,12 @@ Native buttons inside an SDS root are styled automatically. Use
 
 | Option | Values | Default |
 |---|---|---|
-| `data-variant` | `primary`, `secondary`, `tertiary`, `ghost` | `primary` |
-| `data-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Accent action |
-| `data-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
-| `data-density` | `compact` | Comfortable |
-| `data-shape` | `icon` | Text button |
-| `data-block` | Presence | Content width |
+| `data-sds-variant` | `primary`, `secondary`, `tertiary`, `ghost` | `primary` |
+| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Accent action |
+| `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
+| `data-sds-density` | `compact` | Comfortable |
+| `data-sds-shape` | `icon` | Text button |
+| `data-sds-block` | Presence | Content width |
 | `disabled` | Native button state | Enabled |
 | `aria-disabled="true"` | Link or custom disabled state | Enabled |
 | `aria-busy="true"` | Action is processing | Not busy |
@@ -36,15 +36,15 @@ Use one primary action per local decision:
 ```html
 <div class="sds-action-group">
   <button type="submit">Save</button>
-  <button type="button" data-variant="ghost">Cancel</button>
-  <button type="button" data-variant="tertiary">Preview</button>
+  <button type="button" data-sds-variant="ghost">Cancel</button>
+  <button type="button" data-sds-variant="tertiary">Preview</button>
 </div>
 ```
 
 Use a danger tone for a destructive action:
 
 ```html
-<button type="button" data-tone="danger">Delete project</button>
+<button type="button" data-sds-tone="danger">Delete project</button>
 ```
 
 ### Icon-only buttons
@@ -52,22 +52,22 @@ Use a danger tone for a destructive action:
 Every icon-only control needs an accessible name:
 
 ```html
-<button type="button" data-shape="icon" aria-label="Close">
+<button type="button" data-sds-shape="icon" aria-label="Close">
   <span aria-hidden="true">&times;</span>
 </button>
 ```
 
-Use `data-density="compact"` for toolbar and menu-like actions:
+Use `data-sds-density="compact"` for toolbar and menu-like actions:
 
 ```html
-<button type="button" data-density="compact">Edit</button>
+<button type="button" data-sds-density="compact">Edit</button>
 ```
 
-An `svg`, `img`, or descendant with `data-avatar` is treated as leading media:
+An `svg`, `img`, or descendant with `data-sds-avatar` is treated as leading media:
 
 ```html
-<button type="button" data-density="compact">
-  <img data-avatar src="/people/alex.jpg" alt="">
+<button type="button" data-sds-density="compact">
+  <img data-sds-avatar src="/people/alex.jpg" alt="">
   Alex
 </button>
 ```
@@ -83,7 +83,7 @@ must remain in the reading order, application code must suppress its action.
 ```html
 <div class="sds-action-group" aria-label="Project actions">
   <button type="button">Save</button>
-  <button type="button" data-variant="ghost">Cancel</button>
+  <button type="button" data-sds-variant="ghost">Cancel</button>
 </div>
 ```
 
@@ -96,14 +96,14 @@ to apply link options:
 
 ```html
 <a class="sds-link" href="/projects">Projects</a>
-<a class="sds-link" data-variant="cta" href="/next">Next step</a>
+<a class="sds-link" data-sds-variant="cta" href="/next">Next step</a>
 ```
 
 | Option | Values | Default |
 |---|---|---|
-| `data-variant` | `secondary`, `tertiary`, `inline`, `cta` | Primary link |
-| `data-tone` | All semantic tones | Action blue |
-| `data-size` | `xs`, `sm`, `md`, `lg`, `xl` | Inherited |
+| `data-sds-variant` | `secondary`, `tertiary`, `inline`, `cta` | Primary link |
+| `data-sds-tone` | All semantic tones | Action blue |
+| `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | Inherited |
 | `aria-disabled="true"` | Disabled appearance | Enabled |
 
 Use `data-sds-unstyled` when a third-party or application recipe must opt out:

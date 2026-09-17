@@ -8,9 +8,9 @@
   }
 
   :where(
-    .sds-app:not([data-variant="brochure"]),
-    .sds-app[data-variant="application"],
-    .sds-app[data-variant="simple"]
+    .sds-app:not([data-sds-variant="brochure"]),
+    .sds-app[data-sds-variant="application"],
+    .sds-app[data-sds-variant="simple"]
   ) {
     block-size: 100dvh;
     overflow: hidden;
@@ -33,9 +33,9 @@
   }
 
   :where(
-    .sds-app:not([data-variant="simple"]) > .sds-app-header,
-    .sds-app[data-variant="application"] > .sds-app-header,
-    .sds-app[data-variant="brochure"] > .sds-app-header
+    .sds-app:not([data-sds-variant="simple"]) > .sds-app-header,
+    .sds-app[data-sds-variant="application"] > .sds-app-header,
+    .sds-app[data-sds-variant="brochure"] > .sds-app-header
   ) {
     display: none;
   }
@@ -176,12 +176,12 @@
   }
 
   :where(
-    .sds-app[data-variant="application"]
+    .sds-app[data-sds-variant="application"]
       > .sds-app-layout
       > .sds-app-body
       > .sds-app-main
       > .sds-page-header,
-    .sds-app:not([data-variant])
+    .sds-app:not([data-sds-variant])
       > .sds-app-layout
       > .sds-app-body
       > .sds-app-main
@@ -190,7 +190,7 @@
     padding-inline: var(--sds-space-md);
   }
 
-  :where(.sds-app[data-variant="brochure"]) {
+  :where(.sds-app[data-sds-variant="brochure"]) {
     --sds-font-heading: var(--sds-font-serif);
     --sds-radius-control: 0;
     --sds-radius-container: 0;
@@ -473,8 +473,8 @@
   }
 
   @media (max-width: 48rem) {
-    :where(.sds-app[data-variant="application"] > .sds-app-mobile-header),
-    :where(.sds-app:not([data-variant]) > .sds-app-mobile-header) {
+    :where(.sds-app[data-sds-variant="application"] > .sds-app-mobile-header),
+    :where(.sds-app:not([data-sds-variant]) > .sds-app-mobile-header) {
       display: flex;
     }
 

@@ -16,7 +16,7 @@
     transform: translateY(0.125rem) rotate(225deg);
   }
 
-  :where(sds-dropdown[data-hide-caret] > button)::after {
+  :where(sds-dropdown[hide-caret] > button)::after {
     display: none;
   }
 
@@ -66,8 +66,8 @@
   }
 
   :where(
-    .sds-dropdown-menu button[data-tone="danger"],
-    .sds-dropdown-menu a[data-tone="danger"]
+    .sds-dropdown-menu button[data-sds-tone="danger"],
+    .sds-dropdown-menu a[data-sds-tone="danger"]
   ) {
     color: var(--sds-color-danger-text);
   }

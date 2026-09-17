@@ -73,6 +73,36 @@ toast?.show()
 SDS Lite augments `HTMLElementTagNameMap` and `HTMLElementEventMap`, so common
 DOM queries and custom-event listeners receive the correct types.
 
+Import the generated framework augmentation when using typed custom-element
+markup:
+
+```ts
+import '@cmu-sei/sds-lite/react'
+// or
+import '@cmu-sei/sds-lite/vue'
+```
+
+These entries have no runtime behavior. See
+[Framework integration](../guides/frameworks.md) for the required framework
+configuration.
+
+## Editor metadata
+
+`html-data.json`, `custom-elements.json`, and `interface-manifest.json` are
+published with the package. VS Code projects can enable recipe-attribute and
+custom-element completion:
+
+```json
+{
+  "html.customData": [
+    "./node_modules/@cmu-sei/sds-lite/html-data.json"
+  ]
+}
+```
+
+The interface manifest also records every public recipe class and the valid
+option values for documentation, linting, and migration tools.
+
 ## Specialized application shells
 
 SEI application and brochure shells are intentionally not in the lightweight

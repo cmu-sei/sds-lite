@@ -29,7 +29,7 @@
     border-radius: var(--sds-radius-md);
   }
 
-  :where(.sds-tag[data-size="md"]) {
+  :where(.sds-tag[data-sds-size="md"]) {
     min-block-size: 2rem;
     gap: var(--sds-space-sm);
     padding-inline: var(--sds-space-md);
@@ -95,7 +95,7 @@
     );
   }
 
-  :where(button.sds-tag[data-tone="danger"]) {
+  :where(button.sds-tag[data-sds-tone="danger"]) {
     --sds-tag-action-color: light-dark(
       var(--sds-red-600),
       var(--sds-red-300)
@@ -146,7 +146,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  :where(.sds-tag[data-size="md"] .sds-tag-counter) {
+  :where(.sds-tag[data-sds-size="md"] .sds-tag-counter) {
     min-inline-size: 2rem;
     min-block-size: 2rem;
     margin-inline-start: calc(-1 * var(--sds-space-md));
@@ -183,14 +183,14 @@
     line-height: 1;
   }
 
-  :where(.sds-tag[data-size="md"] .sds-tag-action) {
+  :where(.sds-tag[data-sds-size="md"] .sds-tag-action) {
     inline-size: 2rem;
     min-inline-size: 2rem;
     block-size: 2rem;
     margin-inline-end: calc(-1 * var(--sds-space-md));
   }
 
-  :where(.sds-tag-action[data-tone="danger"]) {
+  :where(.sds-tag-action[data-sds-tone="danger"]) {
     --sds-tag-action-color: light-dark(
       var(--sds-red-600),
       var(--sds-red-300)

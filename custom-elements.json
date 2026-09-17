@@ -10,23 +10,103 @@
           "kind": "class",
           "name": "SdsDropdownElement",
           "tagName": "sds-dropdown",
-          "description": "Enhances a direct child button and menu with Popover positioning and menu keyboard behavior.",
+          "description": "Enhances a direct child button and menu with Popover positioning and menu keyboard behavior. Content model: One direct child button trigger. One direct child menu or Popover surface.",
           "attributes": [
             {
-              "name": "data-placement",
-              "description": "Logical preferred placement: block-start, block-end, inline-start, or inline-end, optionally followed by -start or -end."
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the menu is open."
             },
             {
-              "name": "data-offset",
+              "name": "placement",
+              "type": {
+                "text": "\"block-start\" | \"block-start-start\" | \"block-start-end\" | \"block-end\" | \"block-end-start\" | \"block-end-end\" | \"inline-start\" | \"inline-start-start\" | \"inline-start-end\" | \"inline-end\" | \"inline-end-start\" | \"inline-end-end\""
+              },
+              "description": "Preferred logical floating placement."
+            },
+            {
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
               "description": "Nonnegative offset in CSS pixels."
             },
             {
-              "name": "data-width",
-              "description": "Surface width: auto, sm, md, lg, xl, or 2xl."
+              "name": "width",
+              "type": {
+                "text": "\"auto\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\""
+              },
+              "description": "Recipe or overlay width."
             },
             {
-              "name": "data-hide-caret",
-              "description": "Hides the visual caret when the trigger already communicates that it opens a menu."
+              "name": "hide-caret",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Hides the visual caret."
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Reflects the open attribute."
+            },
+            {
+              "kind": "field",
+              "name": "placement",
+              "type": {
+                "text": "SdsPlacement"
+              },
+              "description": "Reflects the placement attribute."
+            },
+            {
+              "kind": "field",
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
+              "description": "Reflects the offset attribute."
+            },
+            {
+              "kind": "field",
+              "name": "width",
+              "type": {
+                "text": "SdsWidth"
+              },
+              "description": "Reflects the width attribute."
+            },
+            {
+              "kind": "field",
+              "name": "hideCaret",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Reflects the hide-caret attribute."
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "description": "Opens the menu."
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "description": "Closes the menu."
+            }
+          ],
+          "events": [
+            {
+              "name": "sds-toggle",
+              "type": {
+                "text": "CustomEvent<SdsToggleDetail>"
+              },
+              "description": "Dispatched after the open state changes."
             }
           ]
         }
@@ -40,19 +120,88 @@
           "kind": "class",
           "name": "SdsPopoverElement",
           "tagName": "sds-popover",
-          "description": "Opens interactive content after a 500ms hover or focus delay while retaining native click, touch, keyboard, and light-dismiss behavior.",
+          "description": "Enhances a direct child button and rich Popover surface with delayed hover and focus behavior. Content model: One direct child button trigger. One direct child rich-content Popover surface.",
           "attributes": [
             {
-              "name": "data-placement",
-              "description": "Logical preferred placement."
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the popover is open."
             },
             {
-              "name": "data-offset",
+              "name": "placement",
+              "type": {
+                "text": "\"block-start\" | \"block-start-start\" | \"block-start-end\" | \"block-end\" | \"block-end-start\" | \"block-end-end\" | \"inline-start\" | \"inline-start-start\" | \"inline-start-end\" | \"inline-end\" | \"inline-end-start\" | \"inline-end-end\""
+              },
+              "description": "Preferred logical floating placement."
+            },
+            {
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
               "description": "Nonnegative offset in CSS pixels."
             },
             {
-              "name": "data-width",
-              "description": "Surface width: auto, sm, md, lg, xl, or 2xl."
+              "name": "width",
+              "type": {
+                "text": "\"auto\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\""
+              },
+              "description": "Recipe or overlay width."
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Reflects the open attribute."
+            },
+            {
+              "kind": "field",
+              "name": "placement",
+              "type": {
+                "text": "SdsPlacement"
+              },
+              "description": "Reflects the placement attribute."
+            },
+            {
+              "kind": "field",
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
+              "description": "Reflects the offset attribute."
+            },
+            {
+              "kind": "field",
+              "name": "width",
+              "type": {
+                "text": "SdsWidth"
+              },
+              "description": "Reflects the width attribute."
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "description": "Opens the popover."
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "description": "Closes the popover."
+            }
+          ],
+          "events": [
+            {
+              "name": "sds-toggle",
+              "type": {
+                "text": "CustomEvent<SdsToggleDetail>"
+              },
+              "description": "Dispatched after the open state changes."
             }
           ]
         }
@@ -66,27 +215,99 @@
           "kind": "class",
           "name": "SdsTabsElement",
           "tagName": "sds-tabs",
-          "description": "Coordinates a tab list and its panels.",
+          "description": "Coordinates a tab list and one panel per tab. Content model: A direct child tab-list container with button or link children. One direct child panel for every tab.",
           "attributes": [
             {
-              "name": "data-activation",
-              "description": "automatic or manual."
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "description": "Value of the selected tab."
             },
             {
-              "name": "data-orientation",
-              "description": "horizontal or vertical."
+              "name": "activation",
+              "type": {
+                "text": "\"automatic\" | \"manual\""
+              },
+              "description": "Whether focus automatically selects a tab."
             },
             {
-              "name": "data-size",
-              "description": "md or lg."
+              "name": "orientation",
+              "type": {
+                "text": "\"horizontal\" | \"vertical\""
+              },
+              "description": "Layout or interaction orientation."
             },
             {
-              "name": "data-tone",
-              "description": "neutral, accent, info, success, warning, or danger."
+              "name": "size",
+              "type": {
+                "text": "\"md\" | \"lg\""
+              },
+              "description": "Visual scale."
             },
             {
-              "name": "data-variant",
-              "description": "folder, block, or underline."
+              "name": "tone",
+              "type": {
+                "text": "\"neutral\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\""
+              },
+              "description": "Semantic color intent."
+            },
+            {
+              "name": "variant",
+              "type": {
+                "text": "\"folder\" | \"block\" | \"underline\""
+              },
+              "description": "Visual treatment."
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "description": "Gets or selects the current tab by value."
+            },
+            {
+              "kind": "field",
+              "name": "activation",
+              "type": {
+                "text": "SdsTabsActivation"
+              },
+              "description": "Reflects the activation attribute."
+            },
+            {
+              "kind": "field",
+              "name": "orientation",
+              "type": {
+                "text": "SdsOrientation"
+              },
+              "description": "Reflects the orientation attribute."
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "SdsTabsSize"
+              },
+              "description": "Reflects the size attribute."
+            },
+            {
+              "kind": "field",
+              "name": "tone",
+              "type": {
+                "text": "SdsTone"
+              },
+              "description": "Reflects the tone attribute."
+            },
+            {
+              "kind": "field",
+              "name": "variant",
+              "type": {
+                "text": "SdsTabsVariant"
+              },
+              "description": "Reflects the variant attribute."
             }
           ],
           "events": [
@@ -94,7 +315,8 @@
               "name": "sds-change",
               "type": {
                 "text": "CustomEvent<SdsTabsChangeDetail>"
-              }
+              },
+              "description": "Dispatched when user interaction selects a new tab."
             }
           ]
         }
@@ -108,15 +330,39 @@
           "kind": "class",
           "name": "SdsTooltipElement",
           "tagName": "sds-tooltip",
-          "description": "Immediately shows an accessible, positioned description when its direct child trigger is hovered or focused.",
+          "description": "Enhances a direct child trigger and short description with accessible tooltip behavior. Content model: One direct child trigger. One direct child text description.",
           "attributes": [
             {
-              "name": "data-placement",
-              "description": "Logical preferred placement."
+              "name": "placement",
+              "type": {
+                "text": "\"block-start\" | \"block-start-start\" | \"block-start-end\" | \"block-end\" | \"block-end-start\" | \"block-end-end\" | \"inline-start\" | \"inline-start-start\" | \"inline-start-end\" | \"inline-end\" | \"inline-end-start\" | \"inline-end-end\""
+              },
+              "description": "Preferred logical floating placement."
             },
             {
-              "name": "data-offset",
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
               "description": "Nonnegative offset in CSS pixels."
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "placement",
+              "type": {
+                "text": "SdsPlacement"
+              },
+              "description": "Reflects the placement attribute."
+            },
+            {
+              "kind": "field",
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
+              "description": "Reflects the offset attribute."
             }
           ]
         }
@@ -130,27 +376,35 @@
           "kind": "class",
           "name": "SdsToastElement",
           "tagName": "sds-toast",
-          "description": "A timed or persistent notification.",
+          "description": "A timed or persistent notification. Content model: A direct child strong title. Message content. A close control for persistent notifications.",
           "attributes": [
             {
               "name": "open",
               "type": {
                 "text": "boolean"
-              }
+              },
+              "description": "Whether the toast is visible."
             },
             {
-              "name": "data-duration",
+              "name": "tone",
+              "type": {
+                "text": "\"neutral\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\""
+              },
+              "description": "Semantic color intent."
+            },
+            {
+              "name": "duration",
+              "type": {
+                "text": "number"
+              },
               "description": "Positive duration in milliseconds."
             },
             {
-              "name": "data-persistent",
+              "name": "persistent",
               "type": {
                 "text": "boolean"
-              }
-            },
-            {
-              "name": "data-tone",
-              "description": "neutral, accent, info, success, warning, or danger."
+              },
+              "description": "Disables automatic dismissal."
             }
           ],
           "members": [
@@ -163,14 +417,38 @@
               "description": "Reflects the open attribute."
             },
             {
+              "kind": "field",
+              "name": "tone",
+              "type": {
+                "text": "SdsTone"
+              },
+              "description": "Reflects the tone attribute."
+            },
+            {
+              "kind": "field",
+              "name": "duration",
+              "type": {
+                "text": "number"
+              },
+              "description": "Reflects the duration attribute."
+            },
+            {
+              "kind": "field",
+              "name": "persistent",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Reflects the persistent attribute."
+            },
+            {
               "kind": "method",
               "name": "show",
-              "description": "Opens the toast, starts its timer, and dispatches sds-open."
+              "description": "Opens the toast and starts its timer."
             },
             {
               "kind": "method",
               "name": "close",
-              "description": "Closes the toast and dispatches sds-close.",
+              "description": "Closes the toast.",
               "parameters": [
                 {
                   "name": "reason",
@@ -187,13 +465,15 @@
               "name": "sds-open",
               "type": {
                 "text": "CustomEvent<void>"
-              }
+              },
+              "description": "Dispatched when show() opens the toast."
             },
             {
               "name": "sds-close",
               "type": {
                 "text": "CustomEvent<{ reason: SdsToastCloseReason }>"
-              }
+              },
+              "description": "Dispatched when the toast closes."
             }
           ]
         }

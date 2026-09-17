@@ -13,10 +13,22 @@ import {
 
 The root also exports these types:
 
+- `SdsGap`
+- `SdsOrientation`
+- `SdsPlacement`
+- `SdsRecipeAttribute`
+- `SdsRecipeClass`
+- `SdsSize`
+- `SdsTabsActivation`
 - `SdsNotifyOptions`
+- `SdsTabsSize`
 - `SdsTabsChangeDetail`
+- `SdsTabsVariant`
+- `SdsToggleDetail`
 - `SdsToastCloseReason`
 - `SdsToastTone`
+- `SdsTone`
+- `SdsWidth`
 
 ### `defineSds()`
 
@@ -61,11 +73,40 @@ toast?.close('programmatic')
 | Member | Meaning |
 |---|---|
 | `open: boolean` | Reflects the `open` attribute |
+| `tone: SdsTone` | Reflects the `tone` attribute |
+| `duration: number` | Positive auto-dismiss duration |
+| `persistent: boolean` | Reflects the `persistent` attribute |
 | `show()` | Opens, starts timing, and dispatches `sds-open` |
 | `close(reason?)` | Closes and dispatches `sds-close` |
 
 Changing `open` directly updates visibility and timing without dispatching
 open or close events.
+
+## Tabs element
+
+`<sds-tabs>` reflects `value`, `activation`, `orientation`, `size`, `tone`,
+and `variant` through typed properties. Setting `value` selects the enabled
+tab whose native `value` attribute matches. An unknown value throws
+`RangeError`; setting a property does not dispatch `sds-change`.
+
+## Dropdown and popover elements
+
+`<sds-dropdown>` and `<sds-popover>` expose:
+
+| Member | Meaning |
+|---|---|
+| `open: boolean` | Reflects actual Popover visibility |
+| `placement: SdsPlacement` | Preferred logical placement |
+| `offset: number` | Nonnegative offset in CSS pixels |
+| `width: SdsWidth` | Surface width |
+| `show()` | Opens the native Popover surface |
+| `hide()` | Closes the native Popover surface |
+
+Dropdowns additionally expose `hideCaret: boolean`. Both dispatch
+`sds-toggle` with `{ open: boolean }` after their state changes.
+
+`<sds-tooltip>` exposes reflected `placement` and `offset` properties but no
+programmatic open state because its visibility follows hover and focus.
 
 ## Events
 
@@ -74,6 +115,7 @@ SDS custom events bubble and cross shadow roots.
 | Event | Target | Detail | When |
 |---|---|---|---|
 | `sds-change` | `<sds-tabs>` | `{ index: number, value: string }` | A new tab is selected |
+| `sds-toggle` | `<sds-dropdown>`, `<sds-popover>` | `{ open: boolean }` | Native Popover visibility changes |
 | `sds-open` | `<sds-toast>` | None | `show()` opens a closed toast |
 | `sds-close` | `<sds-toast>` | `{ reason: 'dismiss' \| 'programmatic' \| 'timeout' }` | A toast closes |
 

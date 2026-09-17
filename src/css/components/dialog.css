@@ -25,19 +25,19 @@
     margin-block: var(--sds-space-sm) auto;
   }
 
-  :where(.sds-dialog[data-width="sm"]) {
+  :where(.sds-dialog[data-sds-width="sm"]) {
     max-inline-size: 24rem;
   }
 
-  :where(.sds-dialog[data-width="lg"]) {
+  :where(.sds-dialog[data-sds-width="lg"]) {
     max-inline-size: 42rem;
   }
 
-  :where(.sds-dialog[data-width="xl"]) {
+  :where(.sds-dialog[data-sds-width="xl"]) {
     max-inline-size: 56rem;
   }
 
-  :where(.sds-dialog[data-width="2xl"]) {
+  :where(.sds-dialog[data-sds-width="2xl"]) {
     max-inline-size: 72rem;
   }
 
@@ -81,8 +81,8 @@
     .sds-panel > footer
   )
       > :is(button, .sds-button):is(
-        :not([data-variant]),
-        [data-variant="primary"]
+        :not([data-sds-variant]),
+        [data-sds-variant="primary"]
       )
   {
     order: 1;

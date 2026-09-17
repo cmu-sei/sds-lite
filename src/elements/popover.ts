@@ -7,7 +7,16 @@ import {
   directElementChildren,
   ElementConnection,
   ensureId,
+  readNumberAttribute,
+  reflectBooleanAttribute,
+  reflectNumberAttribute,
+  reflectStringAttribute,
 } from './internals.js'
+import type {
+  SdsPlacement,
+  SdsToggleDetail,
+  SdsWidth,
+} from '../generated/interface.js'
 
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
@@ -15,12 +24,51 @@ const HTMLElementBase: typeof HTMLElement =
     : HTMLElement
 
 export class SdsPopoverElement extends HTMLElementBase {
+  static observedAttributes = ['open', 'placement', 'offset']
+
+  private content: HTMLElement | null = null
   private positioner: FloatingPositioner | null = null
   private hoverController: FloatingHoverController | null = null
   private connection = new ElementConnection()
 
+  get open(): boolean {
+    return this.hasAttribute('open')
+  }
+
+  set open(value: boolean) {
+    reflectBooleanAttribute(this, 'open', value)
+  }
+
+  get placement(): SdsPlacement {
+    return (this.getAttribute('placement') ??
+      'block-end-start') as SdsPlacement
+  }
+
+  set placement(value: SdsPlacement) {
+    reflectStringAttribute(this, 'placement', value)
+  }
+
+  get offset(): number {
+    return readNumberAttribute(this, 'offset', 9)
+  }
+
+  set offset(value: number) {
+    reflectNumberAttribute(this, 'offset', value)
+  }
+
+  get width(): SdsWidth {
+    return (this.getAttribute('width') ?? 'md') as SdsWidth
+  }
+
+  set width(value: SdsWidth) {
+    reflectStringAttribute(this, 'width', value)
+  }
+
   connectedCallback(): void {
     this.hoverController?.disconnect()
+    this.hoverController = null
+    this.positioner = null
+    this.content = null
     const signal = this.connection.connect(
       this,
       () => this.connectedCallback(),
@@ -54,12 +102,13 @@ export class SdsPopoverElement extends HTMLElementBase {
     content.classList.add('sds-popover-content')
     content.setAttribute('popover', content.getAttribute('popover') || 'auto')
     trigger.setAttribute('popovertarget', contentId)
+    this.content = content
 
     this.positioner = new FloatingPositioner(
       trigger,
       content,
-      () => this.dataset.placement ?? 'block-end-start',
-      () => this.dataset.offset,
+      () => this.placement,
+      () => this.getAttribute('offset') ?? undefined,
       9,
     )
     this.hoverController = new FloatingHoverController(
@@ -73,6 +122,8 @@ export class SdsPopoverElement extends HTMLElementBase {
     )
     this.hoverController.observe(signal)
     this.positioner.observe(signal)
+    content.addEventListener('toggle', this.handleToggle, { signal })
+    if (this.open) this.show()
   }
 
   disconnectedCallback(): void {
@@ -80,12 +131,64 @@ export class SdsPopoverElement extends HTMLElementBase {
     this.hoverController?.disconnect()
     this.hoverController = null
     this.positioner = null
+    this.content = null
+  }
+
+  attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ): void {
+    if (oldValue === newValue || !this.isConnected) return
+    if (name === 'open') {
+      if (newValue === null) this.hide()
+      else this.show()
+      return
+    }
+    if (this.content?.matches(':popover-open')) {
+      this.positioner?.reset()
+      this.positioner?.position()
+    }
+  }
+
+  show(): void {
+    if (!this.content) {
+      this.open = true
+      return
+    }
+    if (!this.content.matches(':popover-open')) {
+      this.content.showPopover()
+    }
+  }
+
+  hide(): void {
+    if (!this.content) {
+      this.open = false
+      return
+    }
+    if (this.content.matches(':popover-open')) this.content.hidePopover()
+  }
+
+  private handleToggle = (): void => {
+    const open = this.content?.matches(':popover-open') ?? false
+    reflectBooleanAttribute(this, 'open', open)
+    this.dispatchEvent(
+      new CustomEvent<SdsToggleDetail>('sds-toggle', {
+        bubbles: true,
+        composed: true,
+        detail: { open },
+      }),
+    )
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
     'sds-popover': SdsPopoverElement
+  }
+
+  interface HTMLElementEventMap {
+    'sds-toggle': CustomEvent<SdsToggleDetail>
   }
 }
 

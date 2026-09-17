@@ -35,7 +35,7 @@
     display: none;
   }
 
-  :where(.sds-panel[data-side="left"]) {
+  :where(.sds-panel[data-sds-side="left"]) {
     inset-inline: 0 auto;
     border-inline-start: 0;
     border-inline-end: 1px solid var(--sds-color-border-default);
@@ -44,11 +44,11 @@
     transform: translateX(-100%);
   }
 
-  :where(.sds-panel[data-side="left"][open]) {
+  :where(.sds-panel[data-sds-side="left"][open]) {
     transform: translateX(0);
   }
 
-  :where(.sds-panel[data-side="bottom"]) {
+  :where(.sds-panel[data-sds-side="bottom"]) {
     inset-block: auto 0;
     inset-inline: 0;
     inline-size: 100%;
@@ -60,38 +60,38 @@
     transform: translateY(100%);
   }
 
-  :where(.sds-panel[data-side="bottom"][open]) {
+  :where(.sds-panel[data-sds-side="bottom"][open]) {
     transform: translateY(0);
   }
 
-  :where(.sds-panel:not([data-side="bottom"])[data-width="sm"]) {
+  :where(.sds-panel:not([data-sds-side="bottom"])[data-sds-width="sm"]) {
     max-inline-size: 24rem;
   }
 
   :where(
-    .sds-panel:not([data-side="bottom"]):not([data-width]),
-    .sds-panel:not([data-side="bottom"])[data-width="md"]
+    .sds-panel:not([data-sds-side="bottom"]):not([data-sds-width]),
+    .sds-panel:not([data-sds-side="bottom"])[data-sds-width="md"]
   ) {
     max-inline-size: 28rem;
   }
 
-  :where(.sds-panel:not([data-side="bottom"])[data-width="lg"]) {
+  :where(.sds-panel:not([data-sds-side="bottom"])[data-sds-width="lg"]) {
     max-inline-size: 32rem;
   }
 
-  :where(.sds-panel:not([data-side="bottom"])[data-width="xl"]) {
+  :where(.sds-panel:not([data-sds-side="bottom"])[data-sds-width="xl"]) {
     max-inline-size: 36rem;
   }
 
-  :where(.sds-panel[data-side="bottom"][data-width="sm"]) {
+  :where(.sds-panel[data-sds-side="bottom"][data-sds-width="sm"]) {
     block-size: 40dvh;
   }
 
-  :where(.sds-panel[data-side="bottom"][data-width="lg"]) {
+  :where(.sds-panel[data-sds-side="bottom"][data-sds-width="lg"]) {
     block-size: 75dvh;
   }
 
-  :where(.sds-panel[data-side="bottom"][data-width="xl"]) {
+  :where(.sds-panel[data-sds-side="bottom"][data-sds-width="xl"]) {
     block-size: 90dvh;
   }
 
@@ -142,11 +142,11 @@
       transform: translateX(100%);
     }
 
-    :where(.sds-panel[data-side="left"][open]) {
+    :where(.sds-panel[data-sds-side="left"][open]) {
       transform: translateX(-100%);
     }
 
-    :where(.sds-panel[data-side="bottom"][open]) {
+    :where(.sds-panel[data-sds-side="bottom"][open]) {
       transform: translateY(100%);
     }
   }

@@ -59,27 +59,27 @@
     list-style: none;
   }
 
-  :where(sds-dropdown, sds-popover)[data-width="sm"]
+  :where(sds-dropdown, sds-popover)[width="sm"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(12rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-width="lg"]
+  :where(sds-dropdown, sds-popover)[width="lg"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(16rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-width="xl"]
+  :where(sds-dropdown, sds-popover)[width="xl"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(18rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-width="2xl"]
+  :where(sds-dropdown, sds-popover)[width="2xl"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: min(20rem, calc(100vw - 1rem));
   }
 
-  :where(sds-dropdown, sds-popover)[data-width="auto"]
+  :where(sds-dropdown, sds-popover)[width="auto"]
     :where(.sds-dropdown-menu, .sds-popover-content) {
     inline-size: max-content;
   }
@@ -126,7 +126,7 @@
   :where(
     .sds-popover-content,
     .sds-tooltip-content
-  )[data-side="top"]::before {
+  )[data-sds-side="top"]::before {
     inset-block-end: calc(var(--sds-floating-arrow-size) / -2);
     inset-inline-start: var(--sds-floating-arrow-x);
     border-inline-end-width: 1px;
@@ -137,7 +137,7 @@
   :where(
     .sds-popover-content,
     .sds-tooltip-content
-  )[data-side="right"]::before {
+  )[data-sds-side="right"]::before {
     inset-block-start: var(--sds-floating-arrow-y);
     inset-inline-start: calc(var(--sds-floating-arrow-size) / -2);
     border-inline-start-width: 1px;
@@ -148,7 +148,7 @@
   :where(
     .sds-popover-content,
     .sds-tooltip-content
-  )[data-side="bottom"]::before {
+  )[data-sds-side="bottom"]::before {
     inset-block-start: calc(var(--sds-floating-arrow-size) / -2);
     inset-inline-start: var(--sds-floating-arrow-x);
     border-inline-start-width: 1px;
@@ -159,7 +159,7 @@
   :where(
     .sds-popover-content,
     .sds-tooltip-content
-  )[data-side="left"]::before {
+  )[data-sds-side="left"]::before {
     inset-block-start: var(--sds-floating-arrow-y);
     inset-inline-end: calc(var(--sds-floating-arrow-size) / -2);
     border-inline-end-width: 1px;

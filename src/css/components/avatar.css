@@ -29,7 +29,7 @@
     object-fit: cover;
   }
 
-  :where(.sds-avatar[data-variant="solid"]) {
+  :where(.sds-avatar[data-sds-variant="solid"]) {
     border-color: var(--sds-tone-strong, var(--sds-color-neutral-strong));
     color: var(
       --sds-tone-on-strong,
@@ -38,7 +38,7 @@
     background: var(--sds-tone-strong, var(--sds-color-neutral-strong));
   }
 
-  :where(.sds-avatar[data-variant="outline"]) {
+  :where(.sds-avatar[data-sds-variant="outline"]) {
     border-color: var(
       --sds-tone-border,
       var(--sds-color-border-strong)
@@ -46,34 +46,34 @@
     background: var(--sds-color-surface-default);
   }
 
-  :where(.sds-avatar[data-shape="square"]) {
+  :where(.sds-avatar[data-sds-shape="square"]) {
     border-radius: var(--sds-radius-control);
   }
 
-  :where(.sds-avatar[data-shape="portrait"]) {
+  :where(.sds-avatar[data-sds-shape="portrait"]) {
     aspect-ratio: 4 / 5;
     border-radius: var(--sds-radius-container);
   }
 
-  :where(.sds-avatar[data-size="xs"]) {
+  :where(.sds-avatar[data-sds-size="xs"]) {
     --sds-avatar-size: 1.5rem;
 
     font-size: 0.625rem;
   }
 
-  :where(.sds-avatar[data-size="sm"]) {
+  :where(.sds-avatar[data-sds-size="sm"]) {
     --sds-avatar-size: 2rem;
 
     font-size: 0.75rem;
   }
 
-  :where(.sds-avatar[data-size="lg"]) {
+  :where(.sds-avatar[data-sds-size="lg"]) {
     --sds-avatar-size: 4rem;
 
     font-size: 1.25rem;
   }
 
-  :where(.sds-avatar[data-size="xl"]) {
+  :where(.sds-avatar[data-sds-size="xl"]) {
     --sds-avatar-size: 5.5rem;
 
     font-size: 1.75rem;
@@ -90,7 +90,7 @@
     list-style: none;
   }
 
-  :where(.sds-avatar-group[data-density="condensed"]) {
+  :where(.sds-avatar-group[data-sds-density="condensed"]) {
     --sds-avatar-overlap: 0.875rem;
   }
 

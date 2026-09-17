@@ -23,12 +23,13 @@ first enabled tab is used when it is omitted.
 
 | Option | Values | Default |
 |---|---|---|
-| `data-variant` | `folder`, `block`, `underline` | `folder` |
-| `data-size` | `md`, `lg` | `md` |
-| `data-tone` | All semantic tones | Brand treatment |
-| `data-activation` | `automatic`, `manual` | `automatic` |
-| `data-orientation` | `horizontal`, `vertical` | `horizontal` |
-| `data-value` on a tab | Any string | Tab `id` |
+| `variant` | `folder`, `block`, `underline` | `folder` |
+| `size` | `md`, `lg` | `md` |
+| `tone` | All semantic tones | Brand treatment |
+| `activation` | `automatic`, `manual` | `automatic` |
+| `orientation` | `horizontal`, `vertical` | `horizontal` |
+| `value` | Selected tab value | Selected tab's `value` or `id` |
+| `value` on a tab button | Any string | Tab `id` |
 | `aria-selected="true"` | Initial selection | First enabled tab |
 | `disabled` | Disabled button tab | Enabled |
 | `aria-disabled="true"` | Disabled tab | Enabled |
@@ -47,6 +48,17 @@ document.querySelector('sds-tabs')?.addEventListener('sds-change', (event) => {
 The supplied visual recipe is a horizontal scrolling row. Applications using
 vertical orientation provide their own panel placement while retaining roles
 and relationships.
+
+Each tab button may provide a native `value`. The host reflects the selected
+value and supports programmatic selection without synthesizing user input:
+
+```js
+const tabs = document.querySelector('sds-tabs')
+tabs.value = 'security'
+```
+
+Setting an unknown or disabled value throws `RangeError`. Programmatic changes
+do not dispatch `sds-change`, matching native form-control behavior.
 
 Route-backed tabs may use `<a class="sds-tab" role="tab" href="...">`. Arrow
 keys move focus; activating a link navigates. Render the requested route with
@@ -106,17 +118,18 @@ solid-button treatment.
   <menu>
     <li><button type="button">Rename</button></li>
     <li><a href="/duplicate">Duplicate</a></li>
-    <li><button type="button" data-tone="danger">Delete</button></li>
+    <li><button type="button" data-sds-tone="danger">Delete</button></li>
   </menu>
 </sds-dropdown>
 ```
 
 | Option | Values | Default |
 |---|---|---|
-| `data-width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
-| `data-placement` | Logical side, optionally followed by `-start` or `-end` | `block-end-start` |
-| `data-offset` | Nonnegative CSS pixels | `5` |
-| `data-hide-caret` | Presence hides the trigger caret | Caret shown |
+| `width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
+| `placement` | Logical side, optionally followed by `-start` or `-end` | `block-end-start` |
+| `offset` | Nonnegative CSS pixels | `5` |
+| `hide-caret` | Presence hides the trigger caret | Caret shown |
+| `open` | Presence | Closed |
 
 Logical sides are `block-start`, `block-end`, `inline-start`, and
 `inline-end`. Placement is preferred rather than fixed; the menu flips when
@@ -135,8 +148,20 @@ Use native `disabled` on menu buttons and `aria-disabled="true"` on other
 menu items. The trigger and menu must be direct children. Invalid or ambiguous
 structures are not enhanced and produce a console warning.
 
-Use `data-hide-caret` when the trigger already communicates that it opens a
+Use `hide-caret` when the trigger already communicates that it opens a
 menu, such as an icon-only action or avatar-group overflow count.
+
+The host reflects actual visibility through `open`. Use `show()` and `hide()`
+for programmatic control and listen for `sds-toggle` when application state
+must follow native Popover visibility:
+
+```js
+const dropdown = document.querySelector('sds-dropdown')
+dropdown.show()
+dropdown.addEventListener('sds-toggle', (event) => {
+  console.log(event.detail.open)
+})
+```
 
 Use `<sds-popover>` rather than a dropdown when the surface contains rich
 content instead of menu actions.

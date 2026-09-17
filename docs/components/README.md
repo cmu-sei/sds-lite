@@ -23,13 +23,13 @@ SDS recipes use a consistent set of attributes:
 
 | Attribute | Meaning |
 |---|---|
-| `data-variant` | Visual treatment |
-| `data-tone` | Semantic color intent |
-| `data-size` | Visual scale |
-| `data-width` | Width or overlay extent |
-| `data-orientation` | Horizontal or vertical arrangement |
-| `data-placement` | Preferred position for floating content |
-| `data-gap` | Layout spacing |
+| `data-sds-variant` | Visual treatment |
+| `data-sds-tone` | Semantic color intent |
+| `data-sds-size` | Visual scale |
+| `data-sds-width` | Width or overlay extent |
+| `data-sds-orientation` | Horizontal or vertical arrangement |
+| `placement` on a floating custom element | Preferred position for floating content |
+| `data-sds-gap` | Layout spacing |
 
 Semantic tones are:
 
@@ -38,7 +38,7 @@ neutral | accent | info | success | warning | danger
 ```
 
 Use `accent` for emphasized brand actions. `primary` is not a semantic tone; it is
-reserved for action hierarchy through `data-variant="primary"`.
+reserved for action hierarchy through `data-sds-variant="primary"`.
 
 ## Native state first
 

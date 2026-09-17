@@ -3,7 +3,15 @@ import {
   directElementChildren,
   ElementConnection,
   ensureId,
+  reflectStringAttribute,
 } from './internals.js'
+import type {
+  SdsOrientation,
+  SdsTabsActivation,
+  SdsTabsSize,
+  SdsTabsVariant,
+  SdsTone,
+} from '../generated/interface.js'
 
 const CHANGE_EVENT = 'sds-change'
 const HTMLElementBase: typeof HTMLElement =
@@ -17,9 +25,70 @@ export interface SdsTabsChangeDetail {
 }
 
 export class SdsTabsElement extends HTMLElementBase {
+  static observedAttributes = ['value']
+
   private tabs: HTMLElement[] = []
   private panels = new Map<HTMLElement, HTMLElement>()
   private connection = new ElementConnection()
+  private reflectingValue = false
+
+  get value(): string {
+    return this.getAttribute('value') ?? ''
+  }
+
+  set value(value: string) {
+    if (
+      this.isConnected &&
+      !this.tabs.some(
+        (tab) => this.tabValue(tab) === value && !this.isDisabled(tab),
+      )
+    ) {
+      throw new RangeError(`<sds-tabs> has no enabled tab with value "${value}".`)
+    }
+    reflectStringAttribute(this, 'value', value)
+  }
+
+  get activation(): SdsTabsActivation {
+    return (this.getAttribute('activation') ??
+      'automatic') as SdsTabsActivation
+  }
+
+  set activation(value: SdsTabsActivation) {
+    reflectStringAttribute(this, 'activation', value)
+  }
+
+  get orientation(): SdsOrientation {
+    return (this.getAttribute('orientation') ??
+      'horizontal') as SdsOrientation
+  }
+
+  set orientation(value: SdsOrientation) {
+    reflectStringAttribute(this, 'orientation', value)
+  }
+
+  get size(): SdsTabsSize {
+    return (this.getAttribute('size') ?? 'md') as SdsTabsSize
+  }
+
+  set size(value: SdsTabsSize) {
+    reflectStringAttribute(this, 'size', value)
+  }
+
+  get tone(): SdsTone {
+    return (this.getAttribute('tone') ?? 'accent') as SdsTone
+  }
+
+  set tone(value: SdsTone) {
+    reflectStringAttribute(this, 'tone', value)
+  }
+
+  get variant(): SdsTabsVariant {
+    return (this.getAttribute('variant') ?? 'folder') as SdsTabsVariant
+  }
+
+  set variant(value: SdsTabsVariant) {
+    reflectStringAttribute(this, 'variant', value)
+  }
 
   connectedCallback(): void {
     const signal = this.connection.connect(
@@ -101,7 +170,19 @@ export class SdsTabsElement extends HTMLElementBase {
       this.panels.set(tab, panel)
     }
 
+    const requestedTab = this.value
+      ? this.tabs.find(
+          (tab) => this.tabValue(tab) === this.value && !this.isDisabled(tab),
+        )
+      : null
+    if (this.value && !requestedTab) {
+      console.warn(
+        `<sds-tabs> has no enabled tab with value "${this.value}".`,
+        this,
+      )
+    }
     const selectedTab =
+      requestedTab ??
       this.tabs.find(
         (tab) =>
           tab.getAttribute('aria-selected') === 'true' &&
@@ -117,6 +198,7 @@ export class SdsTabsElement extends HTMLElementBase {
       const panel = this.panels.get(tab)
       if (panel) panel.hidden = !selected
     }
+    if (selectedTab) this.reflectValue(this.tabValue(selectedTab))
 
     tabList.addEventListener('click', this.handleClick, {
       signal,
@@ -130,6 +212,39 @@ export class SdsTabsElement extends HTMLElementBase {
     this.connection.disconnect()
   }
 
+  attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ): void {
+    if (
+      name !== 'value' ||
+      oldValue === newValue ||
+      this.reflectingValue ||
+      !this.isConnected ||
+      newValue === null
+    ) {
+      return
+    }
+
+    const index = this.tabs.findIndex(
+      (tab) => this.tabValue(tab) === newValue && !this.isDisabled(tab),
+    )
+    if (index >= 0) {
+      this.select(index, false, false)
+      return
+    }
+
+    console.warn(
+      `<sds-tabs> has no enabled tab with value "${newValue}".`,
+      this,
+    )
+    const selected = this.tabs.find(
+      (tab) => tab.getAttribute('aria-selected') === 'true',
+    )
+    if (selected) this.reflectValue(this.tabValue(selected))
+  }
+
   private isDisabled(tab: HTMLElement): boolean {
     return (
       (tab instanceof HTMLButtonElement && tab.disabled) ||
@@ -137,11 +252,24 @@ export class SdsTabsElement extends HTMLElementBase {
     )
   }
 
+  private tabValue(tab: HTMLElement): string {
+    return tab.getAttribute('value') ?? tab.id
+  }
+
+  private reflectValue(value: string): void {
+    this.reflectingValue = true
+    reflectStringAttribute(this, 'value', value)
+    this.reflectingValue = false
+  }
+
   private select(index: number, focus = false, notify = true): void {
     const selectedTab = this.tabs[index]
     const selectedPanel = this.panels.get(selectedTab)
     if (!selectedTab || !selectedPanel || this.isDisabled(selectedTab)) return
 
+    const previousIndex = this.tabs.findIndex(
+      (tab) => tab.getAttribute('aria-selected') === 'true',
+    )
     this.tabs.forEach((tab) => {
       const selected = tab === selectedTab
       tab.setAttribute('aria-selected', String(selected))
@@ -149,16 +277,17 @@ export class SdsTabsElement extends HTMLElementBase {
       const panel = this.panels.get(tab)
       if (panel) panel.hidden = !selected
     })
+    this.reflectValue(this.tabValue(selectedTab))
 
     if (focus) selectedTab.focus()
-    if (notify) {
+    if (notify && previousIndex !== index) {
       this.dispatchEvent(
         new CustomEvent(CHANGE_EVENT, {
           bubbles: true,
           composed: true,
           detail: {
             index,
-            value: selectedTab.dataset.value ?? selectedTab.id,
+            value: this.tabValue(selectedTab),
           },
         }),
       )
@@ -179,7 +308,7 @@ export class SdsTabsElement extends HTMLElementBase {
     if (currentIndex < 0) return
 
     const vertical =
-      this.dataset.orientation === 'vertical' ||
+      this.orientation === 'vertical' ||
       event.currentTarget instanceof HTMLElement &&
         event.currentTarget.getAttribute('aria-orientation') === 'vertical'
     const nextKey = vertical ? 'ArrowDown' : 'ArrowRight'
@@ -206,7 +335,7 @@ export class SdsTabsElement extends HTMLElementBase {
     event.preventDefault()
     const nextIndex = this.tabs.indexOf(nextTab)
     if (
-      this.dataset.activation === 'manual' ||
+      this.activation === 'manual' ||
       nextTab instanceof HTMLAnchorElement
     ) {
       nextTab.focus()

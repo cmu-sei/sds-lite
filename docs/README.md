@@ -13,6 +13,7 @@ without a framework or runtime dependency.
 | Use only selected CSS or behavior | [Selective imports](./installation/selective-imports.md) |
 | Find a component recipe | [Component guides](./components/README.md) |
 | Integrate with a framework | [Framework integration](./guides/frameworks.md) |
+| Migrate from another design system | [Migration guides](./migration/index.md) |
 | Use server rendering or hydration | [Server rendering](./guides/server-rendering.md) |
 | Change the theme or design tokens | [Theming and customization](./guides/theming.md) |
 | Review accessibility requirements | [Accessibility](./guides/accessibility.md) |
@@ -36,7 +37,7 @@ without a framework or runtime dependency.
 
 1. Load SDS Lite CSS.
 2. Put `data-sds-root` around the content SDS Lite should style.
-3. Start with semantic HTML, then add an SDS class or `data-*` option only
+3. Start with semantic HTML, then add an SDS class or `data-sds-*` option only
    when the recipe calls for it.
 
 ```html
@@ -80,6 +81,7 @@ actions, `disabled` for unavailable controls, `checked` for choices, and
 - [Theming and customization](./guides/theming.md)
 - [Browser support](./guides/browser-support.md)
 - [Troubleshooting](./troubleshooting.md)
+- [Migration guides and codemod](./migration/index.md)
 
 ### Reference
 
@@ -87,6 +89,7 @@ actions, `disabled` for unavailable controls, `checked` for choices, and
 - [JavaScript API and events](./reference/javascript.md)
 - [CSS API](./reference/css.md)
 - [Public interface index](./reference/public-interface.md)
+- [Generated recipe interface](./reference/recipes.md)
 
 ## Production checklist
 

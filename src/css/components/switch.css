@@ -59,12 +59,12 @@
     opacity: 0.65;
   }
 
-  :where(.sds-switch[data-size="sm"]) {
+  :where(.sds-switch[data-sds-size="sm"]) {
     font-size: 0.875rem;
   }
 
   :where(
-    .sds-switch[data-size="sm"]
+    .sds-switch[data-sds-size="sm"]
       > input[type="checkbox"][role="switch"]
   ) {
     inline-size: 2.25rem;
@@ -72,12 +72,12 @@
     background-size: 1rem 1rem;
   }
 
-  :where(.sds-switch[data-size="lg"]) {
+  :where(.sds-switch[data-sds-size="lg"]) {
     font-size: 1.125rem;
   }
 
   :where(
-    .sds-switch[data-size="lg"]
+    .sds-switch[data-sds-size="lg"]
       > input[type="checkbox"][role="switch"]
   ) {
     inline-size: 3.25rem;

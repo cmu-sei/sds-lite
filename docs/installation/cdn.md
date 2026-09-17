@@ -74,7 +74,7 @@ Use an inline module when you need `notify()` or another export:
 <script type="module">
   import {
     notify,
-  } from 'https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/package/sds.js'
+  } from 'https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/sds.js'
 
   document.querySelector('#save').addEventListener('click', () => {
     notify('Your changes were saved.', {
@@ -85,8 +85,9 @@ Use an inline module when you need `notify()` or another export:
 </script>
 ```
 
-The stable `auto.js` file is for automatic registration. JavaScript exports
-live under `package/` because browsers load the built ES modules directly.
+The stable `auto.js` file is for automatic registration. Selective top-level
+modules use the same names as NPM entries: `dialog.js`, `dropdown.js`,
+`popover.js`, `tabs.js`, `tooltip.js`, and `toast.js`.
 
 ## Add brand shells
 
@@ -118,7 +119,8 @@ package/
 ```
 
 Keep their relative layout unchanged because `auto.js` imports
-`./package/auto.js`. Include `brand.css` and `package/assets/` when using
+`./package/auto.js` and the selective top-level modules re-export their built
+modules from `package/`. Include `brand.css` and `package/assets/` when using
 branded shells.
 
 [Browse component recipes →](../components/README.md)

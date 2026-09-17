@@ -21,10 +21,10 @@ colorSchemeSelect?.addEventListener('change', () => {
 const copyStatus = document.querySelector<HTMLElement>('#copy-status')
 
 for (const button of document.querySelectorAll<HTMLButtonElement>(
-  '[data-copy-target]',
+  '[data-demo-copy-target]',
 )) {
   button.addEventListener('click', async () => {
-    const targetId = button.dataset.copyTarget
+    const targetId = button.dataset.demoCopyTarget
     const target = targetId ? document.getElementById(targetId) : null
 
     if (!target) {

@@ -26,7 +26,7 @@ autofill, keyboard behavior, and form submission.
 
   <div class="sds-action-group">
     <button type="submit">Save project</button>
-    <button type="button" data-variant="ghost">Cancel</button>
+    <button type="button" data-sds-variant="ghost">Cancel</button>
   </div>
 </form>
 ```
@@ -54,7 +54,7 @@ input[type=month], input[type=week], input[type=file], select, textarea
 
 | Option | Values | Default |
 |---|---|---|
-| `data-size` | `sm`, `md`, `lg` | `md` |
+| `data-sds-size` | `sm`, `md`, `lg` | `md` |
 | `disabled` | Native disabled state | Enabled |
 | `readonly` | Native input/textarea state | Editable |
 | `aria-invalid="true"` | Invalid semantics and appearance | Valid or unknown |
@@ -66,7 +66,7 @@ Place required or optional context in the label and connect every message:
 ```html
 <div class="sds-field">
   <label for="email">
-    Email <small data-tone="danger">Required</small>
+    Email <small data-sds-tone="danger">Required</small>
   </label>
   <input
     id="email"
@@ -76,7 +76,7 @@ Place required or optional context in the label and connect every message:
     aria-describedby="email-error"
     required
   >
-  <small id="email-error" data-tone="danger">
+  <small id="email-error" data-sds-tone="danger">
     Enter a valid email address.
   </small>
 </div>
@@ -98,7 +98,7 @@ constrained control:
     pattern="[a-z0-9-]+"
     aria-describedby="slug-status"
   >
-  <small id="slug-status" data-tone="success">This URL is available.</small>
+  <small id="slug-status" data-sds-tone="success">This URL is available.</small>
 </div>
 ```
 
@@ -107,7 +107,7 @@ Application code owns validation timing and message content.
 ## Horizontal fields
 
 ```html
-<div class="sds-field" data-orientation="horizontal">
+<div class="sds-field" data-sds-orientation="horizontal">
   <label for="owner">Owner</label>
   <select id="owner" name="owner" aria-describedby="owner-help">
     <option>Alex</option>
@@ -176,8 +176,8 @@ remain intact.
 
 | Option | Values | Default |
 |---|---|---|
-| `data-size` on label | `sm`, `md`, `lg` | `md` |
-| `data-tone` on label | Any semantic tone | Accent |
+| `data-sds-size` on label | `sm`, `md`, `lg` | `md` |
+| `data-sds-tone` on label | Any semantic tone | Accent |
 | `checked` on input | Native checked state | Unchecked |
 | `disabled` on input | Native disabled state | Enabled |
 | `aria-invalid="true"` on input | Invalid semantics and appearance | Valid or unknown |

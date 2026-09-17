@@ -18,11 +18,11 @@
       background var(--sds-duration-normal) var(--sds-easing-standard);
   }
 
-  :where(.sds-callout[data-variant="outline"]) {
+  :where(.sds-callout[data-sds-variant="outline"]) {
     background: var(--sds-color-surface-default);
   }
 
-  :where(.sds-callout[data-variant="bold"]) {
+  :where(.sds-callout[data-sds-variant="bold"]) {
     border-color: var(--sds-tone-strong, var(--sds-color-neutral-strong));
     color: var(
       --sds-tone-on-strong,
@@ -48,46 +48,46 @@
     opacity: 0.9;
   }
 
-  :where(.sds-callout[data-size="xs"]) {
+  :where(.sds-callout[data-sds-size="xs"]) {
     padding: var(--sds-space-sm);
     font-size: 0.75rem;
     line-height: 1rem;
   }
 
-  :where(.sds-callout[data-size="xs"] > strong),
-  :where(.sds-callout[data-size="xs"] > span) {
+  :where(.sds-callout[data-sds-size="xs"] > strong),
+  :where(.sds-callout[data-sds-size="xs"] > span) {
     font-size: 0.75rem;
     line-height: 1rem;
   }
 
-  :where(.sds-callout[data-size="sm"]) {
+  :where(.sds-callout[data-sds-size="sm"]) {
     padding: var(--sds-space-md);
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
 
-  :where(.sds-callout[data-size="sm"] > strong),
-  :where(.sds-callout[data-size="sm"] > span) {
+  :where(.sds-callout[data-sds-size="sm"] > strong),
+  :where(.sds-callout[data-sds-size="sm"] > span) {
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
 
-  :where(.sds-callout[data-size="lg"]) {
+  :where(.sds-callout[data-sds-size="lg"]) {
     font-size: 1.125rem;
     line-height: 1.75rem;
   }
 
-  :where(.sds-callout[data-size="lg"] > strong) {
+  :where(.sds-callout[data-sds-size="lg"] > strong) {
     font-size: 1.125rem;
     line-height: 1.625rem;
   }
 
-  :where(.sds-callout[data-size="lg"] > span) {
+  :where(.sds-callout[data-sds-size="lg"] > span) {
     font-size: 1.125rem;
     line-height: 1.75rem;
   }
 
-  :where(.sds-callout[data-inset]) {
+  :where(.sds-callout[data-sds-inset]) {
     border-radius: 0;
   }
 
@@ -96,7 +96,7 @@
     text-decoration: underline;
   }
 
-  :where(.sds-callout [data-callout-close]) {
+  :where(.sds-callout [data-sds-callout-close]) {
     position: absolute;
     inset-block-start: var(--sds-space-sm);
     inset-inline-end: var(--sds-space-sm);

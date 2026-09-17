@@ -43,8 +43,8 @@ svg, video, hr, table, caption, thead, tbody, tfoot, tr, th, td
 
 | Option | Values | Default |
 |---|---|---|
-| `data-size` | `sm`, `md` | `md` |
-| `data-tone` | All semantic tones | Neutral text links |
+| `data-sds-size` | `sm`, `md` | `md` |
+| `data-sds-tone` | All semantic tones | Neutral text links |
 | `data-sds-theme` | `forge`, `plaid` | Inherited |
 | `.sds-prose-lead` | Introductory text | Normal paragraph |
 | `.sds-not-prose` | Excluded subtree | Prose styles apply |
@@ -54,7 +54,7 @@ Use `.sds-not-prose` when embedding another SDS recipe:
 ```html
 <article class="sds-prose">
   <p>Article text.</p>
-  <aside class="sds-callout sds-not-prose" data-tone="info">
+  <aside class="sds-callout sds-not-prose" data-sds-tone="info">
     <strong>Related information</strong>
     <span>This callout keeps its own typography.</span>
   </aside>

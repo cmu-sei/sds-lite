@@ -7,7 +7,11 @@ import {
   directElementChildren,
   ElementConnection,
   ensureId,
+  readNumberAttribute,
+  reflectNumberAttribute,
+  reflectStringAttribute,
 } from './internals.js'
+import type { SdsPlacement } from '../generated/interface.js'
 
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
@@ -15,12 +19,34 @@ const HTMLElementBase: typeof HTMLElement =
     : HTMLElement
 
 export class SdsTooltipElement extends HTMLElementBase {
+  static observedAttributes = ['placement', 'offset']
+
+  private content: HTMLElement | null = null
   private positioner: FloatingPositioner | null = null
   private hoverController: FloatingHoverController | null = null
   private connection = new ElementConnection()
 
+  get placement(): SdsPlacement {
+    return (this.getAttribute('placement') ?? 'block-start') as SdsPlacement
+  }
+
+  set placement(value: SdsPlacement) {
+    reflectStringAttribute(this, 'placement', value)
+  }
+
+  get offset(): number {
+    return readNumberAttribute(this, 'offset', 6)
+  }
+
+  set offset(value: number) {
+    reflectNumberAttribute(this, 'offset', value)
+  }
+
   connectedCallback(): void {
     this.hoverController?.disconnect()
+    this.hoverController = null
+    this.positioner = null
+    this.content = null
     const signal = this.connection.connect(
       this,
       () => this.connectedCallback(),
@@ -56,12 +82,13 @@ export class SdsTooltipElement extends HTMLElementBase {
     content.setAttribute('role', 'tooltip')
     content.setAttribute('popover', 'manual')
     trigger.setAttribute('aria-describedby', [...descriptions].join(' '))
+    this.content = content
 
     this.positioner = new FloatingPositioner(
       trigger,
       content,
-      () => this.dataset.placement ?? 'block-start',
-      () => this.dataset.offset,
+      () => this.placement,
+      () => this.getAttribute('offset') ?? undefined,
       6,
     )
     this.hoverController = new FloatingHoverController(
@@ -82,6 +109,22 @@ export class SdsTooltipElement extends HTMLElementBase {
     this.hoverController?.disconnect()
     this.hoverController = null
     this.positioner = null
+    this.content = null
+  }
+
+  attributeChangedCallback(
+    _name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ): void {
+    if (
+      oldValue !== newValue &&
+      this.isConnected &&
+      this.content?.matches(':popover-open')
+    ) {
+      this.positioner?.reset()
+      this.positioner?.position()
+    }
   }
 }
 declare global {

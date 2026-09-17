@@ -138,9 +138,71 @@ test('tabs honor an authored initial selection', async () => {
   assert.equal(tabs[1]?.getAttribute('aria-selected'), 'true')
   assert.equal(tabs[1]?.getAttribute('tabindex'), '0')
   assert.equal(panels[1]?.hidden, false)
+  assert.equal(document.querySelector('sds-tabs')?.value, tabs[1]?.id)
+})
+
+test('tabs expose reflected configuration and selected value', async () => {
+  document.body.innerHTML = `
+    <sds-tabs value="files" activation="manual" orientation="vertical">
+      <div aria-label="Project sections">
+        <button type="button" value="overview">Overview</button>
+        <button type="button" value="files">Files</button>
+      </div>
+      <section>Overview panel</section>
+      <section>Files panel</section>
+    </sds-tabs>
+  `
+  await browser.happyDOM.whenAsyncComplete()
+
+  const tabs = document.querySelector('sds-tabs')
+  assert.equal(tabs?.value, 'files')
+  assert.equal(tabs?.activation, 'manual')
+  assert.equal(tabs?.orientation, 'vertical')
+  assert.equal(
+    tabs?.querySelector('[value="files"]')?.getAttribute('aria-selected'),
+    'true',
+  )
+
+  tabs.value = 'overview'
+  assert.equal(tabs.getAttribute('value'), 'overview')
+  assert.equal(
+    tabs.querySelector('[value="overview"]')?.getAttribute('aria-selected'),
+    'true',
+  )
+  assert.throws(() => {
+    tabs.value = 'missing'
+  }, /no enabled tab/)
+})
+
+test('floating element options reflect through host properties', () => {
+  const dropdown = document.createElement('sds-dropdown')
+  const popover = document.createElement('sds-popover')
+  const tooltip = document.createElement('sds-tooltip')
+
+  assert.equal(dropdown.offset, 5)
+  assert.equal(popover.offset, 9)
+  assert.equal(tooltip.offset, 6)
+
+  dropdown.placement = 'inline-end'
+  dropdown.offset = 12
+  dropdown.width = 'lg'
+  dropdown.hideCaret = true
+
+  assert.equal(dropdown.getAttribute('placement'), 'inline-end')
+  assert.equal(dropdown.getAttribute('offset'), '12')
+  assert.equal(dropdown.getAttribute('width'), 'lg')
+  assert.equal(dropdown.hasAttribute('hide-caret'), true)
+  assert.throws(() => {
+    dropdown.offset = -1
+  }, /nonnegative/)
 })
 
 test('notify validates duration and respects an explicit container', () => {
+  const authoredToast = document.createElement('sds-toast')
+  assert.equal(authoredToast.duration, 5000)
+  authoredToast.setAttribute('duration', '0')
+  assert.equal(authoredToast.duration, 5000)
+
   const container = document.createElement('section')
   container.dataset.sdsRoot = ''
   document.body.append(container)

@@ -12,7 +12,7 @@ Use a spinner when an action or compact region is waiting:
 </span>
 ```
 
-`data-size` accepts `sm`, `md`, or `lg`; `md` is the default. `data-tone`
+`data-sds-size` accepts `sm`, `md`, or `lg`; `md` is the default. `data-sds-tone`
 accepts every semantic tone.
 
 Use specific accessible text. “Loading projects” is more useful than

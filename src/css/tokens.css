@@ -355,7 +355,11 @@
     color-scheme: light;
   }
 
-  :where([data-tone="neutral"]) {
+  :where(
+    [data-sds-tone="neutral"],
+    sds-tabs[tone="neutral"],
+    sds-toast[tone="neutral"]
+  ) {
     --sds-tone-surface: var(--sds-color-neutral-surface);
     --sds-tone-border: var(--sds-color-neutral-border);
     --sds-tone-text: var(--sds-color-neutral-text);
@@ -364,7 +368,11 @@
     --sds-tone-on-strong: var(--sds-color-neutral-on-strong);
   }
 
-  :where([data-tone="accent"]) {
+  :where(
+    [data-sds-tone="accent"],
+    sds-tabs[tone="accent"],
+    sds-toast[tone="accent"]
+  ) {
     --sds-tone-surface: var(--sds-color-accent-surface);
     --sds-tone-border: var(--sds-color-accent-border);
     --sds-tone-text: var(--sds-color-accent-text);
@@ -373,7 +381,11 @@
     --sds-tone-on-strong: var(--sds-color-accent-on-strong);
   }
 
-  :where([data-tone="info"]) {
+  :where(
+    [data-sds-tone="info"],
+    sds-tabs[tone="info"],
+    sds-toast[tone="info"]
+  ) {
     --sds-tone-surface: var(--sds-color-info-surface);
     --sds-tone-border: var(--sds-color-info-border);
     --sds-tone-text: var(--sds-color-info-text);
@@ -382,7 +394,11 @@
     --sds-tone-on-strong: var(--sds-color-info-on-strong);
   }
 
-  :where([data-tone="success"]) {
+  :where(
+    [data-sds-tone="success"],
+    sds-tabs[tone="success"],
+    sds-toast[tone="success"]
+  ) {
     --sds-tone-surface: var(--sds-color-success-surface);
     --sds-tone-border: var(--sds-color-success-border);
     --sds-tone-text: var(--sds-color-success-text);
@@ -391,7 +407,11 @@
     --sds-tone-on-strong: var(--sds-color-success-on-strong);
   }
 
-  :where([data-tone="warning"]) {
+  :where(
+    [data-sds-tone="warning"],
+    sds-tabs[tone="warning"],
+    sds-toast[tone="warning"]
+  ) {
     --sds-tone-surface: var(--sds-color-warning-surface);
     --sds-tone-border: var(--sds-color-warning-border);
     --sds-tone-text: var(--sds-color-warning-text);
@@ -400,7 +420,11 @@
     --sds-tone-on-strong: var(--sds-color-warning-on-strong);
   }
 
-  :where([data-tone="danger"]) {
+  :where(
+    [data-sds-tone="danger"],
+    sds-tabs[tone="danger"],
+    sds-toast[tone="danger"]
+  ) {
     --sds-tone-surface: var(--sds-color-danger-surface);
     --sds-tone-border: var(--sds-color-danger-border);
     --sds-tone-text: var(--sds-color-danger-text);

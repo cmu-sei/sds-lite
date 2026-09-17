@@ -16,39 +16,39 @@
 
 | Option | Values | Default |
 |---|---|---|
-| `data-columns` | `1`, `2`, `3`, `4`, `5`, `6` | Automatic fit |
-| `data-orientation` | `horizontal`, `vertical` | `horizontal` |
-| `data-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
+| `data-sds-columns` | `1`, `2`, `3`, `4`, `5`, `6` | Automatic fit |
+| `data-sds-orientation` | `horizontal`, `vertical` | `horizontal` |
+| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
 
 The automatic grid uses a 14rem minimum column width. Exact column counts stay
 exact; use the default when content must choose its own responsive count.
 Vertical orientation creates one column and takes precedence over
-`data-columns`.
+`data-sds-columns`.
 
 ## Flex
 
 ```html
 <div
   class="sds-flex"
-  data-wrap
-  data-align="center"
-  data-justify="between"
-  data-gap="sm"
+  data-sds-wrap
+  data-sds-align="center"
+  data-sds-justify="between"
+  data-sds-gap="sm"
 >
-  <div data-grow>Uses remaining space</div>
-  <button type="button" data-no-shrink>Action</button>
+  <div data-sds-grow>Uses remaining space</div>
+  <button type="button" data-sds-no-shrink>Action</button>
 </div>
 ```
 
 | Option | Values | Default |
 |---|---|---|
-| `data-orientation` | `horizontal`, `vertical` | `horizontal` |
-| `data-wrap` | Presence | No wrapping |
-| `data-align` | `start`, `center`, `end`, `stretch` | `stretch` |
-| `data-justify` | `start`, `center`, `end`, `between` | `start` |
-| `data-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
-| `data-grow` on a direct child | Presence | Content-sized |
-| `data-no-shrink` on a direct child | Presence | May shrink |
+| `data-sds-orientation` | `horizontal`, `vertical` | `horizontal` |
+| `data-sds-wrap` | Presence | No wrapping |
+| `data-sds-align` | `start`, `center`, `end`, `stretch` | `stretch` |
+| `data-sds-justify` | `start`, `center`, `end`, `between` | `start` |
+| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
+| `data-sds-grow` on a direct child | Presence | Content-sized |
+| `data-sds-no-shrink` on a direct child | Presence | May shrink |
 
 ## Page and section
 
@@ -115,7 +115,7 @@ import '@cmu-sei/sds-lite/brand.css'
 
 `.sds-app` supports:
 
-| `data-variant` | Purpose |
+| `data-sds-variant` | Purpose |
 |---|---|
 | `application` or omitted | Tool-like UI with persistent desktop and popover mobile sidebar |
 | `simple` | Application framing without a sidebar |
@@ -124,11 +124,11 @@ import '@cmu-sei/sds-lite/brand.css'
 ### Application shell
 
 ```html
-<div class="sds-app" data-variant="application">
+<div class="sds-app" data-sds-variant="application">
   <header class="sds-app-mobile-header">
     <button
       type="button"
-      data-shape="icon"
+      data-sds-shape="icon"
       popovertarget="project-sidebar"
       aria-label="Open navigation"
     >
@@ -163,7 +163,7 @@ import '@cmu-sei/sds-lite/brand.css'
         <button
           type="button"
           class="sds-sidebar-close"
-          data-shape="icon"
+          data-sds-shape="icon"
           popovertarget="project-sidebar"
           popovertargetaction="hide"
           aria-label="Close navigation"
@@ -209,7 +209,7 @@ import '@cmu-sei/sds-lite/brand.css'
       </footer>
       <aside class="sds-app-action-bar" aria-label="Pending changes">
         <span>You have unsaved changes.</span>
-        <button type="button" data-variant="ghost">Discard</button>
+        <button type="button" data-sds-variant="ghost">Discard</button>
         <button type="button">Save</button>
       </aside>
     </div>
@@ -229,14 +229,14 @@ image URL.
 ### Simple application
 
 ```html
-<div class="sds-app" data-variant="simple">
+<div class="sds-app" data-sds-variant="simple">
   <header class="sds-app-header">
     <a class="sds-app-brand" href="/">
       <span class="sds-app-brand-prefix">SEI</span>
       Project Atlas
     </a>
     <div class="sds-action-group" aria-label="User actions">
-      <button type="button" data-density="compact">Alex Morgan</button>
+      <button type="button" data-sds-density="compact">Alex Morgan</button>
     </div>
   </header>
   <div class="sds-app-body">

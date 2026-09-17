@@ -54,6 +54,10 @@ checkboxes, and radio buttons. Add an SDS recipe only for larger patterns:
 </article>
 ```
 
+Native elements and CSS recipes use namespaced options such as
+`data-sds-tone="danger"`. Namespaced custom elements use ordinary reflected
+attributes such as `<sds-tabs variant="underline">`.
+
 ## Accessible behavior without boilerplate
 
 ```html
@@ -127,12 +131,18 @@ The documentation is organized for both learning and lookup:
   recipes.
 - **[Framework integration](./docs/guides/frameworks.md)** — React, Vue,
   Angular, Svelte, and server templates.
+- **[Migration guides](./docs/migration/index.md)** — crosswalks and a
+  conservative codemod for existing design systems.
 - **[Server rendering](./docs/guides/server-rendering.md)** — hydration-safe
   lifecycle and authored markup.
 - **[Accessibility](./docs/guides/accessibility.md)** — application contract
   and release checklist.
 - **[API reference](./docs/reference/README.md)** — imports, exports, events,
   classes, attributes, and tokens.
+
+The published [`interface-manifest.json`](./interface-manifest.json) is the
+machine-readable source for recipes, attributes, classes, custom elements,
+editor metadata, and generated framework types.
 
 The repository's [`index.html`](./index.html) is a runnable interactive
 playground containing every component, option family, theme, and color scheme.

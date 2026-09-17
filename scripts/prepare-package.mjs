@@ -23,4 +23,18 @@ await Promise.all([
   rm('package/elements/floating.d.ts'),
   rm('package/elements/internals.d.ts'),
 ])
-await writeFile('auto.js', "import './package/auto.js'\n")
+const browserModules = [
+  'dialog',
+  'dropdown',
+  'popover',
+  'sds',
+  'tabs',
+  'toast',
+  'tooltip',
+]
+await Promise.all([
+  writeFile('auto.js', "import './package/auto.js'\n"),
+  ...browserModules.map((name) =>
+    writeFile(`${name}.js`, `export * from './package/${name}.js'\n`),
+  ),
+])

@@ -1,4 +1,11 @@
-import { defineCustomElement } from './internals.js'
+import {
+  defineCustomElement,
+  readNumberAttribute,
+  reflectBooleanAttribute,
+  reflectNumberAttribute,
+  reflectStringAttribute,
+} from './internals.js'
+import type { SdsTone } from '../generated/interface.js'
 
 const DEFAULT_DURATION = 5000
 const REMOVE_DELAY = 250
@@ -8,13 +15,7 @@ const HTMLElementBase: typeof HTMLElement =
     : HTMLElement
 
 export type SdsToastCloseReason = 'dismiss' | 'programmatic' | 'timeout'
-export type SdsToastTone =
-  | 'neutral'
-  | 'accent'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'danger'
+export type SdsToastTone = SdsTone
 
 export interface SdsNotifyOptions {
   container?: HTMLElement
@@ -26,7 +27,7 @@ export interface SdsNotifyOptions {
 }
 
 export class SdsToastElement extends HTMLElementBase {
-  static observedAttributes = ['open']
+  static observedAttributes = ['open', 'duration', 'persistent']
 
   private hideTimer: number | null = null
 
@@ -35,7 +36,35 @@ export class SdsToastElement extends HTMLElementBase {
   }
 
   set open(value: boolean) {
-    this.toggleAttribute('open', value)
+    reflectBooleanAttribute(this, 'open', value)
+  }
+
+  get tone(): SdsTone {
+    return (this.getAttribute('tone') ?? 'info') as SdsTone
+  }
+
+  set tone(value: SdsTone) {
+    reflectStringAttribute(this, 'tone', value)
+  }
+
+  get duration(): number {
+    const duration = readNumberAttribute(this, 'duration', DEFAULT_DURATION)
+    return duration > 0 ? duration : DEFAULT_DURATION
+  }
+
+  set duration(value: number) {
+    if (!Number.isFinite(value) || value <= 0) {
+      throw new RangeError('duration must be a positive finite number.')
+    }
+    reflectNumberAttribute(this, 'duration', value)
+  }
+
+  get persistent(): boolean {
+    return this.hasAttribute('persistent')
+  }
+
+  set persistent(value: boolean) {
+    reflectBooleanAttribute(this, 'persistent', value)
   }
 
   connectedCallback(): void {
@@ -68,15 +97,14 @@ export class SdsToastElement extends HTMLElementBase {
     newValue: string | null,
   ): void {
     if (
-      name !== 'open' ||
       oldValue === newValue ||
       !this.isConnected
     ) {
       return
     }
 
-    if (newValue === null) this.clearAutoHide()
-    else this.scheduleAutoHide()
+    if (name === 'open' && newValue === null) this.clearAutoHide()
+    else if (this.open) this.scheduleAutoHide()
   }
 
   show(): void {
@@ -106,15 +134,12 @@ export class SdsToastElement extends HTMLElementBase {
 
   private scheduleAutoHide(): void {
     this.clearAutoHide()
-    if (!this.open || this.hasAttribute('data-persistent')) return
+    if (!this.open || this.persistent) return
 
-    const requestedDuration = Number(this.dataset.duration)
-    const duration =
-      Number.isFinite(requestedDuration) && requestedDuration > 0
-        ? requestedDuration
-        : DEFAULT_DURATION
-
-    this.hideTimer = window.setTimeout(() => this.close('timeout'), duration)
+    this.hideTimer = window.setTimeout(
+      () => this.close('timeout'),
+      this.duration,
+    )
   }
 
   private clearAutoHide(): void {
@@ -125,7 +150,7 @@ export class SdsToastElement extends HTMLElementBase {
 
   private handleClick = (event: MouseEvent): void => {
     if (!(event.target instanceof Element)) return
-    if (event.target.closest('[data-toast-close]')) this.close('dismiss')
+    if (event.target.closest('[data-sds-toast-close]')) this.close('dismiss')
   }
 
   private pauseAutoHide = (): void => {
@@ -168,8 +193,8 @@ function registerToastTriggers(): void {
   document.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return
 
-    const trigger = event.target.closest<HTMLElement>('[data-toast-open]')
-    const toastId = trigger?.dataset.toastOpen
+    const trigger = event.target.closest<HTMLElement>('[data-sds-toast-open]')
+    const toastId = trigger?.getAttribute('data-sds-toast-open')
     const toast = toastId ? document.getElementById(toastId) : null
 
     if (toast instanceof SdsToastElement) toast.show()
@@ -218,13 +243,13 @@ export function notify(
   }
 
   const toast = document.createElement('sds-toast')
-  toast.dataset.tone = options.tone ?? 'info'
+  toast.tone = options.tone ?? 'info'
   toast.setAttribute('role', options.urgent ? 'alert' : 'status')
   toast.setAttribute('aria-atomic', 'true')
   if (options.duration !== undefined) {
-    toast.dataset.duration = String(options.duration)
+    toast.duration = options.duration
   }
-  if (options.persistent) toast.dataset.persistent = ''
+  toast.persistent = options.persistent ?? false
 
   const title = document.createElement('strong')
   title.textContent = options.title ?? 'Notification'
@@ -232,8 +257,8 @@ export function notify(
   body.textContent = message
   const closeButton = document.createElement('button')
   closeButton.type = 'button'
-  closeButton.dataset.shape = 'icon'
-  closeButton.dataset.toastClose = ''
+  closeButton.setAttribute('data-sds-shape', 'icon')
+  closeButton.setAttribute('data-sds-toast-close', '')
   closeButton.setAttribute('aria-label', 'Dismiss notification')
   closeButton.textContent = '\u00d7'
 

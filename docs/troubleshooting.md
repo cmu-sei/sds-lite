@@ -50,8 +50,8 @@ Render complete IDs, roles, ARIA relationships, selected state, tab order, and
 ## A dropdown, tooltip, or popover is misplaced
 
 - Keep the trigger and surface as direct children of the custom element.
-- Use a valid logical `data-placement`.
-- Use a nonnegative numeric `data-offset`.
+- Use a valid logical `placement`.
+- Use a nonnegative numeric `offset`.
 - Do not position the surface with application CSS.
 - Confirm the surface is not constrained by a transformed third-party
   container.

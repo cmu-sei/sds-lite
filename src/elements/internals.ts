@@ -19,6 +19,45 @@ export function directElementChildren(element: Element): HTMLElement[] {
   )
 }
 
+export function reflectBooleanAttribute(
+  element: Element,
+  name: string,
+  value: boolean,
+): void {
+  element.toggleAttribute(name, value)
+}
+
+export function reflectStringAttribute(
+  element: Element,
+  name: string,
+  value: string,
+): void {
+  element.setAttribute(name, value)
+}
+
+export function readNumberAttribute(
+  element: Element,
+  name: string,
+  fallback: number,
+): number {
+  const attribute = element.getAttribute(name)
+  if (attribute === null || attribute.trim() === '') return fallback
+
+  const value = Number(attribute)
+  return Number.isFinite(value) && value >= 0 ? value : fallback
+}
+
+export function reflectNumberAttribute(
+  element: Element,
+  name: string,
+  value: number,
+): void {
+  if (!Number.isFinite(value) || value < 0) {
+    throw new RangeError(`${name} must be a nonnegative finite number.`)
+  }
+  element.setAttribute(name, String(value))
+}
+
 export class ElementConnection {
   private controller: AbortController | null = null
   private observer: MutationObserver | null = null

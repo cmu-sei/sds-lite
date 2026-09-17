@@ -47,7 +47,7 @@ transient toast in the browser.
 ## Fully authored tabs
 
 ```html
-<sds-tabs data-variant="underline">
+<sds-tabs value="overview" variant="underline">
   <div class="sds-tab-list" role="tablist" aria-label="Project sections">
     <button
       id="overview-tab"
@@ -57,7 +57,7 @@ transient toast in the browser.
       aria-controls="overview-panel"
       aria-selected="true"
       tabindex="0"
-      data-value="overview"
+      value="overview"
     >
       Overview
     </button>
@@ -69,7 +69,7 @@ transient toast in the browser.
       aria-controls="activity-panel"
       aria-selected="false"
       tabindex="-1"
-      data-value="activity"
+      value="activity"
     >
       Activity
     </button>

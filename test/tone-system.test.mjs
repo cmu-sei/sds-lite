@@ -5,7 +5,7 @@ import test from 'node:test'
 
 const tokens = await readFile('src/css/tokens.css', 'utf8')
 const foundations = await readFile('src/css/foundations.css', 'utf8')
-const toast = await readFile('src/elements/toast.ts', 'utf8')
+const interfaceTypes = await readFile('src/generated/interface.ts', 'utf8')
 const demo = await readFile('index.html', 'utf8')
 const componentStyles = (
   await Promise.all(
@@ -37,15 +37,17 @@ const documentation = (
 
 test('the public tone vocabulary distinguishes accent from primary hierarchy', () => {
   for (const tone of tones) {
-    assert.match(tokens, new RegExp(`data-tone="${tone}"`))
-    assert.match(toast, new RegExp(`'${tone}'`))
+    assert.match(tokens, new RegExp(`data-sds-tone="${tone}"`))
+    assert.match(tokens, new RegExp(`sds-tabs\\[tone="${tone}"\\]`))
+    assert.match(tokens, new RegExp(`sds-toast\\[tone="${tone}"\\]`))
+    assert.match(interfaceTypes, new RegExp(`["']${tone}["']`))
   }
 
   assert.doesNotMatch(
     `${tokens}\n${componentStyles}\n${demo}`,
-    /data-tone="primary"|--sds-color-primary-/,
+    /data-sds-tone="primary"|--sds-color-primary-/,
   )
-  assert.doesNotMatch(toast, /\| 'primary'/)
+  assert.doesNotMatch(interfaceTypes, /\| ["']primary["']/)
   assert.match(
     `${documentation}\n${demo}`,
     /neutral \| accent \| info \| success \| warning \| danger/,
@@ -78,11 +80,11 @@ test('accent is blue and info uses the upstream teal palette', () => {
   )
   assert.match(
     componentStyles,
-    /data-tone="accent"[\s\S]*?var\(--sds-blue-700\)/,
+    /data-sds-tone="accent"[\s\S]*?var\(--sds-blue-700\)/,
   )
   assert.match(
     componentStyles,
-    /data-tone="info"[\s\S]*?var\(--sds-teal-700\)/,
+    /data-sds-tone="info"[\s\S]*?var\(--sds-teal-700\)/,
   )
 })
 

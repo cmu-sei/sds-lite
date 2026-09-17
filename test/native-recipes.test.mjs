@@ -88,6 +88,6 @@ test('the avatar group composes the existing dropdown for overflow people', () =
   const items = dropdown?.querySelectorAll('[role="menuitem"]')
   assert.ok(items?.length > 0)
   for (const item of items ?? []) {
-    assert.ok(item.querySelector('.sds-avatar[data-size="xs"]'))
+    assert.ok(item.querySelector('.sds-avatar[data-sds-size="xs"]'))
   }
 })

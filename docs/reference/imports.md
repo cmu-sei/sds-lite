@@ -14,6 +14,10 @@
 | `@cmu-sei/sds-lite/tabs` | Tabs class and registration |
 | `@cmu-sei/sds-lite/tooltip` | Tooltip class and registration |
 | `@cmu-sei/sds-lite/toast` | Toast class, helpers, registration, and types |
+| `@cmu-sei/sds-lite/react` | Generated React JSX custom-element types |
+| `@cmu-sei/sds-lite/vue` | Generated Vue custom-element types |
+| `@cmu-sei/sds-lite/html-data.json` | Editor HTML custom data |
+| `@cmu-sei/sds-lite/interface-manifest.json` | Machine-readable recipe interface |
 | `@cmu-sei/sds-lite/sds.css` | Core, layouts, prose, tokens, and utilities |
 | `@cmu-sei/sds-lite/core.css` | Foundations and common recipes |
 | `@cmu-sei/sds-lite/layouts.css` | Grid, flex, page, action, and sidebar layouts |
@@ -48,19 +52,24 @@ https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/core.css
 https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/layouts.css
 https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/prose.css
 https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/brand.css
+https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/sds.js
+https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/dialog.js
+https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/dropdown.js
+https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/popover.js
+https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/tabs.js
+https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/tooltip.js
+https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/toast.js
 ```
 
-Direct ES modules live under `package/`:
+Top-level CDN modules mirror the NPM entry names. For example:
 
-```text
-package/sds.js
-package/auto.js
-package/dialog.js
-package/dropdown.js
-package/popover.js
-package/tabs.js
-package/tooltip.js
-package/toast.js
+```html
+<script type="module">
+  import { registerSdsTabs } from
+    'https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/tabs.js'
+
+  registerSdsTabs()
+</script>
 ```
 
 Pin an exact package version in production.
@@ -69,6 +78,8 @@ Pin an exact package version in production.
 
 - The root JavaScript entry is side-effect-free.
 - `/auto` registers all behavior when evaluated in a browser.
+- `/react` and `/vue` have empty runtime modules; their value is generated
+  TypeScript augmentation.
 - Registration functions define their documented custom elements.
 - CSS imports add global rules scoped to `[data-sds-root]`.
 - `notify()` creates DOM only when called.

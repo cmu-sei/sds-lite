@@ -12,6 +12,7 @@ Import SDS Lite once from the client entry:
 ```tsx
 import '@cmu-sei/sds-lite/sds.css'
 import '@cmu-sei/sds-lite/auto'
+import '@cmu-sei/sds-lite/react'
 ```
 
 Use native JSX attributes and `className`:
@@ -28,8 +29,28 @@ export function ProjectCard() {
 }
 ```
 
-For custom events, attach a listener with a ref because React does not map
-arbitrary custom-event props:
+React 19 attaches custom-element event props directly. SDS Lite's generated
+JSX types include its attributes and events:
+
+```tsx
+function ProjectTabs() {
+  return (
+    <sds-tabs
+      value="overview"
+      onsds-change={(event) => console.log(event.detail.value)}
+    >
+      <div aria-label="Project sections">
+        <button type="button" value="overview">Overview</button>
+        <button type="button" value="activity">Activity</button>
+      </div>
+      <section>Overview content</section>
+      <section>Activity content</section>
+    </sds-tabs>
+  )
+}
+```
+
+For React 18 and earlier, attach custom events with a ref:
 
 ```tsx
 import { useEffect, useRef } from 'react'
@@ -51,8 +72,8 @@ export function ProjectTabs() {
   return (
     <sds-tabs ref={tabsRef}>
       <div aria-label="Project sections">
-        <button type="button" data-value="overview">Overview</button>
-        <button type="button" data-value="activity">Activity</button>
+        <button type="button" value="overview">Overview</button>
+        <button type="button" value="activity">Activity</button>
       </div>
       <section>Overview content</section>
       <section>Activity content</section>
@@ -61,8 +82,7 @@ export function ProjectTabs() {
 }
 ```
 
-Add local JSX intrinsic-element declarations if your React TypeScript setup
-does not consume the package's global custom-element declarations.
+The `/react` entry is type-only at runtime and does not install a wrapper.
 
 ## Vue
 
@@ -70,6 +90,7 @@ does not consume the package's global custom-element declarations.
 // main.js
 import '@cmu-sei/sds-lite/sds.css'
 import '@cmu-sei/sds-lite/auto'
+import '@cmu-sei/sds-lite/vue'
 ```
 
 ```vue
@@ -92,7 +113,19 @@ function onChange(event) {
 ```
 
 Configure the Vue compiler to treat tags beginning with `sds-` as custom
-elements if it reports unresolved components.
+elements. The `/vue` entry contributes generated global component types and
+has no runtime behavior:
+
+```ts
+// vite.config.ts
+vue({
+  template: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith('sds-'),
+    },
+  },
+})
+```
 
 ## Angular
 

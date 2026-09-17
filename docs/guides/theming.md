@@ -68,8 +68,8 @@ rather than SDS implementation structure:
 Use documented attributes before writing an override:
 
 ```html
-<button data-size="lg" data-tone="danger">Delete</button>
-<div class="sds-grid" data-columns="3" data-gap="xl">...</div>
+<button data-sds-size="lg" data-sds-tone="danger">Delete</button>
+<div class="sds-grid" data-sds-columns="3" data-sds-gap="xl">...</div>
 ```
 
 Attributes preserve the supported design vocabulary and behavior across
@@ -91,5 +91,11 @@ themes.
   `--sds-tab-*`, `--sds-timeline-*`, `--sds-datapoint-*`, or
   `--sds-floating-*`; they are implementation details.
 - Treat undocumented selectors and custom properties as private.
+
+SDS Lite intentionally does not expose a second, exhaustive token for every
+component declaration. Add a public component token only when a real
+application cannot express a supported customization through a semantic token
+or documented option. This keeps themes portable and avoids coupling
+applications to recipe implementation details.
 
 See the [CSS reference](../reference/css.md) for every public token.

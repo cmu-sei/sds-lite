@@ -4,7 +4,16 @@ import {
   directElementChildren,
   ElementConnection,
   ensureId,
+  readNumberAttribute,
+  reflectBooleanAttribute,
+  reflectNumberAttribute,
+  reflectStringAttribute,
 } from './internals.js'
+import type {
+  SdsPlacement,
+  SdsToggleDetail,
+  SdsWidth,
+} from '../generated/interface.js'
 
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
@@ -12,13 +21,60 @@ const HTMLElementBase: typeof HTMLElement =
     : HTMLElement
 
 export class SdsDropdownElement extends HTMLElementBase {
+  static observedAttributes = ['open', 'placement', 'offset']
+
   private trigger: HTMLButtonElement | null = null
   private menu: HTMLElement | null = null
   private items: HTMLElement[] = []
   private positioner: FloatingPositioner | null = null
   private connection = new ElementConnection()
 
+  get open(): boolean {
+    return this.hasAttribute('open')
+  }
+
+  set open(value: boolean) {
+    reflectBooleanAttribute(this, 'open', value)
+  }
+
+  get placement(): SdsPlacement {
+    return (this.getAttribute('placement') ??
+      'block-end-start') as SdsPlacement
+  }
+
+  set placement(value: SdsPlacement) {
+    reflectStringAttribute(this, 'placement', value)
+  }
+
+  get offset(): number {
+    return readNumberAttribute(this, 'offset', 5)
+  }
+
+  set offset(value: number) {
+    reflectNumberAttribute(this, 'offset', value)
+  }
+
+  get width(): SdsWidth {
+    return (this.getAttribute('width') ?? 'md') as SdsWidth
+  }
+
+  set width(value: SdsWidth) {
+    reflectStringAttribute(this, 'width', value)
+  }
+
+  get hideCaret(): boolean {
+    return this.hasAttribute('hide-caret')
+  }
+
+  set hideCaret(value: boolean) {
+    reflectBooleanAttribute(this, 'hide-caret', value)
+  }
+
   connectedCallback(): void {
+    this.positioner = null
+    this.trigger = null
+    this.menu = null
+    this.items = []
     const signal = this.connection.connect(
       this,
       () => this.connectedCallback(),
@@ -71,8 +127,8 @@ export class SdsDropdownElement extends HTMLElementBase {
     this.positioner = new FloatingPositioner(
       trigger,
       menu,
-      () => this.dataset.placement ?? 'block-end-start',
-      () => this.dataset.offset,
+      () => this.placement,
+      () => this.getAttribute('offset') ?? undefined,
     )
     this.collectItems()
 
@@ -92,14 +148,57 @@ export class SdsDropdownElement extends HTMLElementBase {
       signal,
     })
     this.positioner.observe(signal)
+    if (this.open) this.show()
   }
 
   disconnectedCallback(): void {
     this.connection.disconnect()
     this.positioner = null
+    this.trigger = null
+    this.menu = null
+    this.items = []
   }
 
-  private isOpen(): boolean {
+  attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ): void {
+    if (oldValue === newValue || !this.isConnected) return
+    if (name === 'open') {
+      if (newValue === null) this.hide()
+      else this.show()
+      return
+    }
+    if (this.isSurfaceOpen()) {
+      this.positioner?.reset()
+      this.positioner?.position()
+    }
+  }
+
+  show(): void {
+    if (!this.menu) {
+      this.open = true
+      return
+    }
+    if (this.isSurfaceOpen()) return
+
+    this.collectItems()
+    this.positioner?.reset()
+    this.menu.showPopover()
+    this.positioner?.position()
+  }
+
+  hide(): void {
+    if (!this.menu) {
+      this.open = false
+      return
+    }
+    if (!this.isSurfaceOpen()) return
+    this.menu.hidePopover()
+  }
+
+  private isSurfaceOpen(): boolean {
     return this.menu?.matches(':popover-open') ?? false
   }
 
@@ -131,29 +230,31 @@ export class SdsDropdownElement extends HTMLElementBase {
       )
   }
 
-  private open(focusIndex = 0): void {
-    if (!this.menu || this.isOpen()) return
-
-    this.collectItems()
-    this.positioner?.reset()
-    this.menu.showPopover()
-    this.positioner?.position()
+  private showAndFocus(focusIndex = 0): void {
+    this.show()
     this.items[focusIndex]?.focus()
   }
 
-  private close(restoreFocus = false): void {
-    if (!this.menu || !this.isOpen()) return
-
-    this.menu.hidePopover()
-    if (restoreFocus) this.trigger?.focus()
+  private hideAndRestoreFocus(): void {
+    this.hide()
+    this.trigger?.focus()
   }
 
   private handleToggle = (): void => {
-    if (this.isOpen()) {
+    const open = this.isSurfaceOpen()
+    reflectBooleanAttribute(this, 'open', open)
+    if (open) {
       this.positioner?.position()
     } else {
       this.positioner?.reset()
     }
+    this.dispatchEvent(
+      new CustomEvent<SdsToggleDetail>('sds-toggle', {
+        bubbles: true,
+        composed: true,
+        detail: { open },
+      }),
+    )
   }
 
   private handleBeforeToggle = (event: ToggleEvent): void => {
@@ -179,10 +280,10 @@ export class SdsDropdownElement extends HTMLElementBase {
     if (!opensMenu) return
 
     event.preventDefault()
-    if (this.isOpen()) {
+    if (this.isSurfaceOpen()) {
       this.items[focusIndex]?.focus()
     } else {
-      this.open(focusIndex)
+      this.showAndFocus(focusIndex)
     }
   }
 
@@ -203,7 +304,7 @@ export class SdsDropdownElement extends HTMLElementBase {
       nextIndex = this.items.length - 1
     } else if (event.key === 'Escape') {
       event.preventDefault()
-      this.close(true)
+      this.hideAndRestoreFocus()
       return
     }
 
@@ -223,13 +324,17 @@ export class SdsDropdownElement extends HTMLElementBase {
       event.preventDefault()
       return
     }
-    this.close()
+    this.hide()
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
     'sds-dropdown': SdsDropdownElement
+  }
+
+  interface HTMLElementEventMap {
+    'sds-toggle': CustomEvent<SdsToggleDetail>
   }
 }
 

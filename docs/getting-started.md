@@ -84,7 +84,7 @@ Common elements need no SDS classes:
       </div>
       <div class="sds-action-group">
         <button type="submit">Save</button>
-        <button type="button" data-variant="ghost">Cancel</button>
+        <button type="button" data-sds-variant="ghost">Cancel</button>
       </div>
     </form>
   </article>
@@ -93,7 +93,7 @@ Common elements need no SDS classes:
 
 SDS Lite automatically styles the native heading, text, button, and input.
 Classes describe larger recipes such as a page, card, form field, or action
-group. Attributes such as `data-variant` change a documented option.
+group. Attributes such as `data-sds-variant` change a documented option.
 
 ## 4. Add accessible behavior
 
@@ -114,10 +114,10 @@ SDS Lite can supply classes, IDs, relationships, and initial state:
 
 ```html
 <sds-dropdown>
-  <button type="button" data-variant="ghost">Actions</button>
+  <button type="button" data-sds-variant="ghost">Actions</button>
   <menu>
     <li><button type="button">Rename</button></li>
-    <li><button type="button" data-tone="danger">Delete</button></li>
+    <li><button type="button" data-sds-tone="danger">Delete</button></li>
   </menu>
 </sds-dropdown>
 ```

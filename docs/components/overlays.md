@@ -27,14 +27,14 @@ Tooltips open immediately on pointer hover or keyboard focus. Pointer leave,
 focus loss, or Escape closes them. SDS Lite adds the ID, role, class, manual
 Popover mode, and `aria-describedby`.
 
-Tooltips support `data-placement` and `data-offset`. The default offset is 6
+Tooltips support `placement` and `offset`. The default offset is 6
 CSS pixels. Keep content noninteractive; use a popover for controls or long
 text.
 
 ## Popover
 
 ```html
-<sds-popover data-width="lg" data-placement="block-end-start">
+<sds-popover width="lg" placement="block-end-start">
   <button type="button">Project details</button>
   <section>
     <h2>Project Atlas</h2>
@@ -48,8 +48,9 @@ Hover or focus opens after 500ms. Moving between trigger and surface keeps it
 open. Leaving both closes after a short grace period. Native click, touch,
 keyboard, Escape, and light-dismiss behavior remain available.
 
-Popovers support the dropdown `data-width`, `data-placement`, and
-`data-offset` values. Their default offset is 9 CSS pixels.
+Popovers support the dropdown `width`, `placement`, and `offset` values.
+Their default offset is 9 CSS pixels. The reflected `open` property and
+`show()` and `hide()` methods provide programmatic control.
 
 Tooltips, popovers, and dropdowns:
 
@@ -57,7 +58,7 @@ Tooltips, popovers, and dropdowns:
 - flip vertically or horizontally to avoid viewport overflow;
 - stay attached during document and nested-container scrolling;
 - retain a stable resolved placement while it fits;
-- expose the resolved side through generated `data-side`;
+- expose the resolved side through generated `data-sds-side`;
 - position their arrow toward the trigger without overlapping rounded corners.
 
 ## Dialog
@@ -70,7 +71,7 @@ Tooltips, popovers, and dropdowns:
 <dialog
   id="confirm-dialog"
   class="sds-dialog"
-  data-width="md"
+  data-sds-width="md"
   closedby="any"
   aria-labelledby="confirm-title"
   aria-describedby="confirm-description"
@@ -82,7 +83,7 @@ Tooltips, popovers, and dropdowns:
     </div>
     <button
       type="button"
-      data-shape="icon"
+      data-sds-shape="icon"
       commandfor="confirm-dialog"
       command="request-close"
       aria-label="Close"
@@ -96,10 +97,10 @@ Tooltips, popovers, and dropdowns:
   <footer class="sds-dialog-footer">
     <button
       type="button"
-      data-variant="ghost"
+      data-sds-variant="ghost"
       commandfor="confirm-dialog"
       command="close"
-      data-return-value="cancel"
+      data-sds-return-value="cancel"
     >
       Cancel
     </button>
@@ -107,7 +108,7 @@ Tooltips, popovers, and dropdowns:
       type="button"
       commandfor="confirm-dialog"
       command="close"
-      data-return-value="confirm"
+      data-sds-return-value="confirm"
     >
       Confirm
     </button>
@@ -115,7 +116,7 @@ Tooltips, popovers, and dropdowns:
 </dialog>
 ```
 
-`data-width` accepts `sm`, `md`, `lg`, `xl`, or `2xl`; `md` is the default.
+`data-sds-width` accepts `sm`, `md`, `lg`, `xl`, or `2xl`; `md` is the default.
 Every dialog needs a unique ID and accessible name through `aria-labelledby`
 or `aria-label`. The footer aligns actions right and places primary buttons
 after other variants.
@@ -132,8 +133,8 @@ Use direct native `header`, `main`, and `footer` children:
 <dialog
   id="help-panel"
   class="sds-panel"
-  data-side="right"
-  data-width="md"
+  data-sds-side="right"
+  data-sds-width="md"
   closedby="any"
   aria-labelledby="help-title"
 >
@@ -141,7 +142,7 @@ Use direct native `header`, `main`, and `footer` children:
     <h2 id="help-title">Help</h2>
     <button
       type="button"
-      data-shape="icon"
+      data-sds-shape="icon"
       commandfor="help-panel"
       command="request-close"
       aria-label="Close"
@@ -158,8 +159,8 @@ Use direct native `header`, `main`, and `footer` children:
 
 | Option | Values | Default |
 |---|---|---|
-| `data-side` | `left`, `right`, `bottom` | `right` |
-| `data-width` | `sm`, `md`, `lg`, `xl` | `md` |
+| `data-sds-side` | `left`, `right`, `bottom` | `right` |
+| `data-sds-width` | `sm`, `md`, `lg`, `xl` | `md` |
 
 For side panels size controls width; for bottom panels it controls height.
 Header and footer remain visible while `main` consumes the flexible space.
@@ -172,7 +173,7 @@ Header and footer remain visible while `main` consumes the flexible space.
 | `command="show-modal"` | Open modally |
 | `command="close"` | Close immediately |
 | `command="request-close"` | Request a cancelable close |
-| `data-return-value="value"` | Set `dialog.returnValue` while closing |
+| `data-sds-return-value="value"` | Set `dialog.returnValue` while closing |
 | `closedby="any"` | Escape, close controls, and backdrop dismissal |
 | `closedby="closerequest"` | Close requests, no backdrop dismissal |
 | `closedby="none"` | No implicit dismissal |

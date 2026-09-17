@@ -101,16 +101,16 @@
   }
 
   :where(
-    .sds-file-input[data-size="sm"],
-    [data-sds-root] input[type="file"][data-size="sm"]
+    .sds-file-input[data-sds-size="sm"],
+    [data-sds-root] input[type="file"][data-sds-size="sm"]
   )::file-selector-button {
     padding: var(--sds-space-xs) var(--sds-space-sm);
     font-size: 0.875rem;
   }
 
   :where(
-    .sds-file-input[data-size="lg"],
-    [data-sds-root] input[type="file"][data-size="lg"]
+    .sds-file-input[data-sds-size="lg"],
+    [data-sds-root] input[type="file"][data-sds-size="lg"]
   )::file-selector-button {
     padding: var(--sds-space-md) var(--sds-space-xl);
     font-size: 1.125rem;

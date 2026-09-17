@@ -135,14 +135,14 @@
     font-size: 0.75rem;
   }
 
-  :where(.sds-timeline[data-orientation="horizontal"]) {
+  :where(.sds-timeline[data-sds-orientation="horizontal"]) {
     grid-auto-columns: minmax(12rem, 1fr);
     grid-auto-flow: column;
     overflow-x: auto;
   }
 
   :where(
-    .sds-timeline[data-orientation="horizontal"] .sds-timeline-item
+    .sds-timeline[data-sds-orientation="horizontal"] .sds-timeline-item
   ) {
     display: grid;
     min-block-size: 0;
@@ -156,7 +156,7 @@
   }
 
   :where(
-    .sds-timeline[data-orientation="horizontal"] .sds-timeline-item
+    .sds-timeline[data-sds-orientation="horizontal"] .sds-timeline-item
   )::before {
     grid-column: 1;
     grid-row: 1;
@@ -164,7 +164,7 @@
   }
 
   :where(
-    .sds-timeline[data-orientation="horizontal"]
+    .sds-timeline[data-sds-orientation="horizontal"]
       .sds-timeline-item:not(:last-child)
   )::after {
     grid-column: 2;
@@ -179,7 +179,7 @@
   }
 
   :where(
-    .sds-timeline[data-orientation="horizontal"]
+    .sds-timeline[data-sds-orientation="horizontal"]
       .sds-timeline-item
       > .sds-timeline-marker
   ) {
@@ -189,7 +189,7 @@
   }
 
   :where(
-    .sds-timeline[data-orientation="horizontal"]
+    .sds-timeline[data-sds-orientation="horizontal"]
       .sds-timeline-item
       > :not(.sds-timeline-marker)
   ) {

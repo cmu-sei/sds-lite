@@ -346,7 +346,7 @@ export class FloatingPositioner {
     this.previousPlacement = position.placement
     this.surface.style.left = `${position.left}px`
     this.surface.style.top = `${position.top}px`
-    this.surface.setAttribute('data-side', position.side)
+    this.surface.setAttribute('data-sds-side', position.side)
     const arrowPadding = 12
     const arrowX = Math.min(
       Math.max(

@@ -44,15 +44,20 @@ function handleClick(event: MouseEvent): void {
       event.preventDefault()
     }
     if (command === 'show-modal') openDialog(dialog, true)
-    else if (command === 'close') dialog.close(trigger.dataset.returnValue)
+    else if (command === 'close') {
+      dialog.close(trigger.getAttribute('data-sds-return-value') ?? '')
+    }
     else if (command === 'request-close') {
       const requestClose = Reflect.get(dialog, 'requestClose')
       if (typeof requestClose === 'function') {
-        requestClose.call(dialog, trigger.dataset.returnValue)
+        requestClose.call(
+          dialog,
+          trigger.getAttribute('data-sds-return-value') ?? '',
+        )
       } else {
         const cancelEvent = new Event('cancel', { cancelable: true })
         if (dialog.dispatchEvent(cancelEvent)) {
-          dialog.close(trigger.dataset.returnValue)
+          dialog.close(trigger.getAttribute('data-sds-return-value') ?? '')
         }
       }
     }

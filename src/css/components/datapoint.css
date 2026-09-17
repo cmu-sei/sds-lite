@@ -21,66 +21,66 @@
     line-height: 1.2;
   }
 
-  :where(.sds-datapoint[data-size="sm"] strong) {
+  :where(.sds-datapoint[data-sds-size="sm"] strong) {
     font-size: 1.125rem;
     line-height: 1.75rem;
   }
 
-  :where(.sds-datapoint[data-size="lg"] strong) {
+  :where(.sds-datapoint[data-sds-size="lg"] strong) {
     font-size: 3rem;
     line-height: 1;
   }
 
-  :where(.sds-datapoint[data-tone="neutral"]) {
+  :where(.sds-datapoint[data-sds-tone="neutral"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-gray-600),
       var(--sds-gray-300)
     );
   }
 
-  :where(.sds-datapoint[data-tone="accent"]) {
+  :where(.sds-datapoint[data-sds-tone="accent"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-blue-600),
       var(--sds-blue-400)
     );
   }
 
-  :where(.sds-datapoint[data-tone="danger"]) {
+  :where(.sds-datapoint[data-sds-tone="danger"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-red-600),
       var(--sds-red-400)
     );
   }
 
-  :where(.sds-datapoint[data-tone="info"]) {
+  :where(.sds-datapoint[data-sds-tone="info"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-teal-600),
       var(--sds-teal-400)
     );
   }
 
-  :where(.sds-datapoint[data-tone="success"]) {
+  :where(.sds-datapoint[data-sds-tone="success"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-green-600),
       var(--sds-green-400)
     );
   }
 
-  :where(.sds-datapoint[data-tone="warning"]) {
+  :where(.sds-datapoint[data-sds-tone="warning"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-orange-500),
       var(--sds-orange-300)
     );
   }
 
-  :where(.sds-datapoint[data-tone="warning"][data-size="sm"]) {
+  :where(.sds-datapoint[data-sds-tone="warning"][data-sds-size="sm"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-orange-600),
       var(--sds-orange-300)
     );
   }
 
-  :where(.sds-datapoint[data-tone="warning"][data-size="lg"]) {
+  :where(.sds-datapoint[data-sds-tone="warning"][data-sds-size="lg"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-orange-400),
       var(--sds-orange-300)

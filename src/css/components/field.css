@@ -14,13 +14,13 @@
     font-style: italic;
   }
 
-  :where(.sds-field[data-orientation="horizontal"]) {
+  :where(.sds-field[data-sds-orientation="horizontal"]) {
     grid-template-columns: minmax(8rem, 1fr) minmax(0, 3fr);
     column-gap: var(--sds-space-lg);
     align-items: start;
   }
 
-  :where(.sds-field[data-orientation="horizontal"] > small) {
+  :where(.sds-field[data-sds-orientation="horizontal"] > small) {
     grid-column: 2;
   }
 
@@ -30,17 +30,17 @@
     font-style: italic;
   }
 
-  :where(.sds-field > small[data-tone]) {
+  :where(.sds-field > small[data-sds-tone]) {
     color: var(--sds-tone-text);
     font-style: normal;
   }
 
   @media (max-width: 40rem) {
-    :where(.sds-field[data-orientation="horizontal"]) {
+    :where(.sds-field[data-sds-orientation="horizontal"]) {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    :where(.sds-field[data-orientation="horizontal"] > small) {
+    :where(.sds-field[data-sds-orientation="horizontal"] > small) {
       grid-column: auto;
     }
   }

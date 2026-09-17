@@ -13,40 +13,40 @@
     display: block;
   }
 
-  :where(sds-tabs[data-tone="neutral"]) {
+  :where(sds-tabs[tone="neutral"]) {
     --sds-tab-active-background: light-dark(
       var(--sds-gray-900),
       var(--sds-gray-200)
     );
   }
 
-  :where(sds-tabs[data-tone="accent"]) {
+  :where(sds-tabs[tone="accent"]) {
     --sds-tab-active-background: light-dark(
       var(--sds-blue-700),
       var(--sds-blue-200)
     );
   }
 
-  :where(sds-tabs[data-tone="info"]) {
+  :where(sds-tabs[tone="info"]) {
     --sds-tab-active-background: light-dark(
       var(--sds-teal-700),
       var(--sds-teal-200)
     );
   }
 
-  :where(sds-tabs[data-tone="success"]) {
+  :where(sds-tabs[tone="success"]) {
     --sds-tab-active-background: light-dark(
       var(--sds-green-700),
       var(--sds-green-200)
     );
   }
 
-  :where(sds-tabs[data-tone="warning"]) {
+  :where(sds-tabs[tone="warning"]) {
     --sds-tab-active-background: var(--sds-orange-200);
     --sds-tab-active-text: var(--sds-black);
   }
 
-  :where(sds-tabs[data-tone="danger"]) {
+  :where(sds-tabs[tone="danger"]) {
     --sds-tab-active-background: var(--sds-red-700);
   }
 
@@ -83,7 +83,7 @@
     }
 
     :where(
-      sds-tabs[data-variant="block"]
+      sds-tabs[variant="block"]
         .sds-tab:not(:disabled, [aria-disabled="true"], [aria-selected="true"]):hover
     ) {
       background: var(--sds-color-interactive-subtle-hover);
@@ -91,8 +91,8 @@
   }
 
   :where(
-    sds-tabs:not([data-variant]) .sds-tab-list,
-    sds-tabs[data-variant="folder"] .sds-tab-list
+    sds-tabs:not([variant]) .sds-tab-list,
+    sds-tabs[variant="folder"] .sds-tab-list
   ) {
     background:
       linear-gradient(
@@ -103,8 +103,8 @@
   }
 
   :where(
-    sds-tabs:not([data-variant]) .sds-tab,
-    sds-tabs[data-variant="folder"] .sds-tab
+    sds-tabs:not([variant]) .sds-tab,
+    sds-tabs[variant="folder"] .sds-tab
   ) {
     z-index: 1;
     padding: 0.5625rem var(--sds-space-lg);
@@ -114,8 +114,8 @@
   }
 
   :where(
-    sds-tabs:not([data-variant]) .sds-tab[aria-selected="true"],
-    sds-tabs[data-variant="folder"] .sds-tab[aria-selected="true"]
+    sds-tabs:not([variant]) .sds-tab[aria-selected="true"],
+    sds-tabs[variant="folder"] .sds-tab[aria-selected="true"]
   ) {
     color: var(--sds-tab-accent);
     background: var(--sds-color-surface-default);
@@ -125,37 +125,37 @@
       var(--sds-shadow-raised);
   }
 
-  :where(sds-tabs[data-variant="block"] .sds-tab) {
+  :where(sds-tabs[variant="block"] .sds-tab) {
     padding: 0.625rem var(--sds-space-lg);
     border-radius: var(--sds-radius-container);
   }
 
-  :where(sds-tabs[data-variant="block"] .sds-tab[aria-selected="true"]) {
+  :where(sds-tabs[variant="block"] .sds-tab[aria-selected="true"]) {
     color: var(--sds-tab-active-text);
     background: var(--sds-tab-active-background);
   }
 
-  :where(sds-tabs[data-variant="underline"] .sds-tab) {
+  :where(sds-tabs[variant="underline"] .sds-tab) {
     padding: 0.875rem var(--sds-space-lg);
     border-block-end: 0.125rem solid transparent;
   }
 
-  :where(sds-tabs[data-variant="underline"] .sds-tab[aria-selected="true"]) {
+  :where(sds-tabs[variant="underline"] .sds-tab[aria-selected="true"]) {
     color: var(--sds-tab-accent);
     border-block-end-color: var(--sds-tab-accent);
   }
 
-  :where(sds-tabs[data-size="lg"] .sds-tab) {
+  :where(sds-tabs[size="lg"] .sds-tab) {
     font-size: 1.125rem;
   }
 
-  :where(sds-tabs[data-variant="block"][data-size="lg"] .sds-tab) {
+  :where(sds-tabs[variant="block"][size="lg"] .sds-tab) {
     padding-block: var(--sds-space-md);
   }
 
   :where(
-    sds-tabs:not([data-variant])[data-size="lg"] .sds-tab,
-    sds-tabs[data-variant="folder"][data-size="lg"] .sds-tab
+    sds-tabs:not([variant])[size="lg"] .sds-tab,
+    sds-tabs[variant="folder"][size="lg"] .sds-tab
   ) {
     padding-block: 0.8125rem;
   }
@@ -165,8 +165,8 @@
   }
 
   :where(
-    [data-sds-theme="plaid"] sds-tabs:not([data-variant]) .sds-tab-list,
-    [data-sds-theme="plaid"] sds-tabs[data-variant="folder"] .sds-tab-list
+    [data-sds-theme="plaid"] sds-tabs:not([variant]) .sds-tab-list,
+    [data-sds-theme="plaid"] sds-tabs[variant="folder"] .sds-tab-list
   ) {
     border: 1px solid var(--sds-color-border-default);
     border-block-end: 0;

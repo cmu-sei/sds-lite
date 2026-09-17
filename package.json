@@ -7,6 +7,9 @@
   "module": "./package/sds.js",
   "style": "./sds.css",
   "customElements": "./custom-elements.json",
+  "bin": {
+    "sds-lite-migrate": "./scripts/migrate.mjs"
+  },
   "keywords": [
     "design-system",
     "css",
@@ -24,14 +27,26 @@
   },
   "files": [
     "auto.js",
+    "dialog.js",
+    "dropdown.js",
+    "popover.js",
+    "sds.js",
+    "tabs.js",
+    "toast.js",
+    "tooltip.js",
     "brand.css",
     "core.css",
     "docs",
+    "framework-types",
+    "html-data.json",
+    "interface-manifest.json",
+    "interface-manifest.schema.json",
     "layouts.css",
     "package",
     "prose.css",
     "sds.css",
-    "custom-elements.json"
+    "custom-elements.json",
+    "scripts/migrate.mjs"
   ],
   "exports": {
     ".": {
@@ -66,6 +81,16 @@
       "types": "./package/elements/toast.d.ts",
       "import": "./package/toast.js"
     },
+    "./react": {
+      "types": "./framework-types/react.d.ts",
+      "import": "./framework-types/empty.js"
+    },
+    "./vue": {
+      "types": "./framework-types/vue.d.ts",
+      "import": "./framework-types/empty.js"
+    },
+    "./html-data.json": "./html-data.json",
+    "./interface-manifest.json": "./interface-manifest.json",
     "./sds.css": "./sds.css",
     "./core.css": "./core.css",
     "./layouts.css": "./layouts.css",
@@ -74,6 +99,8 @@
     "./package.json": "./package.json"
   },
   "scripts": {
+    "generate:interface": "node scripts/generate-interface.mjs",
+    "prebuild": "node scripts/generate-interface.mjs --check",
     "dev": "vite",
     "build": "tsc && vite build && vite build --config vite.library.config.ts && tsc -p tsconfig.declarations.json && node scripts/prepare-package.mjs",
     "preview": "vite preview",

@@ -23,7 +23,7 @@ Every control needs a name. Visible text is best. Icon-only controls need
 `aria-label` or another explicit relationship:
 
 ```html
-<button type="button" data-shape="icon" aria-label="Close dialog">
+<button type="button" data-sds-shape="icon" aria-label="Close dialog">
   <svg aria-hidden="true"><!-- icon --></svg>
 </button>
 ```
@@ -66,7 +66,7 @@ Connect help and error messages with `aria-describedby`:
     aria-invalid="true"
     aria-describedby="email-error"
   >
-  <small id="email-error" data-tone="danger">
+  <small id="email-error" data-sds-tone="danger">
     Enter a valid email address.
   </small>
 </div>

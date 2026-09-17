@@ -166,8 +166,8 @@
 
   @media (min-width: 48.001rem) {
     :where(
-      .sds-app[data-variant="application"] .sds-sidebar[popover],
-      .sds-app:not([data-variant]) .sds-sidebar[popover]
+      .sds-app[data-sds-variant="application"] .sds-sidebar[popover],
+      .sds-app:not([data-sds-variant]) .sds-sidebar[popover]
     ) {
       position: relative;
       inset: auto;

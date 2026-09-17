@@ -8,55 +8,55 @@
     gap: var(--sds-space-lg);
   }
 
-  :where(.sds-grid[data-columns="1"]) {
+  :where(.sds-grid[data-sds-columns="1"]) {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  :where(.sds-grid[data-columns="2"]) {
+  :where(.sds-grid[data-sds-columns="2"]) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  :where(.sds-grid[data-columns="3"]) {
+  :where(.sds-grid[data-sds-columns="3"]) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  :where(.sds-grid[data-columns="4"]) {
+  :where(.sds-grid[data-sds-columns="4"]) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  :where(.sds-grid[data-columns="5"]) {
+  :where(.sds-grid[data-sds-columns="5"]) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  :where(.sds-grid[data-columns="6"]) {
+  :where(.sds-grid[data-sds-columns="6"]) {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
-  :where(.sds-grid[data-orientation="vertical"]) {
+  :where(.sds-grid[data-sds-orientation="vertical"]) {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  :where(.sds-grid[data-gap="none"]) {
+  :where(.sds-grid[data-sds-gap="none"]) {
     gap: 0;
   }
 
-  :where(.sds-grid[data-gap="xs"]) {
+  :where(.sds-grid[data-sds-gap="xs"]) {
     gap: var(--sds-space-xs);
   }
 
-  :where(.sds-grid[data-gap="sm"]) {
+  :where(.sds-grid[data-sds-gap="sm"]) {
     gap: var(--sds-space-sm);
   }
 
-  :where(.sds-grid[data-gap="md"]) {
+  :where(.sds-grid[data-sds-gap="md"]) {
     gap: var(--sds-space-md);
   }
 
-  :where(.sds-grid[data-gap="xl"]) {
+  :where(.sds-grid[data-sds-gap="xl"]) {
     gap: var(--sds-space-xl);
   }
 
-  :where(.sds-grid[data-gap="2xl"]) {
+  :where(.sds-grid[data-sds-gap="2xl"]) {
     gap: var(--sds-space-2xl);
   }
 }

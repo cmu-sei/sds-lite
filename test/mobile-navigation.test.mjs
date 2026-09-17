@@ -50,7 +50,7 @@ test('mobile menu icons use centered, font-independent geometry', () => {
   assert.equal(menuIcons?.length, 3)
   assert.match(
     buttonCss,
-    /\[data-shape="icon"\]\s*>\s*svg[^}]*\{[^}]*inline-size:\s*1em[^}]*block-size:\s*1em/s,
+    /\[data-sds-shape="icon"\]\s*>\s*svg[^}]*\{[^}]*inline-size:\s*1em[^}]*block-size:\s*1em/s,
   )
 })
 

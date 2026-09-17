@@ -80,22 +80,22 @@
   }
 
   :where(
-    .sds-input[data-size="sm"],
-    .sds-select[data-size="sm"],
-    [data-sds-root] input[data-size="sm"],
-    [data-sds-root] select[data-size="sm"],
-    [data-sds-root] textarea[data-size="sm"]
+    .sds-input[data-sds-size="sm"],
+    .sds-select[data-sds-size="sm"],
+    [data-sds-root] input[data-sds-size="sm"],
+    [data-sds-root] select[data-sds-size="sm"],
+    [data-sds-root] textarea[data-sds-size="sm"]
   ) {
     padding: var(--sds-space-xs) var(--sds-space-sm);
     font-size: 0.875rem;
   }
 
   :where(
-    .sds-input[data-size="lg"],
-    .sds-select[data-size="lg"],
-    [data-sds-root] input[data-size="lg"],
-    [data-sds-root] select[data-size="lg"],
-    [data-sds-root] textarea[data-size="lg"]
+    .sds-input[data-sds-size="lg"],
+    .sds-select[data-sds-size="lg"],
+    [data-sds-root] input[data-sds-size="lg"],
+    [data-sds-root] select[data-sds-size="lg"],
+    [data-sds-root] textarea[data-sds-size="lg"]
   ) {
     padding: var(--sds-space-md) var(--sds-space-lg);
     border-radius: var(--sds-radius-container);
@@ -124,8 +124,8 @@
   }
 
   :where(
-    [data-sds-root] select[data-size="sm"],
-    .sds-select[data-size="sm"]
+    [data-sds-root] select[data-sds-size="sm"],
+    .sds-select[data-sds-size="sm"]
   ) {
     padding-inline-end: var(--sds-space-xl);
   }

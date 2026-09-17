@@ -123,6 +123,24 @@ test('popover opens after hover delay, stays open over content, and closes after
   await expect(content).not.toBeVisible({ timeout: 700 })
 })
 
+for (const elementName of ['sds-dropdown', 'sds-popover']) {
+  test(`${elementName} exposes reflected host state and methods`, async ({
+    page,
+  }) => {
+    const host = page.locator(elementName).first()
+    const surface = host.locator(':scope > :nth-child(2)')
+
+    await host.scrollIntoViewIfNeeded()
+    await host.evaluate((element) => element.show())
+    await expect(host).toHaveAttribute('open', '')
+    await expect(surface).toBeVisible()
+
+    await host.evaluate((element) => element.hide())
+    await expect(host).not.toHaveAttribute('open')
+    await expect(surface).not.toBeVisible()
+  })
+}
+
 test('tooltip opens immediately on hover', async ({ page }) => {
   const tooltip = page.locator('sds-tooltip').first()
   const trigger = tooltip.locator(':scope > :first-child')
@@ -149,7 +167,7 @@ for (const elementName of ['sds-tooltip', 'sds-popover']) {
         element.previousElementSibling.getBoundingClientRect()
       const style = getComputedStyle(element)
       const arrowStyle = getComputedStyle(element, '::before')
-      const side = element.dataset.side
+      const side = element.dataset.sdsSide
       const arrowX =
         surfaceRect.left + Number.parseFloat(style.getPropertyValue('--sds-floating-arrow-x'))
       const arrowY =

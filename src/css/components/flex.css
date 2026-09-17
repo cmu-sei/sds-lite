@@ -5,76 +5,76 @@
     gap: var(--sds-space-lg);
   }
 
-  :where(.sds-flex[data-orientation="vertical"]) {
+  :where(.sds-flex[data-sds-orientation="vertical"]) {
     flex-direction: column;
   }
 
-  :where(.sds-flex[data-wrap]) {
+  :where(.sds-flex[data-sds-wrap]) {
     flex-wrap: wrap;
   }
 
-  :where(.sds-flex[data-align="start"]) {
+  :where(.sds-flex[data-sds-align="start"]) {
     align-items: flex-start;
   }
 
-  :where(.sds-flex[data-align="center"]) {
+  :where(.sds-flex[data-sds-align="center"]) {
     align-items: center;
   }
 
-  :where(.sds-flex[data-align="end"]) {
+  :where(.sds-flex[data-sds-align="end"]) {
     align-items: flex-end;
   }
 
-  :where(.sds-flex[data-align="stretch"]) {
+  :where(.sds-flex[data-sds-align="stretch"]) {
     align-items: stretch;
   }
 
-  :where(.sds-flex[data-justify="start"]) {
+  :where(.sds-flex[data-sds-justify="start"]) {
     justify-content: flex-start;
   }
 
-  :where(.sds-flex[data-justify="center"]) {
+  :where(.sds-flex[data-sds-justify="center"]) {
     justify-content: center;
   }
 
-  :where(.sds-flex[data-justify="end"]) {
+  :where(.sds-flex[data-sds-justify="end"]) {
     justify-content: flex-end;
   }
 
-  :where(.sds-flex[data-justify="between"]) {
+  :where(.sds-flex[data-sds-justify="between"]) {
     justify-content: space-between;
   }
 
-  :where(.sds-flex[data-gap="none"]) {
+  :where(.sds-flex[data-sds-gap="none"]) {
     gap: 0;
   }
 
-  :where(.sds-flex[data-gap="xs"]) {
+  :where(.sds-flex[data-sds-gap="xs"]) {
     gap: var(--sds-space-xs);
   }
 
-  :where(.sds-flex[data-gap="sm"]) {
+  :where(.sds-flex[data-sds-gap="sm"]) {
     gap: var(--sds-space-sm);
   }
 
-  :where(.sds-flex[data-gap="md"]) {
+  :where(.sds-flex[data-sds-gap="md"]) {
     gap: var(--sds-space-md);
   }
 
-  :where(.sds-flex[data-gap="xl"]) {
+  :where(.sds-flex[data-sds-gap="xl"]) {
     gap: var(--sds-space-xl);
   }
 
-  :where(.sds-flex[data-gap="2xl"]) {
+  :where(.sds-flex[data-sds-gap="2xl"]) {
     gap: var(--sds-space-2xl);
   }
 
-  :where(.sds-flex > [data-grow]) {
+  :where(.sds-flex > [data-sds-grow]) {
     min-inline-size: 0;
     flex: 1 1 0;
   }
 
-  :where(.sds-flex > [data-no-shrink]) {
+  :where(.sds-flex > [data-sds-no-shrink]) {
     flex-shrink: 0;
   }
 }

@@ -6,6 +6,9 @@ If a class, attribute, custom element, JavaScript export, event, or CSS custom
 property is not documented in this directory, treat it as an implementation
 detail.
 
+The generated [recipe interface](./recipes.md) is authoritative for recipe
+classes, options, custom-element attributes, properties, methods, and events.
+
 ## Root and shared attributes
 
 | Interface | Values or purpose |
@@ -14,22 +17,20 @@ detail.
 | `data-sds-theme` | `forge`, `plaid` |
 | `data-sds-color-scheme` | `light`, `dark`, `system` |
 | `data-sds-unstyled` | Opt a link out of automatic styling |
-| `data-variant` | Recipe-specific visual treatment |
-| `data-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` |
-| `data-size` | Recipe-specific size |
-| `data-width` | Recipe or overlay width |
-| `data-orientation` | `horizontal`, `vertical` |
-| `data-placement` | Preferred logical floating placement |
-| `data-offset` | Floating offset in CSS pixels |
-| `data-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` |
+| `data-sds-variant` | Recipe-specific visual treatment |
+| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` |
+| `data-sds-size` | Recipe-specific size |
+| `data-sds-width` | Recipe or overlay width |
+| `data-sds-orientation` | `horizontal`, `vertical` |
+| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` |
 
-Other documented recipe options include `data-activation`, `data-align`,
-`data-avatar`, `data-block`, `data-callout-close`, `data-columns`,
-`data-density`, `data-divided`, `data-grow`, `data-hide-caret`, `data-inset`,
-`data-justify`, `data-no-shrink`, `data-persistent`, `data-return-value`,
-`data-row-highlight`, `data-shape`, `data-side`, `data-standalone`,
-`data-sticky`, `data-toast-close`, `data-toast-open`, `data-value`, and
-`data-wrap`.
+Other documented recipe options include `data-sds-align`,
+`data-sds-avatar`, `data-sds-block`, `data-sds-callout-close`, `data-sds-columns`,
+`data-sds-density`, `data-sds-divided`, `data-sds-grow`, `data-sds-inset`,
+`data-sds-justify`, `data-sds-no-shrink`, `data-sds-return-value`,
+`data-sds-row-highlight`, `data-sds-shape`, `data-sds-side`, `data-sds-standalone`,
+`data-sds-sticky`, `data-sds-toast-close`, `data-sds-toast-open`, and
+`data-sds-wrap`.
 
 Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 `popover`, `closedby`, `command`, `commandfor`, and ARIA attributes.

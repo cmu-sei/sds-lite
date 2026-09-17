@@ -50,13 +50,13 @@ test('tooltips and popovers expose positioned arrows', async () => {
   )
   assert.match(floatingCss, /--sds-floating-arrow-size: 0\.5rem/)
   assert.match(floatingCss, /--sds-floating-arrow-size: 0\.75rem/)
-  assert.match(floatingCss, /\[data-side="top"\]::before/)
-  assert.match(floatingCss, /\[data-side="right"\]::before/)
-  assert.match(floatingCss, /\[data-side="bottom"\]::before/)
-  assert.match(floatingCss, /\[data-side="left"\]::before/)
+  assert.match(floatingCss, /\[data-sds-side="top"\]::before/)
+  assert.match(floatingCss, /\[data-sds-side="right"\]::before/)
+  assert.match(floatingCss, /\[data-sds-side="bottom"\]::before/)
+  assert.match(floatingCss, /\[data-sds-side="left"\]::before/)
   assert.match(
     await readFile('src/elements/floating.ts', 'utf8'),
-    /setAttribute\('data-side', position\.side\)/,
+    /setAttribute\('data-sds-side', position\.side\)/,
   )
 })
 

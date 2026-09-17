@@ -27,7 +27,7 @@ test('every example Cancel button uses the ghost variant', async () => {
       exampleCount += 1
       assert.match(
         button,
-        /data-variant="ghost"/,
+        /data-sds-variant="ghost"/,
         `${file} contains a non-ghost Cancel button`,
       )
     }

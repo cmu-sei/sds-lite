@@ -21,9 +21,11 @@ test('all JavaScript entries are safe to import during SSR', async () => {
     '@cmu-sei/sds-lite/dialog',
     '@cmu-sei/sds-lite/dropdown',
     '@cmu-sei/sds-lite/popover',
+    '@cmu-sei/sds-lite/react',
     '@cmu-sei/sds-lite/tabs',
     '@cmu-sei/sds-lite/tooltip',
     '@cmu-sei/sds-lite/toast',
+    '@cmu-sei/sds-lite/vue',
   ]
 
   const modules = await Promise.all(entries.map((entry) => import(entry)))
@@ -71,6 +73,20 @@ test('the automatic entry and root entry share behavior modules', async () => {
 
 test('the CDN entries use stable top-level paths', async () => {
   assert.equal(await readFile('auto.js', 'utf8'), "import './package/auto.js'\n")
+  for (const name of [
+    'dialog',
+    'dropdown',
+    'popover',
+    'sds',
+    'tabs',
+    'toast',
+    'tooltip',
+  ]) {
+    assert.equal(
+      await readFile(`${name}.js`, 'utf8'),
+      `export * from './package/${name}.js'\n`,
+    )
+  }
   const stylesheet = await readFile('sds.css', 'utf8')
   assert.match(stylesheet, /@layer sds\.tokens/)
 })
@@ -106,6 +122,8 @@ test('the package remains dependency-free', () => {
 test('structured documentation is published', () => {
   assert.ok(packageJson.files.includes('docs'))
   assert.equal(customElementsManifest.readme, 'docs/README.md')
+  assert.ok(packageJson.files.includes('html-data.json'))
+  assert.ok(packageJson.files.includes('interface-manifest.json'))
 })
 
 test('custom-element metadata describes every registered element', () => {
@@ -124,12 +142,21 @@ test('custom-element metadata describes every registered element', () => {
   assert.equal(attributes.includes('data-mode'), false)
   assert.equal(attributes.includes('data-valid'), false)
   assert.equal(attributes.includes('data-field-required'), false)
+  assert.equal(attributes.some((attribute) => attribute.startsWith('data-')), false)
 
   const toast = declarations.find(
     (declaration) => declaration.tagName === 'sds-toast',
   )
   assert.deepEqual(
     toast.members?.map((member) => member.name),
-    ['open', 'show', 'close'],
+    ['open', 'tone', 'duration', 'persistent', 'show', 'close'],
+  )
+
+  const dropdown = declarations.find(
+    (declaration) => declaration.tagName === 'sds-dropdown',
+  )
+  assert.deepEqual(
+    dropdown.members?.map((member) => member.name),
+    ['open', 'placement', 'offset', 'width', 'hideCaret', 'show', 'hide'],
   )
 })

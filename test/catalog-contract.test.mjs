@@ -5,6 +5,9 @@ import test from 'node:test'
 import { Window } from 'happy-dom'
 
 const source = await readFile('index.html', 'utf8')
+const customElementsManifest = JSON.parse(
+  await readFile('custom-elements.json', 'utf8'),
+)
 const window = new Window({ url: 'https://example.test/' })
 window.document.write(source)
 const { document } = window
@@ -19,41 +22,41 @@ const tones = new Set([
 ])
 
 test('catalog examples use the current tone vocabulary', () => {
-  for (const element of document.querySelectorAll('[data-tone]')) {
+  for (const element of document.querySelectorAll('[data-sds-tone]')) {
     assert.ok(
-      tones.has(element.getAttribute('data-tone')),
+      tones.has(element.getAttribute('data-sds-tone')),
       `Unsupported tone on ${element.outerHTML}`,
     )
   }
 
-  assert.doesNotMatch(source, /data-tone="primary"|--sds-color-primary-/)
+  assert.doesNotMatch(source, /data-sds-tone="primary"|--sds-color-primary-/)
   assert.match(
     source,
-    /data-tone="accent"[^>]*>\s*<strong>Accent<\/strong>/,
+    /data-sds-tone="accent"[^>]*>\s*<strong>Accent<\/strong>/,
   )
-  assert.match(source, /data-toast-open="toast-accent">Show accent/)
-  assert.match(source, /data-tone="accent"[^>]*aria-label="Loading accent"/)
+  assert.match(source, /data-sds-toast-open="toast-accent">Show accent/)
+  assert.match(source, /data-sds-tone="accent"[^>]*aria-label="Loading accent"/)
 
   assert.equal(
-    document.querySelector('.demo-tone-row[data-tone="accent"] > strong')
+    document.querySelector('.demo-tone-row[data-sds-tone="accent"] > strong')
       ?.textContent,
     'Accent',
   )
   assert.equal(
     document.querySelector(
-      '.demo-link-list > .sds-link[data-tone="accent"]',
+      '.demo-link-list > .sds-link[data-sds-tone="accent"]',
     )?.textContent,
     'Accent',
   )
   assert.equal(
     document.querySelector(
-      '.sds-datapoint[data-tone="accent"] > span',
+      '.sds-datapoint[data-sds-tone="accent"] > span',
     )?.textContent,
     'Accent',
   )
   assert.equal(
     document.querySelector(
-      'sds-tabs[data-tone="accent"] [role="tab"]',
+      'sds-tabs[tone="accent"] [role="tab"]',
     )?.textContent,
     'Accent',
   )
@@ -67,6 +70,32 @@ test('catalog quick starts load automatic behavior', () => {
   assert.doesNotMatch(source, /import '@cmu-sei\/sds-lite'\s*</)
 })
 
+test('catalog custom elements use only declared host attributes', () => {
+  for (const module of customElementsManifest.modules) {
+    for (const declaration of module.declarations ?? []) {
+      const allowed = new Set(
+        declaration.attributes?.map((attribute) => attribute.name) ?? [],
+      )
+      for (const element of document.querySelectorAll(declaration.tagName)) {
+        for (const attribute of element.getAttributeNames()) {
+          if (
+            attribute === 'id' ||
+            attribute === 'class' ||
+            attribute === 'role' ||
+            attribute.startsWith('aria-')
+          ) {
+            continue
+          }
+          assert.ok(
+            allowed.has(attribute),
+            `${declaration.tagName} does not declare ${attribute}`,
+          )
+        }
+      }
+    }
+  }
+})
+
 test('catalog IDs are unique and every authored relationship resolves', () => {
   const ids = Array.from(document.querySelectorAll('[id]'), (element) => element.id)
   assert.equal(new Set(ids).size, ids.length)
@@ -76,7 +105,7 @@ test('catalog IDs are unique and every authored relationship resolves', () => {
     'aria-describedby',
     'aria-labelledby',
     'commandfor',
-    'data-toast-open',
+    'data-sds-toast-open',
     'popovertarget',
   ]
   for (const attribute of referenceAttributes) {

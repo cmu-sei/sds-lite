@@ -46,12 +46,12 @@
     content: "i";
   }
 
-  :where(sds-toast[data-tone="success"])::before {
+  :where(sds-toast[tone="success"])::before {
     content: "\2713";
   }
 
-  :where(sds-toast[data-tone="warning"])::before,
-  :where(sds-toast[data-tone="danger"])::before {
+  :where(sds-toast[tone="warning"])::before,
+  :where(sds-toast[tone="danger"])::before {
     content: "!";
   }
 
@@ -63,14 +63,14 @@
     line-height: 1.25rem;
   }
 
-  :where(sds-toast > :not(strong, [data-toast-close])) {
+  :where(sds-toast > :not(strong, [data-sds-toast-close])) {
     grid-area: message;
     color: var(--sds-color-text-muted);
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
 
-  :where(sds-toast > [data-toast-close]) {
+  :where(sds-toast > [data-sds-toast-close]) {
     grid-area: close;
   }
 
