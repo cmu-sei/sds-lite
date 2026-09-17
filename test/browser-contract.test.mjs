@@ -122,6 +122,29 @@ test('tabs require an authored accessible name', async () => {
   assert.match(warning, /requires an accessible name/)
 })
 
+test('tabs honor an authored initial selection', async () => {
+  document.body.innerHTML = `
+    <sds-tabs>
+      <div aria-label="Project sections">
+        <button type="button">Overview</button>
+        <button type="button" aria-selected="true">Files</button>
+      </div>
+      <section>Overview panel</section>
+      <section>Files panel</section>
+    </sds-tabs>
+  `
+  await browser.happyDOM.whenAsyncComplete()
+
+  const tabs = document.querySelectorAll('sds-tabs [role="tab"]')
+  const panels = document.querySelectorAll('sds-tabs [role="tabpanel"]')
+  assert.equal(tabs[0]?.getAttribute('aria-selected'), 'false')
+  assert.equal(tabs[0]?.getAttribute('tabindex'), '-1')
+  assert.equal(panels[0]?.hidden, true)
+  assert.equal(tabs[1]?.getAttribute('aria-selected'), 'true')
+  assert.equal(tabs[1]?.getAttribute('tabindex'), '0')
+  assert.equal(panels[1]?.hidden, false)
+})
+
 test('notify validates duration and respects an explicit container', () => {
   defineSds({ include: ['toast'] })
   const container = document.createElement('section')

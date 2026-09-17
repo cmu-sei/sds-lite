@@ -1610,12 +1610,16 @@ relationships, and initial state:
 <sds-tabs>
   <div aria-label="Project settings">
     <button type="button">Profile</button>
-    <button type="button">Security</button>
+    <button type="button" aria-selected="true">Security</button>
   </div>
   <section>Profile settings</section>
   <section>Security settings</section>
 </sds-tabs>
 ```
+
+For concise client-rendered markup, `aria-selected="true"` is the only state
+needed to choose the initial enabled tab; SDS Lite normalizes `tabindex`,
+the other tabs' `aria-selected` values, and panel visibility during upgrade.
 
 Servers that need complete semantics before JavaScript loads should author the
 full initial state. Exactly one enabled tab should have
@@ -1683,6 +1687,7 @@ than guessing an English label.
 | `data-activation` | `automatic`, `manual` | `automatic` |
 | `data-orientation` | `horizontal`, `vertical` | `horizontal` |
 | `data-value` on a tab | Any string | Tab `id` |
+| `aria-selected="true"` on a tab | Initial selected tab | First enabled tab |
 | `disabled` on button tab | Native disabled state | Enabled |
 | `aria-disabled="true"` | Disabled state for any tab | Enabled |
 

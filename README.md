@@ -52,13 +52,16 @@ SDS Lite supplies the classes, IDs, relationships, and initial state:
 <sds-tabs>
   <div aria-label="Project sections">
     <button type="button">Overview</button>
-    <button type="button">Files</button>
+    <button type="button" aria-selected="true">Files</button>
   </div>
 
   <section>Overview content</section>
   <section>Files content</section>
 </sds-tabs>
 ```
+
+Set `aria-selected="true"` on any enabled tab to make it the initial tab. If
+you omit it, SDS Lite selects the first enabled tab.
 
 ### A dropdown
 
