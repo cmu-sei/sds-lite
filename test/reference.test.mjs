@@ -1,9 +1,7 @@
 import assert from 'node:assert/strict'
-import { readFile, readdir } from 'node:fs/promises'
+import { access, readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import test from 'node:test'
-
-const reference = await readFile('REFERENCE.md', 'utf8')
 
 async function sourceFiles(directory, extension) {
   const entries = await readdir(directory, { withFileTypes: true })
@@ -17,11 +15,45 @@ async function sourceFiles(directory, extension) {
   return files.flat()
 }
 
+const documentationFiles = [
+  'README.md',
+  ...(await sourceFiles('docs', '.md')),
+]
+const reference = (
+  await Promise.all(documentationFiles.map((file) => readFile(file, 'utf8')))
+).join('\n')
+
+test('local documentation links resolve', async () => {
+  for (const file of documentationFiles) {
+    const source = await readFile(file, 'utf8')
+    const links = Array.from(
+      source.matchAll(/\[[^\]]+\]\(([^)]+)\)/g),
+      (match) => match[1],
+    )
+
+    for (const link of links) {
+      if (
+        link.startsWith('#') ||
+        link.startsWith('http://') ||
+        link.startsWith('https://')
+      ) {
+        continue
+      }
+
+      const target = link.split('#', 1)[0]
+      await assert.doesNotReject(
+        access(path.resolve(path.dirname(file), target)),
+        `${file} links to missing ${link}`,
+      )
+    }
+  }
+})
+
 function matches(source, pattern) {
   return new Set(Array.from(source.matchAll(pattern), (match) => match[1]))
 }
 
-test('reference lists every public CSS class', async () => {
+test('documentation lists every public CSS class', async () => {
   const files = await sourceFiles('src/css', '.css')
   const css = (
     await Promise.all(files.map((file) => readFile(file, 'utf8')))
@@ -34,7 +66,7 @@ test('reference lists every public CSS class', async () => {
   assert.match(reference, /`\.sds-prose-lead`/)
 })
 
-test('reference lists every public data attribute', async () => {
+test('documentation lists every public data attribute', async () => {
   const files = await sourceFiles('src', '.css')
   const typescriptFiles = await sourceFiles('src/elements', '.ts')
   const source = (
@@ -54,7 +86,7 @@ test('reference lists every public data attribute', async () => {
   }
 })
 
-test('reference lists every package entry', async () => {
+test('documentation lists every package entry', async () => {
   const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
   for (const entry of Object.keys(packageJson.exports)) {
     if (entry === './package.json') continue
@@ -64,7 +96,7 @@ test('reference lists every package entry', async () => {
   }
 })
 
-test('reference lists every exported declaration', async () => {
+test('documentation lists every exported declaration', async () => {
   const files = [
     'package/elements/dialog.d.ts',
     'package/elements/dropdown.d.ts',

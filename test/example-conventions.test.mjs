@@ -1,19 +1,30 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
+import path from 'node:path'
 import test from 'node:test'
 
-const exampleFiles = ['index.html', 'REFERENCE.md']
+async function markdownFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name)
+      if (entry.isDirectory()) return markdownFiles(entryPath)
+      return entry.name.endsWith('.md') ? [entryPath] : []
+    }),
+  )
+  return files.flat()
+}
 
 test('every example Cancel button uses the ghost variant', async () => {
-  for (const file of exampleFiles) {
+  let exampleCount = 0
+  for (const file of ['index.html', ...(await markdownFiles('docs'))]) {
     const source = await readFile(file, 'utf8')
     const cancelButtons = source.match(
       /<button\b[^>]*>(?:(?!<\/button>)[\s\S])*?\bCancel\b(?:(?!<\/button>)[\s\S])*?<\/button>/g,
     )
 
-    assert.ok(cancelButtons?.length, `${file} must contain a Cancel example`)
-
-    for (const button of cancelButtons) {
+    for (const button of cancelButtons ?? []) {
+      exampleCount += 1
       assert.match(
         button,
         /data-variant="ghost"/,
@@ -21,4 +32,5 @@ test('every example Cancel button uses the ghost variant', async () => {
       )
     }
   }
+  assert.ok(exampleCount > 0, 'documentation must contain a Cancel example')
 })

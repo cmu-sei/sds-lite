@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "readme": "README.md",
+  "readme": "docs/README.md",
   "modules": [
     {
       "kind": "javascript-module",

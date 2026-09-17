@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
+import path from 'node:path'
 import test from 'node:test'
 
 const applicationCss = await readFile(
@@ -8,8 +9,25 @@ const applicationCss = await readFile(
 )
 const buttonCss = await readFile('src/css/components/button.css', 'utf8')
 const catalogHtml = await readFile('index.html', 'utf8')
-const reference = await readFile('REFERENCE.md', 'utf8')
 const sidebarCss = await readFile('src/css/components/sidebar.css', 'utf8')
+
+async function markdownFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name)
+      if (entry.isDirectory()) return markdownFiles(entryPath)
+      return entry.name.endsWith('.md') ? [entryPath] : []
+    }),
+  )
+  return files.flat()
+}
+
+const documentation = (
+  await Promise.all(
+    (await markdownFiles('docs')).map((file) => readFile(file, 'utf8')),
+  )
+).join('\n')
 
 test('mobile menu triggers appear before the application brand', () => {
   assert.match(
@@ -23,7 +41,7 @@ test('mobile menu triggers appear before the application brand', () => {
 })
 
 test('mobile menu icons use centered, font-independent geometry', () => {
-  const documentedMarkup = `${catalogHtml}\n${reference}`
+  const documentedMarkup = `${catalogHtml}\n${documentation}`
   const menuIcons = documentedMarkup.match(
     /<button\b(?=[^>]*\bpopovertarget=)[^>]*>\s*<svg\b(?=[^>]*\baria-hidden="true")(?=[^>]*\bviewBox="0 0 24 24")/gs,
   )

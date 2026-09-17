@@ -26,11 +26,11 @@
     "auto.js",
     "brand.css",
     "core.css",
+    "docs",
     "layouts.css",
     "package",
     "prose.css",
     "sds.css",
-    "REFERENCE.md",
     "custom-elements.json"
   ],
   "exports": {

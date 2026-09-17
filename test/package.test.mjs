@@ -53,6 +53,13 @@ test('the application build retains automatic registration', async () => {
   assert.match(source, /sds-toast/)
 })
 
+test('the application build includes linked documentation', async () => {
+  await access('dist/docs/README.md')
+  await access('dist/docs/getting-started.md')
+  await access('dist/docs/components/README.md')
+  await access('dist/docs/reference/README.md')
+})
+
 test('the automatic entry and root entry share behavior modules', async () => {
   const auto = await readFile('package/auto.js', 'utf8')
   const root = await readFile('package/sds.js', 'utf8')
@@ -96,8 +103,9 @@ test('the package remains dependency-free', () => {
   assert.equal(packageJson.peerDependencies, undefined)
 })
 
-test('linked reference documentation is published', () => {
-  assert.ok(packageJson.files.includes('REFERENCE.md'))
+test('structured documentation is published', () => {
+  assert.ok(packageJson.files.includes('docs'))
+  assert.equal(customElementsManifest.readme, 'docs/README.md')
 })
 
 test('custom-element metadata describes every registered element', () => {

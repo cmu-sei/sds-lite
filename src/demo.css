@@ -13,6 +13,10 @@
     color: var(--sds-color-text-muted);
   }
 
+  .demo-catalog-sidebar > footer > .sds-link {
+    display: inline-block;
+  }
+
   .demo-page {
     padding-block: var(--sds-space-2xl) var(--sds-space-4xl);
   }
@@ -50,7 +54,7 @@
     gap: var(--sds-space-lg);
   }
 
-  .demo-quick-start > div,
+  .demo-quick-start > article,
   .demo-reference {
     padding: var(--sds-space-lg);
     border: 1px solid var(--sds-color-border-default);
@@ -58,9 +62,23 @@
     background: var(--sds-color-surface-default);
   }
 
-  .demo-quick-start > div {
+  .demo-quick-start > article {
     display: grid;
     gap: var(--sds-space-md);
+    align-content: start;
+  }
+
+  .demo-quick-start > article > div:first-child {
+    display: grid;
+    gap: var(--sds-space-xs);
+  }
+
+  .demo-quick-start > article p {
+    color: var(--sds-color-text-muted);
+  }
+
+  .demo-start-result {
+    margin-block-start: var(--sds-space-lg);
   }
 
   .demo-reference {

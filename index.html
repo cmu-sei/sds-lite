@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Complete component catalog and implementation guide for SDS Lite."
+      content="Interactive SDS Lite playground with copy-ready NPM and CDN examples for every component."
     />
-    <title>SDS Lite Component Catalog</title>
+    <title>SDS Lite Interactive Playground</title>
   </head>
   <body data-sds-root data-sds-theme="forge" data-sds-color-scheme="light">
     <div class="sds-app" data-variant="application">
@@ -21,7 +21,7 @@
             <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
           </svg>
         </button>
-        <a class="sds-app-brand" href="#top" aria-label="SDS Lite catalog">
+        <a class="sds-app-brand" href="#top" aria-label="SDS Lite playground">
           <span class="sds-app-brand-prefix">SEI</span>
           <span>SDS Lite</span>
         </a>
@@ -32,15 +32,15 @@
           id="catalog-sidebar"
           class="sds-sidebar demo-catalog-sidebar"
           popover="auto"
-          aria-label="Catalog navigation"
+          aria-label="Playground navigation"
         >
           <header>
             <a class="sds-app-brand" href="#top">
               <span class="sds-app-brand-prefix">SEI</span>
               <span>SDS Lite</span>
             </a>
-            <strong>Component catalog</strong>
-            <small>Native HTML, CSS, and TypeScript</small>
+            <strong>Interactive playground</strong>
+            <small>Inspect, interact, and copy</small>
             <button
               class="sds-sidebar-close"
               data-shape="icon"
@@ -51,7 +51,7 @@
               &times;
             </button>
           </header>
-          <nav aria-label="Catalog sections">
+          <nav aria-label="Playground sections">
             <ul>
               <li><a href="#getting-started">Getting started</a></li>
               <li><a href="#actions">Actions</a></li>
@@ -67,6 +67,7 @@
           </nav>
           <footer>
             <small>Every example is ordinary, server-renderable HTML.</small>
+            <a class="sds-link" href="./docs/README.md">Read the documentation</a>
             <div class="sds-flex" data-orientation="vertical" data-gap="sm">
               <label class="sds-sr-only" for="theme">Theme</label>
               <select id="theme" aria-label="Theme">
@@ -90,29 +91,40 @@
         <main id="top" class="sds-app-main">
         <header class="sds-page-header">
           <div>
-            <p class="sds-eyebrow">Complete catalog</p>
-            <h1>Native components and elements</h1>
+            <p class="sds-eyebrow">Live component reference</p>
+            <h1>SDS Lite playground</h1>
           </div>
-          <a class="sds-button" href="#getting-started">Get started</a>
+          <div class="sds-action-group">
+            <a class="sds-button" data-variant="ghost" href="./docs/README.md">
+              Documentation
+            </a>
+            <a class="sds-button" href="#getting-started">Get started</a>
+          </div>
         </header>
 
         <div class="sds-page demo-page">
           <section class="demo-intro" aria-labelledby="intro-title">
             <div>
-              <p class="sds-eyebrow">One import, sensible defaults</p>
-              <h2 id="intro-title">Everything currently in SDS Lite</h2>
+              <p class="sds-eyebrow">Native first, production ready</p>
+              <h2 id="intro-title">Build polished interfaces from HTML</h2>
               <p>
-                Change the theme and color scheme above to inspect every
-                example. Ordinary HTML receives accessible defaults; classes
-                and data attributes only express intent.
+                Start with semantic elements, add one stylesheet, and opt into
+                small accessible behaviors only where the platform needs help.
+                Use the controls in the sidebar to test every example across
+                both themes and all color schemes.
               </p>
+              <div class="sds-action-group">
+                <a class="sds-button" href="#getting-started">Install SDS Lite</a>
+                <a class="sds-button" data-variant="ghost" href="./docs/components/README.md">
+                  Browse component guides
+                </a>
+              </div>
             </div>
             <div class="sds-callout" data-tone="info">
-              <strong>Catalog coverage</strong>
+              <strong>This page is the example</strong>
               <span>
-                This page includes every current component, custom element,
-                semantic tone, visual treatment, form state, and overlay
-                placement.
+                Inspect its source for a complete application shell, then use
+                the copy-ready recipes below for individual components.
               </span>
             </div>
           </section>
@@ -120,37 +132,64 @@
           <section id="getting-started" class="sds-card">
             <div class="sds-section-header">
               <div>
-                <p class="sds-eyebrow">Foundations</p>
-                <h2>Typography and layout</h2>
+                <p class="sds-eyebrow">Five-minute setup</p>
+                <h2>Choose NPM or CDN</h2>
                 <p>
-                  Headings, body text, application shell, page header, page,
-                  sections, actions, forms, and responsive grids are all
-                  visible on this page.
+                  Both paths produce the same framework-neutral HTML. Use NPM
+                  with a build tool or CDN for a standalone page.
                 </p>
               </div>
+              <a class="sds-link" data-variant="cta" href="./docs/getting-started.md">
+                Follow the complete quick start
+              </a>
             </div>
             <div class="demo-quick-start">
-              <div>
-                <strong>1. Import SDS Lite</strong>
-                <pre class="demo-code"><code>import '@cmu-sei/sds-lite/sds.css'
+              <article>
+                <div>
+                  <span class="sds-badge" data-tone="accent">Recommended</span>
+                  <h3>NPM</h3>
+                  <p>Install, then import CSS and automatic behavior once.</p>
+                </div>
+                <pre id="npm-install" class="demo-code"><code>npm install @cmu-sei/sds-lite</code></pre>
+                <pre id="npm-imports" class="demo-code"><code>import '@cmu-sei/sds-lite/sds.css'
 import '@cmu-sei/sds-lite/auto'</code></pre>
-              </div>
-              <div>
-                <strong>2. Mark the application root</strong>
-                <pre class="demo-code"><code>&lt;body data-sds-root data-sds-theme="forge"&gt;
-  &lt;button&gt;Save changes&lt;/button&gt;
-&lt;/body&gt;</code></pre>
-              </div>
+                <div class="sds-action-group">
+                  <button type="button" data-copy-target="npm-install">
+                    Copy install command
+                  </button>
+                  <a class="sds-button" data-variant="ghost" href="./docs/installation/npm.md">
+                    NPM guide
+                  </a>
+                </div>
+              </article>
+              <article>
+                <div>
+                  <span class="sds-badge">No build step</span>
+                  <h3>CDN</h3>
+                  <p>Paste two version-pinned tags into a plain HTML page.</p>
+                </div>
+                <pre id="cdn-install" class="demo-code"><code>&lt;link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/sds.css"&gt;
+&lt;script type="module"
+  src="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/auto.js"&gt;&lt;/script&gt;</code></pre>
+                <div class="sds-action-group">
+                  <button type="button" data-copy-target="cdn-install">
+                    Copy CDN tags
+                  </button>
+                  <a class="sds-button" data-variant="ghost" href="./docs/installation/cdn.md">
+                    CDN guide
+                  </a>
+                </div>
+              </article>
             </div>
-            <div class="demo-type">
-              <h1>Heading one</h1>
-              <h2>Heading two</h2>
-              <h3>Heading three</h3>
-              <p>
-                Body text uses Open Sans in Forge. Plaid switches headings to
-                Source Serif and removes theme-relative corner rounding.
-              </p>
+            <div class="sds-callout demo-start-result" data-tone="success">
+              <strong>Then write HTML</strong>
+              <span>
+                Add <code>data-sds-root</code> to a container. Native headings,
+                links, buttons, and form controls work immediately.
+              </span>
             </div>
+            <p class="sds-sr-only" id="copy-status" aria-live="polite"></p>
           </section>
 
           <section id="actions" aria-labelledby="actions-title">

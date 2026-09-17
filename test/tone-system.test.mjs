@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
+import path from 'node:path'
 import test from 'node:test'
 
 const tokens = await readFile('src/css/tokens.css', 'utf8')
 const foundations = await readFile('src/css/foundations.css', 'utf8')
 const toast = await readFile('src/elements/toast.ts', 'utf8')
-const reference = await readFile('REFERENCE.md', 'utf8')
 const demo = await readFile('index.html', 'utf8')
 const componentStyles = (
   await Promise.all(
@@ -16,6 +16,24 @@ const componentStyles = (
 ).join('\n')
 
 const tones = ['neutral', 'accent', 'info', 'success', 'warning', 'danger']
+
+async function markdownFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name)
+      if (entry.isDirectory()) return markdownFiles(entryPath)
+      return entry.name.endsWith('.md') ? [entryPath] : []
+    }),
+  )
+  return files.flat()
+}
+
+const documentation = (
+  await Promise.all(
+    (await markdownFiles('docs')).map((file) => readFile(file, 'utf8')),
+  )
+).join('\n')
 
 test('the public tone vocabulary distinguishes accent from primary hierarchy', () => {
   for (const tone of tones) {
@@ -29,12 +47,12 @@ test('the public tone vocabulary distinguishes accent from primary hierarchy', (
   )
   assert.doesNotMatch(toast, /\| 'primary'/)
   assert.match(
-    `${reference}\n${demo}`,
+    `${documentation}\n${demo}`,
     /neutral \| accent \| info \| success \| warning \| danger/,
   )
-  assert.doesNotMatch(reference, /neutral.*primary/)
+  assert.doesNotMatch(documentation, /neutral.*primary/)
   assert.match(
-    reference,
+    documentation,
     /`primary` is not a semantic tone; it is\s+reserved for action hierarchy/,
   )
 })
