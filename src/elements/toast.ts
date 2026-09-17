@@ -8,9 +8,9 @@ const HTMLElementBase: typeof HTMLElement =
 export type SdsToastCloseReason = 'dismiss' | 'programmatic' | 'timeout'
 export type SdsToastTone =
   | 'neutral'
-  | 'accent'
-  | 'info'
+  | 'primary'
   | 'success'
+  | 'info'
   | 'warning'
   | 'danger'
 

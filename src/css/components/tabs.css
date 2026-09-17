@@ -2,11 +2,11 @@
   :where(sds-tabs) {
     --sds-tab-accent: var(
       --sds-tone-text,
-      light-dark(var(--sds-red-600), var(--sds-red-300))
+      light-dark(var(--sds-blue-700), var(--sds-blue-300))
     );
     --sds-tab-active-background: light-dark(
-      var(--sds-red-700),
-      var(--sds-red-200)
+      var(--sds-blue-700),
+      var(--sds-blue-200)
     );
     --sds-tab-active-text: light-dark(var(--sds-white), var(--sds-black));
 
@@ -20,10 +20,17 @@
     );
   }
 
-  :where(sds-tabs[data-tone="info"]) {
+  :where(sds-tabs[data-tone="primary"]) {
     --sds-tab-active-background: light-dark(
       var(--sds-blue-700),
       var(--sds-blue-200)
+    );
+  }
+
+  :where(sds-tabs[data-tone="info"]) {
+    --sds-tab-active-background: light-dark(
+      var(--sds-teal-700),
+      var(--sds-teal-200)
     );
   }
 

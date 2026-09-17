@@ -127,7 +127,7 @@ a native-dialog feature; SDS Lite only adds backdrop dismissal for
 Common semantic tones are:
 
 ```text
-neutral | accent | info | success | warning | danger
+neutral | primary | success | info | warning | danger
 ```
 
 Apply `data-tone` to the recipe that should carry the tone:
@@ -2234,7 +2234,7 @@ Every semantic tone provides the same six roles:
 --sds-color-{tone}-on-strong
 ```
 
-Replace `{tone}` with `neutral`, `accent`, `info`, `success`, `warning`, or
+Replace `{tone}` with `neutral`, `primary`, `success`, `info`, `warning`, or
 `danger`.
 
 ### Public primitive colors
@@ -2248,6 +2248,7 @@ are available when defining a new semantic assignment:
 
 --sds-gray-{25,50,100,200,300,400,500,600,700,750,800,850,900,950}
 --sds-blue-{25,50,100,200,300,400,500,600,700,800,900,950}
+--sds-teal-{25,50,100,200,300,400,500,600,700,800,900,950}
 --sds-red-{25,50,100,200,300,400,500,600,700,800,900,950}
 --sds-green-{25,50,100,200,300,400,500,600,700,800,900,950}
 --sds-orange-{25,50,100,200,300,400,500,600,700,800,900,950}

@@ -56,10 +56,23 @@
     text-wrap: pretty;
   }
 
-  :where(
-    .sds-prose[data-tone="accent"],
-    .sds-prose[data-tone="danger"]
-  ) {
+  :where(.sds-prose[data-tone="primary"]) {
+    --sds-prose-link: light-dark(var(--sds-blue-600), var(--sds-blue-400));
+    --sds-prose-link-hover: light-dark(
+      var(--sds-blue-500),
+      var(--sds-blue-300)
+    );
+    --sds-prose-heading-link-hover: light-dark(
+      var(--sds-blue-500),
+      var(--sds-blue-300)
+    );
+    --sds-prose-plaid-quote-border: light-dark(
+      var(--sds-blue-600),
+      var(--sds-blue-400)
+    );
+  }
+
+  :where(.sds-prose[data-tone="danger"]) {
     --sds-prose-link: light-dark(var(--sds-red-600), var(--sds-red-400));
     --sds-prose-link-hover: light-dark(
       var(--sds-red-500),
@@ -76,18 +89,18 @@
   }
 
   :where(.sds-prose[data-tone="info"]) {
-    --sds-prose-link: light-dark(var(--sds-blue-600), var(--sds-blue-400));
+    --sds-prose-link: light-dark(var(--sds-teal-600), var(--sds-teal-400));
     --sds-prose-link-hover: light-dark(
-      var(--sds-blue-500),
-      var(--sds-blue-300)
+      var(--sds-teal-500),
+      var(--sds-teal-300)
     );
     --sds-prose-heading-link-hover: light-dark(
-      var(--sds-blue-500),
-      var(--sds-blue-300)
+      var(--sds-teal-500),
+      var(--sds-teal-300)
     );
     --sds-prose-plaid-quote-border: light-dark(
-      var(--sds-blue-600),
-      var(--sds-blue-400)
+      var(--sds-teal-600),
+      var(--sds-teal-400)
     );
   }
 

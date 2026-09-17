@@ -164,7 +164,7 @@ import '@cmu-sei/sds-lite'</code></pre>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Button options">
                 <code>data-variant="secondary | tertiary | ghost"</code>
-                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
+                <code>data-tone="neutral | primary | success | info | warning | danger"</code>
                 <code>data-size="xs | sm | md | lg | xl"</code>
                 <code>data-density="compact"</code>
                 <code>data-shape="icon"</code>
@@ -188,8 +188,8 @@ import '@cmu-sei/sds-lite'</code></pre>
                   <button data-variant="tertiary">Tertiary</button>
                   <button data-variant="ghost">Ghost</button>
                 </div>
-                <div class="demo-tone-row" data-tone="accent">
-                  <strong>Accent</strong>
+                <div class="demo-tone-row" data-tone="primary">
+                  <strong>Primary</strong>
                   <button>Primary</button>
                   <button data-variant="secondary">Secondary</button>
                   <button data-variant="tertiary">Tertiary</button>
@@ -303,7 +303,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <h3>Link tones</h3>
                 <div class="demo-link-list">
                   <a class="sds-link" data-tone="neutral" href="#actions">Neutral</a>
-                  <a class="sds-link" data-tone="accent" href="#actions">Accent</a>
+                  <a class="sds-link" data-tone="primary" href="#actions">Primary</a>
                   <a class="sds-link" data-tone="info" href="#actions">Info</a>
                   <a class="sds-link" data-tone="success" href="#actions">Success</a>
                   <a class="sds-link" data-tone="warning" href="#actions">Warning</a>
@@ -485,7 +485,7 @@ import '@cmu-sei/sds-lite'</code></pre>
             </div>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Feedback options">
-                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
+                <code>data-tone="neutral | primary | success | info | warning | danger"</code>
                 <code>badge: light | light-border | medium | dark</code>
                 <code>tag data-size="sm | md"</code>
                 <code>callout: subtle | outline | bold</code>
@@ -511,11 +511,11 @@ import '@cmu-sei/sds-lite'</code></pre>
                   <span class="sds-badge" data-tone="neutral" data-variant="dark">Dark</span>
                 </div>
                 <div class="demo-tone-sample">
-                  <strong>Accent</strong>
-                  <span class="sds-badge" data-tone="accent" data-variant="light">Light</span>
-                  <span class="sds-badge" data-tone="accent" data-variant="light-border">Light border</span>
-                  <span class="sds-badge" data-tone="accent">Medium</span>
-                  <span class="sds-badge" data-tone="accent" data-variant="dark">Dark</span>
+                  <strong>Primary</strong>
+                  <span class="sds-badge" data-tone="primary" data-variant="light">Light</span>
+                  <span class="sds-badge" data-tone="primary" data-variant="light-border">Light border</span>
+                  <span class="sds-badge" data-tone="primary">Medium</span>
+                  <span class="sds-badge" data-tone="primary" data-variant="dark">Dark</span>
                 </div>
                 <div class="demo-tone-sample">
                   <strong>Info</strong>
@@ -579,7 +579,7 @@ import '@cmu-sei/sds-lite'</code></pre>
               </p>
               <div class="sds-action-group">
                 <button data-tone="neutral" data-toast-open="toast-neutral">Show neutral</button>
-                <button data-tone="accent" data-toast-open="toast-accent">Show accent</button>
+                <button data-tone="primary" data-toast-open="toast-primary">Show primary</button>
                 <button data-tone="success" data-toast-open="toast-success">Show success</button>
                 <button data-tone="info" data-toast-open="toast-info">Show info</button>
                 <button data-tone="warning" data-toast-open="toast-warning">Show warning</button>
@@ -597,14 +597,14 @@ import '@cmu-sei/sds-lite'</code></pre>
               <div class="sds-callout" data-tone="neutral" data-variant="bold">
                 <strong>Neutral bold</strong><span>General supporting information.</span>
               </div>
-              <div class="sds-callout" data-tone="accent">
-                <strong>Accent subtle</strong><span>Highlighted supporting information.</span>
+              <div class="sds-callout" data-tone="primary">
+                <strong>Primary subtle</strong><span>Highlighted supporting information.</span>
               </div>
-              <div class="sds-callout" data-tone="accent" data-variant="outline">
-                <strong>Accent outline</strong><span>Highlighted supporting information.</span>
+              <div class="sds-callout" data-tone="primary" data-variant="outline">
+                <strong>Primary outline</strong><span>Highlighted supporting information.</span>
               </div>
-              <div class="sds-callout" data-tone="accent" data-variant="bold">
-                <strong>Accent bold</strong><span>Highlighted supporting information.</span>
+              <div class="sds-callout" data-tone="primary" data-variant="bold">
+                <strong>Primary bold</strong><span>Highlighted supporting information.</span>
               </div>
               <div class="sds-callout" data-tone="info">
                 <strong>Info subtle</strong><span>Something useful to know.</span>
@@ -703,8 +703,8 @@ import '@cmu-sei/sds-lite'</code></pre>
                 </div>
               </article>
               <article class="sds-card">
-                <div class="sds-datapoint" data-size="lg" data-tone="accent">
-                  <span>Accent</span>
+                <div class="sds-datapoint" data-size="lg" data-tone="primary">
+                  <span>Primary</span>
                   <div><strong>16</strong><span>programs</span></div>
                 </div>
               </article>
@@ -1202,7 +1202,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                     <p>The project record was created.</p>
                     <time datetime="2026-09-16T08:00:00-04:00">8:00 AM</time>
                   </li>
-                  <li class="sds-timeline-item" data-tone="accent">
+                  <li class="sds-timeline-item" data-tone="primary">
                     <h3>Submitted</h3>
                     <p>The review package entered the queue.</p>
                     <time datetime="2026-09-16T09:00:00-04:00">9:00 AM</time>
@@ -1265,7 +1265,7 @@ import '@cmu-sei/sds-lite'</code></pre>
               <div class="demo-api" aria-label="Prose options">
                 <code>.sds-prose</code>
                 <code>data-size="sm"</code>
-                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
+                <code>data-tone="neutral | primary | success | info | warning | danger"</code>
                 <code>.not-prose</code>
               </div>
               <details class="sds-disclosure">
@@ -1374,7 +1374,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <h3>Prose tones</h3>
                 <div class="demo-link-list">
                   <div class="sds-prose" data-tone="neutral"><a href="#prose">Neutral</a></div>
-                  <div class="sds-prose" data-tone="accent"><a href="#prose">Accent</a></div>
+                  <div class="sds-prose" data-tone="primary"><a href="#prose">Primary</a></div>
                   <div class="sds-prose" data-tone="info"><a href="#prose">Info</a></div>
                   <div class="sds-prose" data-tone="success"><a href="#prose">Success</a></div>
                   <div class="sds-prose" data-tone="warning"><a href="#prose">Warning</a></div>
@@ -1396,7 +1396,7 @@ import '@cmu-sei/sds-lite'</code></pre>
               <div class="demo-api" aria-label="Tab options">
                 <code>data-variant="folder | block | underline"</code>
                 <code>data-size="md | lg"</code>
-                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
+                <code>data-tone="neutral | primary | success | info | warning | danger"</code>
                 <code>disabled</code>
               </div>
               <details class="sds-disclosure">
@@ -1423,13 +1423,13 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <section id="neutral-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-2" hidden>Second tab content</section>
                 <section id="neutral-panel-3" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-3" hidden>Disabled content</section>
               </sds-tabs>
-              <sds-tabs data-tone="accent">
-                <div class="sds-tab-list" role="tablist" aria-label="Accent tabs">
-                  <button id="accent-tab-1" class="sds-tab" role="tab" aria-controls="accent-panel-1" aria-selected="true" tabindex="0">Accent</button>
-                  <button id="accent-tab-2" class="sds-tab" role="tab" aria-controls="accent-panel-2" aria-selected="false" tabindex="-1">Second</button>
+              <sds-tabs data-tone="primary">
+                <div class="sds-tab-list" role="tablist" aria-label="Primary tabs">
+                  <button id="primary-tab-1" class="sds-tab" role="tab" aria-controls="primary-panel-1" aria-selected="true" tabindex="0">Primary</button>
+                  <button id="primary-tab-2" class="sds-tab" role="tab" aria-controls="primary-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
-                <section id="accent-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="accent-tab-1">Accent tab content</section>
-                <section id="accent-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="accent-tab-2" hidden>Second tab content</section>
+                <section id="primary-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="primary-tab-1">Primary tab content</section>
+                <section id="primary-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="primary-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs data-tone="info">
                 <div class="sds-tab-list" role="tablist" aria-label="Info tabs">
@@ -1471,7 +1471,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <section id="underline-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-1">Large underline tab content</section>
                 <section id="underline-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-2" hidden>Second tab content</section>
               </sds-tabs>
-              <sds-tabs data-variant="block" data-tone="accent">
+              <sds-tabs data-variant="block" data-tone="primary">
                 <div class="sds-tab-list" role="tablist" aria-label="Block tabs">
                   <button id="block-tab-1" class="sds-tab" role="tab" aria-controls="block-panel-1" aria-selected="true" tabindex="0">Block</button>
                   <button id="block-tab-2" class="sds-tab" role="tab" aria-controls="block-panel-2" aria-selected="false" tabindex="-1">Second</button>
@@ -1680,7 +1680,7 @@ import '@cmu-sei/sds-lite'</code></pre>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Loading options">
                 <code>spinner data-size="sm | md | lg"</code>
-                <code>data-tone="neutral | accent | info | success | warning | danger"</code>
+                <code>data-tone="neutral | primary | success | info | warning | danger"</code>
                 <code>.sds-skeleton</code>
               </div>
               <details class="sds-disclosure">
@@ -1695,7 +1695,7 @@ import '@cmu-sei/sds-lite'</code></pre>
                 <h3>Spinner tones and sizes</h3>
                 <div class="demo-spinner-row">
                   <span class="sds-spinner" data-size="sm" data-tone="neutral" role="status" aria-label="Loading neutral"></span>
-                  <span class="sds-spinner" data-tone="accent" role="status" aria-label="Loading accent"></span>
+                  <span class="sds-spinner" data-tone="primary" role="status" aria-label="Loading primary"></span>
                   <span class="sds-spinner" data-tone="info" role="status" aria-label="Loading info"></span>
                   <span class="sds-spinner" data-tone="success" role="status" aria-label="Loading success"></span>
                   <span class="sds-spinner" data-tone="warning" role="status" aria-label="Loading warning"></span>
@@ -1879,7 +1879,7 @@ import '@cmu-sei/sds-lite'</code></pre>
         <span>Your local changes are current.</span>
         <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
-      <sds-toast id="toast-accent" data-tone="accent" role="status" aria-atomic="true">
+      <sds-toast id="toast-primary" data-tone="primary" role="status" aria-atomic="true">
         <strong>Featured guidance available</strong>
         <span>New highlighted guidance is ready to review.</span>
         <button data-shape="icon" data-toast-close aria-label="Close notification">&times;</button>
