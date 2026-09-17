@@ -30,7 +30,8 @@ test('popovers support delayed hover and preserve native activation', () => {
   assert.match(popover, /setAttribute\('popovertarget', contentId\)/)
   assert.match(popover, /getAttribute\('popover'\) \|\| 'auto'/)
   assert.match(popover, /FloatingHoverController/)
-  assert.match(floating, /hoverOpenDelay \?\? 300/)
+  assert.match(popover, /hoverOpenDelay: 500/)
+  assert.match(tooltip, /hoverOpenDelay: 0/)
   assert.doesNotMatch(popover, /aria-haspopup/)
 })
 

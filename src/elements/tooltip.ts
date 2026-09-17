@@ -62,7 +62,7 @@ export class SdsTooltipElement extends HTMLElementBase {
       content,
       () => this.dataset.placement ?? 'block-start',
       () => this.dataset.offset,
-      10,
+      6,
     )
     this.hoverController = new FloatingHoverController(
       trigger,
@@ -70,6 +70,7 @@ export class SdsTooltipElement extends HTMLElementBase {
       this.positioner,
       {
         closeDelay: 0,
+        hoverOpenDelay: 0,
       },
     )
     this.hoverController.observe(this.controller.signal)

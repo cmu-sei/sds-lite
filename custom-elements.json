@@ -36,7 +36,7 @@
           "kind": "class",
           "name": "SdsPopoverElement",
           "tagName": "sds-popover",
-          "description": "Opens interactive content after a short hover or focus delay while retaining native click, touch, keyboard, and light-dismiss behavior.",
+          "description": "Opens interactive content after a 500ms hover or focus delay while retaining native click, touch, keyboard, and light-dismiss behavior.",
           "attributes": [
             {
               "name": "data-placement",
@@ -104,7 +104,7 @@
           "kind": "class",
           "name": "SdsTooltipElement",
           "tagName": "sds-tooltip",
-          "description": "Adds an accessible, positioned description to its direct child trigger.",
+          "description": "Immediately shows an accessible, positioned description when its direct child trigger is hovered or focused.",
           "attributes": [
             {
               "name": "data-placement",

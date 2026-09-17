@@ -76,7 +76,8 @@ SDS Lite supplies the popover wiring and menu keyboard behavior:
 
 ### A tooltip
 
-Put the trigger first and its short description second:
+Put the trigger first and its short description second. Tooltips appear
+immediately on hover or focus:
 
 ```html
 <sds-tooltip>
@@ -88,8 +89,8 @@ Put the trigger first and its short description second:
 ### A popover
 
 Use a popover for richer or interactive content. Hovering or focusing its
-button opens the content after a short delay. The button also supports native
-click and touch activation:
+button opens the content after a half-second delay. The button also supports
+native click and touch activation:
 
 ```html
 <sds-popover>

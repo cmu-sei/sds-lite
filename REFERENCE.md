@@ -1,7 +1,6 @@
 # SDS Lite interface reference
 
-SDS Lite is the dependency-free, framework-neutral core of the SEI Design
-System. It provides polished native HTML recipes, theme tokens, and small
+SDS Lite is the dependency-free, framework-neutral "lite" version of the SEI Design System. It provides polished native HTML recipes, theme tokens, and small
 behavior modules without requiring a framework, CSS utility library, runtime
 dependency, or client-side rendering.
 
@@ -1513,11 +1512,11 @@ the description second:
 ```
 
 SDS Lite adds the tooltip ID, `role`, class, manual Popover mode, and
-`aria-describedby` relationship. Pointer hover opens after a short delay;
-keyboard focus opens immediately. Pointer leave or focus loss closes
-immediately, and Escape closes an open tooltip. An 8px arrow points to the
-trigger and tracks it when the tooltip flips or moves. Keep tooltip content
-short and noninteractive; use a popover when content contains controls.
+`aria-describedby` relationship. Pointer hover and keyboard focus open
+immediately. Pointer leave or focus loss closes immediately, and Escape closes
+an open tooltip. An 8px arrow points to the trigger and tracks it when the
+tooltip flips or moves. Keep tooltip content short and noninteractive; use a
+popover when content contains controls.
 
 For hydration-safe SSR, author the completed relationship:
 
@@ -1540,7 +1539,7 @@ For hydration-safe SSR, author the completed relationship:
 ### Popover
 
 Popovers contain richer text or interactive content. Hovering or focusing the
-trigger opens the surface after a short delay; moving between the trigger and
+trigger opens the surface after a 500ms delay; moving between the trigger and
 surface keeps it open. Leaving both closes it after a brief grace period. The
 trigger also retains native click, touch, keyboard, Escape, and light-dismiss
 behavior through the Popover API:
@@ -1580,8 +1579,8 @@ Dropdowns, tooltips, and popovers share one positioning implementation and a
 logical placement vocabulary that follows writing mode and text direction.
 Popovers support the dropdown `data-width`,
 `data-placement`, and `data-offset` values. Tooltips support
-`data-placement` and `data-offset`. Tooltip and popover offsets default to
-`10`; the dropdown offset defaults to `5`. The tooltip's 8px arrow and
+`data-placement` and `data-offset`. Tooltip, popover, and dropdown offsets
+default to `6`, `9`, and `5`, respectively. The tooltip's 8px arrow and
 popover's 12px arrow remain centered on the trigger while avoiding rounded
 surface corners. All three stay attached during document or nested-container
 scrolling, automatically flip on either axis, and retain their resolved

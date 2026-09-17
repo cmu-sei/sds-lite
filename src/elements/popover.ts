@@ -60,14 +60,15 @@ export class SdsPopoverElement extends HTMLElementBase {
       content,
       () => this.dataset.placement ?? 'block-end-start',
       () => this.dataset.offset,
-      10,
+      9,
     )
     this.hoverController = new FloatingHoverController(
       trigger,
       content,
       this.positioner,
       {
-        focusOpenDelay: 300,
+        focusOpenDelay: 500,
+        hoverOpenDelay: 500,
       },
     )
     this.hoverController.observe(this.controller.signal)

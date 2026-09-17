@@ -4,6 +4,13 @@
   }
 
   :where(
+    .sds-popover-content,
+    .sds-tooltip-content
+  ) {
+    overflow: visible;
+  }
+
+  :where(
     .sds-dropdown-menu,
     .sds-popover-content,
     .sds-tooltip-content

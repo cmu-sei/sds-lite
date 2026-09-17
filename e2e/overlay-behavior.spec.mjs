@@ -109,10 +109,11 @@ test('popover opens after hover delay, stays open over content, and closes after
   const trigger = popover.locator(':scope > button')
   const content = popover.locator(':scope > .sds-popover-content')
 
-  await trigger.hover()
-  await page.waitForTimeout(100)
+  await trigger.scrollIntoViewIfNeeded()
+  await trigger.dispatchEvent('pointerenter')
+  await page.waitForTimeout(350)
   await expect(content).not.toBeVisible()
-  await expect(content).toBeVisible({ timeout: 700 })
+  await expect(content).toBeVisible({ timeout: 500 })
 
   await content.hover()
   await page.waitForTimeout(400)
@@ -122,15 +123,14 @@ test('popover opens after hover delay, stays open over content, and closes after
   await expect(content).not.toBeVisible({ timeout: 700 })
 })
 
-test('tooltip opens after its hover delay', async ({ page }) => {
+test('tooltip opens immediately on hover', async ({ page }) => {
   const tooltip = page.locator('sds-tooltip').first()
   const trigger = tooltip.locator(':scope > :first-child')
   const content = tooltip.locator(':scope > :nth-child(2)')
 
-  await trigger.hover()
-  await page.waitForTimeout(100)
-  await expect(content).not.toBeVisible()
-  await expect(content).toBeVisible({ timeout: 700 })
+  await trigger.scrollIntoViewIfNeeded()
+  await trigger.dispatchEvent('pointerenter')
+  await expect(content).toBeVisible()
 })
 
 for (const elementName of ['sds-tooltip', 'sds-popover']) {
@@ -139,7 +139,8 @@ for (const elementName of ['sds-tooltip', 'sds-popover']) {
     const trigger = host.locator(':scope > :first-child')
     const surface = host.locator(':scope > :nth-child(2)')
 
-    await trigger.hover()
+    await trigger.scrollIntoViewIfNeeded()
+    await trigger.dispatchEvent('pointerenter')
     await expect(surface).toBeVisible({ timeout: 700 })
 
     const geometry = await surface.evaluate((element) => {
@@ -161,6 +162,11 @@ for (const elementName of ['sds-tooltip', 'sds-popover']) {
         arrowX,
         arrowY,
         side,
+        surfaceBottom: surfaceRect.bottom,
+        surfaceLeft: surfaceRect.left,
+        surfaceOverflow: style.overflow,
+        surfaceRight: surfaceRect.right,
+        surfaceTop: surfaceRect.top,
         triggerBottom: triggerRect.bottom,
         triggerLeft: triggerRect.left,
         triggerRight: triggerRect.right,
@@ -171,12 +177,29 @@ for (const elementName of ['sds-tooltip', 'sds-popover']) {
     expect(geometry.arrowContent).not.toBe('none')
     expect(geometry.arrowWidth).toBeGreaterThan(0)
     expect(geometry.arrowHeight).toBeGreaterThan(0)
+    expect(geometry.surfaceOverflow).toBe('visible')
+
+    const arrowProjection = geometry.arrowWidth / Math.sqrt(2)
+    let gap
     if (geometry.side === 'top' || geometry.side === 'bottom') {
       expect(geometry.arrowX).toBeGreaterThanOrEqual(geometry.triggerLeft)
       expect(geometry.arrowX).toBeLessThanOrEqual(geometry.triggerRight)
+      gap =
+        geometry.side === 'top'
+          ? geometry.triggerTop -
+            (geometry.surfaceBottom + arrowProjection)
+          : geometry.surfaceTop -
+            (geometry.triggerBottom + arrowProjection)
     } else {
       expect(geometry.arrowY).toBeGreaterThanOrEqual(geometry.triggerTop)
       expect(geometry.arrowY).toBeLessThanOrEqual(geometry.triggerBottom)
+      gap =
+        geometry.side === 'left'
+          ? geometry.triggerLeft -
+            (geometry.surfaceRight + arrowProjection)
+          : geometry.surfaceLeft -
+            (geometry.triggerRight + arrowProjection)
     }
+    expect(Math.abs(gap)).toBeLessThanOrEqual(1)
   })
 }

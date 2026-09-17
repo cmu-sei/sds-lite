@@ -401,7 +401,7 @@ export class FloatingHoverController {
     this.positioner = positioner
     this.closeDelay = options.closeDelay ?? 120
     this.focusOpenDelay = options.focusOpenDelay ?? 0
-    this.hoverOpenDelay = options.hoverOpenDelay ?? 300
+    this.hoverOpenDelay = options.hoverOpenDelay ?? 0
   }
 
   observe(signal: AbortSignal): void {
@@ -455,6 +455,10 @@ export class FloatingHoverController {
     if (this.closeTimer !== null) clearTimeout(this.closeTimer)
     this.closeTimer = null
     if (this.isOpen() || this.openTimer !== null) return
+    if (delay === 0) {
+      this.show()
+      return
+    }
     this.openTimer = setTimeout(() => this.show(), delay)
   }
 
