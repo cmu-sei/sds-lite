@@ -146,7 +146,7 @@ available for defining a semantic assignment:
 
 ## Private properties
 
-Properties prefixed with `--sds-tone-*`, `--sds-button-*`,
+Properties prefixed with `--sds-tone-*`, `--sds-avatar-*`, `--sds-button-*`,
 `--sds-prose-*`, `--sds-tab-*`, `--sds-timeline-*`,
 `--sds-datapoint-*`, or `--sds-floating-*` are implementation details.
 Use a semantic token or documented data attribute instead.

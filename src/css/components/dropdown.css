@@ -16,6 +16,10 @@
     transform: translateY(0.125rem) rotate(225deg);
   }
 
+  :where(sds-dropdown[data-hide-caret] > button)::after {
+    display: none;
+  }
+
   :where(.sds-dropdown-menu > li) {
     display: contents;
   }
@@ -25,6 +29,7 @@
     .sds-dropdown-menu a[role="menuitem"]
   ) {
     display: flex;
+    gap: var(--sds-space-sm);
     inline-size: 100%;
     min-block-size: 2.25rem;
     align-items: center;

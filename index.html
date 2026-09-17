@@ -366,6 +366,9 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Form options">
                 <code>.sds-field</code>
+                <code>.sds-switch</code>
+                <code>.sds-file-input</code>
+                <code>.sds-file-upload</code>
                 <code>data-size="sm | lg"</code>
                 <code>data-orientation="horizontal"</code>
                 <code>disabled</code>
@@ -442,6 +445,30 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </select>
               </div>
               <div class="sds-field demo-span">
+                <label for="file-input">Supporting files</label>
+                <div class="sds-file-upload">
+                  <div class="sds-file-upload-surface">
+                    <input
+                      id="file-input"
+                      class="sds-file-input"
+                      name="supporting-files"
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      multiple
+                      aria-describedby="file-input-help"
+                    />
+                    <span class="sds-file-upload-action" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8 10.5V1.75m0 0L4.75 5M8 1.75 11.25 5M3 8.5v3.75c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+                      </svg>
+                      Upload files
+                    </span>
+                    <strong>Click to upload or drag and drop files here</strong>
+                    <small id="file-input-help">Use a JPG, JPEG, PNG, WebP, MOV, MP4, DOC, DOCX, XLS, XLSX or CSV under 10MB.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="sds-field demo-span">
                 <label for="textarea-input">Textarea</label>
                 <textarea id="textarea-input" rows="3">A longer response.</textarea>
               </div>
@@ -511,6 +538,21 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <label class="sds-choice">
                   <input type="radio" name="radio-example" disabled />
                   Disabled
+                </label>
+              </fieldset>
+              <fieldset class="demo-fieldset">
+                <legend>Switches</legend>
+                <label class="sds-switch" data-tone="accent">
+                  <input type="checkbox" role="switch" name="updates" checked />
+                  Automatic updates
+                </label>
+                <label class="sds-switch" data-size="sm" data-tone="success">
+                  <input type="checkbox" role="switch" name="notifications" />
+                  Notifications
+                </label>
+                <label class="sds-switch" data-size="lg">
+                  <input type="checkbox" role="switch" disabled />
+                  Unavailable
                 </label>
               </fieldset>
               <div class="sds-action-group demo-span">
@@ -715,12 +757,14 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Content</p>
-                <h2 id="content-title">Cards, datapoints, tables, and empty states</h2>
+                <h2 id="content-title">Avatars, cards, datapoints, tables, and empty states</h2>
               </div>
             </div>
             <div class="demo-reference">
               <div class="demo-api" aria-label="Content options">
                 <code>datapoint data-size="sm | md | lg"</code>
+                <code>avatar data-size="xs | sm | md | lg | xl"</code>
+                <code>avatar data-shape="circle | square | portrait"</code>
                 <code>table data-size="sm | lg"</code>
                 <code>data-row-highlight</code>
                 <code>data-standalone</code>
@@ -735,6 +779,67 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 &lt;/div&gt;</code></pre>
               </details>
             </div>
+
+            <article class="sds-card demo-stack">
+              <h3>Avatars and avatar groups</h3>
+              <div class="sds-flex" data-wrap data-align="center" data-gap="lg">
+                <span class="sds-avatar" data-size="xs" aria-label="Alex Morgan">AM</span>
+                <span class="sds-avatar" data-size="sm" data-tone="info" aria-label="Sam Rivera">SR</span>
+                <span class="sds-avatar" data-tone="success" data-variant="solid" aria-label="Jordan Lee">JL</span>
+                <span class="sds-avatar" data-size="lg" data-shape="square" data-tone="warning" aria-label="Taylor Quinn">TQ</span>
+                <span class="sds-avatar" data-size="xl" data-shape="portrait" data-tone="danger" data-variant="outline" aria-label="Morgan Chen">MC</span>
+                <ul class="sds-avatar-group" data-density="condensed" aria-label="Reviewers">
+                  <li><span class="sds-avatar" data-tone="accent" aria-label="Alex Morgan">AM</span></li>
+                  <li><span class="sds-avatar" data-tone="success" aria-label="Sam Rivera">SR</span></li>
+                  <li><span class="sds-avatar" data-tone="warning" aria-label="Jordan Lee">JL</span></li>
+                  <li>
+                    <sds-dropdown data-placement="block-end-end" data-width="sm" data-hide-caret>
+                      <button
+                        class="sds-avatar"
+                        type="button"
+                        popovertarget="reviewers-menu"
+                        aria-controls="reviewers-menu"
+                        aria-expanded="false"
+                        aria-haspopup="menu"
+                        aria-label="View 4 more reviewers"
+                      >+4</button>
+                      <menu
+                        id="reviewers-menu"
+                        class="sds-dropdown-menu"
+                        popover="auto"
+                        role="menu"
+                        aria-orientation="vertical"
+                      >
+                        <li role="none">
+                          <a href="#content" role="menuitem" tabindex="-1">
+                            <span class="sds-avatar" data-size="xs" data-tone="info" aria-hidden="true">CK</span>
+                            <span>Casey Kim</span>
+                          </a>
+                        </li>
+                        <li role="none">
+                          <a href="#content" role="menuitem" tabindex="-1">
+                            <span class="sds-avatar" data-size="xs" data-tone="success" aria-hidden="true">RJ</span>
+                            <span>Riley Jones</span>
+                          </a>
+                        </li>
+                        <li role="none">
+                          <a href="#content" role="menuitem" tabindex="-1">
+                            <span class="sds-avatar" data-size="xs" data-tone="warning" aria-hidden="true">AP</span>
+                            <span>Avery Patel</span>
+                          </a>
+                        </li>
+                        <li role="none">
+                          <a href="#content" role="menuitem" tabindex="-1">
+                            <span class="sds-avatar" data-size="xs" data-tone="danger" aria-hidden="true">DS</span>
+                            <span>Drew Smith</span>
+                          </a>
+                        </li>
+                      </menu>
+                    </sds-dropdown>
+                  </li>
+                </ul>
+              </div>
+            </article>
 
             <div class="sds-grid">
               <article class="sds-card">
@@ -1435,8 +1540,11 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Navigation</p>
-                <h2 id="navigation-title">Keyboard-accessible tabs</h2>
-                <p>Arrow keys, Home, and End change the selected tab.</p>
+                <h2 id="navigation-title">Tabs and pagination</h2>
+                <p>
+                  Tabs add keyboard behavior; pagination remains ordinary
+                  link navigation.
+                </p>
               </div>
             </div>
             <div class="demo-reference">
@@ -1554,6 +1662,34 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <section id="block-lg-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-lg-tab-2" hidden>Second tab content</section>
               </sds-tabs>
             </div>
+
+            <article class="sds-card demo-stack">
+              <h3>Pagination</h3>
+              <nav class="sds-pagination" aria-label="Project pages">
+                <ul>
+                  <li>
+                    <a aria-disabled="true" tabindex="-1" aria-label="Previous page">
+                      <svg aria-hidden="true" viewBox="0 0 8 13">
+                        <path d="M7.35 1.13 2.73 6.75l4.62 4.65-1.23 1.23L.87 7.38a.86.86 0 0 1 0-1.23L6.12.9l1.23 1.23Z"></path>
+                      </svg>
+                    </a>
+                  </li>
+                  <li><a href="#navigation" aria-current="page" aria-label="Page 1">1</a></li>
+                  <li><a href="#navigation" aria-label="Page 2">2</a></li>
+                  <li><a href="#navigation" aria-label="Page 3">3</a></li>
+                  <li><span aria-hidden="true">&hellip;</span></li>
+                  <li><a href="#navigation" aria-label="Page 8">8</a></li>
+                  <li>
+                    <a href="#navigation" aria-label="Next page">
+                      <svg aria-hidden="true" viewBox="0 0 8 13">
+                        <path d="m.62 1.13 1.23-1.23 5.25 5.25a.86.86 0 0 1 0 1.23l-5.25 5.25-1.23-1.23 4.62-4.65L.62 1.13Z"></path>
+                      </svg>
+                    </a>
+                  </li>
+                </ul>
+                <p class="sds-pagination-status">Showing 1-10 of 78 projects</p>
+              </nav>
+            </article>
           </section>
 
           <section id="structure" aria-labelledby="structure-title">

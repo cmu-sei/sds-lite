@@ -42,7 +42,7 @@ SDS Lite automatically styles:
 input[type=text], input[type=email], input[type=tel], input[type=url],
 input[type=password], input[type=number], input[type=search],
 input[type=date], input[type=datetime-local], input[type=time],
-input[type=month], input[type=week], select, textarea
+input[type=month], input[type=week], input[type=file], select, textarea
 ```
 
 `.sds-input` and `.sds-select` are explicit hooks when needed:
@@ -153,3 +153,78 @@ Wrap the native input in `.sds-choice`:
 
 Use `fieldset` and `legend` for related choices. Use native `checked` and
 `disabled` state.
+
+## Switch
+
+A switch is a native checkbox with switch semantics. Keep the input inside its
+label so the complete visible label remains clickable:
+
+```html
+<label class="sds-switch">
+  <input
+    type="checkbox"
+    role="switch"
+    name="automaticUpdates"
+    checked
+  >
+  Automatic updates
+</label>
+```
+
+The native `checked`, `disabled`, `required`, and form-submission behavior
+remain intact.
+
+| Option | Values | Default |
+|---|---|---|
+| `data-size` on label | `sm`, `md`, `lg` | `md` |
+| `data-tone` on label | Any semantic tone | Accent |
+| `checked` on input | Native checked state | Unchecked |
+| `disabled` on input | Native disabled state | Enabled |
+| `aria-invalid="true"` on input | Invalid semantics and appearance | Valid or unknown |
+
+Use a checkbox rather than a switch when the user is selecting an item for a
+later submit action. Use a switch when changing the value takes effect
+immediately.
+
+## File input
+
+Native file inputs are styled automatically inside an SDS root. Use
+`.sds-file-input` as an explicit hook outside that scope:
+
+```html
+<div class="sds-field">
+  <label for="supporting-files">Supporting files</label>
+  <div class="sds-file-upload">
+    <div class="sds-file-upload-surface">
+      <input
+        id="supporting-files"
+        class="sds-file-input"
+        name="supportingFiles"
+        type="file"
+        accept=".pdf,.doc,.docx"
+        multiple
+        aria-describedby="supporting-files-help"
+      >
+      <span class="sds-file-upload-action" aria-hidden="true">
+        <svg viewBox="0 0 16 16">...</svg>
+        Upload files
+      </span>
+      <strong>Click to upload or drag and drop files here</strong>
+      <small id="supporting-files-help">
+        Select PDF or Word files. Each file must be smaller than 10 MB.
+      </small>
+    </div>
+  </div>
+</div>
+```
+
+Use native `accept`, `multiple`, `required`, and `disabled` attributes.
+Applications remain responsible for validating file content and size,
+displaying selected-file previews, and performing uploads. Do not treat
+`accept` as security validation; validate files again on the server.
+
+`.sds-file-upload`, `.sds-file-upload-surface`, and
+`.sds-file-upload-action` reproduce the established dashed SDS upload area.
+The transparent native input covers the complete surface, so clicking or
+dropping anywhere uses browser file-selection behavior. Omit those wrappers
+when the visible compact native input is preferred.

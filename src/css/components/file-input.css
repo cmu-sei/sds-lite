@@ -1,0 +1,157 @@
+@layer sds.components {
+  :where(.sds-file-upload) {
+    position: relative;
+    inline-size: 100%;
+    padding: var(--sds-space-md);
+    border: 1px dashed
+      light-dark(var(--sds-gray-200), var(--sds-gray-700));
+    border-radius: var(--sds-radius-container);
+    background: var(--sds-color-surface-default);
+  }
+
+  :where(.sds-file-upload-surface) {
+    display: grid;
+    gap: var(--sds-space-xs);
+    justify-items: center;
+    padding: var(--sds-space-xl);
+    border-radius: var(--sds-radius-control);
+    background: light-dark(var(--sds-gray-25), var(--sds-gray-900));
+    text-align: center;
+    transition: background var(--sds-duration-normal)
+      var(--sds-easing-standard);
+  }
+
+  :where(.sds-file-upload-action) {
+    display: inline-flex;
+    gap: var(--sds-space-xs);
+    align-items: center;
+    color: var(--sds-color-action-primary);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  :where(.sds-file-upload-action > svg) {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    fill: none;
+    stroke: currentColor;
+  }
+
+  :where(.sds-file-upload-surface > strong) {
+    color: var(--sds-color-text-default);
+    font-size: 0.75rem;
+  }
+
+  :where(.sds-file-upload-surface > small) {
+    color: var(--sds-color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  :where(.sds-file-input, [data-sds-root] input[type="file"]) {
+    display: block;
+    inline-size: fit-content;
+    min-inline-size: 0;
+    padding: var(--sds-space-xs);
+    overflow: hidden;
+    border: 1px solid var(--sds-color-form-border);
+    border-radius: var(--sds-radius-control);
+    color: var(--sds-color-text-muted);
+    background: var(--sds-color-surface-default);
+    cursor: pointer;
+    transition:
+      border-color var(--sds-duration-normal) var(--sds-easing-standard),
+      background var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  :where(.sds-file-upload-surface > input[type="file"]) {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  :where(.sds-file-upload:has(input[type="file"]:focus-visible)) {
+    box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
+  }
+
+  :where(.sds-file-upload:has(input[type="file"]:disabled)) {
+    opacity: 0.5;
+  }
+
+  :where(
+    .sds-file-input,
+    [data-sds-root] input[type="file"]
+  )::file-selector-button {
+    margin-inline-end: var(--sds-space-md);
+    padding: var(--sds-space-xs) var(--sds-space-sm);
+    border: 0;
+    border-radius: var(--sds-radius-control);
+    color: var(--sds-color-action-primary);
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--sds-duration-normal)
+      var(--sds-easing-standard);
+  }
+
+  :where(
+    .sds-file-input[data-size="sm"],
+    [data-sds-root] input[type="file"][data-size="sm"]
+  )::file-selector-button {
+    padding: var(--sds-space-xs) var(--sds-space-sm);
+    font-size: 0.875rem;
+  }
+
+  :where(
+    .sds-file-input[data-size="lg"],
+    [data-sds-root] input[type="file"][data-size="lg"]
+  )::file-selector-button {
+    padding: var(--sds-space-md) var(--sds-space-xl);
+    font-size: 1.125rem;
+  }
+
+  :where(
+    .sds-file-input[aria-invalid="true"],
+    [data-sds-root] input[type="file"][aria-invalid="true"]
+  ) {
+    border-color: var(--sds-color-form-invalid);
+  }
+
+  :where(
+    .sds-file-input:disabled,
+    [data-sds-root] input[type="file"]:disabled
+  )::file-selector-button {
+    color: var(--sds-color-form-disabled-text);
+    background: var(--sds-color-form-disabled-background);
+    cursor: not-allowed;
+  }
+
+  @media (hover: hover) {
+    :where(.sds-file-upload-surface:has(input[type="file"]:not(:disabled)):hover) {
+      background: light-dark(var(--sds-gray-50), var(--sds-gray-800));
+    }
+
+    :where(
+      .sds-file-input:not(:disabled),
+      [data-sds-root] input[type="file"]:not(:disabled)
+    ):hover::file-selector-button {
+      color: var(--sds-color-action-primary-hover);
+      background: var(--sds-color-interactive-subtle-hover);
+    }
+
+  }
+
+  @media (forced-colors: active) {
+    :where(.sds-file-upload:has(input[type="file"]:focus-visible)) {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+      box-shadow: none;
+    }
+  }
+}

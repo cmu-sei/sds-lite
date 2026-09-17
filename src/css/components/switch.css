@@ -1,0 +1,109 @@
+@layer sds.components {
+  :where(.sds-switch) {
+    display: inline-flex;
+    gap: var(--sds-space-sm);
+    align-items: center;
+    inline-size: fit-content;
+    color: var(--sds-color-text-default);
+    cursor: pointer;
+  }
+
+  :where(.sds-switch > input[type="checkbox"][role="switch"]) {
+    inline-size: 2.75rem;
+    block-size: 1.5rem;
+    flex: 0 0 auto;
+    margin: 0;
+    border: 2px solid transparent;
+    border-radius: var(--sds-radius-full);
+    background-color: light-dark(var(--sds-gray-500), var(--sds-gray-600));
+    background-image: radial-gradient(
+      circle,
+      light-dark(var(--sds-white), var(--sds-gray-100)) 0 45%,
+      transparent 48%
+    );
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem 1.25rem;
+    appearance: none;
+    cursor: pointer;
+    transition:
+      background-color var(--sds-duration-medium) var(--sds-easing-standard),
+      background-position var(--sds-duration-medium)
+        var(--sds-easing-standard);
+  }
+
+  :where(.sds-switch > input[type="checkbox"][role="switch"]:checked) {
+    background-color: var(
+      --sds-tone-strong,
+      var(--sds-color-action-primary)
+    );
+    background-position: right center;
+  }
+
+  :where(
+    .sds-switch > input[type="checkbox"][role="switch"][aria-invalid="true"]
+  ) {
+    border-color: var(--sds-color-form-invalid);
+  }
+
+  :where(.sds-switch:has(> input[type="checkbox"][role="switch"]:disabled)) {
+    color: var(--sds-color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  :where(
+    .sds-switch > input[type="checkbox"][role="switch"]:disabled
+  ) {
+    background-color: var(--sds-color-form-disabled-text);
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
+  :where(.sds-switch[data-size="sm"]) {
+    font-size: 0.875rem;
+  }
+
+  :where(
+    .sds-switch[data-size="sm"]
+      > input[type="checkbox"][role="switch"]
+  ) {
+    inline-size: 2.25rem;
+    block-size: 1.25rem;
+    background-size: 1rem 1rem;
+  }
+
+  :where(.sds-switch[data-size="lg"]) {
+    font-size: 1.125rem;
+  }
+
+  :where(
+    .sds-switch[data-size="lg"]
+      > input[type="checkbox"][role="switch"]
+  ) {
+    inline-size: 3.25rem;
+    block-size: 1.75rem;
+    background-size: 1.5rem 1.5rem;
+  }
+
+  @media (forced-colors: active) {
+    :where(.sds-switch > input[type="checkbox"][role="switch"]) {
+      border-color: ButtonText;
+      background-color: ButtonFace;
+      background-image: radial-gradient(
+        circle,
+        ButtonText 0 45%,
+        transparent 48%
+      );
+    }
+
+    :where(.sds-switch > input[type="checkbox"][role="switch"]:checked) {
+      border-color: Highlight;
+      background-color: Highlight;
+      background-image: radial-gradient(
+        circle,
+        HighlightText 0 45%,
+        transparent 48%
+      );
+    }
+  }
+}

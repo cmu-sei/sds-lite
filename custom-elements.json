@@ -23,6 +23,10 @@
             {
               "name": "data-width",
               "description": "Surface width: auto, sm, md, lg, xl, or 2xl."
+            },
+            {
+              "name": "data-hide-caret",
+              "description": "Hides the visual caret when the trigger already communicates that it opens a menu."
             }
           ]
         }

@@ -2,6 +2,94 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Data display
 
+## Avatar
+
+Use an image when a portrait is available:
+
+```html
+<img
+  class="sds-avatar"
+  src="/people/alex-morgan.jpg"
+  alt="Alex Morgan"
+>
+```
+
+Use text initials when there is no image. Supply the full name as the
+accessible label; SDS Lite does not derive initials from names:
+
+```html
+<span class="sds-avatar" data-tone="accent" aria-label="Alex Morgan">
+  AM
+</span>
+```
+
+| Option | Values | Default |
+|---|---|---|
+| `data-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
+| `data-shape` | `circle`, `square`, `portrait` | `circle` |
+| `data-variant` | `subtle`, `solid`, `outline` | `subtle` |
+| `data-tone` | Any semantic tone | Neutral |
+
+Use empty `alt=""` only when the adjacent text already identifies the person.
+An initials avatar needs an `aria-label` unless equivalent visible text is
+present.
+
+### Avatar group
+
+An avatar group is a list of people, not a generated image collection:
+
+```html
+<ul class="sds-avatar-group" aria-label="Reviewers">
+  <li>
+    <span class="sds-avatar" data-tone="accent" aria-label="Alex Morgan">
+      AM
+    </span>
+  </li>
+  <li>
+    <span class="sds-avatar" data-tone="success" aria-label="Sam Rivera">
+      SR
+    </span>
+  </li>
+  <li>
+    <sds-dropdown data-placement="block-end-end" data-width="sm" data-hide-caret>
+      <button
+        class="sds-avatar"
+        type="button"
+        aria-label="View 4 more reviewers"
+      >+4</button>
+      <menu>
+        <li>
+          <a href="/people/casey-kim">
+            <span
+              class="sds-avatar"
+              data-size="xs"
+              data-tone="info"
+              aria-hidden="true"
+            >CK</span>
+            <span>Casey Kim</span>
+          </a>
+        </li>
+        <li>
+          <a href="/people/riley-jones">
+            <span
+              class="sds-avatar"
+              data-size="xs"
+              data-tone="success"
+              aria-hidden="true"
+            >RJ</span>
+            <span>Riley Jones</span>
+          </a>
+        </li>
+      </menu>
+    </sds-dropdown>
+  </li>
+</ul>
+```
+
+Add `data-density="condensed"` to increase overlap. Applications decide how
+many people to show. Compose the existing dropdown for the overflow list;
+hovering avatars does not change their stacking order.
+
 ## Card
 
 ```html

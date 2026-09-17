@@ -55,6 +55,49 @@ its corresponding link selected and panel visible.
 See [Server rendering](../guides/server-rendering.md) for complete authored
 tab markup.
 
+## Pagination
+
+Pagination is ordinary navigation. Prefer links so each page has a URL and
+works without JavaScript:
+
+```html
+<nav class="sds-pagination" aria-label="Search result pages">
+  <ul>
+    <li>
+      <a href="?page=1" aria-label="Previous page">
+        <svg aria-hidden="true" viewBox="0 0 8 13">...</svg>
+      </a>
+    </li>
+    <li><a href="?page=1" aria-label="Page 1">1</a></li>
+    <li>
+      <a href="?page=2" aria-label="Page 2" aria-current="page">2</a>
+    </li>
+    <li><a href="?page=3" aria-label="Page 3">3</a></li>
+    <li><span aria-hidden="true">&hellip;</span></li>
+    <li><a href="?page=8" aria-label="Page 8">8</a></li>
+    <li>
+      <a href="?page=3" aria-label="Next page">
+        <svg aria-hidden="true" viewBox="0 0 8 13">...</svg>
+      </a>
+    </li>
+  </ul>
+  <p class="sds-pagination-status">Showing 11-20 of 78 results</p>
+</nav>
+```
+
+Use `aria-current="page"` on the current page. For unavailable previous or
+next actions, omit `href`, add `aria-disabled="true"`, and add `tabindex="-1"`.
+Client-rendered applications may use buttons instead of links when changing
+pages does not change the URL.
+
+The server or application owns the page count, truncated range, URLs, and
+loading state. If the result range changes without navigation, add
+`aria-live="polite"` to `.sds-pagination-status`.
+
+Previous and next controls use compact, accessible icon links. The current
+page uses the established subtle blue surface and border rather than a
+solid-button treatment.
+
 ## Dropdown menu
 
 ```html
@@ -73,6 +116,7 @@ tab markup.
 | `data-width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
 | `data-placement` | Logical side, optionally followed by `-start` or `-end` | `block-end-start` |
 | `data-offset` | Nonnegative CSS pixels | `5` |
+| `data-hide-caret` | Presence hides the trigger caret | Caret shown |
 
 Logical sides are `block-start`, `block-end`, `inline-start`, and
 `inline-end`. Placement is preferred rather than fixed; the menu flips when
@@ -90,6 +134,9 @@ Dropdowns support:
 Use native `disabled` on menu buttons and `aria-disabled="true"` on other
 menu items. The trigger and menu must be direct children. Invalid or ambiguous
 structures are not enhanced and produce a console warning.
+
+Use `data-hide-caret` when the trigger already communicates that it opens a
+menu, such as an icon-only action or avatar-group overflow count.
 
 Use `<sds-popover>` rather than a dropdown when the surface contains rich
 content instead of menu actions.

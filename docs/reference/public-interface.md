@@ -25,8 +25,8 @@ detail.
 
 Other documented recipe options include `data-activation`, `data-align`,
 `data-avatar`, `data-block`, `data-callout-close`, `data-columns`,
-`data-density`, `data-divided`, `data-grow`, `data-inset`, `data-justify`,
-`data-no-shrink`, `data-persistent`, `data-return-value`,
+`data-density`, `data-divided`, `data-grow`, `data-hide-caret`, `data-inset`,
+`data-justify`, `data-no-shrink`, `data-persistent`, `data-return-value`,
 `data-row-highlight`, `data-shape`, `data-side`, `data-standalone`,
 `data-sticky`, `data-toast-close`, `data-toast-open`, `data-value`, and
 `data-wrap`.
@@ -44,10 +44,15 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-button` | Button appearance for a button or link |
 | `.sds-choice` | Checkbox or radio with label text |
 | `.sds-field` | Label, control, help, and validation layout |
+| `.sds-file-input` | Explicit native file-input hook |
+| `.sds-file-upload` | Dashed file-upload container |
+| `.sds-file-upload-action` | Upload icon and action label |
+| `.sds-file-upload-surface` | Centered native file-input content |
 | `.sds-form` | Narrow vertical form |
 | `.sds-input` | Explicit text-control hook |
 | `.sds-link` | Explicit link recipe |
 | `.sds-select` | Explicit select-control hook |
+| `.sds-switch` | Native checkbox with switch appearance |
 
 ### Feedback and loading
 
@@ -69,6 +74,8 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 
 | Class | Purpose |
 |---|---|
+| `.sds-avatar` | Person image or initials |
+| `.sds-avatar-group` | Overlapping list of people |
 | `.sds-card` | Raised content container |
 | `.sds-card-label` | Muted card label |
 | `.sds-datapoint` | Label, value, and context |
@@ -106,6 +113,8 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-dropdown-label` | Noninteractive menu group label |
 | `.sds-dropdown-menu` | Dropdown surface |
 | `.sds-panel` | Edge-attached native dialog |
+| `.sds-pagination` | Page navigation and controls |
+| `.sds-pagination-status` | Current result range |
 | `.sds-popover-content` | Interactive anchored content |
 | `.sds-tab` | Tab button or route link |
 | `.sds-tab-list` | Tab-list row |

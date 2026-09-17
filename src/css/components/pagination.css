@@ -1,0 +1,98 @@
+@layer sds.components {
+  :where(.sds-pagination) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-sm) var(--sds-space-lg);
+    align-items: center;
+  }
+
+  :where(.sds-pagination > ul) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-sm);
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :where(.sds-pagination li) {
+    display: flex;
+  }
+
+  :where(.sds-pagination li > :is(a, button, span)) {
+    display: inline-flex;
+    min-inline-size: 2.125rem;
+    block-size: 2.125rem;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sds-space-sm);
+    border: 1px solid
+      color-mix(in srgb, var(--sds-color-border-strong) 20%, transparent);
+    border-radius: var(--sds-radius-control);
+    color: var(--sds-color-text-muted);
+    background: var(--sds-color-surface-default);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  :where(.sds-pagination li > :is(a, button)[aria-current="page"]) {
+    border-color: light-dark(var(--sds-blue-600), var(--sds-blue-400));
+    color: var(--sds-color-text-muted);
+    background: light-dark(var(--sds-blue-50), var(--sds-blue-900));
+    box-shadow: inset 0 1px 2px
+      color-mix(in srgb, var(--sds-color-action-primary) 15%, transparent);
+  }
+
+  :where(
+    .sds-pagination li > :is(a, button):is(
+        :disabled,
+        [aria-disabled="true"]
+      )
+  ) {
+    color: var(--sds-color-text-disabled);
+    background: var(--sds-color-form-disabled-background);
+    cursor: not-allowed;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  :where(.sds-pagination li > span) {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  :where(.sds-pagination li svg) {
+    inline-size: 0.5rem;
+    block-size: 0.8125rem;
+    fill: currentColor;
+    pointer-events: none;
+  }
+
+  :where(.sds-pagination-status) {
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  @media (hover: hover) {
+    :where(
+      .sds-pagination li > :is(a, button):not(
+          [aria-current="page"],
+          :disabled,
+          [aria-disabled="true"]
+        ):hover
+    ) {
+      border-color: var(--sds-color-border-strong);
+      background: var(--sds-color-interactive-subtle-hover);
+    }
+  }
+
+  @media (forced-colors: active) {
+    :where(.sds-pagination li > :is(a, button)[aria-current="page"]) {
+      border-color: Highlight;
+      color: HighlightText;
+      background: Highlight;
+    }
+  }
+}
