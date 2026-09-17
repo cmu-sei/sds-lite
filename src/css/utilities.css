@@ -10,4 +10,158 @@
     border: 0;
     white-space: nowrap;
   }
+
+  :where([data-sds-padding="none"]) { padding: var(--sds-space-0); }
+  :where([data-sds-padding="2xs"]) { padding: var(--sds-space-2xs); }
+  :where([data-sds-padding="xs"]) { padding: var(--sds-space-xs); }
+  :where([data-sds-padding="sm"]) { padding: var(--sds-space-sm); }
+  :where([data-sds-padding="md"]) { padding: var(--sds-space-md); }
+  :where([data-sds-padding="lg"]) { padding: var(--sds-space-lg); }
+  :where([data-sds-padding="xl"]) { padding: var(--sds-space-xl); }
+  :where([data-sds-padding="2xl"]) { padding: var(--sds-space-2xl); }
+  :where([data-sds-padding="3xl"]) { padding: var(--sds-space-3xl); }
+  :where([data-sds-padding="4xl"]) { padding: var(--sds-space-4xl); }
+
+  :where([data-sds-padding-block="none"]) { padding-block: var(--sds-space-0); }
+  :where([data-sds-padding-block="2xs"]) { padding-block: var(--sds-space-2xs); }
+  :where([data-sds-padding-block="xs"]) { padding-block: var(--sds-space-xs); }
+  :where([data-sds-padding-block="sm"]) { padding-block: var(--sds-space-sm); }
+  :where([data-sds-padding-block="md"]) { padding-block: var(--sds-space-md); }
+  :where([data-sds-padding-block="lg"]) { padding-block: var(--sds-space-lg); }
+  :where([data-sds-padding-block="xl"]) { padding-block: var(--sds-space-xl); }
+  :where([data-sds-padding-block="2xl"]) { padding-block: var(--sds-space-2xl); }
+  :where([data-sds-padding-block="3xl"]) { padding-block: var(--sds-space-3xl); }
+  :where([data-sds-padding-block="4xl"]) { padding-block: var(--sds-space-4xl); }
+
+  :where([data-sds-padding-inline="none"]) { padding-inline: var(--sds-space-0); }
+  :where([data-sds-padding-inline="2xs"]) { padding-inline: var(--sds-space-2xs); }
+  :where([data-sds-padding-inline="xs"]) { padding-inline: var(--sds-space-xs); }
+  :where([data-sds-padding-inline="sm"]) { padding-inline: var(--sds-space-sm); }
+  :where([data-sds-padding-inline="md"]) { padding-inline: var(--sds-space-md); }
+  :where([data-sds-padding-inline="lg"]) { padding-inline: var(--sds-space-lg); }
+  :where([data-sds-padding-inline="xl"]) { padding-inline: var(--sds-space-xl); }
+  :where([data-sds-padding-inline="2xl"]) { padding-inline: var(--sds-space-2xl); }
+  :where([data-sds-padding-inline="3xl"]) { padding-inline: var(--sds-space-3xl); }
+  :where([data-sds-padding-inline="4xl"]) { padding-inline: var(--sds-space-4xl); }
+
+  :where([data-sds-padding-block-start="none"]) { padding-block-start: var(--sds-space-0); }
+  :where([data-sds-padding-block-start="2xs"]) { padding-block-start: var(--sds-space-2xs); }
+  :where([data-sds-padding-block-start="xs"]) { padding-block-start: var(--sds-space-xs); }
+  :where([data-sds-padding-block-start="sm"]) { padding-block-start: var(--sds-space-sm); }
+  :where([data-sds-padding-block-start="md"]) { padding-block-start: var(--sds-space-md); }
+  :where([data-sds-padding-block-start="lg"]) { padding-block-start: var(--sds-space-lg); }
+  :where([data-sds-padding-block-start="xl"]) { padding-block-start: var(--sds-space-xl); }
+  :where([data-sds-padding-block-start="2xl"]) { padding-block-start: var(--sds-space-2xl); }
+  :where([data-sds-padding-block-start="3xl"]) { padding-block-start: var(--sds-space-3xl); }
+  :where([data-sds-padding-block-start="4xl"]) { padding-block-start: var(--sds-space-4xl); }
+
+  :where([data-sds-padding-block-end="none"]) { padding-block-end: var(--sds-space-0); }
+  :where([data-sds-padding-block-end="2xs"]) { padding-block-end: var(--sds-space-2xs); }
+  :where([data-sds-padding-block-end="xs"]) { padding-block-end: var(--sds-space-xs); }
+  :where([data-sds-padding-block-end="sm"]) { padding-block-end: var(--sds-space-sm); }
+  :where([data-sds-padding-block-end="md"]) { padding-block-end: var(--sds-space-md); }
+  :where([data-sds-padding-block-end="lg"]) { padding-block-end: var(--sds-space-lg); }
+  :where([data-sds-padding-block-end="xl"]) { padding-block-end: var(--sds-space-xl); }
+  :where([data-sds-padding-block-end="2xl"]) { padding-block-end: var(--sds-space-2xl); }
+  :where([data-sds-padding-block-end="3xl"]) { padding-block-end: var(--sds-space-3xl); }
+  :where([data-sds-padding-block-end="4xl"]) { padding-block-end: var(--sds-space-4xl); }
+
+  :where([data-sds-padding-inline-start="none"]) { padding-inline-start: var(--sds-space-0); }
+  :where([data-sds-padding-inline-start="2xs"]) { padding-inline-start: var(--sds-space-2xs); }
+  :where([data-sds-padding-inline-start="xs"]) { padding-inline-start: var(--sds-space-xs); }
+  :where([data-sds-padding-inline-start="sm"]) { padding-inline-start: var(--sds-space-sm); }
+  :where([data-sds-padding-inline-start="md"]) { padding-inline-start: var(--sds-space-md); }
+  :where([data-sds-padding-inline-start="lg"]) { padding-inline-start: var(--sds-space-lg); }
+  :where([data-sds-padding-inline-start="xl"]) { padding-inline-start: var(--sds-space-xl); }
+  :where([data-sds-padding-inline-start="2xl"]) { padding-inline-start: var(--sds-space-2xl); }
+  :where([data-sds-padding-inline-start="3xl"]) { padding-inline-start: var(--sds-space-3xl); }
+  :where([data-sds-padding-inline-start="4xl"]) { padding-inline-start: var(--sds-space-4xl); }
+
+  :where([data-sds-padding-inline-end="none"]) { padding-inline-end: var(--sds-space-0); }
+  :where([data-sds-padding-inline-end="2xs"]) { padding-inline-end: var(--sds-space-2xs); }
+  :where([data-sds-padding-inline-end="xs"]) { padding-inline-end: var(--sds-space-xs); }
+  :where([data-sds-padding-inline-end="sm"]) { padding-inline-end: var(--sds-space-sm); }
+  :where([data-sds-padding-inline-end="md"]) { padding-inline-end: var(--sds-space-md); }
+  :where([data-sds-padding-inline-end="lg"]) { padding-inline-end: var(--sds-space-lg); }
+  :where([data-sds-padding-inline-end="xl"]) { padding-inline-end: var(--sds-space-xl); }
+  :where([data-sds-padding-inline-end="2xl"]) { padding-inline-end: var(--sds-space-2xl); }
+  :where([data-sds-padding-inline-end="3xl"]) { padding-inline-end: var(--sds-space-3xl); }
+  :where([data-sds-padding-inline-end="4xl"]) { padding-inline-end: var(--sds-space-4xl); }
+
+  :where([data-sds-margin="none"]) { margin: var(--sds-space-0); }
+  :where([data-sds-margin="2xs"]) { margin: var(--sds-space-2xs); }
+  :where([data-sds-margin="xs"]) { margin: var(--sds-space-xs); }
+  :where([data-sds-margin="sm"]) { margin: var(--sds-space-sm); }
+  :where([data-sds-margin="md"]) { margin: var(--sds-space-md); }
+  :where([data-sds-margin="lg"]) { margin: var(--sds-space-lg); }
+  :where([data-sds-margin="xl"]) { margin: var(--sds-space-xl); }
+  :where([data-sds-margin="2xl"]) { margin: var(--sds-space-2xl); }
+  :where([data-sds-margin="3xl"]) { margin: var(--sds-space-3xl); }
+  :where([data-sds-margin="4xl"]) { margin: var(--sds-space-4xl); }
+
+  :where([data-sds-margin-block="none"]) { margin-block: var(--sds-space-0); }
+  :where([data-sds-margin-block="2xs"]) { margin-block: var(--sds-space-2xs); }
+  :where([data-sds-margin-block="xs"]) { margin-block: var(--sds-space-xs); }
+  :where([data-sds-margin-block="sm"]) { margin-block: var(--sds-space-sm); }
+  :where([data-sds-margin-block="md"]) { margin-block: var(--sds-space-md); }
+  :where([data-sds-margin-block="lg"]) { margin-block: var(--sds-space-lg); }
+  :where([data-sds-margin-block="xl"]) { margin-block: var(--sds-space-xl); }
+  :where([data-sds-margin-block="2xl"]) { margin-block: var(--sds-space-2xl); }
+  :where([data-sds-margin-block="3xl"]) { margin-block: var(--sds-space-3xl); }
+  :where([data-sds-margin-block="4xl"]) { margin-block: var(--sds-space-4xl); }
+
+  :where([data-sds-margin-inline="none"]) { margin-inline: var(--sds-space-0); }
+  :where([data-sds-margin-inline="2xs"]) { margin-inline: var(--sds-space-2xs); }
+  :where([data-sds-margin-inline="xs"]) { margin-inline: var(--sds-space-xs); }
+  :where([data-sds-margin-inline="sm"]) { margin-inline: var(--sds-space-sm); }
+  :where([data-sds-margin-inline="md"]) { margin-inline: var(--sds-space-md); }
+  :where([data-sds-margin-inline="lg"]) { margin-inline: var(--sds-space-lg); }
+  :where([data-sds-margin-inline="xl"]) { margin-inline: var(--sds-space-xl); }
+  :where([data-sds-margin-inline="2xl"]) { margin-inline: var(--sds-space-2xl); }
+  :where([data-sds-margin-inline="3xl"]) { margin-inline: var(--sds-space-3xl); }
+  :where([data-sds-margin-inline="4xl"]) { margin-inline: var(--sds-space-4xl); }
+
+  :where([data-sds-margin-block-start="none"]) { margin-block-start: var(--sds-space-0); }
+  :where([data-sds-margin-block-start="2xs"]) { margin-block-start: var(--sds-space-2xs); }
+  :where([data-sds-margin-block-start="xs"]) { margin-block-start: var(--sds-space-xs); }
+  :where([data-sds-margin-block-start="sm"]) { margin-block-start: var(--sds-space-sm); }
+  :where([data-sds-margin-block-start="md"]) { margin-block-start: var(--sds-space-md); }
+  :where([data-sds-margin-block-start="lg"]) { margin-block-start: var(--sds-space-lg); }
+  :where([data-sds-margin-block-start="xl"]) { margin-block-start: var(--sds-space-xl); }
+  :where([data-sds-margin-block-start="2xl"]) { margin-block-start: var(--sds-space-2xl); }
+  :where([data-sds-margin-block-start="3xl"]) { margin-block-start: var(--sds-space-3xl); }
+  :where([data-sds-margin-block-start="4xl"]) { margin-block-start: var(--sds-space-4xl); }
+
+  :where([data-sds-margin-block-end="none"]) { margin-block-end: var(--sds-space-0); }
+  :where([data-sds-margin-block-end="2xs"]) { margin-block-end: var(--sds-space-2xs); }
+  :where([data-sds-margin-block-end="xs"]) { margin-block-end: var(--sds-space-xs); }
+  :where([data-sds-margin-block-end="sm"]) { margin-block-end: var(--sds-space-sm); }
+  :where([data-sds-margin-block-end="md"]) { margin-block-end: var(--sds-space-md); }
+  :where([data-sds-margin-block-end="lg"]) { margin-block-end: var(--sds-space-lg); }
+  :where([data-sds-margin-block-end="xl"]) { margin-block-end: var(--sds-space-xl); }
+  :where([data-sds-margin-block-end="2xl"]) { margin-block-end: var(--sds-space-2xl); }
+  :where([data-sds-margin-block-end="3xl"]) { margin-block-end: var(--sds-space-3xl); }
+  :where([data-sds-margin-block-end="4xl"]) { margin-block-end: var(--sds-space-4xl); }
+
+  :where([data-sds-margin-inline-start="none"]) { margin-inline-start: var(--sds-space-0); }
+  :where([data-sds-margin-inline-start="2xs"]) { margin-inline-start: var(--sds-space-2xs); }
+  :where([data-sds-margin-inline-start="xs"]) { margin-inline-start: var(--sds-space-xs); }
+  :where([data-sds-margin-inline-start="sm"]) { margin-inline-start: var(--sds-space-sm); }
+  :where([data-sds-margin-inline-start="md"]) { margin-inline-start: var(--sds-space-md); }
+  :where([data-sds-margin-inline-start="lg"]) { margin-inline-start: var(--sds-space-lg); }
+  :where([data-sds-margin-inline-start="xl"]) { margin-inline-start: var(--sds-space-xl); }
+  :where([data-sds-margin-inline-start="2xl"]) { margin-inline-start: var(--sds-space-2xl); }
+  :where([data-sds-margin-inline-start="3xl"]) { margin-inline-start: var(--sds-space-3xl); }
+  :where([data-sds-margin-inline-start="4xl"]) { margin-inline-start: var(--sds-space-4xl); }
+
+  :where([data-sds-margin-inline-end="none"]) { margin-inline-end: var(--sds-space-0); }
+  :where([data-sds-margin-inline-end="2xs"]) { margin-inline-end: var(--sds-space-2xs); }
+  :where([data-sds-margin-inline-end="xs"]) { margin-inline-end: var(--sds-space-xs); }
+  :where([data-sds-margin-inline-end="sm"]) { margin-inline-end: var(--sds-space-sm); }
+  :where([data-sds-margin-inline-end="md"]) { margin-inline-end: var(--sds-space-md); }
+  :where([data-sds-margin-inline-end="lg"]) { margin-inline-end: var(--sds-space-lg); }
+  :where([data-sds-margin-inline-end="xl"]) { margin-inline-end: var(--sds-space-xl); }
+  :where([data-sds-margin-inline-end="2xl"]) { margin-inline-end: var(--sds-space-2xl); }
+  :where([data-sds-margin-inline-end="3xl"]) { margin-inline-end: var(--sds-space-3xl); }
+  :where([data-sds-margin-inline-end="4xl"]) { margin-inline-end: var(--sds-space-4xl); }
 }

@@ -50,6 +50,64 @@ Vertical orientation creates one column and takes precedence over
 | `data-sds-grow` on a direct child | Presence | Content-sized |
 | `data-sds-no-shrink` on a direct child | Presence | May shrink |
 
+## Spacing utilities
+
+Add tokenized margin or padding to any element without writing CSS:
+
+```html
+<section
+  data-sds-padding="lg"
+  data-sds-margin-block-end="xl"
+>
+  Section content
+</section>
+```
+
+Every spacing attribute accepts:
+
+```text
+none | 2xs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl
+```
+
+`none` removes the selected spacing. The other values use the corresponding
+[`--sds-space-*` token](../reference/css.md#spacing).
+
+| Padding | Margin | Sides |
+|---|---|---|
+| `data-sds-padding` | `data-sds-margin` | Every side |
+| `data-sds-padding-block` | `data-sds-margin-block` | Block start and end |
+| `data-sds-padding-inline` | `data-sds-margin-inline` | Inline start and end |
+| `data-sds-padding-block-start` | `data-sds-margin-block-start` | Usually top |
+| `data-sds-padding-block-end` | `data-sds-margin-block-end` | Usually bottom |
+| `data-sds-padding-inline-start` | `data-sds-margin-inline-start` | Usually left |
+| `data-sds-padding-inline-end` | `data-sds-margin-inline-end` | Usually right |
+
+Logical directions adapt automatically to the page's writing direction. In a
+right-to-left language, for example, `inline-start` is the right side.
+
+Combine attributes from broadest to most specific:
+
+```html
+<div
+  data-sds-padding="lg"
+  data-sds-padding-block="sm"
+  data-sds-padding-block-start="none"
+>
+  No padding at the top, small padding at the bottom, and large padding
+  at the sides.
+</div>
+```
+
+One-sided attributes override axis attributes, and axis attributes override
+the all-sides attribute. For unusual values, use standard CSS with an SDS
+token:
+
+```html
+<div style="margin-block-start: calc(var(--sds-space-lg) * 1.5)">
+  Custom spacing
+</div>
+```
+
 ## Page and section
 
 `.sds-page` centers content at a maximum width of 80rem and supplies section

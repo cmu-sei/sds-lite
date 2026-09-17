@@ -30,6 +30,8 @@ SDS recipes use a consistent set of attributes:
 | `data-sds-orientation` | Horizontal or vertical arrangement |
 | `placement` on a floating custom element | Preferred position for floating content |
 | `data-sds-gap` | Layout spacing |
+| `data-sds-padding*` | Tokenized logical padding |
+| `data-sds-margin*` | Tokenized logical margin |
 
 Semantic tones are:
 

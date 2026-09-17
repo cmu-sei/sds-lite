@@ -24,6 +24,19 @@ classes, options, custom-element attributes, properties, methods, and events.
 | `data-sds-orientation` | `horizontal`, `vertical` |
 | `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` |
 
+Spacing utilities accept `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`,
+`3xl`, or `4xl`:
+
+| Padding | Margin | Sides |
+|---|---|---|
+| `data-sds-padding` | `data-sds-margin` | Every side |
+| `data-sds-padding-block` | `data-sds-margin-block` | Logical block axis |
+| `data-sds-padding-inline` | `data-sds-margin-inline` | Logical inline axis |
+| `data-sds-padding-block-start` | `data-sds-margin-block-start` | Block start |
+| `data-sds-padding-block-end` | `data-sds-margin-block-end` | Block end |
+| `data-sds-padding-inline-start` | `data-sds-margin-inline-start` | Inline start |
+| `data-sds-padding-inline-end` | `data-sds-margin-inline-end` | Inline end |
+
 Other documented recipe options include `data-sds-align`,
 `data-sds-avatar`, `data-sds-block`, `data-sds-callout-close`, `data-sds-columns`,
 `data-sds-density`, `data-sds-divided`, `data-sds-grow`, `data-sds-inset`,

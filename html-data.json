@@ -37,6 +37,510 @@
       "description": "Opts a link out of automatic SDS Lite styling."
     },
     {
+      "name": "data-sds-padding",
+      "description": "Applies tokenized padding on every side.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-padding-block",
+      "description": "Applies tokenized padding at the block start and end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-padding-inline",
+      "description": "Applies tokenized padding at the inline start and end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-padding-block-start",
+      "description": "Applies tokenized padding at the block start.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-padding-block-end",
+      "description": "Applies tokenized padding at the block end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-padding-inline-start",
+      "description": "Applies tokenized padding at the inline start.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-padding-inline-end",
+      "description": "Applies tokenized padding at the inline end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-margin",
+      "description": "Applies tokenized margin on every side.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-margin-block",
+      "description": "Applies tokenized margin at the block start and end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-margin-inline",
+      "description": "Applies tokenized margin at the inline start and end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-margin-block-start",
+      "description": "Applies tokenized margin at the block start.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-margin-block-end",
+      "description": "Applies tokenized margin at the block end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-margin-inline-start",
+      "description": "Applies tokenized margin at the inline start.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-margin-inline-end",
+      "description": "Applies tokenized margin at the inline end.",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "2xs"
+        },
+        {
+          "name": "xs"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "lg"
+        },
+        {
+          "name": "xl"
+        },
+        {
+          "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
+        }
+      ]
+    },
+    {
       "name": "data-sds-tone",
       "description": "Semantic color intent.",
       "values": [

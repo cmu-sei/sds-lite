@@ -34,6 +34,22 @@ Unlayered application CSS overrides SDS Lite without specificity escalation.
 --sds-space-4xl
 ```
 
+Use the spacing utilities when a token value is enough:
+
+```html
+<div
+  data-sds-padding-inline="lg"
+  data-sds-margin-block-end="sm"
+>
+  Content
+</div>
+```
+
+The utility attributes cover all sides, the `block` and `inline` axes, and
+each logical `block-start`, `block-end`, `inline-start`, and `inline-end`
+side. See [Layout](../components/layout.md#spacing-utilities) for the complete
+interface and precedence rules.
+
 ## Radius
 
 ```text

@@ -953,7 +953,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Composition</p>
-                <h2 id="composition-title">Sidebar, lists, and timelines</h2>
+                <h2 id="composition-title">Layouts, spacing, lists, and timelines</h2>
                 <p>
                   Semantic HTML creates polished application layouts without
                   component JavaScript or generated markup.
@@ -966,6 +966,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <code>.sds-grid[data-sds-columns]</code>
                 <code>.sds-grid[data-sds-orientation="vertical"]</code>
                 <code>.sds-flex</code>
+                <code>data-sds-padding*</code>
+                <code>data-sds-margin*</code>
                 <code>.sds-list[data-sds-divided]</code>
                 <code>.sds-list-marker</code>
                 <code>timeline data-sds-orientation="horizontal"</code>
@@ -983,17 +985,40 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
   &lt;main&gt;Project content&lt;/main&gt;
 &lt;/div&gt;</code></pre>
               </details>
+              <details class="sds-disclosure">
+                <summary>Copy spacing utilities</summary>
+                <pre class="demo-code"><code>&lt;section
+  data-sds-padding="lg"
+  data-sds-margin-block-end="xl"
+&gt;
+  Section content
+&lt;/section&gt;</code></pre>
+              </details>
             </div>
 
             <article class="sds-card demo-stack">
-              <h3>Easy grid and flex layouts</h3>
+              <h3>Easy grid, flex, and spacing</h3>
               <div class="sds-grid" data-sds-columns="3">
-                <div class="sds-card">
-                  <span class="sds-card-label">First column</span>
-                  Column one
+                <div class="sds-card" data-sds-padding="sm">
+                  <span class="sds-card-label">Small padding</span>
+                  Same spacing on every side
                 </div>
-                <div class="sds-card">Column two</div>
-                <div class="sds-card">Column three</div>
+                <div
+                  class="sds-card"
+                  data-sds-padding-block="xl"
+                  data-sds-padding-inline="sm"
+                >
+                  <span class="sds-card-label">Different axes</span>
+                  Extra-large block and small inline padding
+                </div>
+                <div
+                  class="sds-card"
+                  data-sds-padding="lg"
+                  data-sds-margin-block-start="md"
+                >
+                  <span class="sds-card-label">One-sided margin</span>
+                  Medium space before this card
+                </div>
               </div>
               <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-justify="between">
                 <strong data-sds-grow>Flexible content</strong>

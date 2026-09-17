@@ -23,6 +23,76 @@
       "name": "data-sds-unstyled",
       "description": "Opts a link out of automatic SDS Lite styling.",
       "type": "boolean"
+    },
+    {
+      "name": "data-sds-padding",
+      "description": "Applies tokenized padding on every side.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-block",
+      "description": "Applies tokenized padding at the block start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-inline",
+      "description": "Applies tokenized padding at the inline start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-block-start",
+      "description": "Applies tokenized padding at the block start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-block-end",
+      "description": "Applies tokenized padding at the block end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-inline-start",
+      "description": "Applies tokenized padding at the inline start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-inline-end",
+      "description": "Applies tokenized padding at the inline end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin",
+      "description": "Applies tokenized margin on every side.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-block",
+      "description": "Applies tokenized margin at the block start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-inline",
+      "description": "Applies tokenized margin at the inline start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-block-start",
+      "description": "Applies tokenized margin at the block start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-block-end",
+      "description": "Applies tokenized margin at the block end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-inline-start",
+      "description": "Applies tokenized margin at the inline start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-inline-end",
+      "description": "Applies tokenized margin at the inline end.",
+      "family": "space"
     }
   ],
   "optionFamilies": {
@@ -67,6 +137,10 @@
       "nativeName": "data-sds-gap",
       "description": "Layout spacing.",
       "values": ["none", "xs", "sm", "md", "lg", "xl", "2xl"]
+    },
+    "space": {
+      "description": "Tokenized margin or padding.",
+      "values": ["none", "2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"]
     }
   },
   "recipes": [
