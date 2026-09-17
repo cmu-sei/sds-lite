@@ -1,4 +1,4 @@
-@layer sds.utilities {
+@layer sds.components {
   :where(.sds-app) {
     display: flex;
     min-block-size: 100dvh;

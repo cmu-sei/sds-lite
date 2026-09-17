@@ -10,6 +10,10 @@ All distributed rules live in:
 @layer sds.tokens, sds.base, sds.components, sds.utilities;
 ```
 
+Recipe defaults live in `sds.components`. Composable layout and spacing
+utilities live in the later `sds.utilities` layer, so utilities can override
+recipe defaults while keeping zero-specificity selectors.
+
 Unlayered application CSS overrides SDS Lite without specificity escalation.
 
 ## Layout properties

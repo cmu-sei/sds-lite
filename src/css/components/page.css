@@ -1,4 +1,4 @@
-@layer sds.utilities {
+@layer sds.components {
   :where(.sds-page-header) {
     position: sticky;
     z-index: 5;

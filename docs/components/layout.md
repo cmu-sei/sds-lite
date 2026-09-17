@@ -99,8 +99,9 @@ Combine attributes from broadest to most specific:
 ```
 
 One-sided attributes override axis attributes, and axis attributes override
-the all-sides attribute. For unusual values, use standard CSS with an SDS
-token:
+the all-sides attribute. Spacing utilities also override spacing supplied by
+an SDS recipe, while unlayered application CSS can override the utility as
+usual. For unusual values, use standard CSS with an SDS token:
 
 ```html
 <div style="margin-block-start: calc(var(--sds-space-lg) * 1.5)">

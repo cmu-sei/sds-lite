@@ -103,3 +103,41 @@ test('specific spacing utilities override axis and all-side utilities', async ({
     marginInlineEnd: '12px',
   })
 })
+
+test('spacing utilities override SDS recipe defaults', async ({ page }) => {
+  await page.goto('/')
+
+  const eyebrow = page.locator('.sds-eyebrow').first()
+  await page.evaluate(() => {
+    const pageLayout = document.createElement('div')
+    pageLayout.id = 'spacing-page-recipe'
+    pageLayout.className = 'sds-page'
+    pageLayout.setAttribute('data-sds-padding', 'none')
+
+    const applicationFooter = document.createElement('footer')
+    applicationFooter.id = 'spacing-application-recipe'
+    applicationFooter.className = 'sds-app-footer'
+    applicationFooter.setAttribute('data-sds-padding', 'none')
+
+    document.body.append(pageLayout, applicationFooter)
+  })
+  await eyebrow.evaluate((element) => {
+    element.setAttribute('data-sds-margin-block-end', 'none')
+  })
+
+  await expect(eyebrow).toHaveCSS('margin-block-end', '0px')
+  await expect(page.locator('#spacing-page-recipe')).toHaveCSS('padding', '0px')
+  await expect(page.locator('#spacing-application-recipe')).toHaveCSS(
+    'padding',
+    '0px',
+  )
+
+  await page.addStyleTag({
+    content: '.application-spacing { margin-block-end: 7px; }',
+  })
+  await eyebrow.evaluate((element) => {
+    element.classList.add('application-spacing')
+  })
+
+  await expect(eyebrow).toHaveCSS('margin-block-end', '7px')
+})
