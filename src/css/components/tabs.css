@@ -109,8 +109,8 @@
     z-index: 1;
     padding: 0.5625rem var(--sds-space-lg);
     border: 1px solid var(--sds-color-border-default);
-    border-block-end-color: transparent;
     border-radius: var(--sds-radius-md) var(--sds-radius-md) 0 0;
+    background: var(--sds-color-surface-subtle);
   }
 
   :where(
@@ -119,7 +119,10 @@
   ) {
     color: var(--sds-tab-accent);
     background: var(--sds-color-surface-default);
-    box-shadow: 0 1px 0 var(--sds-color-surface-default);
+    border-block-end-color: transparent;
+    box-shadow:
+      0 1px 0 var(--sds-color-surface-default),
+      var(--sds-shadow-raised);
   }
 
   :where(sds-tabs[data-variant="block"] .sds-tab) {

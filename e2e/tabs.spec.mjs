@@ -3,7 +3,9 @@ import { expect, test } from '@playwright/test'
 test('the selected folder tab covers the divider without vertical scrolling', async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
+  await page.waitForTimeout(20)
 
   const selectedTab = page.getByRole('tab', {
     name: 'Large folder',
@@ -23,6 +25,7 @@ test('the selected folder tab covers the divider without vertical scrolling', as
     )
     const listRect = tabList.getBoundingClientRect()
     const listStyle = getComputedStyle(tabList)
+    const peerStyle = getComputedStyle(peerTab)
     const tabStyle = getComputedStyle(tab)
     tabList.scrollTop = 1
     return {
@@ -31,11 +34,15 @@ test('the selected folder tab covers the divider without vertical scrolling', as
       listBottom: listRect.bottom,
       overflowY: listStyle.overflowY,
       tabBorderBottomWidth: tabStyle.borderBottomWidth,
+      tabBorderBottomColor: tabStyle.borderBottomColor,
+      tabBackground: tabStyle.backgroundColor,
       tabBoxShadow: tabStyle.boxShadow,
       scrollTop: tabList.scrollTop,
       tabBottom: tabRect.bottom,
       tabTextTop: textTop(tab),
       peerTextTop: textTop(peerTab),
+      peerBorderBottomColor: peerStyle.borderBottomColor,
+      peerBackground: peerStyle.backgroundColor,
       verticalScrollRange: tabList.scrollHeight - tabList.clientHeight,
     }
   })
@@ -43,9 +50,14 @@ test('the selected folder tab covers the divider without vertical scrolling', as
   expect(layout.listBorderBottomWidth).toBe('0px')
   expect(layout.overflowY).not.toBe('hidden')
   expect(layout.tabBorderBottomWidth).toBe('1px')
+  expect(layout.tabBorderBottomColor).toBe('rgba(0, 0, 0, 0)')
+  expect(layout.tabBackground).toBe('rgb(255, 255, 255)')
   expect(layout.tabBoxShadow).not.toBe('none')
+  expect(layout.tabBoxShadow).toContain('rgba(0, 0, 0, 0.1)')
   expect(layout.verticalScrollRange).toBe(0)
   expect(layout.scrollTop).toBe(0)
   expect(layout.tabBottom).toBe(layout.listBottom)
   expect(layout.tabTextTop).toBe(layout.peerTextTop)
+  expect(layout.peerBorderBottomColor).not.toBe('rgba(0, 0, 0, 0)')
+  expect(layout.peerBackground).toBe('rgb(248, 248, 248)')
 })
