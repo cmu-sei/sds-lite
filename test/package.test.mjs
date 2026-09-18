@@ -41,6 +41,7 @@ test('browser-only helpers fail clearly when called during SSR', async () => {
 test('declarations use publishable JavaScript specifiers', async () => {
   const declarations = await readFile('package/sds.d.ts', 'utf8')
   assert.doesNotMatch(declarations, /from ['"].+\.ts['"]/)
+  assert.equal(await readFile('package/auto.d.ts', 'utf8'), '')
 })
 
 test('the application build retains automatic registration', async () => {
@@ -60,6 +61,29 @@ test('the application build includes linked documentation', async () => {
   await access('dist/docs/getting-started.md')
   await access('dist/docs/components/README.md')
   await access('dist/docs/reference/README.md')
+})
+
+test('the application build includes stable CDN entries', async () => {
+  for (const filename of [
+    'auto.js',
+    'brand.css',
+    'core.css',
+    'dialog.js',
+    'dropdown.js',
+    'interface-manifest.schema.json',
+    'layouts.css',
+    'popover.js',
+    'prose.css',
+    'sds.css',
+    'sds.js',
+    'tabs.js',
+    'toast.js',
+    'tooltip.js',
+  ]) {
+    await access(`dist/${filename}`)
+  }
+  await access('dist/package/auto.js')
+  await access('dist/package/assets/sei-wordmark.svg')
 })
 
 test('the automatic entry and root entry share behavior modules', async () => {
@@ -117,9 +141,22 @@ test('internal TypeScript declarations are not published', async () => {
 test('the package remains dependency-free', () => {
   assert.equal(packageJson.dependencies, undefined)
   assert.equal(packageJson.peerDependencies, undefined)
+  assert.equal(packageJson.optionalDependencies, undefined)
+})
+
+test('the package identifies its public release locations', () => {
+  assert.equal(
+    packageJson.repository.url,
+    'git+https://github.com/cmu-sei/sds-lite.git',
+  )
+  assert.equal(
+    packageJson.publishConfig.registry,
+    'https://npm.pkg.github.com/',
+  )
 })
 
 test('structured documentation is published', () => {
+  assert.ok(packageJson.files.includes('LICENSE'))
   assert.ok(packageJson.files.includes('docs'))
   assert.equal(customElementsManifest.readme, 'docs/README.md')
   assert.ok(packageJson.files.includes('html-data.json'))

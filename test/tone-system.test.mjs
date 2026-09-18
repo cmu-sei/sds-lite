@@ -91,10 +91,13 @@ test('accent is blue and info uses the upstream teal palette', () => {
 test('focus indicators remain visible in normal and forced-color modes', () => {
   assert.match(
     tokens,
-    /--sds-color-focus-ring:\s*light-dark\(\s*var\(--sds-blue-600\),\s*var\(--sds-blue-300\)/,
+    /--sds-color-focus-ring:\s*light-dark\(\s*var\(--sds-blue-300\),\s*var\(--sds-blue-700\)/,
   )
-  assert.match(foundations, /outline: 2px solid var\(--sds-color-focus-ring\)/)
+  assert.match(
+    foundations,
+    /box-shadow: 0 0 0 2px var\(--sds-color-focus-ring\)/,
+  )
   assert.match(foundations, /@media \(forced-colors: active\)/)
-  assert.match(foundations, /outline-color: Highlight/)
-  assert.doesNotMatch(foundations, /outline:\s*none/)
+  assert.match(foundations, /outline: 2px solid Highlight/)
+  assert.match(foundations, /box-shadow: none/)
 })

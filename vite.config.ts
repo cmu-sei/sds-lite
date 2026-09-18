@@ -9,6 +9,7 @@ const documentationDirectory = fileURLToPath(
 )
 
 export default defineConfig({
+  base: './',
   publicDir: false,
   plugins: [
     {

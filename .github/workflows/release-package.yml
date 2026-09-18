@@ -1,0 +1,154 @@
+name: Release Package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build release artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      dist-tag: ${{ steps.release.outputs.dist-tag }}
+      package-name: ${{ steps.release.outputs.package-name }}
+      version: ${{ steps.release.outputs.version }}
+
+    steps:
+      - name: Check out the released source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify the release commit is on main
+        run: |
+          if ! git merge-base --is-ancestor HEAD refs/remotes/origin/main; then
+            echo "::error::Release tags must point to a commit on main"
+            exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Use the pinned npm version
+        run: npm install --global npm@11.6.4
+
+      - name: Validate release metadata
+        id: release
+        env:
+          IS_PRERELEASE: ${{ github.event.release.prerelease }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: node scripts/validate-release.mjs
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Preserve the tagged distribution
+        run: cp -R dist "$RUNNER_TEMP/tagged-dist"
+
+      - name: Build and test
+        run: npm test
+
+      - name: Verify the tagged distribution is current
+        run: diff --recursive --brief "$RUNNER_TEMP/tagged-dist" dist
+
+      - name: Verify the package contents and size
+        run: npm run check:package
+
+      - name: Pack the tested package
+        run: npm pack --ignore-scripts
+
+      - name: Upload the release artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-artifact
+          path: cmu-sei-sds-lite-*.tgz
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish to GitHub Packages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ needs.build.outputs.dist-tag == 'latest' && 'github-packages-production' || 'github-packages-beta' }}
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22.18.0
+          registry-url: https://npm.pkg.github.com
+          scope: "@cmu-sei"
+
+      - name: Use the pinned npm version
+        run: npm install --global npm@11.6.4
+
+      - name: Download the tested package
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release-artifact
+          path: release-artifact
+
+      - name: Locate the tested package
+        id: artifact
+        run: |
+          TARBALLS=(release-artifact/*.tgz)
+          if [[ "${#TARBALLS[@]}" -ne 1 || ! -f "${TARBALLS[0]}" ]]; then
+            echo "::error::Expected exactly one package tarball"
+            exit 1
+          fi
+          echo "tarball=${TARBALLS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify the version is unpublished
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_NAME: ${{ needs.build.outputs.package-name }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set +e
+          RESULT="$(npm view "$PACKAGE_NAME@$VERSION" version --json 2>&1)"
+          STATUS=$?
+          set -e
+          if [[ "$STATUS" -eq 0 ]]; then
+            echo "::error::$PACKAGE_NAME@$VERSION is already published"
+            exit 1
+          fi
+          if ! grep -q 'E404' <<< "$RESULT"; then
+            echo "::error::Could not verify whether $PACKAGE_NAME@$VERSION exists"
+            printf '%s\n' "$RESULT"
+            exit 1
+          fi
+
+      - name: Dry-run publication
+        env:
+          DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARBALL: ${{ steps.artifact.outputs.tarball }}
+        run: npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts --dry-run
+
+      - name: Publish to GitHub Packages
+        env:
+          DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARBALL: ${{ steps.artifact.outputs.tarball }}
+        run: |
+          npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts

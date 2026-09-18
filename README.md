@@ -9,6 +9,9 @@ templates, and static sites.
 
 ### NPM
 
+Configure npm for GitHub Packages as described in the
+[installation guide](./docs/installation/npm.md), then install:
+
 ```sh
 npm install @cmu-sei/sds-lite
 ```
@@ -23,11 +26,11 @@ import '@cmu-sei/sds-lite/auto'
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/sds.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.css"
 >
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/@cmu-sei/sds-lite@0.1.0/auto.js"
+  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/auto.js"
 ></script>
 ```
 

@@ -23,6 +23,35 @@ const reference = (
   await Promise.all(documentationFiles.map((file) => readFile(file, 'utf8')))
 ).join('\n')
 
+test('CDN documentation uses the versioned GitHub repository location', async () => {
+  const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
+  const cdnGuide = await readFile('docs/installation/cdn.md', 'utf8')
+  const sources = [
+    reference,
+    await readFile('index.html', 'utf8'),
+    await readFile('interface-manifest.schema.json', 'utf8'),
+  ].join('\n')
+  const expectedBase =
+    `https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v${packageJson.version}/dist/`
+  const urls = Array.from(
+    sources.matchAll(
+      /https:\/\/cdn\.jsdelivr\.net\/gh\/cmu-sei\/sds-lite@v\d+\.\d+\.\d+[^'"<>\s)]*/g,
+    ),
+    (match) => match[0],
+  )
+
+  assert.ok(urls.length > 0)
+  assert.equal(urls.every((url) => url.startsWith(expectedBase)), true)
+  assert.doesNotMatch(sources, /cdn\.jsdelivr\.net\/npm\/@cmu-sei\/sds-lite/)
+  assert.doesNotMatch(sources, /cmu-sei\.github\.io\/sds-lite/)
+  assert.match(
+    cdnGuide,
+    /cdn\.jsdelivr\.net\/gh\/cmu-sei\/sds-lite@vVERSION\/dist\/FILE/,
+  )
+  assert.match(cdnGuide, /Download the `dist\/` directory/)
+  assert.doesNotMatch(cdnGuide, /published package files/)
+})
+
 test('local documentation links resolve', async () => {
   for (const file of documentationFiles) {
     const source = await readFile(file, 'utf8')

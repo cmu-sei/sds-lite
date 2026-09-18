@@ -1,0 +1,666 @@
+{
+  "$schema": "./interface-manifest.schema.json",
+  "schemaVersion": "1.0.0",
+  "globalAttributes": [
+    {
+      "name": "data-sds-root",
+      "description": "Scopes SDS Lite foundations, recipes, and tokens.",
+      "type": "boolean"
+    },
+    {
+      "name": "data-sds-theme",
+      "description": "Selects an SDS Lite theme.",
+      "values": ["forge", "plaid"],
+      "default": "forge"
+    },
+    {
+      "name": "data-sds-color-scheme",
+      "description": "Selects a light, dark, or system color scheme.",
+      "values": ["light", "dark", "system"],
+      "default": "light"
+    },
+    {
+      "name": "data-sds-unstyled",
+      "description": "Opts a link out of automatic SDS Lite styling.",
+      "type": "boolean"
+    },
+    {
+      "name": "data-sds-padding",
+      "description": "Applies tokenized padding on every side.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-block",
+      "description": "Applies tokenized padding at the block start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-inline",
+      "description": "Applies tokenized padding at the inline start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-block-start",
+      "description": "Applies tokenized padding at the block start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-block-end",
+      "description": "Applies tokenized padding at the block end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-inline-start",
+      "description": "Applies tokenized padding at the inline start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-padding-inline-end",
+      "description": "Applies tokenized padding at the inline end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin",
+      "description": "Applies tokenized margin on every side.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-block",
+      "description": "Applies tokenized margin at the block start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-inline",
+      "description": "Applies tokenized margin at the inline start and end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-block-start",
+      "description": "Applies tokenized margin at the block start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-block-end",
+      "description": "Applies tokenized margin at the block end.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-inline-start",
+      "description": "Applies tokenized margin at the inline start.",
+      "family": "space"
+    },
+    {
+      "name": "data-sds-margin-inline-end",
+      "description": "Applies tokenized margin at the inline end.",
+      "family": "space"
+    }
+  ],
+  "optionFamilies": {
+    "tone": {
+      "nativeName": "data-sds-tone",
+      "description": "Semantic color intent.",
+      "values": ["neutral", "accent", "info", "success", "warning", "danger"]
+    },
+    "size": {
+      "nativeName": "data-sds-size",
+      "description": "Visual scale.",
+      "values": ["xs", "sm", "md", "lg", "xl"]
+    },
+    "width": {
+      "nativeName": "data-sds-width",
+      "description": "Recipe or overlay width.",
+      "values": ["auto", "sm", "md", "lg", "xl", "2xl"]
+    },
+    "orientation": {
+      "nativeName": "data-sds-orientation",
+      "description": "Layout or interaction orientation.",
+      "values": ["horizontal", "vertical"]
+    },
+    "placement": {
+      "description": "Preferred logical floating placement.",
+      "values": [
+        "block-start",
+        "block-start-start",
+        "block-start-end",
+        "block-end",
+        "block-end-start",
+        "block-end-end",
+        "inline-start",
+        "inline-start-start",
+        "inline-start-end",
+        "inline-end",
+        "inline-end-start",
+        "inline-end-end"
+      ]
+    },
+    "gap": {
+      "nativeName": "data-sds-gap",
+      "description": "Layout spacing.",
+      "values": ["none", "xs", "sm", "md", "lg", "xl", "2xl"]
+    },
+    "space": {
+      "description": "Tokenized margin or padding.",
+      "values": ["none", "2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"]
+    }
+  },
+  "recipes": [
+    {
+      "name": "button",
+      "category": "Actions and forms",
+      "classes": ["sds-button"],
+      "elements": ["button", "a"],
+      "description": "Action styling for native buttons and links.",
+      "options": {
+        "data-sds-variant": ["primary", "secondary", "tertiary", "ghost"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
+        "data-sds-size": ["xs", "sm", "md", "lg", "xl"],
+        "data-sds-density": ["compact"],
+        "data-sds-shape": ["icon"],
+        "data-sds-avatar": [],
+        "data-sds-block": []
+      }
+    },
+    {
+      "name": "link",
+      "category": "Actions and forms",
+      "classes": ["sds-link"],
+      "elements": ["a"],
+      "description": "Link styling with semantic tone and emphasis.",
+      "options": {
+        "data-sds-variant": ["secondary", "tertiary", "inline", "cta"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
+        "data-sds-size": ["xs", "sm", "md", "lg", "xl"]
+      }
+    },
+    {
+      "name": "field",
+      "category": "Actions and forms",
+      "classes": ["sds-field"],
+      "description": "Label, control, help, and validation layout.",
+      "options": {
+        "data-sds-orientation": ["horizontal", "vertical"],
+        "data-sds-tone": ["success", "danger"]
+      }
+    },
+    {
+      "name": "form",
+      "category": "Actions and forms",
+      "classes": ["sds-form"],
+      "description": "Narrow vertical form layout.",
+      "options": {}
+    },
+    {
+      "name": "form-control",
+      "category": "Actions and forms",
+      "classes": ["sds-input", "sds-select"],
+      "elements": ["input", "select", "textarea"],
+      "description": "Explicit hooks for native form controls.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"]
+      }
+    },
+    {
+      "name": "choice",
+      "category": "Actions and forms",
+      "classes": ["sds-choice"],
+      "elements": ["label"],
+      "description": "Checkbox or radio with label text.",
+      "options": {}
+    },
+    {
+      "name": "switch",
+      "category": "Actions and forms",
+      "classes": ["sds-switch"],
+      "elements": ["label"],
+      "description": "Native checkbox with switch appearance.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      }
+    },
+    {
+      "name": "file-upload",
+      "category": "Actions and forms",
+      "classes": [
+        "sds-file-input",
+        "sds-file-upload",
+        "sds-file-upload-action",
+        "sds-file-upload-surface"
+      ],
+      "description": "Native file input and composed upload surface.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"]
+      }
+    },
+    {
+      "name": "action-group",
+      "category": "Actions and forms",
+      "classes": ["sds-action-group"],
+      "description": "Responsive layout for related actions.",
+      "options": {}
+    },
+    {
+      "name": "badge",
+      "category": "Feedback and loading",
+      "classes": ["sds-badge"],
+      "description": "Compact status or category.",
+      "options": {
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
+        "data-sds-variant": ["light", "light-border", "dark"]
+      }
+    },
+    {
+      "name": "tag",
+      "category": "Feedback and loading",
+      "classes": ["sds-tag", "sds-tag-action", "sds-tag-counter", "sds-tag-label"],
+      "description": "Static or interactive category with optional counter and action.",
+      "options": {
+        "data-sds-size": ["sm", "md"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      }
+    },
+    {
+      "name": "callout",
+      "category": "Feedback and loading",
+      "classes": ["sds-callout", "sds-callout-timestamp"],
+      "description": "Contextual message in page content.",
+      "options": {
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
+        "data-sds-variant": ["outline", "bold"],
+        "data-sds-size": ["xs", "sm", "md", "lg"],
+        "data-sds-inset": [],
+        "data-sds-callout-close": []
+      }
+    },
+    {
+      "name": "toast-region",
+      "category": "Feedback and loading",
+      "classes": ["sds-toaster"],
+      "description": "Fixed notification region.",
+      "options": {
+        "data-sds-toast-open": [],
+        "data-sds-toast-close": []
+      }
+    },
+    {
+      "name": "spinner",
+      "category": "Feedback and loading",
+      "classes": ["sds-spinner"],
+      "description": "Animated loading indicator.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      }
+    },
+    {
+      "name": "skeleton",
+      "category": "Feedback and loading",
+      "classes": ["sds-skeleton"],
+      "description": "Loading placeholder.",
+      "options": {}
+    },
+    {
+      "name": "empty-state",
+      "category": "Feedback and loading",
+      "classes": ["sds-empty-state"],
+      "description": "Empty-result message.",
+      "options": {}
+    },
+    {
+      "name": "avatar",
+      "category": "Content and data",
+      "classes": ["sds-avatar", "sds-avatar-group"],
+      "description": "Person image or initials and overlapping groups.",
+      "options": {
+        "data-sds-size": ["xs", "sm", "md", "lg", "xl"],
+        "data-sds-shape": ["circle", "square", "portrait"],
+        "data-sds-variant": ["subtle", "solid", "outline"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
+        "data-sds-density": ["condensed"]
+      }
+    },
+    {
+      "name": "card",
+      "category": "Content and data",
+      "classes": ["sds-card", "sds-card-label"],
+      "description": "Raised content container and muted label.",
+      "options": {}
+    },
+    {
+      "name": "datapoint",
+      "category": "Content and data",
+      "classes": ["sds-datapoint"],
+      "description": "Label, value, and context.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      }
+    },
+    {
+      "name": "list",
+      "category": "Content and data",
+      "classes": ["sds-list", "sds-list-item", "sds-list-marker"],
+      "description": "Structured content list.",
+      "options": {
+        "data-sds-divided": []
+      }
+    },
+    {
+      "name": "timeline",
+      "category": "Content and data",
+      "classes": ["sds-timeline", "sds-timeline-item", "sds-timeline-marker"],
+      "description": "Vertical or horizontal event sequence.",
+      "options": {
+        "data-sds-orientation": ["horizontal", "vertical"]
+      }
+    },
+    {
+      "name": "table",
+      "category": "Content and data",
+      "classes": ["sds-table", "sds-table-container"],
+      "description": "Application data table and overflow container.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"],
+        "data-sds-standalone": [],
+        "data-sds-row-highlight": [],
+        "data-sds-sticky": ["start", "end"]
+      }
+    },
+    {
+      "name": "grid",
+      "category": "Layout",
+      "classes": ["sds-grid"],
+      "description": "Responsive equal-width grid.",
+      "options": {
+        "data-sds-columns": ["1", "2", "3", "4", "5", "6"],
+        "data-sds-orientation": ["horizontal", "vertical"],
+        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl"]
+      }
+    },
+    {
+      "name": "flex",
+      "category": "Layout",
+      "classes": ["sds-flex"],
+      "description": "Configurable flex layout.",
+      "options": {
+        "data-sds-orientation": ["horizontal", "vertical"],
+        "data-sds-wrap": [],
+        "data-sds-align": ["start", "center", "end", "stretch"],
+        "data-sds-justify": ["start", "center", "end", "between"],
+        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl"],
+        "data-sds-grow": [],
+        "data-sds-no-shrink": []
+      }
+    },
+    {
+      "name": "page",
+      "category": "Layout",
+      "classes": ["sds-page", "sds-page-header", "sds-section-header", "sds-eyebrow"],
+      "description": "Page content, headers, and section context.",
+      "options": {}
+    },
+    {
+      "name": "sidebar",
+      "category": "Layout",
+      "classes": ["sds-sidebar", "sds-sidebar-close", "sds-sidebar-layout"],
+      "description": "Persistent or mobile navigation layout.",
+      "options": {}
+    },
+    {
+      "name": "dialog",
+      "category": "Navigation and overlays",
+      "classes": ["sds-dialog", "sds-dialog-header", "sds-dialog-footer"],
+      "elements": ["dialog"],
+      "description": "Native dialog surface and action layout.",
+      "options": {
+        "data-sds-width": ["sm", "md", "lg", "xl", "2xl"],
+        "data-sds-return-value": []
+      }
+    },
+    {
+      "name": "panel",
+      "category": "Navigation and overlays",
+      "classes": ["sds-panel"],
+      "elements": ["dialog"],
+      "description": "Edge-attached native dialog.",
+      "options": {
+        "data-sds-side": ["left", "right", "bottom"],
+        "data-sds-width": ["sm", "md", "lg", "xl"]
+      }
+    },
+    {
+      "name": "disclosure",
+      "category": "Navigation and overlays",
+      "classes": ["sds-disclosure"],
+      "elements": ["details"],
+      "description": "Native details disclosure.",
+      "options": {}
+    },
+    {
+      "name": "pagination",
+      "category": "Navigation and overlays",
+      "classes": ["sds-pagination", "sds-pagination-status"],
+      "elements": ["nav"],
+      "description": "Page navigation and result status.",
+      "options": {}
+    },
+    {
+      "name": "tabs-parts",
+      "category": "Navigation and overlays",
+      "classes": ["sds-tab", "sds-tab-list", "sds-tab-panel"],
+      "description": "Generated or server-rendered tab structure.",
+      "options": {}
+    },
+    {
+      "name": "dropdown-parts",
+      "category": "Navigation and overlays",
+      "classes": ["sds-dropdown-menu", "sds-dropdown-divider", "sds-dropdown-label"],
+      "description": "Dropdown menu surface, separator, and label.",
+      "options": {
+        "data-sds-tone": ["danger"]
+      }
+    },
+    {
+      "name": "floating-parts",
+      "category": "Navigation and overlays",
+      "classes": ["sds-popover-content", "sds-tooltip-content"],
+      "description": "Popover and tooltip surfaces.",
+      "options": {}
+    },
+    {
+      "name": "prose",
+      "category": "Prose",
+      "classes": ["sds-prose", "sds-prose-lead", "sds-not-prose", "sds-sr-only"],
+      "description": "Long-form semantic typography and opt-out.",
+      "options": {
+        "data-sds-size": ["sm", "md"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      }
+    },
+    {
+      "name": "application-shell",
+      "category": "Application shells",
+      "classes": [
+        "sds-app",
+        "sds-app-action-bar",
+        "sds-app-body",
+        "sds-app-brand",
+        "sds-app-brand-prefix",
+        "sds-app-footer",
+        "sds-app-footer-brand",
+        "sds-app-footer-content",
+        "sds-app-footer-legal",
+        "sds-app-footer-middle",
+        "sds-app-footer-top",
+        "sds-app-header",
+        "sds-app-layout",
+        "sds-app-main",
+        "sds-app-mobile-header",
+        "sds-sei-wordmark",
+        "sds-brochure-brand",
+        "sds-brochure-container",
+        "sds-brochure-footer-about",
+        "sds-brochure-footer-actions",
+        "sds-brochure-footer-content",
+        "sds-brochure-footer-legal",
+        "sds-brochure-footer-links",
+        "sds-brochure-footer-main",
+        "sds-brochure-footer-navigation",
+        "sds-brochure-header",
+        "sds-brochure-main",
+        "sds-brochure-masthead",
+        "sds-brochure-navigation",
+        "sds-cmu-wordmark"
+      ],
+      "description": "SEI application, simple, and brochure shells.",
+      "options": {
+        "data-sds-variant": ["application", "simple", "brochure"]
+      }
+    }
+  ],
+  "customElements": [
+    {
+      "tagName": "sds-dropdown",
+      "className": "SdsDropdownElement",
+      "module": "package/dropdown.js",
+      "description": "Enhances a direct child button and menu with Popover positioning and menu keyboard behavior.",
+      "content": [
+        "One direct child button trigger.",
+        "One direct child menu or Popover surface."
+      ],
+      "attributes": [
+        {"name": "open", "type": "boolean", "description": "Whether the menu is open."},
+        {"name": "placement", "family": "placement"},
+        {"name": "offset", "type": "number", "description": "Nonnegative offset in CSS pixels."},
+        {"name": "width", "family": "width"},
+        {"name": "hide-caret", "type": "boolean", "description": "Hides the visual caret."}
+      ],
+      "members": [
+        {"name": "open", "kind": "field", "type": "boolean", "description": "Reflects the open attribute."},
+        {"name": "placement", "kind": "field", "type": "SdsPlacement", "description": "Reflects the placement attribute."},
+        {"name": "offset", "kind": "field", "type": "number", "description": "Reflects the offset attribute."},
+        {"name": "width", "kind": "field", "type": "SdsWidth", "description": "Reflects the width attribute."},
+        {"name": "hideCaret", "kind": "field", "type": "boolean", "description": "Reflects the hide-caret attribute."},
+        {"name": "show", "kind": "method", "description": "Opens the menu."},
+        {"name": "hide", "kind": "method", "description": "Closes the menu."}
+      ],
+      "events": [
+        {"name": "sds-toggle", "type": "CustomEvent<SdsToggleDetail>", "description": "Dispatched after the open state changes."}
+      ]
+    },
+    {
+      "tagName": "sds-popover",
+      "className": "SdsPopoverElement",
+      "module": "package/popover.js",
+      "description": "Enhances a direct child button and rich Popover surface with delayed hover and focus behavior.",
+      "content": [
+        "One direct child button trigger.",
+        "One direct child rich-content Popover surface."
+      ],
+      "attributes": [
+        {"name": "open", "type": "boolean", "description": "Whether the popover is open."},
+        {"name": "placement", "family": "placement"},
+        {"name": "offset", "type": "number", "description": "Nonnegative offset in CSS pixels."},
+        {"name": "width", "family": "width"}
+      ],
+      "members": [
+        {"name": "open", "kind": "field", "type": "boolean", "description": "Reflects the open attribute."},
+        {"name": "placement", "kind": "field", "type": "SdsPlacement", "description": "Reflects the placement attribute."},
+        {"name": "offset", "kind": "field", "type": "number", "description": "Reflects the offset attribute."},
+        {"name": "width", "kind": "field", "type": "SdsWidth", "description": "Reflects the width attribute."},
+        {"name": "show", "kind": "method", "description": "Opens the popover."},
+        {"name": "hide", "kind": "method", "description": "Closes the popover."}
+      ],
+      "events": [
+        {"name": "sds-toggle", "type": "CustomEvent<SdsToggleDetail>", "description": "Dispatched after the open state changes."}
+      ]
+    },
+    {
+      "tagName": "sds-tabs",
+      "className": "SdsTabsElement",
+      "module": "package/tabs.js",
+      "description": "Coordinates a tab list and one panel per tab.",
+      "content": [
+        "A direct child tab-list container with button or link children.",
+        "One direct child panel for every tab."
+      ],
+      "attributes": [
+        {"name": "value", "type": "string", "description": "Value of the selected tab."},
+        {"name": "activation", "values": ["automatic", "manual"], "description": "Whether focus automatically selects a tab."},
+        {"name": "orientation", "family": "orientation"},
+        {"name": "size", "values": ["md", "lg"], "description": "Visual scale."},
+        {"name": "tone", "family": "tone"},
+        {"name": "variant", "values": ["folder", "block", "underline"], "description": "Visual treatment."}
+      ],
+      "members": [
+        {"name": "value", "kind": "field", "type": "string", "description": "Gets or selects the current tab by value."},
+        {"name": "activation", "kind": "field", "type": "SdsTabsActivation", "description": "Reflects the activation attribute."},
+        {"name": "orientation", "kind": "field", "type": "SdsOrientation", "description": "Reflects the orientation attribute."},
+        {"name": "size", "kind": "field", "type": "SdsTabsSize", "description": "Reflects the size attribute."},
+        {"name": "tone", "kind": "field", "type": "SdsTone", "description": "Reflects the tone attribute."},
+        {"name": "variant", "kind": "field", "type": "SdsTabsVariant", "description": "Reflects the variant attribute."}
+      ],
+      "events": [
+        {"name": "sds-change", "type": "CustomEvent<SdsTabsChangeDetail>", "description": "Dispatched when user interaction selects a new tab."}
+      ]
+    },
+    {
+      "tagName": "sds-tooltip",
+      "className": "SdsTooltipElement",
+      "module": "package/tooltip.js",
+      "description": "Enhances a direct child trigger and short description with accessible tooltip behavior.",
+      "content": [
+        "One direct child trigger.",
+        "One direct child text description."
+      ],
+      "attributes": [
+        {"name": "placement", "family": "placement"},
+        {"name": "offset", "type": "number", "description": "Nonnegative offset in CSS pixels."}
+      ],
+      "members": [
+        {"name": "placement", "kind": "field", "type": "SdsPlacement", "description": "Reflects the placement attribute."},
+        {"name": "offset", "kind": "field", "type": "number", "description": "Reflects the offset attribute."}
+      ]
+    },
+    {
+      "tagName": "sds-toast",
+      "className": "SdsToastElement",
+      "module": "package/toast.js",
+      "description": "A timed or persistent notification.",
+      "content": [
+        "A direct child strong title.",
+        "Message content.",
+        "A close control for persistent notifications."
+      ],
+      "attributes": [
+        {"name": "open", "type": "boolean", "description": "Whether the toast is visible."},
+        {"name": "tone", "family": "tone"},
+        {"name": "duration", "type": "number", "description": "Positive duration in milliseconds."},
+        {"name": "persistent", "type": "boolean", "description": "Disables automatic dismissal."}
+      ],
+      "members": [
+        {"name": "open", "kind": "field", "type": "boolean", "description": "Reflects the open attribute."},
+        {"name": "tone", "kind": "field", "type": "SdsTone", "description": "Reflects the tone attribute."},
+        {"name": "duration", "kind": "field", "type": "number", "description": "Reflects the duration attribute."},
+        {"name": "persistent", "kind": "field", "type": "boolean", "description": "Reflects the persistent attribute."},
+        {"name": "show", "kind": "method", "description": "Opens the toast and starts its timer."},
+        {
+          "name": "close",
+          "kind": "method",
+          "description": "Closes the toast.",
+          "parameters": [
+            {
+              "name": "reason",
+              "type": "SdsToastCloseReason",
+              "default": "'programmatic'"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {"name": "sds-open", "type": "CustomEvent<void>", "description": "Dispatched when show() opens the toast."},
+        {"name": "sds-close", "type": "CustomEvent<{ reason: SdsToastCloseReason }>", "description": "Dispatched when the toast closes."}
+      ]
+    }
+  ]
+}
