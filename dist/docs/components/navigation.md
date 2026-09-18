@@ -97,8 +97,15 @@ works without JavaScript:
 </nav>
 ```
 
-Use `aria-current="page"` on the current page. For unavailable previous or
-next actions, omit `href`, add `aria-disabled="true"`, and add `tabindex="-1"`.
+Use `aria-current="page"` on the current page. For unavailable previous or next actions, render a noninteractive link
+placeholder:
+
+```html
+<a role="link" aria-disabled="true" tabindex="-1" aria-label="Previous page">
+  <svg aria-hidden="true" viewBox="0 0 8 13">...</svg>
+</a>
+```
+
 Client-rendered applications may use buttons instead of links when changing
 pages does not change the URL.
 
@@ -144,9 +151,10 @@ Dropdowns support:
 - synchronized `aria-expanded`;
 - repositioning during document and nested-container scrolling.
 
-Use native `disabled` on menu buttons and `aria-disabled="true"` on other
-menu items. The trigger and menu must be direct children. Invalid or ambiguous
-structures are not enhanced and produce a console warning.
+Use `aria-disabled="true"` on unavailable menu items. Unlike a native disabled
+button, an ARIA-disabled menu item remains in the arrow-key sequence; SDS Lite
+prevents its activation. The trigger and menu must be direct children. Invalid
+or ambiguous structures are not enhanced and produce a console warning.
 
 Use `hide-caret` when the trigger already communicates that it opens a
 menu, such as an icon-only action or avatar-group overflow count.

@@ -94,10 +94,11 @@ function f(e, t = {}) {
 	d();
 	let n = t.container ?? document, r = t.container?.matches(".sds-toaster, sds-toaster") ?? !1 ? t.container : n.querySelector(".sds-toaster, sds-toaster");
 	if (!r) {
-		r = document.createElement("div"), r.className = "sds-toaster", r.setAttribute("aria-label", "Notifications");
+		r = document.createElement("section"), r.className = "sds-toaster", r.setAttribute("aria-label", "Notifications");
 		let e = t.container ?? document.querySelector("[data-sds-root]");
 		e || (r.dataset.sdsRoot = ""), (e ?? document.body).append(r);
 	}
+	r.localName === "div" && !r.hasAttribute("role") && r.setAttribute("role", "region"), !r.hasAttribute("aria-label") && !r.hasAttribute("aria-labelledby") && r.setAttribute("aria-label", "Notifications");
 	let i = document.createElement("sds-toast");
 	i.tone = t.tone ?? "info", i.setAttribute("role", t.urgent ? "alert" : "status"), i.setAttribute("aria-atomic", "true"), t.duration !== void 0 && (i.duration = t.duration), i.persistent = t.persistent ?? !1;
 	let a = document.createElement("strong");

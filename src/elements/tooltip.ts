@@ -65,7 +65,6 @@ export class SdsTooltipElement extends HTMLElementBase {
     if (!trigger || !content) {
       console.warn(
         '<sds-tooltip> requires one direct child trigger and one direct child text element.',
-        this,
       )
       return
     }

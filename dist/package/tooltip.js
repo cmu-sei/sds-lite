@@ -23,7 +23,7 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 		this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
 		let n = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), r = o(this), a = r.find((e) => e.matches("[role=\"tooltip\"], .sds-tooltip-content, [popover]")) ?? (r.length === 2 ? r[1] : null) ?? null, s = r.find((e) => e !== a) ?? null;
 		if (!s || !a) {
-			console.warn("<sds-tooltip> requires one direct child trigger and one direct child text element.", this);
+			console.warn("<sds-tooltip> requires one direct child trigger and one direct child text element.");
 			return;
 		}
 		let c = i(a, "sds-tooltip"), l = new Set((s.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean));

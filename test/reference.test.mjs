@@ -127,16 +127,18 @@ test('documentation lists every package entry', async () => {
 
 test('documentation lists every exported declaration', async () => {
   const files = [
-    'package/elements/dialog.d.ts',
-    'package/elements/dropdown.d.ts',
-    'package/elements/popover.d.ts',
-    'package/elements/tabs.d.ts',
-    'package/elements/tooltip.d.ts',
-    'package/elements/toast.d.ts',
+    'dist/package/elements/dialog.d.ts',
+    'dist/package/elements/dropdown.d.ts',
+    'dist/package/elements/popover.d.ts',
+    'dist/package/elements/tabs.d.ts',
+    'dist/package/elements/tooltip.d.ts',
+    'dist/package/elements/toast.d.ts',
   ]
   const declarations = (
     await Promise.all(
-      ['package/sds.d.ts', ...files].map((file) => readFile(file, 'utf8')),
+      ['dist/package/sds.d.ts', ...files].map((file) =>
+        readFile(file, 'utf8'),
+      ),
     )
   ).join('\n')
   const names = matches(

@@ -103,6 +103,13 @@ Review `git status` and `git diff`. The release PR should contain only:
 - The complete regenerated `dist/` directory, including `dist/package/`.
 - An exact, approved copy of every required legal file.
 
+The release PR must also record manual accessibility results for keyboard,
+200% and 400% zoom, reduced motion, forced colors where supported, and at
+least one screen-reader/browser combination on each supported desktop
+platform. Include the browser, operating system, assistive technology,
+versions, tester, date, and outcome. Do not claim WCAG conformance without a
+reviewed conformance assessment for the release.
+
 Title the pull request `Release v<version>`, apply the `release` label, obtain
 approval, and merge it normally.
 

@@ -74,8 +74,10 @@ test('pagination uses links and native current-page state', () => {
     1,
   )
 
-  const unavailable = pagination?.querySelector('a[aria-disabled="true"]')
-  assert.equal(unavailable?.hasAttribute('href'), false)
+  const unavailable = pagination?.querySelector(
+    '[role="link"][aria-disabled="true"]',
+  )
+  assert.equal(unavailable?.localName, 'a')
   assert.equal(unavailable?.getAttribute('tabindex'), '-1')
   assert.ok(unavailable?.querySelector('svg[aria-hidden="true"]'))
 })

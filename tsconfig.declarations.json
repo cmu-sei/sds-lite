@@ -5,7 +5,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "noEmit": false,
-    "outDir": "package",
+    "outDir": "dist/package",
     "rewriteRelativeImportExtensions": true,
     "rootDir": "src"
   },

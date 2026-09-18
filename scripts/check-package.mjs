@@ -2,15 +2,28 @@ import { spawnSync } from 'node:child_process'
 
 const maximumFileCount = 100
 const maximumUnpackedSize = 750_000
-const requiredFiles = ['LICENSE', 'package/sds.js', 'scripts/migrate.mjs']
+const requiredFiles = [
+  'LICENSE',
+  'dist/package/sds.js',
+  'dist/sds.css',
+  'scripts/migrate.mjs',
+]
 const forbiddenPrefixes = [
   '.github/',
-  'dist/',
+  'dist/assets/',
+  'dist/docs/',
   'e2e/',
   'src/',
   'test/',
   'test-results/',
 ]
+const forbiddenFiles = new Set([
+  'dist/custom-elements.json',
+  'dist/html-data.json',
+  'dist/index.html',
+  'dist/interface-manifest.json',
+  'dist/interface-manifest.schema.json',
+])
 
 function fail(message) {
   console.error(message)
@@ -52,7 +65,10 @@ for (const filename of requiredFiles) {
   if (!files.has(filename)) errors.push(`package is missing ${filename}`)
 }
 for (const filename of files) {
-  if (forbiddenPrefixes.some((prefix) => filename.startsWith(prefix))) {
+  if (
+    forbiddenFiles.has(filename) ||
+    forbiddenPrefixes.some((prefix) => filename.startsWith(prefix))
+  ) {
     errors.push(`package unexpectedly contains ${filename}`)
   }
   if (

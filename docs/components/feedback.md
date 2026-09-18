@@ -124,7 +124,7 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
 ```html
 <button type="button" data-sds-toast-open="saved-toast">Show notification</button>
 
-<div class="sds-toaster" aria-label="Notifications">
+<section class="sds-toaster" aria-label="Notifications">
   <sds-toast
     id="saved-toast"
     tone="success"
@@ -142,7 +142,7 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
       &times;
     </button>
   </sds-toast>
-</div>
+</section>
 ```
 
 | Interface | Values | Default |
@@ -158,7 +158,9 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
 
 Use `role="alert"` only for urgent, time-sensitive information. Toasts pause
 their timer while hovered or while focus is inside. Persistent toasts need a
-close control.
+close control. Use a persistent toast whenever a user must read or act on its
+content; reserve automatic dismissal for brief, nonessential status that is
+also available elsewhere.
 
 ```ts
 import type { SdsToastElement } from '@cmu-sei/sds-lite/toast'

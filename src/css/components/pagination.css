@@ -46,7 +46,7 @@
   }
 
   :where(
-    .sds-pagination li > :is(a, button):is(
+    .sds-pagination li > :is(a, button, span[role="link"]):is(
         :disabled,
         [aria-disabled="true"]
       )

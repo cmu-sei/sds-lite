@@ -1,5 +1,8 @@
 import { cp, readFile, rm, writeFile } from 'node:fs/promises'
 
+const distributionDirectory = 'dist'
+const packageDirectory = `${distributionDirectory}/package`
+
 const stylesheets = [
   'brand.css',
   'core.css',
@@ -8,18 +11,18 @@ const stylesheets = [
   'sds.css',
 ]
 for (const filename of stylesheets) {
-  const source = await readFile(`package/${filename}`, 'utf8')
+  const source = await readFile(`${packageDirectory}/${filename}`, 'utf8')
   await writeFile(
-    filename,
+    `${distributionDirectory}/${filename}`,
     source.replaceAll(
       'url("./assets/sei-wordmark.svg")',
       'url("./package/assets/sei-wordmark.svg")',
     ),
   )
-  await rm(`package/${filename}`)
+  await rm(`${packageDirectory}/${filename}`)
 }
 
-const autoDeclaration = await readFile('package/auto.d.ts', 'utf8')
+const autoDeclaration = await readFile(`${packageDirectory}/auto.d.ts`, 'utf8')
 const publishableAutoDeclaration = autoDeclaration.replace(
   "import './style.css';\n",
   '',
@@ -27,11 +30,14 @@ const publishableAutoDeclaration = autoDeclaration.replace(
 if (publishableAutoDeclaration === autoDeclaration) {
   throw new Error('Expected auto.d.ts to import the source stylesheet')
 }
-await writeFile('package/auto.d.ts', publishableAutoDeclaration)
+await writeFile(
+  `${packageDirectory}/auto.d.ts`,
+  publishableAutoDeclaration,
+)
 
 await Promise.all([
-  rm('package/elements/floating.d.ts'),
-  rm('package/elements/internals.d.ts'),
+  rm(`${packageDirectory}/elements/floating.d.ts`),
+  rm(`${packageDirectory}/elements/internals.d.ts`),
 ])
 const browserModules = [
   'dialog',
@@ -47,9 +53,15 @@ const topLevelModules = [
   ...browserModules.map((name) => `${name}.js`),
 ]
 await Promise.all([
-  writeFile('auto.js', "import './package/auto.js'\n"),
+  writeFile(
+    `${distributionDirectory}/auto.js`,
+    "import './package/auto.js'\n",
+  ),
   ...browserModules.map((name) =>
-    writeFile(`${name}.js`, `export * from './package/${name}.js'\n`),
+    writeFile(
+      `${distributionDirectory}/${name}.js`,
+      `export * from './package/${name}.js'\n`,
+    ),
   ),
 ])
 
@@ -59,9 +71,8 @@ const metadata = [
   'interface-manifest.json',
   'interface-manifest.schema.json',
 ]
-await Promise.all([
-  cp('package', 'dist/package', { recursive: true }),
-  ...[...stylesheets, ...topLevelModules, ...metadata].map((filename) =>
-    cp(filename, `dist/${filename}`),
+await Promise.all(
+  metadata.map((filename) =>
+    cp(filename, `${distributionDirectory}/${filename}`),
   ),
-])
+)

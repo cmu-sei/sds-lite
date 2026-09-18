@@ -8,13 +8,13 @@
       content="Interactive SDS Lite playground with copy-ready NPM and CDN examples for every component."
     />
     <title>SDS Lite Interactive Playground</title>
-    <script type="module" crossorigin src="./assets/index-BLzXPExf.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BMnU1cAU.css">
+    <script type="module" crossorigin src="./assets/index-Ch81uugK.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C4-ozu2p.css">
   </head>
   <body data-sds-root data-sds-theme="forge" data-sds-color-scheme="light">
     <div class="sds-app" data-sds-variant="application">
       <header class="sds-app-mobile-header">
-        <button
+        <button type="button"
           data-sds-shape="icon"
           popovertarget="catalog-sidebar"
           aria-label="Open navigation"
@@ -43,7 +43,7 @@
             </a>
             <strong>Interactive playground</strong>
             <small>Inspect, interact, and copy</small>
-            <button
+            <button type="button"
               class="sds-sidebar-close"
               data-sds-shape="icon"
               popovertarget="catalog-sidebar"
@@ -72,7 +72,7 @@
             <a class="sds-link" href="./docs/README.md">Read the documentation</a>
             <div class="sds-flex" data-sds-orientation="vertical" data-sds-gap="sm">
               <label class="sds-sr-only" for="theme">Theme</label>
-              <select id="theme" aria-label="Theme">
+              <select id="theme">
                 <option value="forge">Forge</option>
                 <option value="plaid">Plaid</option>
               </select>
@@ -80,7 +80,7 @@
               <label class="sds-sr-only" for="color-scheme">
                 Color scheme
               </label>
-              <select id="color-scheme" aria-label="Color scheme">
+              <select id="color-scheme">
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
                 <option value="system">System</option>
@@ -155,8 +155,8 @@
                     import CSS and automatic behavior.
                   </p>
                 </div>
-                <pre id="npm-install" class="demo-code"><code>npm install @cmu-sei/sds-lite</code></pre>
-                <pre id="npm-imports" class="demo-code"><code>import '@cmu-sei/sds-lite/sds.css'
+                <pre id="npm-install" class="demo-code" tabindex="0"><code>npm install @cmu-sei/sds-lite</code></pre>
+                <pre id="npm-imports" class="demo-code" tabindex="0"><code>import '@cmu-sei/sds-lite/sds.css'
 import '@cmu-sei/sds-lite/auto'</code></pre>
                 <div class="sds-action-group">
                   <button type="button" data-demo-copy-target="npm-install">
@@ -173,7 +173,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <h3>CDN</h3>
                   <p>Paste two version-pinned tags into a plain HTML page.</p>
                 </div>
-                <pre id="cdn-install" class="demo-code"><code>&lt;link rel="stylesheet"
+                <pre id="cdn-install" class="demo-code" tabindex="0"><code>&lt;link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.css"&gt;
 &lt;script type="module"
   src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/auto.js"&gt;&lt;/script&gt;</code></pre>
@@ -206,7 +206,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Button options">
+              <div class="demo-api">
                 <code>data-sds-variant="primary | secondary | tertiary | ghost"</code>
                 <code>data-sds-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>data-sds-size="xs | sm | md | lg | xl"</code>
@@ -216,7 +216,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy a button</summary>
-                <pre class="demo-code"><code>&lt;button data-sds-variant="secondary" data-sds-tone="danger"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;button data-sds-variant="secondary" data-sds-tone="danger"&gt;
   Delete project
 &lt;/button&gt;</code></pre>
               </details>
@@ -227,45 +227,45 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <div class="demo-tone-matrix">
                 <div class="demo-tone-row" data-sds-tone="neutral">
                   <strong>Neutral</strong>
-                  <button>Primary</button>
-                  <button data-sds-variant="secondary">Secondary</button>
-                  <button data-sds-variant="tertiary">Tertiary</button>
-                  <button data-sds-variant="ghost">Ghost</button>
+                  <button type="button">Primary</button>
+                  <button type="button" data-sds-variant="secondary">Secondary</button>
+                  <button type="button" data-sds-variant="tertiary">Tertiary</button>
+                  <button type="button" data-sds-variant="ghost">Ghost</button>
                 </div>
                 <div class="demo-tone-row" data-sds-tone="accent">
                   <strong>Accent</strong>
-                  <button>Primary</button>
-                  <button data-sds-variant="secondary">Secondary</button>
-                  <button data-sds-variant="tertiary">Tertiary</button>
-                  <button data-sds-variant="ghost">Ghost</button>
+                  <button type="button">Primary</button>
+                  <button type="button" data-sds-variant="secondary">Secondary</button>
+                  <button type="button" data-sds-variant="tertiary">Tertiary</button>
+                  <button type="button" data-sds-variant="ghost">Ghost</button>
                 </div>
                 <div class="demo-tone-row" data-sds-tone="info">
                   <strong>Info</strong>
-                  <button>Primary</button>
-                  <button data-sds-variant="secondary">Secondary</button>
-                  <button data-sds-variant="tertiary">Tertiary</button>
-                  <button data-sds-variant="ghost">Ghost</button>
+                  <button type="button">Primary</button>
+                  <button type="button" data-sds-variant="secondary">Secondary</button>
+                  <button type="button" data-sds-variant="tertiary">Tertiary</button>
+                  <button type="button" data-sds-variant="ghost">Ghost</button>
                 </div>
                 <div class="demo-tone-row" data-sds-tone="success">
                   <strong>Success</strong>
-                  <button>Primary</button>
-                  <button data-sds-variant="secondary">Secondary</button>
-                  <button data-sds-variant="tertiary">Tertiary</button>
-                  <button data-sds-variant="ghost">Ghost</button>
+                  <button type="button">Primary</button>
+                  <button type="button" data-sds-variant="secondary">Secondary</button>
+                  <button type="button" data-sds-variant="tertiary">Tertiary</button>
+                  <button type="button" data-sds-variant="ghost">Ghost</button>
                 </div>
                 <div class="demo-tone-row" data-sds-tone="warning">
                   <strong>Warning</strong>
-                  <button>Primary</button>
-                  <button data-sds-variant="secondary">Secondary</button>
-                  <button data-sds-variant="tertiary">Tertiary</button>
-                  <button data-sds-variant="ghost">Ghost</button>
+                  <button type="button">Primary</button>
+                  <button type="button" data-sds-variant="secondary">Secondary</button>
+                  <button type="button" data-sds-variant="tertiary">Tertiary</button>
+                  <button type="button" data-sds-variant="ghost">Ghost</button>
                 </div>
                 <div class="demo-tone-row" data-sds-tone="danger">
                   <strong>Danger</strong>
-                  <button>Primary</button>
-                  <button data-sds-variant="secondary">Secondary</button>
-                  <button data-sds-variant="tertiary">Tertiary</button>
-                  <button data-sds-variant="ghost">Ghost</button>
+                  <button type="button">Primary</button>
+                  <button type="button" data-sds-variant="secondary">Secondary</button>
+                  <button type="button" data-sds-variant="tertiary">Tertiary</button>
+                  <button type="button" data-sds-variant="ghost">Ghost</button>
                 </div>
               </div>
             </article>
@@ -274,53 +274,53 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <article class="sds-card demo-stack">
                 <h3>States and shapes</h3>
                 <div class="sds-action-group">
-                  <button>Default</button>
-                  <button disabled>Disabled</button>
-                  <button aria-busy="true">Saving</button>
+                  <button type="button">Default</button>
+                  <button type="button" disabled>Disabled</button>
+                  <button type="button" aria-busy="true">Saving</button>
                   <a class="sds-button" href="#actions">Link button</a>
-                  <button data-sds-shape="icon" aria-label="Add item">+</button>
-                  <button data-sds-shape="icon" aria-label="Close">&times;</button>
+                  <button type="button" data-sds-shape="icon" aria-label="Add item">+</button>
+                  <button type="button" data-sds-shape="icon" aria-label="Close">&times;</button>
                 </div>
-                <button data-sds-block>Full-width button</button>
+                <button type="button" data-sds-block>Full-width button</button>
               </article>
 
               <article id="button-sizes" class="sds-card demo-stack">
                 <h3>Button sizes</h3>
                 <div class="sds-action-group">
-                  <button data-sds-size="xs">Extra small</button>
-                  <button data-sds-size="sm">Small</button>
-                  <button>Medium</button>
-                  <button data-sds-size="lg">Large</button>
-                  <button data-sds-size="xl">Extra large</button>
+                  <button type="button" data-sds-size="xs">Extra small</button>
+                  <button type="button" data-sds-size="sm">Small</button>
+                  <button type="button">Medium</button>
+                  <button type="button" data-sds-size="lg">Large</button>
+                  <button type="button" data-sds-size="xl">Extra large</button>
                 </div>
               </article>
 
               <article id="compact-buttons" class="sds-card demo-stack">
                 <h3>Compact variants and sizes</h3>
                 <div class="sds-action-group">
-                  <button data-sds-density="compact">Ghost</button>
-                  <button data-sds-density="compact" data-sds-variant="secondary">Secondary</button>
-                  <button data-sds-density="compact" data-sds-variant="primary">Primary</button>
-                  <button data-sds-density="compact" disabled>Disabled</button>
+                  <button type="button" data-sds-density="compact">Ghost</button>
+                  <button type="button" data-sds-density="compact" data-sds-variant="secondary">Secondary</button>
+                  <button type="button" data-sds-density="compact" data-sds-variant="primary">Primary</button>
+                  <button type="button" data-sds-density="compact" disabled>Disabled</button>
                 </div>
-                <div class="sds-action-group" aria-label="Compact button sizes">
-                  <button data-sds-density="compact" data-sds-size="xs">Extra small</button>
-                  <button data-sds-density="compact" data-sds-size="sm">Small</button>
-                  <button data-sds-density="compact" data-sds-size="md">Medium</button>
-                  <button data-sds-density="compact" data-sds-size="lg">Large</button>
-                  <button data-sds-density="compact" data-sds-size="xl">Extra large</button>
+                <div class="sds-action-group" role="group" aria-label="Compact button sizes">
+                  <button type="button" data-sds-density="compact" data-sds-size="xs">Extra small</button>
+                  <button type="button" data-sds-density="compact" data-sds-size="sm">Small</button>
+                  <button type="button" data-sds-density="compact" data-sds-size="md">Medium</button>
+                  <button type="button" data-sds-density="compact" data-sds-size="lg">Large</button>
+                  <button type="button" data-sds-density="compact" data-sds-size="xl">Extra large</button>
                 </div>
               </article>
 
               <article class="sds-card demo-stack">
                 <h3>Icon button sizes</h3>
                 <div class="sds-action-group">
-                  <button data-sds-shape="icon" data-sds-size="xs" aria-label="Extra-small add">+</button>
-                  <button data-sds-shape="icon" data-sds-size="sm" aria-label="Small add">+</button>
-                  <button data-sds-shape="icon" aria-label="Medium add">+</button>
-                  <button data-sds-shape="icon" data-sds-size="lg" aria-label="Large add">+</button>
-                  <button data-sds-shape="icon" data-sds-size="xl" aria-label="Extra-large add">+</button>
-                  <button data-sds-shape="icon" data-sds-variant="primary" data-sds-tone="danger" aria-label="Delete">&times;</button>
+                  <button type="button" data-sds-shape="icon" data-sds-size="xs" aria-label="Extra-small add">+</button>
+                  <button type="button" data-sds-shape="icon" data-sds-size="sm" aria-label="Small add">+</button>
+                  <button type="button" data-sds-shape="icon" aria-label="Medium add">+</button>
+                  <button type="button" data-sds-shape="icon" data-sds-size="lg" aria-label="Large add">+</button>
+                  <button type="button" data-sds-shape="icon" data-sds-size="xl" aria-label="Extra-large add">+</button>
+                  <button type="button" data-sds-shape="icon" data-sds-variant="primary" data-sds-tone="danger" aria-label="Delete">&times;</button>
                 </div>
               </article>
 
@@ -334,7 +334,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <a class="sds-link" data-sds-variant="cta" href="#actions">Call to action</a>
                   <a class="sds-link" aria-disabled="true">Disabled</a>
                 </div>
-                <div class="demo-link-list" aria-label="Link sizes">
+                <div class="demo-link-list" role="group" aria-label="Link sizes">
                   <a class="sds-link" data-sds-size="xs" href="#actions">Extra small</a>
                   <a class="sds-link" data-sds-size="sm" href="#actions">Small</a>
                   <a class="sds-link" href="#actions">Medium</a>
@@ -369,7 +369,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Form options">
+              <div class="demo-api">
                 <code>.sds-field</code>
                 <code>.sds-switch</code>
                 <code>.sds-file-input</code>
@@ -383,7 +383,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy a field</summary>
-                <pre class="demo-code"><code>&lt;div class="sds-field"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;div class="sds-field"&gt;
   &lt;label for="project-name"&gt;Project name&lt;/label&gt;
   &lt;input id="project-name" name="project-name" required&gt;
   &lt;small&gt;Use a short, recognizable name.&lt;/small&gt;
@@ -394,7 +394,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <form class="sds-card demo-form-grid">
               <div class="sds-field">
                 <label for="text-input">Text</label>
-                <input class="sds-input" id="text-input" name="text" data-sds-size="sm" placeholder="Enter text" />
+                <input type="text" class="sds-input" id="text-input" name="text" data-sds-size="sm" placeholder="Enter text" />
                 <small>Helpful text belongs directly below the field.</small>
               </div>
               <div class="sds-field">
@@ -403,7 +403,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-field">
                 <label for="password-input">Password</label>
-                <input id="password-input" type="password" data-sds-size="lg" value="password" />
+                <input id="password-input" type="password" autocomplete="current-password" data-sds-size="lg" value="password" />
               </div>
               <div class="sds-field">
                 <label for="search-input">Search</label>
@@ -479,15 +479,15 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-field">
                 <label for="readonly-input">Readonly</label>
-                <input id="readonly-input" value="Cannot be edited" readonly />
+                <input type="text" id="readonly-input" value="Cannot be edited" readonly />
               </div>
               <div class="sds-field">
                 <label for="disabled-input">Disabled</label>
-                <input id="disabled-input" value="Unavailable" disabled />
+                <input type="text" id="disabled-input" value="Unavailable" disabled />
               </div>
               <div class="sds-field">
                 <label for="invalid-input">Invalid</label>
-                <input
+                <input type="text"
                   id="invalid-input"
                   value="Invalid value"
                   aria-invalid="true"
@@ -499,7 +499,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-field">
                 <label for="valid-input">Valid</label>
-                <input
+                <input type="text"
                   id="valid-input"
                   value="validated-value"
                   pattern="[a-z-]+"
@@ -512,7 +512,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-field demo-span" data-sds-orientation="horizontal">
                 <label for="horizontal-input">Horizontal field</label>
-                <input id="horizontal-input" placeholder="Label and control share a row" />
+                <input type="text" id="horizontal-input" placeholder="Label and control share a row" />
                 <small>Horizontal fields return to one column when space is constrained.</small>
               </div>
               <fieldset class="demo-fieldset">
@@ -578,7 +578,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Feedback options">
+              <div class="demo-api">
                 <code>data-sds-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>badge data-sds-variant="light | light-border | dark" (solid by default)</code>
                 <code>tag data-sds-size="sm | md"</code>
@@ -587,7 +587,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy a callout</summary>
-                <pre class="demo-code"><code>&lt;div class="sds-callout" data-sds-tone="warning"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;div class="sds-callout" data-sds-tone="warning"&gt;
   &lt;strong&gt;Review needed&lt;/strong&gt;
   &lt;span&gt;Check this setting before continuing.&lt;/span&gt;
 &lt;/div&gt;</code></pre>
@@ -672,12 +672,12 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 pause while hovered or focused.
               </p>
               <div class="sds-action-group">
-                <button data-sds-tone="neutral" data-sds-toast-open="toast-neutral">Show neutral</button>
-                <button data-sds-tone="accent" data-sds-toast-open="toast-accent">Show accent</button>
-                <button data-sds-tone="success" data-sds-toast-open="toast-success">Show success</button>
-                <button data-sds-tone="info" data-sds-toast-open="toast-info">Show info</button>
-                <button data-sds-tone="warning" data-sds-toast-open="toast-warning">Show warning</button>
-                <button data-sds-tone="danger" data-sds-toast-open="toast-danger">Show danger</button>
+                <button type="button" data-sds-tone="neutral" data-sds-toast-open="toast-neutral">Show neutral</button>
+                <button type="button" data-sds-tone="accent" data-sds-toast-open="toast-accent">Show accent</button>
+                <button type="button" data-sds-tone="success" data-sds-toast-open="toast-success">Show success</button>
+                <button type="button" data-sds-tone="info" data-sds-toast-open="toast-info">Show info</button>
+                <button type="button" data-sds-tone="warning" data-sds-toast-open="toast-warning">Show warning</button>
+                <button type="button" data-sds-tone="danger" data-sds-toast-open="toast-danger">Show danger</button>
               </div>
             </article>
 
@@ -766,7 +766,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Content options">
+              <div class="demo-api">
                 <code>datapoint data-sds-size="sm | md | lg"</code>
                 <code>avatar data-sds-size="xs | sm | md | lg | xl"</code>
                 <code>avatar data-sds-shape="circle | square | portrait"</code>
@@ -778,7 +778,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy a datapoint</summary>
-                <pre class="demo-code"><code>&lt;div class="sds-datapoint" data-sds-size="lg" data-sds-tone="success"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;div class="sds-datapoint" data-sds-size="lg" data-sds-tone="success"&gt;
   &lt;span&gt;Resolved findings&lt;/span&gt;
   &lt;div&gt;&lt;strong&gt;104&lt;/strong&gt;&lt;span&gt;this month&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;</code></pre>
@@ -788,15 +788,15 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <article class="sds-card demo-stack">
               <h3>Avatars and avatar groups</h3>
               <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="lg">
-                <span class="sds-avatar" data-sds-size="xs" aria-label="Alex Morgan">AM</span>
-                <span class="sds-avatar" data-sds-size="sm" data-sds-tone="info" aria-label="Sam Rivera">SR</span>
-                <span class="sds-avatar" data-sds-tone="success" data-sds-variant="solid" aria-label="Jordan Lee">JL</span>
-                <span class="sds-avatar" data-sds-size="lg" data-sds-shape="square" data-sds-tone="warning" aria-label="Taylor Quinn">TQ</span>
-                <span class="sds-avatar" data-sds-size="xl" data-sds-shape="portrait" data-sds-tone="danger" data-sds-variant="outline" aria-label="Morgan Chen">MC</span>
+                <span class="sds-avatar" role="img" data-sds-size="xs" aria-label="Alex Morgan">AM</span>
+                <span class="sds-avatar" role="img" data-sds-size="sm" data-sds-tone="info" aria-label="Sam Rivera">SR</span>
+                <span class="sds-avatar" role="img" data-sds-tone="success" data-sds-variant="solid" aria-label="Jordan Lee">JL</span>
+                <span class="sds-avatar" role="img" data-sds-size="lg" data-sds-shape="square" data-sds-tone="warning" aria-label="Taylor Quinn">TQ</span>
+                <span class="sds-avatar" role="img" data-sds-size="xl" data-sds-shape="portrait" data-sds-tone="danger" data-sds-variant="outline" aria-label="Morgan Chen">MC</span>
                 <ul class="sds-avatar-group" data-sds-density="condensed" aria-label="Reviewers">
-                  <li><span class="sds-avatar" data-sds-tone="accent" aria-label="Alex Morgan">AM</span></li>
-                  <li><span class="sds-avatar" data-sds-tone="success" aria-label="Sam Rivera">SR</span></li>
-                  <li><span class="sds-avatar" data-sds-tone="warning" aria-label="Jordan Lee">JL</span></li>
+                  <li><span class="sds-avatar" role="img" data-sds-tone="accent" aria-label="Alex Morgan">AM</span></li>
+                  <li><span class="sds-avatar" role="img" data-sds-tone="success" aria-label="Sam Rivera">SR</span></li>
+                  <li><span class="sds-avatar" role="img" data-sds-tone="warning" aria-label="Jordan Lee">JL</span></li>
                   <li>
                     <sds-dropdown placement="block-end-end" width="sm" hide-caret>
                       <button
@@ -966,7 +966,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Composition options">
+              <div class="demo-api">
                 <code>.sds-sidebar-layout + .sds-sidebar</code>
                 <code>.sds-grid[data-sds-columns]</code>
                 <code>.sds-grid[data-sds-orientation="vertical"]</code>
@@ -980,7 +980,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy a sidebar layout</summary>
-                <pre class="demo-code"><code>&lt;div class="sds-sidebar-layout"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;div class="sds-sidebar-layout"&gt;
   &lt;aside class="sds-sidebar"&gt;
     &lt;header&gt;&lt;strong&gt;Project Atlas&lt;/strong&gt;&lt;/header&gt;
     &lt;nav aria-label="Project"&gt;
@@ -992,7 +992,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </details>
               <details class="sds-disclosure">
                 <summary>Copy spacing utilities</summary>
-                <pre class="demo-code"><code>&lt;section
+                <pre class="demo-code" tabindex="0"><code>&lt;section
   data-sds-padding="lg"
   data-sds-margin-block-end="xl"
 &gt;
@@ -1027,7 +1027,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-justify="between">
                 <strong data-sds-grow>Flexible content</strong>
-                <button data-sds-no-shrink>Action</button>
+                <button type="button" data-sds-no-shrink>Action</button>
               </div>
             </article>
 
@@ -1035,7 +1035,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <h3>Application</h3>
               <div class="sds-app demo-app-preview" data-sds-variant="application">
                 <header class="sds-app-mobile-header">
-                  <button
+                  <button type="button"
                     data-sds-shape="icon"
                     popovertarget="application-preview-sidebar"
                     aria-label="Open preview navigation"
@@ -1065,7 +1065,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                         SDS Lite
                       </a>
                       <strong>Project Atlas</strong>
-                      <button
+                      <button type="button"
                         class="sds-sidebar-close"
                         data-sds-shape="icon"
                         popovertarget="application-preview-sidebar"
@@ -1087,15 +1087,15 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <footer>Signed in as Alex</footer>
                   </aside>
                   <div class="sds-app-body">
-                    <main class="sds-app-main">
+                    <div class="sds-app-main">
                       <header class="sds-page-header">
-                        <h1>Project overview</h1>
-                        <button>Create review</button>
+                        <h4>Project overview</h4>
+                        <button type="button">Create review</button>
                       </header>
                       <div class="sds-page">
                         <div class="sds-card">Full application content</div>
                       </div>
-                    </main>
+                    </div>
                     <footer class="sds-app-footer">
                       <div class="sds-app-footer-content">
                         <div class="sds-app-footer-brand">
@@ -1125,18 +1125,18 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <span class="sds-app-brand-prefix">SEI</span>
                     SDS Lite
                   </a>
-                  <button data-sds-density="compact">Alex Morgan</button>
+                  <button type="button" data-sds-density="compact">Alex Morgan</button>
                 </header>
                 <div class="sds-app-body">
-                  <main class="sds-app-main">
+                  <div class="sds-app-main">
                     <header class="sds-page-header">
-                      <h1>Project settings</h1>
-                      <button>Save</button>
+                      <h4>Project settings</h4>
+                      <button type="button">Save</button>
                     </header>
                     <div class="sds-page">
                       <div class="sds-card">Simple application content</div>
                     </div>
-                  </main>
+                  </div>
                   <footer class="sds-app-footer">
                     <div class="sds-app-footer-top">Application-specific links</div>
                     <div class="sds-app-footer-content">
@@ -1160,8 +1160,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     aria-label="Preview actions"
                   >
                     <strong data-sds-grow>Unsaved changes</strong>
-                    <button data-sds-variant="ghost">Discard</button>
-                    <button>Save</button>
+                    <button type="button" data-sds-variant="ghost">Discard</button>
+                    <button type="button">Save</button>
                   </aside>
                 </div>
               </div>
@@ -1170,7 +1170,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <article class="sds-card demo-stack">
               <h3>Brochure Site</h3>
               <div id="brochure-preview-top" class="sds-app demo-brochure-preview" data-sds-variant="brochure">
-                <main>
+                <div>
                   <header class="sds-brochure-header">
                     <div class="sds-brochure-masthead">
                       <div class="sds-brochure-container">
@@ -1193,9 +1193,9 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     </div>
                   </header>
                   <div class="sds-brochure-main sds-brochure-container">
-                    <h2>Public-facing content</h2>
+                    <h4>Public-facing content</h4>
                   </div>
-                </main>
+                </div>
                 <footer>
                   <div class="sds-brochure-footer-links">
                     <ul class="sds-brochure-container sds-brochure-footer-actions">
@@ -1309,7 +1309,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   </nav>
                   <footer><small>Updated a moment ago</small></footer>
                 </aside>
-                <main class="demo-sidebar-main">
+                <div class="demo-sidebar-main">
                   <p class="sds-eyebrow">Reviews</p>
                   <h3>Open reviews</h3>
                   <p>
@@ -1317,7 +1317,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     screens. The application shell uses native Popover for
                     dismissible mobile navigation.
                   </p>
-                </main>
+                </div>
               </div>
             </article>
 
@@ -1411,7 +1411,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
               <article class="sds-card demo-stack">
                 <h3>Horizontal timeline with a custom marker</h3>
-                <ol class="sds-timeline" data-sds-orientation="horizontal" aria-label="Release progress">
+                <ol class="sds-timeline" data-sds-orientation="horizontal" aria-label="Release progress" tabindex="0">
                   <li class="sds-timeline-item" data-sds-tone="success">
                     <h3>Build</h3>
                     <p>Checks passed.</p>
@@ -1444,7 +1444,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Prose options">
+              <div class="demo-api">
                 <code>.sds-prose</code>
                 <code>data-sds-size="sm"</code>
                 <code>data-sds-tone="neutral | accent | info | success | warning | danger"</code>
@@ -1452,7 +1452,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy a prose container</summary>
-                <pre class="demo-code"><code>&lt;article class="sds-prose" data-sds-tone="info"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;article class="sds-prose" data-sds-tone="info"&gt;
   &lt;h1&gt;Article title&lt;/h1&gt;
   &lt;p class="sds-prose-lead"&gt;A short introduction.&lt;/p&gt;
   &lt;p&gt;Semantic HTML receives the complete typography treatment.&lt;/p&gt;
@@ -1578,7 +1578,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Tab options">
+              <div class="demo-api">
                 <code>data-sds-variant="folder | block | underline"</code>
                 <code>data-sds-size="md | lg"</code>
                 <code>sds-tabs tone="neutral | accent | info | success | warning | danger"</code>
@@ -1589,7 +1589,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy SSR-ready tabs</summary>
-                <pre class="demo-code"><code>&lt;sds-tabs variant="underline"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;sds-tabs variant="underline"&gt;
   &lt;div class="sds-tab-list" role="tablist" aria-label="Project sections"&gt;
     &lt;button id="tab-1" class="sds-tab" role="tab"
       aria-controls="panel-1" aria-selected="true" tabindex="0"&gt;Overview&lt;/button&gt;
@@ -1603,9 +1603,9 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="demo-tabs-grid">
               <sds-tabs tone="neutral">
                 <div class="sds-tab-list" role="tablist" aria-label="Neutral tabs">
-                  <button id="neutral-tab-1" class="sds-tab" role="tab" aria-controls="neutral-panel-1" aria-selected="true" tabindex="0">Neutral</button>
-                  <button id="neutral-tab-2" class="sds-tab" role="tab" aria-controls="neutral-panel-2" aria-selected="false" tabindex="-1">Second</button>
-                  <button id="neutral-tab-3" class="sds-tab" role="tab" aria-controls="neutral-panel-3" aria-selected="false" tabindex="-1" disabled>Disabled</button>
+                  <button type="button" id="neutral-tab-1" class="sds-tab" role="tab" aria-controls="neutral-panel-1" aria-selected="true" tabindex="0">Neutral</button>
+                  <button type="button" id="neutral-tab-2" class="sds-tab" role="tab" aria-controls="neutral-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="neutral-tab-3" class="sds-tab" role="tab" aria-controls="neutral-panel-3" aria-selected="false" tabindex="-1" disabled>Disabled</button>
                 </div>
                 <section id="neutral-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-1">Neutral tab content</section>
                 <section id="neutral-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="neutral-tab-2" hidden>Second tab content</section>
@@ -1613,80 +1613,80 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </sds-tabs>
               <sds-tabs tone="accent">
                 <div class="sds-tab-list" role="tablist" aria-label="Accent tabs">
-                  <button id="accent-tab-1" class="sds-tab" role="tab" aria-controls="accent-panel-1" aria-selected="true" tabindex="0">Accent</button>
-                  <button id="accent-tab-2" class="sds-tab" role="tab" aria-controls="accent-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="accent-tab-1" class="sds-tab" role="tab" aria-controls="accent-panel-1" aria-selected="true" tabindex="0">Accent</button>
+                  <button type="button" id="accent-tab-2" class="sds-tab" role="tab" aria-controls="accent-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="accent-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="accent-tab-1">Accent tab content</section>
                 <section id="accent-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="accent-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs tone="info">
                 <div class="sds-tab-list" role="tablist" aria-label="Info tabs">
-                  <button id="info-tab-1" class="sds-tab" role="tab" aria-controls="info-panel-1" aria-selected="true" tabindex="0">Info</button>
-                  <button id="info-tab-2" class="sds-tab" role="tab" aria-controls="info-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="info-tab-1" class="sds-tab" role="tab" aria-controls="info-panel-1" aria-selected="true" tabindex="0">Info</button>
+                  <button type="button" id="info-tab-2" class="sds-tab" role="tab" aria-controls="info-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="info-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="info-tab-1">Info tab content</section>
                 <section id="info-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="info-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs tone="success">
                 <div class="sds-tab-list" role="tablist" aria-label="Success tabs">
-                  <button id="success-tab-1" class="sds-tab" role="tab" aria-controls="success-panel-1" aria-selected="true" tabindex="0">Success</button>
-                  <button id="success-tab-2" class="sds-tab" role="tab" aria-controls="success-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="success-tab-1" class="sds-tab" role="tab" aria-controls="success-panel-1" aria-selected="true" tabindex="0">Success</button>
+                  <button type="button" id="success-tab-2" class="sds-tab" role="tab" aria-controls="success-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="success-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="success-tab-1">Success tab content</section>
                 <section id="success-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="success-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs tone="warning">
                 <div class="sds-tab-list" role="tablist" aria-label="Warning tabs">
-                  <button id="warning-tab-1" class="sds-tab" role="tab" aria-controls="warning-panel-1" aria-selected="true" tabindex="0">Warning</button>
-                  <button id="warning-tab-2" class="sds-tab" role="tab" aria-controls="warning-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="warning-tab-1" class="sds-tab" role="tab" aria-controls="warning-panel-1" aria-selected="true" tabindex="0">Warning</button>
+                  <button type="button" id="warning-tab-2" class="sds-tab" role="tab" aria-controls="warning-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="warning-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="warning-tab-1">Warning tab content</section>
                 <section id="warning-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="warning-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs tone="danger">
                 <div class="sds-tab-list" role="tablist" aria-label="Danger tabs">
-                  <button id="danger-tab-1" class="sds-tab" role="tab" aria-controls="danger-panel-1" aria-selected="true" tabindex="0">Danger</button>
-                  <button id="danger-tab-2" class="sds-tab" role="tab" aria-controls="danger-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="danger-tab-1" class="sds-tab" role="tab" aria-controls="danger-panel-1" aria-selected="true" tabindex="0">Danger</button>
+                  <button type="button" id="danger-tab-2" class="sds-tab" role="tab" aria-controls="danger-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="danger-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="danger-tab-1">Danger tab content</section>
                 <section id="danger-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="danger-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs variant="underline" tone="info" size="lg">
                 <div class="sds-tab-list" role="tablist" aria-label="Underline tabs">
-                  <button id="underline-tab-1" class="sds-tab" role="tab" aria-controls="underline-panel-1" aria-selected="true" tabindex="0">Underline</button>
-                  <button id="underline-tab-2" class="sds-tab" role="tab" aria-controls="underline-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="underline-tab-1" class="sds-tab" role="tab" aria-controls="underline-panel-1" aria-selected="true" tabindex="0">Underline</button>
+                  <button type="button" id="underline-tab-2" class="sds-tab" role="tab" aria-controls="underline-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="underline-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-1">Large underline tab content</section>
                 <section id="underline-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs variant="block" tone="accent">
                 <div class="sds-tab-list" role="tablist" aria-label="Block tabs">
-                  <button id="block-tab-1" class="sds-tab" role="tab" aria-controls="block-panel-1" aria-selected="true" tabindex="0">Block</button>
-                  <button id="block-tab-2" class="sds-tab" role="tab" aria-controls="block-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="block-tab-1" class="sds-tab" role="tab" aria-controls="block-panel-1" aria-selected="true" tabindex="0">Block</button>
+                  <button type="button" id="block-tab-2" class="sds-tab" role="tab" aria-controls="block-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="block-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-tab-1">Block tab content</section>
                 <section id="block-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs variant="underline" tone="success">
                 <div class="sds-tab-list" role="tablist" aria-label="Small underline tabs">
-                  <button id="underline-sm-tab-1" class="sds-tab" role="tab" aria-controls="underline-sm-panel-1" aria-selected="true" tabindex="0">Small underline</button>
-                  <button id="underline-sm-tab-2" class="sds-tab" role="tab" aria-controls="underline-sm-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="underline-sm-tab-1" class="sds-tab" role="tab" aria-controls="underline-sm-panel-1" aria-selected="true" tabindex="0">Small underline</button>
+                  <button type="button" id="underline-sm-tab-2" class="sds-tab" role="tab" aria-controls="underline-sm-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="underline-sm-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-sm-tab-1">Small underline content</section>
                 <section id="underline-sm-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="underline-sm-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs variant="folder" size="lg" tone="danger">
                 <div class="sds-tab-list" role="tablist" aria-label="Large folder tabs">
-                  <button id="folder-lg-tab-1" class="sds-tab" role="tab" aria-controls="folder-lg-panel-1" aria-selected="true" tabindex="0">Large folder</button>
-                  <button id="folder-lg-tab-2" class="sds-tab" role="tab" aria-controls="folder-lg-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="folder-lg-tab-1" class="sds-tab" role="tab" aria-controls="folder-lg-panel-1" aria-selected="true" tabindex="0">Large folder</button>
+                  <button type="button" id="folder-lg-tab-2" class="sds-tab" role="tab" aria-controls="folder-lg-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="folder-lg-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="folder-lg-tab-1">Large folder content</section>
                 <section id="folder-lg-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="folder-lg-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs variant="block" size="lg" tone="neutral">
                 <div class="sds-tab-list" role="tablist" aria-label="Large block tabs">
-                  <button id="block-lg-tab-1" class="sds-tab" role="tab" aria-controls="block-lg-panel-1" aria-selected="true" tabindex="0">Large block</button>
-                  <button id="block-lg-tab-2" class="sds-tab" role="tab" aria-controls="block-lg-panel-2" aria-selected="false" tabindex="-1">Second</button>
+                  <button type="button" id="block-lg-tab-1" class="sds-tab" role="tab" aria-controls="block-lg-panel-1" aria-selected="true" tabindex="0">Large block</button>
+                  <button type="button" id="block-lg-tab-2" class="sds-tab" role="tab" aria-controls="block-lg-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
                 <section id="block-lg-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-lg-tab-1">Large block content</section>
                 <section id="block-lg-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="block-lg-tab-2" hidden>Second tab content</section>
@@ -1698,7 +1698,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <nav class="sds-pagination" aria-label="Project pages">
                 <ul>
                   <li>
-                    <a aria-disabled="true" tabindex="-1" aria-label="Previous page">
+                    <a role="link" aria-disabled="true" tabindex="-1" aria-label="Previous page">
                       <svg aria-hidden="true" viewBox="0 0 8 13">
                         <path d="M7.35 1.13 2.73 6.75l4.62 4.65-1.23 1.23L.87 7.38a.86.86 0 0 1 0-1.23L6.12.9l1.23 1.23Z"></path>
                       </svg>
@@ -1734,7 +1734,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Behavioral element options">
+              <div class="demo-api">
                 <code>sds-dropdown width="sm | md | lg | xl | 2xl | auto"</code>
                 <code>floating placement="block-start | block-end | inline-start | inline-end" with optional -start | -end</code>
                 <code>floating offset="nonnegative pixels"</code>
@@ -1745,7 +1745,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy a dropdown</summary>
-                <pre class="demo-code"><code>&lt;sds-dropdown width="sm"&gt;
+                <pre class="demo-code" tabindex="0"><code>&lt;sds-dropdown width="sm"&gt;
                   &lt;button type="button" aria-haspopup="menu" aria-controls="menu"
     aria-expanded="false" popovertarget="menu"&gt;Actions&lt;/button&gt;
                   &lt;menu id="menu" class="sds-dropdown-menu" popover="auto"
@@ -1793,8 +1793,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     </menu>
                   </sds-dropdown>
                   <sds-dropdown width="2xl" placement="block-start-end">
-                    <button type="button" data-sds-variant="secondary" aria-haspopup="menu" aria-controls="2xl-menu" aria-expanded="false" popovertarget="2xl-menu">2XL · top end</button>
-                    <menu id="2xl-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
+                    <button type="button" data-sds-variant="secondary" aria-haspopup="menu" aria-controls="menu-2xl" aria-expanded="false" popovertarget="menu-2xl">2XL · top end</button>
+                    <menu id="menu-2xl" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
                       <li role="none"><button type="button" role="menuitem" tabindex="-1">First action</button></li>
                       <li role="none"><button type="button" role="menuitem" tabindex="-1">Second action</button></li>
                     </menu>
@@ -1866,24 +1866,24 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <article class="sds-card demo-stack">
               <h3>Dialog and panel placements</h3>
               <div class="sds-action-group">
-                <button commandfor="dialog-sm" command="show-modal">Dialog · small</button>
-                <button commandfor="catalog-dialog" command="show-modal">Dialog · medium</button>
-                <button commandfor="dialog-lg" command="show-modal">Dialog · large</button>
-                <button commandfor="dialog-xl" command="show-modal">Dialog · extra large</button>
-                <button commandfor="dialog-2xl" command="show-modal">Dialog · 2XL</button>
-                <button data-sds-variant="secondary" commandfor="panel-left-sm" command="show-modal">
+                <button type="button" commandfor="dialog-sm" command="show-modal">Dialog · small</button>
+                <button type="button" commandfor="catalog-dialog" command="show-modal">Dialog · medium</button>
+                <button type="button" commandfor="dialog-lg" command="show-modal">Dialog · large</button>
+                <button type="button" commandfor="dialog-xl" command="show-modal">Dialog · extra large</button>
+                <button type="button" commandfor="dialog-2xl" command="show-modal">Dialog · 2XL</button>
+                <button type="button" data-sds-variant="secondary" commandfor="panel-left-sm" command="show-modal">
                   Left · small
                 </button>
-                <button data-sds-variant="secondary" commandfor="panel-right-md" command="show-modal">
+                <button type="button" data-sds-variant="secondary" commandfor="panel-right-md" command="show-modal">
                   Right · medium
                 </button>
-                <button data-sds-variant="secondary" commandfor="panel-right-lg" command="show-modal">
+                <button type="button" data-sds-variant="secondary" commandfor="panel-right-lg" command="show-modal">
                   Right · large
                 </button>
-                <button data-sds-variant="secondary" commandfor="panel-bottom" command="show-modal">
+                <button type="button" data-sds-variant="secondary" commandfor="panel-bottom" command="show-modal">
                   Bottom
                 </button>
-                <button data-sds-variant="secondary" commandfor="panel-right-xl" command="show-modal">
+                <button type="button" data-sds-variant="secondary" commandfor="panel-right-xl" command="show-modal">
                   Right · extra large
                 </button>
               </div>
@@ -1898,14 +1898,14 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </div>
             <div class="demo-reference">
-              <div class="demo-api" aria-label="Loading options">
+              <div class="demo-api">
                 <code>spinner data-sds-size="sm | md | lg"</code>
                 <code>data-sds-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>.sds-skeleton</code>
               </div>
               <details class="sds-disclosure">
                 <summary>Copy loading feedback</summary>
-                <pre class="demo-code"><code>&lt;span class="sds-spinner" data-sds-size="sm"
+                <pre class="demo-code" tabindex="0"><code>&lt;span class="sds-spinner" data-sds-size="sm"
   role="status" aria-label="Loading"&gt;&lt;/span&gt;
 &lt;div class="sds-skeleton" aria-hidden="true"&gt;&lt;/div&gt;</code></pre>
               </details>
@@ -1924,7 +1924,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </article>
               <article class="sds-card demo-stack">
                 <h3>Skeleton</h3>
-                <div class="demo-skeletons" aria-label="Loading content">
+                <div class="demo-skeletons" role="status" aria-label="Loading content">
                   <div class="sds-skeleton" aria-hidden="true"></div>
                   <div class="sds-skeleton" aria-hidden="true"></div>
                   <div class="sds-skeleton" aria-hidden="true"></div>
@@ -1964,11 +1964,11 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
     >
       <div class="sds-dialog-header">
         <h2 id="dialog-sm-title">Small dialog</h2>
-        <button data-sds-shape="icon" commandfor="dialog-sm" command="request-close" aria-label="Close small dialog">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="dialog-sm" command="request-close" aria-label="Close small dialog">&times;</button>
       </div>
       <p>Use a small dialog for a short, focused decision.</p>
       <div class="sds-dialog-footer">
-        <button commandfor="dialog-sm" command="close">Done</button>
+        <button type="button" commandfor="dialog-sm" command="close">Done</button>
       </div>
     </dialog>
 
@@ -1987,7 +1987,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             Escape, the backdrop, and either button can close this dialog.
           </p>
         </div>
-        <button data-sds-shape="icon" commandfor="catalog-dialog" command="request-close" aria-label="Close dialog">
+        <button type="button" data-sds-shape="icon" commandfor="catalog-dialog" command="request-close" aria-label="Close dialog">
           &times;
         </button>
       </div>
@@ -1996,69 +1996,69 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
         <span>Focus and top-layer behavior come from native dialog.</span>
       </div>
       <div class="sds-dialog-footer">
-        <button data-sds-variant="ghost" commandfor="catalog-dialog" command="close">Cancel</button>
-        <button commandfor="catalog-dialog" command="close" data-sds-return-value="continue">Continue</button>
+        <button type="button" data-sds-variant="ghost" commandfor="catalog-dialog" command="close">Cancel</button>
+        <button type="button" commandfor="catalog-dialog" command="close" data-sds-return-value="continue">Continue</button>
       </div>
     </dialog>
 
     <dialog id="dialog-lg" class="sds-dialog" data-sds-width="lg" closedby="any" aria-labelledby="dialog-lg-title">
       <div class="sds-dialog-header">
         <h2 id="dialog-lg-title">Large dialog</h2>
-        <button data-sds-shape="icon" commandfor="dialog-lg" command="request-close" aria-label="Close large dialog">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="dialog-lg" command="request-close" aria-label="Close large dialog">&times;</button>
       </div>
       <p>Large dialogs provide more room for structured tasks.</p>
-      <div class="sds-dialog-footer"><button commandfor="dialog-lg" command="close">Done</button></div>
+      <div class="sds-dialog-footer"><button type="button" commandfor="dialog-lg" command="close">Done</button></div>
     </dialog>
 
     <dialog id="dialog-xl" class="sds-dialog" data-sds-width="xl" closedby="any" aria-labelledby="dialog-xl-title">
       <div class="sds-dialog-header">
         <h2 id="dialog-xl-title">Extra-large dialog</h2>
-        <button data-sds-shape="icon" commandfor="dialog-xl" command="request-close" aria-label="Close extra-large dialog">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="dialog-xl" command="request-close" aria-label="Close extra-large dialog">&times;</button>
       </div>
       <p>Extra-large dialogs support broad forms and comparisons.</p>
-      <div class="sds-dialog-footer"><button commandfor="dialog-xl" command="close">Done</button></div>
+      <div class="sds-dialog-footer"><button type="button" commandfor="dialog-xl" command="close">Done</button></div>
     </dialog>
 
     <dialog id="dialog-2xl" class="sds-dialog" data-sds-width="2xl" closedby="any" aria-labelledby="dialog-2xl-title">
       <div class="sds-dialog-header">
         <h2 id="dialog-2xl-title">2XL dialog</h2>
-        <button data-sds-shape="icon" commandfor="dialog-2xl" command="request-close" aria-label="Close 2XL dialog">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="dialog-2xl" command="request-close" aria-label="Close 2XL dialog">&times;</button>
       </div>
       <p>The widest dialog is available for data-heavy workflows.</p>
-      <div class="sds-dialog-footer"><button commandfor="dialog-2xl" command="close">Done</button></div>
+      <div class="sds-dialog-footer"><button type="button" commandfor="dialog-2xl" command="close">Done</button></div>
     </dialog>
 
     <dialog id="panel-left-sm" class="sds-panel" data-sds-side="left" data-sds-width="sm" closedby="any" aria-labelledby="panel-left-title">
       <header>
         <h2 id="panel-left-title">Small left panel</h2>
-        <button data-sds-shape="icon" commandfor="panel-left-sm" command="request-close" aria-label="Close panel">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="panel-left-sm" command="request-close" aria-label="Close panel">&times;</button>
       </header>
-      <main><p>Small panels work well for concise navigation or filters.</p></main>
-      <footer><button commandfor="panel-left-sm" command="close">Done</button></footer>
+      <section aria-label="Panel content"><p>Small panels work well for concise navigation or filters.</p></section>
+      <footer><button type="button" commandfor="panel-left-sm" command="close">Done</button></footer>
     </dialog>
 
     <dialog id="panel-right-md" class="sds-panel" data-sds-side="right" data-sds-width="md" closedby="any" aria-labelledby="panel-right-title">
       <header>
         <h2 id="panel-right-title">Medium right panel</h2>
-        <button data-sds-shape="icon" commandfor="panel-right-md" command="request-close" aria-label="Close panel">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="panel-right-md" command="request-close" aria-label="Close panel">&times;</button>
       </header>
-      <main><p>The default panel placement and size support focused tasks.</p></main>
+      <section aria-label="Panel content"><p>The default panel placement and size support focused tasks.</p></section>
       <footer>
-        <button data-sds-variant="ghost" commandfor="panel-right-md" command="close">Cancel</button>
-        <button commandfor="panel-right-md" command="close" data-sds-return-value="save">Save</button>
+        <button type="button" data-sds-variant="ghost" commandfor="panel-right-md" command="close">Cancel</button>
+        <button type="button" commandfor="panel-right-md" command="close" data-sds-return-value="save">Save</button>
       </footer>
     </dialog>
 
     <dialog id="panel-right-lg" class="sds-panel" data-sds-side="right" data-sds-width="lg" closedby="any" aria-labelledby="panel-large-title">
       <header>
         <h2 id="panel-large-title">Large right panel</h2>
-        <button data-sds-shape="icon" commandfor="panel-right-lg" command="request-close" aria-label="Close panel">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="panel-right-lg" command="request-close" aria-label="Close panel">&times;</button>
       </header>
-      <main>
+      <section aria-label="Panel content">
         <div class="sds-form">
           <div class="sds-field">
             <label for="panel-project-name">Project name</label>
-            <input id="panel-project-name" value="Atlas assessment" />
+            <input type="text" id="panel-project-name" value="Atlas assessment" />
           </div>
           <div class="sds-field">
             <label for="panel-project-owner">Owner</label>
@@ -2068,63 +2068,63 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             </select>
           </div>
         </div>
-      </main>
+      </section>
       <footer>
-        <button data-sds-variant="ghost" commandfor="panel-right-lg" command="close">Cancel</button>
-        <button commandfor="panel-right-lg" command="close" data-sds-return-value="save">Save project</button>
+        <button type="button" data-sds-variant="ghost" commandfor="panel-right-lg" command="close">Cancel</button>
+        <button type="button" commandfor="panel-right-lg" command="close" data-sds-return-value="save">Save project</button>
       </footer>
     </dialog>
 
     <dialog id="panel-right-xl" class="sds-panel" data-sds-side="right" data-sds-width="xl" closedby="any" aria-labelledby="panel-xl-title">
       <header>
         <h2 id="panel-xl-title">Extra-large right panel</h2>
-        <button data-sds-shape="icon" commandfor="panel-right-xl" command="request-close" aria-label="Close extra-large panel">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="panel-right-xl" command="request-close" aria-label="Close extra-large panel">&times;</button>
       </header>
-      <main><p>The widest panel supports complex, focused workflows.</p></main>
-      <footer><button commandfor="panel-right-xl" command="close">Done</button></footer>
+      <section aria-label="Panel content"><p>The widest panel supports complex, focused workflows.</p></section>
+      <footer><button type="button" commandfor="panel-right-xl" command="close">Done</button></footer>
     </dialog>
 
     <dialog id="panel-bottom" class="sds-panel" data-sds-side="bottom" data-sds-width="md" closedby="any" aria-labelledby="panel-bottom-title">
       <header>
         <h2 id="panel-bottom-title">Bottom panel</h2>
-        <button data-sds-shape="icon" commandfor="panel-bottom" command="request-close" aria-label="Close panel">&times;</button>
+        <button type="button" data-sds-shape="icon" commandfor="panel-bottom" command="request-close" aria-label="Close panel">&times;</button>
       </header>
-      <main><p>Bottom panels are useful on narrow screens and touch devices.</p></main>
-      <footer><button commandfor="panel-bottom" command="close">Done</button></footer>
+      <section aria-label="Panel content"><p>Bottom panels are useful on narrow screens and touch devices.</p></section>
+      <footer><button type="button" commandfor="panel-bottom" command="close">Done</button></footer>
     </dialog>
 
-    <div class="sds-toaster" aria-label="Notifications">
+    <section class="sds-toaster" aria-label="Notifications">
       <sds-toast id="toast-neutral" tone="neutral" role="status" aria-atomic="true">
         <strong>Draft updated</strong>
         <span>Your local changes are current.</span>
-        <button data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
+        <button type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
       <sds-toast id="toast-accent" tone="accent" role="status" aria-atomic="true">
         <strong>Featured guidance available</strong>
         <span>New highlighted guidance is ready to review.</span>
-        <button data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
+        <button type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
       <sds-toast id="toast-success" tone="success" role="status" aria-atomic="true">
         <strong>Changes saved</strong>
         <span>Your project settings are up to date.</span>
-        <button data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
+        <button type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
       <sds-toast id="toast-info" tone="info" role="status" aria-atomic="true">
         <strong>New version available</strong>
         <span>Refresh when you are ready to update.</span>
-        <button data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
+        <button type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
       <sds-toast id="toast-warning" tone="warning" role="alert" aria-atomic="true">
         <strong>Session ending soon</strong>
         <span>Save your work in the next five minutes.</span>
-        <button data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
+        <button type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
       <sds-toast id="toast-danger" tone="danger" role="alert" aria-atomic="true" persistent>
         <strong>Could not save</strong>
         <span>Check your connection and try again.</span>
-        <button data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
+        <button type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>
-    </div>
+    </section>
 
   </body>
 </html>

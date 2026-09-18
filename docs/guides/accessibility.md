@@ -118,7 +118,8 @@ Use `role="status"` for ordinary updates. Use `role="alert"` only for urgent
 information that must interrupt the current announcement.
 
 Do not put focus into a toast just to announce it. A persistent toast must
-have a keyboard-accessible close control.
+have a keyboard-accessible close control. Use automatic dismissal only for
+brief, nonessential information that remains available elsewhere.
 
 ## Motion, contrast, and zoom
 
@@ -134,12 +135,16 @@ overrides can break it. Test:
 
 ## Release checklist
 
-1. Navigate the complete workflow using only a keyboard.
-2. Verify names, roles, states, and announcements with a screen reader.
-3. Run automated accessibility checks.
+1. Run `npm test`; the suite includes axe checks in Chromium, Firefox, and
+   WebKit plus HTML conformance and executable contrast checks.
+2. Navigate the complete workflow using only a keyboard.
+3. Verify names, roles, states, and announcements with a screen reader.
 4. Test error recovery, loading, empty, and success states.
 5. Test zoom, reflow, reduced motion, light, and dark schemes.
 6. Re-test after any token, content, or framework integration change.
 
 Automated checks catch only part of the contract; keyboard and
-assistive-technology testing remain required.
+assistive-technology testing remain required. Record the browser, operating
+system, screen reader, version, tester, date, and result in the release pull
+request. A stable release must not claim WCAG conformance without a reviewed
+conformance assessment covering the released version.

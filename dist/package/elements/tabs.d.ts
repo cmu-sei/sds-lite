@@ -26,6 +26,7 @@ export declare class SdsTabsElement extends HTMLElementBase {
     disconnectedCallback(): void;
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     private isDisabled;
+    private syncOrientation;
     private tabValue;
     private reflectValue;
     private select;

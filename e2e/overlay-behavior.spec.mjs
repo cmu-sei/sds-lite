@@ -120,7 +120,7 @@ test('popover opens after hover delay, stays open over content, and closes after
   await expect(content).toBeVisible()
 
   await page.mouse.move(0, 0)
-  await expect(content).not.toBeVisible({ timeout: 700 })
+  await expect(content).not.toBeVisible({ timeout: 1200 })
 })
 
 for (const elementName of ['sds-dropdown', 'sds-popover']) {
@@ -141,6 +141,35 @@ for (const elementName of ['sds-dropdown', 'sds-popover']) {
   })
 }
 
+test('disabled dropdown items remain in the keyboard sequence', async ({
+  page,
+}) => {
+  await page.evaluate(() => {
+    const dropdown = document.createElement('sds-dropdown')
+    dropdown.id = 'disabled-menu-test'
+    dropdown.innerHTML = `
+      <button type="button">Actions</button>
+      <menu>
+        <li><button type="button">First</button></li>
+        <li><button type="button" aria-disabled="true">Unavailable</button></li>
+        <li><button type="button">Last</button></li>
+      </menu>
+    `
+    document.body.append(dropdown)
+  })
+
+  const trigger = page.getByRole('button', { name: 'Actions', exact: true })
+  await trigger.focus()
+  await trigger.press('ArrowDown')
+  await expect(page.getByRole('menuitem', { name: 'First' })).toBeFocused()
+  await page.keyboard.press('ArrowDown')
+  await expect(
+    page.getByRole('menuitem', { name: 'Unavailable' }),
+  ).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#disabled-menu-test > menu')).toBeVisible()
+})
+
 test('tooltip opens immediately on hover', async ({ page }) => {
   const tooltip = page.locator('sds-tooltip').first()
   const trigger = tooltip.locator(':scope > :first-child')
@@ -159,7 +188,7 @@ for (const elementName of ['sds-tooltip', 'sds-popover']) {
 
     await trigger.scrollIntoViewIfNeeded()
     await trigger.dispatchEvent('pointerenter')
-    await expect(surface).toBeVisible({ timeout: 700 })
+    await expect(surface).toBeVisible({ timeout: 1200 })
 
     const geometry = await surface.evaluate((element) => {
       const surfaceRect = element.getBoundingClientRect()

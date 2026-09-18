@@ -14,6 +14,12 @@ test('every public package target exists', async () => {
   }
 })
 
+test('custom-element metadata points to published modules', async () => {
+  await Promise.all(
+    customElementsManifest.modules.map((module) => access(module.path)),
+  )
+})
+
 test('all JavaScript entries are safe to import during SSR', async () => {
   const entries = [
     '@cmu-sei/sds-lite',
@@ -39,9 +45,9 @@ test('browser-only helpers fail clearly when called during SSR', async () => {
 })
 
 test('declarations use publishable JavaScript specifiers', async () => {
-  const declarations = await readFile('package/sds.d.ts', 'utf8')
+  const declarations = await readFile('dist/package/sds.d.ts', 'utf8')
   assert.doesNotMatch(declarations, /from ['"].+\.ts['"]/)
-  assert.equal(await readFile('package/auto.d.ts', 'utf8'), '')
+  assert.equal(await readFile('dist/package/auto.d.ts', 'utf8'), '')
 })
 
 test('the application build retains automatic registration', async () => {
@@ -87,8 +93,8 @@ test('the application build includes stable CDN entries', async () => {
 })
 
 test('the automatic entry and root entry share behavior modules', async () => {
-  const auto = await readFile('package/auto.js', 'utf8')
-  const root = await readFile('package/sds.js', 'utf8')
+  const auto = await readFile('dist/package/auto.js', 'utf8')
+  const root = await readFile('dist/package/sds.js', 'utf8')
 
   assert.match(auto, /from "\.\/sds\.js"/)
   assert.match(root, /from "\.\/dropdown\.js"/)
@@ -96,7 +102,10 @@ test('the automatic entry and root entry share behavior modules', async () => {
 })
 
 test('the CDN entries use stable top-level paths', async () => {
-  assert.equal(await readFile('auto.js', 'utf8'), "import './package/auto.js'\n")
+  assert.equal(
+    await readFile('dist/auto.js', 'utf8'),
+    "import './package/auto.js'\n",
+  )
   for (const name of [
     'dialog',
     'dropdown',
@@ -107,17 +116,17 @@ test('the CDN entries use stable top-level paths', async () => {
     'tooltip',
   ]) {
     assert.equal(
-      await readFile(`${name}.js`, 'utf8'),
+      await readFile(`dist/${name}.js`, 'utf8'),
       `export * from './package/${name}.js'\n`,
     )
   }
-  const stylesheet = await readFile('sds.css', 'utf8')
+  const stylesheet = await readFile('dist/sds.css', 'utf8')
   assert.match(stylesheet, /@layer sds\.tokens/)
 })
 
 test('the default stylesheet omits specialized brand shells', async () => {
-  const stylesheet = await readFile('sds.css', 'utf8')
-  const brand = await readFile('brand.css', 'utf8')
+  const stylesheet = await readFile('dist/sds.css', 'utf8')
+  const brand = await readFile('dist/brand.css', 'utf8')
 
   assert.doesNotMatch(stylesheet, /\.sds-app-header/)
   assert.doesNotMatch(stylesheet, /\.sds-brochure/)
@@ -126,16 +135,16 @@ test('the default stylesheet omits specialized brand shells', async () => {
 })
 
 test('brand styles share one external wordmark asset', async () => {
-  const brand = await readFile('brand.css', 'utf8')
+  const brand = await readFile('dist/brand.css', 'utf8')
 
   assert.doesNotMatch(brand, /data-id='sds-sei-wordmark'/)
   assert.match(brand, /url\("\.\/package\/assets\/sei-wordmark\.svg"\)/)
-  await access('package/assets/sei-wordmark.svg')
+  await access('dist/package/assets/sei-wordmark.svg')
 })
 
 test('internal TypeScript declarations are not published', async () => {
-  await assert.rejects(access('package/elements/floating.d.ts'))
-  await assert.rejects(access('package/elements/internals.d.ts'))
+  await assert.rejects(access('dist/package/elements/floating.d.ts'))
+  await assert.rejects(access('dist/package/elements/internals.d.ts'))
 })
 
 test('the package remains dependency-free', () => {

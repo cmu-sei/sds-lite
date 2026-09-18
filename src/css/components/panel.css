@@ -95,7 +95,12 @@
     block-size: 90dvh;
   }
 
-  :where(.sds-panel > header, .sds-panel > main, .sds-panel > footer) {
+  :where(
+    .sds-panel > header,
+    .sds-panel > main,
+    .sds-panel > section,
+    .sds-panel > footer
+  ) {
     padding: var(--sds-space-xl);
   }
 
@@ -115,7 +120,7 @@
     backdrop-filter: blur(4px);
   }
 
-  :where(.sds-panel > main) {
+  :where(.sds-panel > main, .sds-panel > section) {
     flex: 1;
     padding-block-start: 0;
   }

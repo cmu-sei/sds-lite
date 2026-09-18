@@ -231,7 +231,7 @@ export function notify(
       ? options.container
       : scope.querySelector<HTMLElement>('.sds-toaster, sds-toaster')
   if (!toaster) {
-    toaster = document.createElement('div')
+    toaster = document.createElement('section')
     toaster.className = 'sds-toaster'
     toaster.setAttribute('aria-label', 'Notifications')
     const root =
@@ -240,6 +240,18 @@ export function notify(
     if (!root) toaster.dataset.sdsRoot = ''
     const toastHost = root ?? document.body
     toastHost.append(toaster)
+  }
+  if (
+    toaster.localName === 'div' &&
+    !toaster.hasAttribute('role')
+  ) {
+    toaster.setAttribute('role', 'region')
+  }
+  if (
+    !toaster.hasAttribute('aria-label') &&
+    !toaster.hasAttribute('aria-labelledby')
+  ) {
+    toaster.setAttribute('aria-label', 'Notifications')
   }
 
   const toast = document.createElement('sds-toast')

@@ -99,7 +99,6 @@ export class SdsDropdownElement extends HTMLElementBase {
     if (!trigger || !menu) {
       console.warn(
         '<sds-dropdown> requires one direct child button and one direct child menu or popover.',
-        this,
       )
       return
     }
@@ -225,7 +224,6 @@ export class SdsDropdownElement extends HTMLElementBase {
       })
       .filter(
         (item) =>
-          item.getAttribute('aria-disabled') !== 'true' &&
           (!(item instanceof HTMLButtonElement) || !item.disabled),
       )
   }

@@ -162,3 +162,36 @@ test('live tab examples contain complete server-rendered semantics', () => {
     }
   }
 })
+
+test('the playground uses valid interactive and landmark semantics', () => {
+  for (const button of document.querySelectorAll('button')) {
+    assert.ok(button.hasAttribute('type'), button.outerHTML)
+  }
+
+  const pageMain = document.querySelector('body > .sds-app main#top')
+  assert.ok(pageMain)
+  assert.equal(pageMain.querySelector('main'), null)
+
+  for (const toaster of document.querySelectorAll('.sds-toaster')) {
+    assert.ok(
+      toaster.localName === 'section' ||
+        toaster.getAttribute('role') === 'region',
+    )
+    assert.ok(
+      toaster.hasAttribute('aria-label') ||
+        toaster.hasAttribute('aria-labelledby'),
+    )
+  }
+
+  for (const avatar of document.querySelectorAll(
+    'span.sds-avatar[aria-label]:not([aria-hidden="true"])',
+  )) {
+    assert.equal(avatar.getAttribute('role'), 'img')
+  }
+
+  for (const scrollRegion of document.querySelectorAll(
+    '.demo-code, .sds-timeline[data-sds-orientation="horizontal"]',
+  )) {
+    assert.equal(scrollRegion.getAttribute('tabindex'), '0')
+  }
+})

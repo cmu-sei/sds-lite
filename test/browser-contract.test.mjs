@@ -159,6 +159,15 @@ test('tabs expose reflected configuration and selected value', async () => {
   assert.equal(tabs?.activation, 'manual')
   assert.equal(tabs?.orientation, 'vertical')
   assert.equal(
+    tabs?.querySelector('[role="tablist"]')?.getAttribute('aria-orientation'),
+    'vertical',
+  )
+  tabs.orientation = 'horizontal'
+  assert.equal(
+    tabs.querySelector('[role="tablist"]')?.getAttribute('aria-orientation'),
+    'horizontal',
+  )
+  assert.equal(
     tabs?.querySelector('[value="files"]')?.getAttribute('aria-selected'),
     'true',
   )
@@ -213,8 +222,11 @@ test('notify validates duration and respects an explicit container', () => {
   )
 
   const toast = notify('Saved', { container, persistent: true })
-  assert.equal(toast.closest('section'), container)
-  assert.equal(container.querySelector('.sds-toaster')?.contains(toast), true)
+  assert.equal(container.contains(toast), true)
+  const generatedToaster = container.querySelector('.sds-toaster')
+  assert.equal(generatedToaster?.contains(toast), true)
+  assert.equal(generatedToaster?.localName, 'section')
+  assert.equal(generatedToaster?.getAttribute('aria-label'), 'Notifications')
 
   const toaster = document.createElement('div')
   toaster.className = 'sds-toaster'
@@ -225,4 +237,6 @@ test('notify validates duration and respects an explicit container', () => {
   })
   assert.equal(directToast.parentElement, toaster)
   assert.equal(toaster.querySelector('.sds-toaster'), null)
+  assert.equal(toaster.getAttribute('role'), 'region')
+  assert.equal(toaster.getAttribute('aria-label'), 'Notifications')
 })

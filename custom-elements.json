@@ -4,7 +4,7 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "package/dropdown.js",
+      "path": "dist/package/dropdown.js",
       "declarations": [
         {
           "kind": "class",
@@ -114,7 +114,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "package/popover.js",
+      "path": "dist/package/popover.js",
       "declarations": [
         {
           "kind": "class",
@@ -209,7 +209,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "package/tabs.js",
+      "path": "dist/package/tabs.js",
       "declarations": [
         {
           "kind": "class",
@@ -324,7 +324,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "package/tooltip.js",
+      "path": "dist/package/tooltip.js",
       "declarations": [
         {
           "kind": "class",
@@ -370,7 +370,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "package/toast.js",
+      "path": "dist/package/toast.js",
       "declarations": [
         {
           "kind": "class",

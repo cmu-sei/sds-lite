@@ -93,7 +93,6 @@ export class SdsPopoverElement extends HTMLElementBase {
     if (!trigger || !content) {
       console.warn(
         '<sds-popover> requires one direct child button and one direct child content element.',
-        this,
       )
       return
     }

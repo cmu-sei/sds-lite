@@ -79,7 +79,7 @@ export default defineConfig({
       fileName: (_format, entryName) => `${entryName}.js`,
       cssFileName: 'sds',
     },
-    outDir: 'package',
+    outDir: 'dist/package',
     emptyOutDir: true,
   },
 })

@@ -10,21 +10,6 @@ lerna-debug.log*
 node_modules
 dist-ssr
 *.local
-/package
-/test-results
-/auto.js
-/dialog.js
-/dropdown.js
-/popover.js
-/sds.js
-/tabs.js
-/toast.js
-/tooltip.js
-/brand.css
-/core.css
-/layouts.css
-/prose.css
-/sds.css
 
 # Editor directories and files
 .vscode/*

@@ -4,7 +4,7 @@ import test from 'node:test'
 import {
   computeFloatingPosition,
   resolveFloatingPlacement,
-} from '../package/floating.js'
+} from '../dist/package/floating.js'
 
 const viewport = { width: 800, height: 640 }
 const surface = { width: 180, height: 120 }

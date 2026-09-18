@@ -12,9 +12,9 @@
     "url": "https://github.com/cmu-sei/sds-lite/issues"
   },
   "type": "module",
-  "types": "./package/sds.d.ts",
-  "module": "./package/sds.js",
-  "style": "./sds.css",
+  "types": "./dist/package/sds.d.ts",
+  "module": "./dist/package/sds.js",
+  "style": "./dist/sds.css",
   "customElements": "./custom-elements.json",
   "bin": {
     "sds-lite-migrate": "./scripts/migrate.mjs"
@@ -28,68 +28,63 @@
   ],
   "sideEffects": [
     "**/*.css",
-    "./auto.js",
-    "./package/auto.js"
+    "./dist/package/auto.js"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
   "files": [
     "LICENSE",
-    "auto.js",
-    "dialog.js",
-    "dropdown.js",
-    "popover.js",
-    "sds.js",
-    "tabs.js",
-    "toast.js",
-    "tooltip.js",
-    "brand.css",
-    "core.css",
+    "dist/brand.css",
+    "dist/core.css",
+    "dist/layouts.css",
+    "dist/package",
+    "dist/prose.css",
+    "dist/sds.css",
+    "!dist/custom-elements.json",
+    "!dist/html-data.json",
+    "!dist/interface-manifest.json",
+    "!dist/interface-manifest.schema.json",
     "docs",
     "framework-types",
     "html-data.json",
     "interface-manifest.json",
     "interface-manifest.schema.json",
-    "layouts.css",
-    "package",
-    "prose.css",
-    "sds.css",
     "custom-elements.json",
     "scripts/migrate.mjs"
   ],
   "exports": {
     ".": {
-      "types": "./package/sds.d.ts",
-      "import": "./package/sds.js"
+      "types": "./dist/package/sds.d.ts",
+      "import": "./dist/package/sds.js"
     },
     "./auto": {
-      "types": "./package/auto.d.ts",
-      "import": "./package/auto.js"
+      "types": "./dist/package/auto.d.ts",
+      "import": "./dist/package/auto.js"
     },
     "./dialog": {
-      "types": "./package/elements/dialog.d.ts",
-      "import": "./package/dialog.js"
+      "types": "./dist/package/elements/dialog.d.ts",
+      "import": "./dist/package/dialog.js"
     },
     "./dropdown": {
-      "types": "./package/elements/dropdown.d.ts",
-      "import": "./package/dropdown.js"
+      "types": "./dist/package/elements/dropdown.d.ts",
+      "import": "./dist/package/dropdown.js"
     },
     "./popover": {
-      "types": "./package/elements/popover.d.ts",
-      "import": "./package/popover.js"
+      "types": "./dist/package/elements/popover.d.ts",
+      "import": "./dist/package/popover.js"
     },
     "./tabs": {
-      "types": "./package/elements/tabs.d.ts",
-      "import": "./package/tabs.js"
+      "types": "./dist/package/elements/tabs.d.ts",
+      "import": "./dist/package/tabs.js"
     },
     "./tooltip": {
-      "types": "./package/elements/tooltip.d.ts",
-      "import": "./package/tooltip.js"
+      "types": "./dist/package/elements/tooltip.d.ts",
+      "import": "./dist/package/tooltip.js"
     },
     "./toast": {
-      "types": "./package/elements/toast.d.ts",
-      "import": "./package/toast.js"
+      "types": "./dist/package/elements/toast.d.ts",
+      "import": "./dist/package/toast.js"
     },
     "./react": {
       "types": "./framework-types/react.d.ts",
@@ -101,11 +96,11 @@
     },
     "./html-data.json": "./html-data.json",
     "./interface-manifest.json": "./interface-manifest.json",
-    "./sds.css": "./sds.css",
-    "./core.css": "./core.css",
-    "./layouts.css": "./layouts.css",
-    "./prose.css": "./prose.css",
-    "./brand.css": "./brand.css",
+    "./sds.css": "./dist/sds.css",
+    "./core.css": "./dist/core.css",
+    "./layouts.css": "./dist/layouts.css",
+    "./prose.css": "./dist/prose.css",
+    "./brand.css": "./dist/brand.css",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -116,8 +111,10 @@
     "build": "tsc && vite build && vite build --config vite.library.config.ts && tsc -p tsconfig.declarations.json && node scripts/prepare-package.mjs",
     "preview": "vite preview",
     "release:prepare": "node scripts/prepare-release.mjs",
-    "test": "npm run build && node --test && playwright test",
+    "test": "npm run build && npm run test:standards && node --test && playwright test && npm run test:workspace",
     "test:browser": "playwright test",
+    "test:standards": "html-validate index.html",
+    "test:workspace": "node --test test/workspace-hygiene.test.mjs",
     "prepublishOnly": "npm test"
   },
   "engines": {
@@ -125,8 +122,10 @@
   },
   "packageManager": "npm@11.6.4",
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "happy-dom": "^20.14.5",
+    "html-validate": "^10.17.0",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
   }

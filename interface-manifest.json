@@ -522,7 +522,7 @@
     {
       "tagName": "sds-dropdown",
       "className": "SdsDropdownElement",
-      "module": "package/dropdown.js",
+      "module": "dist/package/dropdown.js",
       "description": "Enhances a direct child button and menu with Popover positioning and menu keyboard behavior.",
       "content": [
         "One direct child button trigger.",
@@ -551,7 +551,7 @@
     {
       "tagName": "sds-popover",
       "className": "SdsPopoverElement",
-      "module": "package/popover.js",
+      "module": "dist/package/popover.js",
       "description": "Enhances a direct child button and rich Popover surface with delayed hover and focus behavior.",
       "content": [
         "One direct child button trigger.",
@@ -578,7 +578,7 @@
     {
       "tagName": "sds-tabs",
       "className": "SdsTabsElement",
-      "module": "package/tabs.js",
+      "module": "dist/package/tabs.js",
       "description": "Coordinates a tab list and one panel per tab.",
       "content": [
         "A direct child tab-list container with button or link children.",
@@ -607,7 +607,7 @@
     {
       "tagName": "sds-tooltip",
       "className": "SdsTooltipElement",
-      "module": "package/tooltip.js",
+      "module": "dist/package/tooltip.js",
       "description": "Enhances a direct child trigger and short description with accessible tooltip behavior.",
       "content": [
         "One direct child trigger.",
@@ -625,7 +625,7 @@
     {
       "tagName": "sds-toast",
       "className": "SdsToastElement",
-      "module": "package/toast.js",
+      "module": "dist/package/toast.js",
       "description": "A timed or persistent notification.",
       "content": [
         "A direct child strong title.",

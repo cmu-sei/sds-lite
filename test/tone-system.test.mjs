@@ -17,6 +17,50 @@ const componentStyles = (
 
 const tones = ['neutral', 'accent', 'info', 'success', 'warning', 'danger']
 
+function luminance(hex) {
+  const channels = hex
+    .slice(1)
+    .match(/.{2}/g)
+    .map((channel) => Number.parseInt(channel, 16) / 255)
+    .map((channel) =>
+      channel <= 0.04045
+        ? channel / 12.92
+        : ((channel + 0.055) / 1.055) ** 2.4,
+    )
+  return (
+    channels[0] * 0.2126 +
+    channels[1] * 0.7152 +
+    channels[2] * 0.0722
+  )
+}
+
+function contrast(first, second) {
+  const [lighter, darker] = [luminance(first), luminance(second)].sort(
+    (a, b) => b - a,
+  )
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+function color(name) {
+  const match = tokens.match(
+    new RegExp(`--${name}:\\s*(#[0-9a-f]{3}(?:[0-9a-f]{3})?)`, 'i'),
+  )
+  assert.ok(match, `Missing color token --${name}`)
+  return match[1].length === 4
+    ? `#${[...match[1].slice(1)].map((digit) => digit.repeat(2)).join('')}`
+    : match[1]
+}
+
+function lightDark(name) {
+  const match = tokens.match(
+    new RegExp(
+      `--${name}:\\s*light-dark\\(\\s*var\\(--([a-z0-9-]+)\\),\\s*var\\(--([a-z0-9-]+)\\)`,
+    ),
+  )
+  assert.ok(match, `Missing light-dark token --${name}`)
+  return [color(match[1]), color(match[2])]
+}
+
 async function markdownFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true })
   const files = await Promise.all(
@@ -90,14 +134,32 @@ test('accent is blue and info uses the upstream teal palette', () => {
 
 test('focus indicators remain visible in normal and forced-color modes', () => {
   assert.match(
-    tokens,
-    /--sds-color-focus-ring:\s*light-dark\(\s*var\(--sds-blue-300\),\s*var\(--sds-blue-700\)/,
-  )
-  assert.match(
     foundations,
     /box-shadow: 0 0 0 2px var\(--sds-color-focus-ring\)/,
   )
   assert.match(foundations, /@media \(forced-colors: active\)/)
   assert.match(foundations, /outline: 2px solid Highlight/)
   assert.match(foundations, /box-shadow: none/)
+})
+
+test('focus indicators and control boundaries meet non-text contrast', () => {
+  const focus = lightDark('sds-color-focus-ring')
+  const border = lightDark('sds-color-form-border')
+  const surfaces = [
+    lightDark('sds-color-surface-default'),
+    lightDark('sds-color-surface-subtle'),
+  ]
+
+  for (const [scheme, index] of [['light', 0], ['dark', 1]]) {
+    for (const surface of surfaces) {
+      assert.ok(
+        contrast(focus[index], surface[index]) >= 3,
+        `${scheme} focus ring must have at least 3:1 contrast`,
+      )
+      assert.ok(
+        contrast(border[index], surface[index]) >= 3,
+        `${scheme} form border must have at least 3:1 contrast`,
+      )
+    }
+  }
 })

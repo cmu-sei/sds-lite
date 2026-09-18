@@ -150,7 +150,7 @@ Use direct native `header`, `main`, and `footer` children:
       &times;
     </button>
   </header>
-  <main>Help content goes here.</main>
+  <section aria-label="Panel content">Help content goes here.</section>
   <footer>
     <button type="button" commandfor="help-panel" command="close">Done</button>
   </footer>

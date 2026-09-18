@@ -17,17 +17,20 @@
     box-shadow:
       var(--sds-shadow-lg),
       0 0 0 1px rgb(0 0 0 / 5%);
+    visibility: hidden;
     opacity: 0;
     pointer-events: auto;
     transform: translateY(var(--sds-space-sm));
     transition:
       opacity var(--sds-duration-normal) var(--sds-easing-standard),
       transform var(--sds-duration-normal) var(--sds-easing-standard),
+      visibility var(--sds-duration-normal) allow-discrete,
       display var(--sds-duration-normal) allow-discrete;
   }
 
   :where(sds-toast[open]) {
     display: grid;
+    visibility: visible;
     opacity: 1;
     transform: translateX(0);
   }

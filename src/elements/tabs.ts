@@ -64,6 +64,7 @@ export class SdsTabsElement extends HTMLElementBase {
 
   set orientation(value: SdsOrientation) {
     reflectStringAttribute(this, 'orientation', value)
+    this.syncOrientation()
   }
 
   get size(): SdsTabsSize {
@@ -116,7 +117,6 @@ export class SdsTabsElement extends HTMLElementBase {
     if (!tabList || this.tabs.length === 0) {
       console.warn(
         '<sds-tabs> requires a tab-list container with button or link children.',
-        this,
       )
       return
     }
@@ -125,20 +125,19 @@ export class SdsTabsElement extends HTMLElementBase {
     if (availablePanels.length < this.tabs.length) {
       console.warn(
         '<sds-tabs> requires one panel for every tab.',
-        this,
       )
       return
     }
 
     tabList.classList.add('sds-tab-list')
     tabList.setAttribute('role', 'tablist')
+    this.syncOrientation(tabList)
     if (
       !tabList.hasAttribute('aria-label') &&
       !tabList.hasAttribute('aria-labelledby')
     ) {
       console.warn(
         '<sds-tabs> requires an accessible name on its tab list.',
-        tabList,
       )
     }
 
@@ -178,7 +177,6 @@ export class SdsTabsElement extends HTMLElementBase {
     if (this.value && !requestedTab) {
       console.warn(
         `<sds-tabs> has no enabled tab with value "${this.value}".`,
-        this,
       )
     }
     const selectedTab =
@@ -237,7 +235,6 @@ export class SdsTabsElement extends HTMLElementBase {
 
     console.warn(
       `<sds-tabs> has no enabled tab with value "${newValue}".`,
-      this,
     )
     const selected = this.tabs.find(
       (tab) => tab.getAttribute('aria-selected') === 'true',
@@ -250,6 +247,17 @@ export class SdsTabsElement extends HTMLElementBase {
       (tab instanceof HTMLButtonElement && tab.disabled) ||
       tab.getAttribute('aria-disabled') === 'true'
     )
+  }
+
+  private syncOrientation(tabList?: HTMLElement): void {
+    if (!this.hasAttribute('orientation')) return
+
+    const target =
+      tabList ??
+      directElementChildren(this).find((child) =>
+        child.matches('.sds-tab-list, [role="tablist"]'),
+      )
+    target?.setAttribute('aria-orientation', this.orientation)
   }
 
   private tabValue(tab: HTMLElement): string {

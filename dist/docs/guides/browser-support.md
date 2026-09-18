@@ -2,7 +2,16 @@
 
 [Documentation](../README.md) / Guides / Browser support
 
-SDS Lite targets modern browsers and does not ship polyfills.
+SDS Lite targets the current stable releases of Chrome, Edge, Firefox, and
+Safari and does not ship polyfills. Every pull request runs the browser suite
+against the Chromium, Firefox, and WebKit revisions pinned by the repository's
+Playwright version. A release is supported only when that matrix passes.
+
+The Playwright engines are reproducible compatibility proxies, not a
+substitute for release smoke tests in the branded browsers. Release testing
+must cover the current stable Chrome, Edge, Firefox, and Safari versions.
+Mobile layouts are responsive, but mobile browser and assistive-technology
+support is not claimed until it is tested and recorded.
 
 ## Required platform features
 
@@ -15,8 +24,9 @@ SDS Lite targets modern browsers and does not ship polyfills.
 | `:where()` and `:has()` | Low-specificity recipes and relationship styling |
 | `light-dark()` and `color-mix()` | Themes, schemes, and semantic colors |
 
-Check support against your application's browser policy rather than relying
-on a fixed browser-version table that can become stale.
+Check these requirements against your application's browser policy. Browsers
+outside the rolling support window may work when they provide the required
+features, but they are not part of the release contract.
 
 ## Graceful behavior
 

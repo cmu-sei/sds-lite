@@ -18,7 +18,12 @@ Use text initials when there is no image. Supply the full name as the
 accessible label; SDS Lite does not derive initials from names:
 
 ```html
-<span class="sds-avatar" data-sds-tone="accent" aria-label="Alex Morgan">
+<span
+  class="sds-avatar"
+  role="img"
+  data-sds-tone="accent"
+  aria-label="Alex Morgan"
+>
   AM
 </span>
 ```
@@ -31,8 +36,8 @@ accessible label; SDS Lite does not derive initials from names:
 | `data-sds-tone` | Any semantic tone | Neutral |
 
 Use empty `alt=""` only when the adjacent text already identifies the person.
-An initials avatar needs an `aria-label` unless equivalent visible text is
-present.
+An initials avatar needs `role="img"` and an `aria-label` unless equivalent
+visible text is present.
 
 ### Avatar group
 
@@ -41,12 +46,22 @@ An avatar group is a list of people, not a generated image collection:
 ```html
 <ul class="sds-avatar-group" aria-label="Reviewers">
   <li>
-    <span class="sds-avatar" data-sds-tone="accent" aria-label="Alex Morgan">
+    <span
+      class="sds-avatar"
+      role="img"
+      data-sds-tone="accent"
+      aria-label="Alex Morgan"
+    >
       AM
     </span>
   </li>
   <li>
-    <span class="sds-avatar" data-sds-tone="success" aria-label="Sam Rivera">
+    <span
+      class="sds-avatar"
+      role="img"
+      data-sds-tone="success"
+      aria-label="Sam Rivera"
+    >
       SR
     </span>
   </li>
@@ -170,8 +185,9 @@ item. Set a consistent marker column when needed:
 ```
 
 Each item accepts any semantic tone. Mark the current event with
-`aria-current="step"`. Add `data-sds-orientation="horizontal"` to the timeline for
-a horizontally scrolling sequence.
+`aria-current="step"`. Add `data-sds-orientation="horizontal"` and `tabindex="0"` to the timeline for
+a horizontally scrolling sequence. The tab stop lets keyboard users reach
+content that overflows the viewport.
 
 Replace a generated dot with a direct marker:
 

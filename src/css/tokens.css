@@ -159,8 +159,8 @@
       var(--sds-gray-400)
     );
     --sds-color-focus-ring: light-dark(
-      var(--sds-blue-300),
-      var(--sds-blue-700)
+      var(--sds-blue-700),
+      var(--sds-blue-200)
     );
     --sds-color-brand: light-dark(var(--sds-red-600), var(--sds-red-400));
     --sds-color-action-primary: light-dark(
@@ -184,8 +184,8 @@
       var(--sds-gray-800)
     );
     --sds-color-form-border: light-dark(
-      var(--sds-gray-300),
-      var(--sds-gray-600)
+      var(--sds-gray-500),
+      var(--sds-gray-400)
     );
     --sds-color-form-disabled-background: light-dark(
       var(--sds-gray-100),

@@ -46,7 +46,7 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 		this.positioner = null, this.trigger = null, this.menu = null, this.items = [];
 		let t = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), n = o(this), i = n.find((e) => e instanceof HTMLButtonElement), a = i?.getAttribute("popovertarget"), s = n.filter((e) => e !== i), c = n.find((e) => e.id === a) ?? s.find((e) => e.matches("menu, [popover], .sds-dropdown-menu")) ?? (s.length === 1 ? s[0] : null) ?? null;
 		if (!i || !c) {
-			console.warn("<sds-dropdown> requires one direct child button and one direct child menu or popover.", this);
+			console.warn("<sds-dropdown> requires one direct child button and one direct child menu or popover.");
 			return;
 		}
 		let l = r(c, "sds-dropdown");
@@ -87,7 +87,7 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 			return;
 		}
 		for (let e of this.menu.querySelectorAll(":scope > li")) e.hasAttribute("role") || e.setAttribute("role", "none");
-		this.items = Array.from(this.menu.querySelectorAll("button, a[href], [role=\"menuitem\"]")).filter((e) => !e.closest("[role=\"menuitem\"] [role=\"menuitem\"]")).map((e) => (e.setAttribute("role", "menuitem"), e.tabIndex = -1, e)).filter((e) => e.getAttribute("aria-disabled") !== "true" && (!(e instanceof HTMLButtonElement) || !e.disabled));
+		this.items = Array.from(this.menu.querySelectorAll("button, a[href], [role=\"menuitem\"]")).filter((e) => !e.closest("[role=\"menuitem\"] [role=\"menuitem\"]")).map((e) => (e.setAttribute("role", "menuitem"), e.tabIndex = -1, e)).filter((e) => !(e instanceof HTMLButtonElement) || !e.disabled);
 	}
 	showAndFocus(e = 0) {
 		this.show(), this.items[e]?.focus();

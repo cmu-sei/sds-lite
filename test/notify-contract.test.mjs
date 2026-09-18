@@ -42,5 +42,7 @@ test('notify is self-contained', () => {
   assert.ok(toast instanceof customElements.get('sds-toast'))
   assert.equal(toast.open, true)
   assert.equal(toast.parentElement?.className, 'sds-toaster')
+  assert.equal(toast.parentElement?.localName, 'section')
+  assert.equal(toast.parentElement?.getAttribute('aria-label'), 'Notifications')
   assert.equal(toast.parentElement?.parentElement, document.body)
 })

@@ -15,7 +15,7 @@ test('interactive elements use one subtle focus ring', async ({ page }) => {
 
   for (const element of elements) {
     await element.focus()
-    await page.waitForTimeout(50)
+    await page.waitForTimeout(200)
     styles.push(
       await element.evaluate((focusedElement) => {
         const style = getComputedStyle(focusedElement)
@@ -30,12 +30,14 @@ test('interactive elements use one subtle focus ring', async ({ page }) => {
   }
 
   expect(styles[0].focusColor.replaceAll(/\s/g, '')).toBe(
-    'light-dark(#2eb1e6,#034f8d)',
+    'light-dark(#034f8d,#74cbee)',
   )
   for (const style of styles) {
     expect(style.isFocusVisible).toBe(true)
     expect(style.outlineStyle).toBe('none')
     expect(style.boxShadow).not.toBe('none')
+    expect(style.boxShadow).not.toContain('rgba(0, 0, 0, 0)')
+    expect(style.boxShadow).toContain('2px')
   }
   expect(styles.map(({ boxShadow }) => boxShadow)).toEqual(
     Array(styles.length).fill(styles[0].boxShadow),

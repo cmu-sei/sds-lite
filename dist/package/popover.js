@@ -39,7 +39,7 @@ var u = typeof HTMLElement > "u" ? class {} : HTMLElement, d = class extends u {
 		this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
 		let n = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), r = s(this), a = r.find((e) => e instanceof HTMLButtonElement), o = a?.getAttribute("popovertarget"), c = r.filter((e) => e !== a), l = r.find((e) => e.id === o) ?? c.find((e) => e.matches("[popover], .sds-popover-content")) ?? (c.length === 1 ? c[0] : null) ?? null;
 		if (!a || !l) {
-			console.warn("<sds-popover> requires one direct child button and one direct child content element.", this);
+			console.warn("<sds-popover> requires one direct child button and one direct child content element.");
 			return;
 		}
 		let u = i(l, "sds-popover");
