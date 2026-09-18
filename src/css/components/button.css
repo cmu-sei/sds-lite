@@ -84,10 +84,7 @@
 
     &[data-sds-variant="secondary"] {
       --sds-button-background: var(--sds-color-surface-default);
-      --sds-button-border: var(
-        --sds-tone-border,
-        var(--sds-color-border-strong)
-      );
+      --sds-button-border: var(--sds-color-border-strong);
       --sds-button-color: var(
         --sds-tone-text,
         var(--sds-color-action-primary)
@@ -226,10 +223,7 @@
 
       &[data-sds-variant="secondary"]:not(:disabled):hover {
         --sds-button-background: var(--sds-color-interactive-subtle-hover);
-        --sds-button-border: var(
-          --sds-tone-border,
-          var(--sds-color-border-strong)
-        );
+        --sds-button-border: var(--sds-color-border-strong);
       }
 
       &[data-sds-variant="tertiary"]:not(:disabled):hover {
