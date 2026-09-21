@@ -228,3 +228,11 @@ displaying selected-file previews, and performing uploads. Do not treat
 The transparent native input covers the complete surface, so clicking or
 dropping anywhere uses browser file-selection behavior. Omit those wrappers
 when the visible compact native input is preferred.
+
+| Option | Values | Default |
+|---|---|---|
+| `data-sds-size` on `.sds-file-upload` or `.sds-file-input` | `sm`, `md`, `lg` | `md` |
+
+On a composed upload, size adjusts the outer padding, drop-area padding,
+action, icon, and supporting text together. On a native file input, it adjusts
+the visible file-selector button.

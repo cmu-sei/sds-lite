@@ -47,6 +47,62 @@
     font-size: 0.75rem;
   }
 
+  :where(.sds-file-upload[data-sds-size="sm"]) {
+    padding: var(--sds-space-sm);
+  }
+
+  :where(
+    .sds-file-upload[data-sds-size="sm"] .sds-file-upload-surface
+  ) {
+    padding: var(--sds-space-lg);
+  }
+
+  :where(
+    .sds-file-upload[data-sds-size="sm"]
+      :is(.sds-file-upload-action, .sds-file-upload-surface > strong)
+  ) {
+    font-size: 0.75rem;
+  }
+
+  :where(
+    .sds-file-upload[data-sds-size="sm"] .sds-file-upload-action > svg
+  ) {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+  }
+
+  :where(.sds-file-upload[data-sds-size="lg"]) {
+    padding: var(--sds-space-lg);
+  }
+
+  :where(
+    .sds-file-upload[data-sds-size="lg"] .sds-file-upload-surface
+  ) {
+    gap: var(--sds-space-sm);
+    padding: var(--sds-space-2xl);
+  }
+
+  :where(
+    .sds-file-upload[data-sds-size="lg"] .sds-file-upload-action
+  ) {
+    font-size: 1rem;
+  }
+
+  :where(
+    .sds-file-upload[data-sds-size="lg"] .sds-file-upload-action > svg
+  ) {
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  :where(
+    .sds-file-upload[data-sds-size="lg"]
+      .sds-file-upload-surface
+      > :is(strong, small)
+  ) {
+    font-size: 0.875rem;
+  }
+
   :where(.sds-file-input, [data-sds-root] input[type="file"]) {
     display: block;
     inline-size: fit-content;

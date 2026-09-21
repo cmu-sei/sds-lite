@@ -12,8 +12,14 @@ Use a spinner when an action or compact region is waiting:
 </span>
 ```
 
-`data-sds-size` accepts `sm`, `md`, or `lg`; `md` is the default. `data-sds-tone`
-accepts every semantic tone.
+| Size | Diameter | Typical use |
+|---|---:|---|
+| `sm` | `1rem` | Inline actions |
+| `md` | `1.5rem` | Controls and compact regions |
+| `lg` | `3rem` | Sections and cards |
+| `xl` | `5rem` | Page-level loading |
+
+`md` is the default. `data-sds-tone` accepts every semantic tone.
 
 Use specific accessible text. “Loading projects” is more useful than
 “Loading.” Avoid adding a live spinner repeatedly during frequent background

@@ -82,6 +82,14 @@
     gap: var(--sds-space-2xl);
   }
 
+  :where(.sds-flex[data-sds-gap="3xl"]) {
+    gap: var(--sds-space-3xl);
+  }
+
+  :where(.sds-flex[data-sds-gap="4xl"]) {
+    gap: var(--sds-space-4xl);
+  }
+
   :where(.sds-flex > [data-sds-grow]) {
     min-inline-size: 0;
     flex: 1 1 0;

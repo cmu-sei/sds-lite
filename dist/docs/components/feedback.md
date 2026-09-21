@@ -75,6 +75,10 @@ does not hide tag state behind a component event API.
 | `data-sds-size` | `xs`, `sm`, `md`, `lg` | `md` |
 | `data-sds-inset` | Presence; removes rounding | Rounded |
 
+Callout sizes scale typography and padding together. Use `xs` and `sm` for
+compact inline feedback, `md` for ordinary notices, and `lg` for prominent
+page-level guidance.
+
 An optional `[data-sds-callout-close]` control receives close-button positioning.
 Application code owns dismissal:
 

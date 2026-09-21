@@ -103,7 +103,7 @@
         </header>
 
         <div class="sds-page" data-sds-padding-block-start="2xl" data-sds-padding-block-end="4xl">
-          <section class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="2xl" aria-labelledby="intro-title">
+          <section class="sds-grid" data-sds-columns="2" data-sds-min-column-width="lg" data-sds-gap="2xl" aria-labelledby="intro-title">
             <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="sm">
               <p class="sds-eyebrow">Native first, production ready</p>
               <h2 id="intro-title">Build polished interfaces from HTML</h2>
@@ -362,7 +362,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <div class="sds-flex" data-sds-wrap data-sds-align="center" role="group" aria-label="Link sizes">
                   <a class="sds-link" data-sds-size="xs" href="#actions">Extra small</a>
                   <a class="sds-link" data-sds-size="sm" href="#actions">Small</a>
-                  <a class="sds-link" href="#actions">Medium</a>
+                  <a class="sds-link" data-sds-size="md" href="#actions">Medium</a>
                   <a class="sds-link" data-sds-size="lg" href="#actions">Large</a>
                   <a class="sds-link" data-sds-size="xl" href="#actions">Extra large</a>
                 </div>
@@ -493,7 +493,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-field" data-sds-column-span="full">
                 <label for="file-input">Supporting files</label>
-                <div class="sds-file-upload">
+                <div class="sds-file-upload" data-sds-size="lg">
                   <div class="sds-file-upload-surface">
                     <input
                       id="file-input"
@@ -864,8 +864,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <details class="sds-card sds-grid sds-disclosure" data-sds-padding="lg">
               <summary>API reference and copy-ready markup</summary>
               <div class="sds-flex sds-prose" data-sds-wrap data-sds-gap="sm">
-                <code>datapoint data-sds-size="sm | md | lg"</code>
-                <code>avatar data-sds-size="xs | sm | md | lg | xl"</code>
+                <code>datapoint data-sds-size="sm | md | lg | xl"</code>
+                <code>avatar data-sds-size="xs | sm | md | lg | xl | 2xl"</code>
                 <code>avatar data-sds-shape="circle | square | portrait"</code>
                 <code>table data-sds-size="sm | lg"</code>
                 <code>data-sds-row-highlight</code>
@@ -890,6 +890,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <span class="sds-avatar" role="img" data-sds-tone="success" data-sds-variant="solid" aria-label="Jordan Lee">JL</span>
                 <span class="sds-avatar" role="img" data-sds-size="lg" data-sds-shape="square" data-sds-tone="warning" aria-label="Taylor Quinn">TQ</span>
                 <span class="sds-avatar" role="img" data-sds-size="xl" data-sds-shape="portrait" data-sds-tone="danger" data-sds-variant="outline" aria-label="Morgan Chen">MC</span>
+                <span class="sds-avatar" role="img" data-sds-size="2xl" data-sds-tone="accent" data-sds-variant="outline" aria-label="Riley Jones">RJ</span>
                 <ul class="sds-avatar-group" data-sds-density="condensed" aria-label="Reviewers">
                   <li><span class="sds-avatar" role="img" data-sds-tone="accent" aria-label="Alex Morgan">AM</span></li>
                   <li><span class="sds-avatar" role="img" data-sds-tone="success" aria-label="Sam Rivera">SR</span></li>
@@ -950,7 +951,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md">
                 <h4>Tones</h4>
-                <div class="sds-grid" data-sds-columns="3" data-sds-min-column-width="md" data-sds-gap="xl">
+                <div class="sds-grid" data-sds-columns="4" data-sds-min-column-width="md" data-sds-gap="xl">
                   <div class="sds-card" data-sds-padding="xl">
                     <div class="sds-datapoint" data-sds-tone="neutral">
                       <span>Neutral</span>
@@ -1008,6 +1009,12 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <div class="sds-datapoint" data-sds-size="lg">
                       <span>Large</span>
                       <div><strong>104</strong><span>resolved</span></div>
+                    </div>
+                  </div>
+                  <div class="sds-card" data-sds-padding="xl">
+                    <div class="sds-datapoint" data-sds-size="xl">
+                      <span>Extra large</span>
+                      <div><strong>1.2K</strong><span>total</span></div>
                     </div>
                   </div>
                 </div>
@@ -1156,9 +1163,22 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <strong data-sds-grow>Flexible content</strong>
                 <button type="button" data-sds-no-shrink>Action</button>
               </div>
+              <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md">
+                <h4>Large composition gaps</h4>
+                <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="md" data-sds-gap="4xl">
+                  <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="3xl">
+                    <span class="sds-badge">3XL</span>
+                    <span>Page regions</span>
+                  </div>
+                  <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="4xl">
+                    <span class="sds-badge" data-sds-tone="accent">4XL</span>
+                    <span>Hero composition</span>
+                  </div>
+                </div>
+              </div>
             </article>
 
-            <article class="sds-card sds-grid" data-sds-orientation="vertical" data-sds-gap="2xl">
+            <article class="sds-card sds-grid" data-sds-orientation="vertical" data-sds-gap="3xl">
               <div>
                 <h3>Grid item placement</h3>
                 <p>Place all items with the grid, then override an individual child only when needed.</p>
@@ -1223,10 +1243,10 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <span class="sds-badge" data-sds-tone="danger">6</span>
                 </div>
               </div>
-              <div class="sds-grid" data-sds-columns="1" data-sds-min-column-width="xl" data-sds-gap="2xl">
+              <div class="sds-grid" data-sds-columns="1" data-sds-min-column-width="2xl" data-sds-gap="2xl">
                 <div class="sds-callout" data-sds-tone="info">
                   <strong>Single wide column</strong>
-                  <span>A 24rem minimum and 2XL gap preserve a spacious reading flow.</span>
+                  <span>A 32rem minimum and 2XL gap preserve a spacious reading flow.</span>
                 </div>
                 <div class="sds-callout" data-sds-tone="neutral">
                   <strong>Room to breathe</strong>
@@ -1677,7 +1697,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <summary>API reference and copy-ready markup</summary>
               <div class="sds-flex sds-prose" data-sds-wrap data-sds-gap="sm">
                 <code>.sds-prose</code>
-                <code>data-sds-size="sm"</code>
+                <code>data-sds-size="sm | md | lg"</code>
                 <code>data-sds-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>.sds-not-prose</code>
               </div>
@@ -1774,12 +1794,20 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             </article>
 
             <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
-              <article class="sds-card">
+              <article class="sds-card sds-grid" data-sds-orientation="vertical" data-sds-gap="2xl">
+                <h3>Prose sizes</h3>
                 <div class="sds-prose" data-sds-size="sm">
                   <h2>Small prose</h2>
                   <p>
                     Compact typography is useful for narrow documentation
                     panels and supporting content.
+                  </p>
+                </div>
+                <div class="sds-prose" data-sds-size="lg">
+                  <h2>Large prose</h2>
+                  <p>
+                    Editorial typography provides a relaxed reading size and
+                    a narrower line length for feature articles.
                   </p>
                 </div>
               </article>
@@ -2196,7 +2224,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <details class="sds-card sds-grid sds-disclosure" data-sds-padding="lg">
               <summary>API reference and copy-ready markup</summary>
               <div class="sds-flex sds-prose" data-sds-wrap data-sds-gap="sm">
-                <code>spinner data-sds-size="sm | md | lg"</code>
+                <code>spinner data-sds-size="sm | md | lg | xl"</code>
                 <code>data-sds-tone="neutral | accent | info | success | warning | danger"</code>
                 <code>.sds-skeleton</code>
               </div>
@@ -2224,6 +2252,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <span class="sds-spinner" data-sds-size="sm" data-sds-tone="neutral" role="status" aria-label="Loading small"></span>
                   <span class="sds-spinner" data-sds-tone="neutral" role="status" aria-label="Loading medium"></span>
                   <span class="sds-spinner" data-sds-size="lg" data-sds-tone="neutral" role="status" aria-label="Loading large"></span>
+                  <span class="sds-spinner" data-sds-size="xl" data-sds-tone="neutral" role="status" aria-label="Loading extra large"></span>
                 </div>
               </article>
               <article class="sds-card sds-grid" data-sds-orientation="vertical">

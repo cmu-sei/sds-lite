@@ -5,6 +5,7 @@ const gridColumnWidths = {
   md: 224,
   lg: 288,
   xl: 384,
+  '2xl': 512,
 }
 
 const flexStackWidths = {
@@ -132,6 +133,82 @@ test('grid placement aligns items and supports direct-child overrides', async ({
   )
 })
 
+test('component and layout size presets map to their documented dimensions', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const dimensions = await page.evaluate(() => {
+    const style = (selector) => getComputedStyle(document.querySelector(selector))
+    const size = (selector) =>
+      document.querySelector(selector).getBoundingClientRect()
+
+    return {
+      avatar2xl: size('.sds-avatar[data-sds-size="2xl"]').width,
+      buttonXs: size('#button-sizes [data-sds-size="xs"]').height,
+      calloutLgPadding: style(
+        '.sds-callout[data-sds-size="lg"]',
+      ).paddingTop,
+      datapointXl: style(
+        '.sds-datapoint[data-sds-size="xl"] strong',
+      ).fontSize,
+      fileActionLg: style(
+        '.sds-file-upload[data-sds-size="lg"] .sds-file-upload-action',
+      ).fontSize,
+      fileSurfaceLgPadding: style(
+        '.sds-file-upload[data-sds-size="lg"] .sds-file-upload-surface',
+      ).paddingTop,
+      flex3xlGap: style('.sds-flex[data-sds-gap="3xl"]').gap,
+      flex4xlGap: style('.sds-flex[data-sds-gap="4xl"]').gap,
+      grid4xlGap: style('.sds-grid[data-sds-gap="4xl"]').gap,
+      linkMd: style(
+        '[role="group"][aria-label="Link sizes"] [data-sds-size="md"]',
+      ).fontSize,
+      proseLg: style('.sds-prose[data-sds-size="lg"]').fontSize,
+      spinnerLg: style('.sds-spinner[data-sds-size="lg"]').width,
+      spinnerMd: style(
+        '.sds-spinner[aria-label="Loading medium"]',
+      ).width,
+      spinnerSm: style('.sds-spinner[data-sds-size="sm"]').width,
+      spinnerXl: style('.sds-spinner[data-sds-size="xl"]').width,
+      tableLgBodyPadding: style(
+        '.sds-table[data-sds-size="lg"] tbody td',
+      ).paddingTop,
+      tableLgHeadPadding: style(
+        '.sds-table[data-sds-size="lg"] thead th',
+      ).paddingTop,
+      tableSmBodyPadding: style(
+        '.sds-table[data-sds-size="sm"] tbody td',
+      ).paddingTop,
+      tableSmHeadPadding: style(
+        '.sds-table[data-sds-size="sm"] thead th',
+      ).paddingTop,
+    }
+  })
+
+  expect(dimensions).toEqual({
+    avatar2xl: 128,
+    buttonXs: 24,
+    calloutLgPadding: '24px',
+    datapointXl: '64px',
+    fileActionLg: '16px',
+    fileSurfaceLgPadding: '32px',
+    flex3xlGap: '48px',
+    flex4xlGap: '64px',
+    grid4xlGap: '64px',
+    linkMd: '16px',
+    proseLg: '18px',
+    spinnerLg: '48px',
+    spinnerMd: '24px',
+    spinnerSm: '16px',
+    spinnerXl: '80px',
+    tableLgBodyPadding: '16px',
+    tableLgHeadPadding: '16px',
+    tableSmBodyPadding: '4px',
+    tableSmHeadPadding: '4px',
+  })
+})
+
 test('flex children stack based on container width', async ({ page }) => {
   await page.goto('/')
 
@@ -230,7 +307,7 @@ test('responsive size names map to every documented threshold', async ({
   )
 
   expect(results).toEqual({
-    grid: { sm: 5, md: 4, lg: 3, xl: 2 },
+    grid: { sm: 5, md: 4, lg: 3, xl: 2, '2xl': 1 },
     gridCaps: { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 },
     flex: {
       sm: { above: true, below: true },

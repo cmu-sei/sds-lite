@@ -735,6 +735,120 @@
     margin-inline-start: var(--sds-space-md);
   }
 
+  :where(.sds-prose[data-sds-size="lg"]) {
+    max-inline-size: 70ch;
+    font-size: 1.125rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"]
+      h1:not(:first-child):not(.sds-not-prose, .sds-not-prose *),
+    .sds-prose[data-sds-size="lg"]
+      h2:not(:first-child):not(.sds-not-prose, .sds-not-prose *),
+    .sds-prose[data-sds-size="lg"]
+      h3:not(:first-child):not(.sds-not-prose, .sds-not-prose *),
+    .sds-prose[data-sds-size="lg"]
+      h4:not(:first-child):not(.sds-not-prose, .sds-not-prose *),
+    .sds-prose[data-sds-size="lg"]
+      h5:not(:first-child):not(.sds-not-prose, .sds-not-prose *),
+    .sds-prose[data-sds-size="lg"]
+      h6:not(:first-child):not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    margin-block-start: var(--sds-space-4xl);
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"] h1:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 3rem;
+    line-height: 3.5rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"]
+      h1:not(:last-child):not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    margin-block-end: var(--sds-space-xl);
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"] h2:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 2.25rem;
+    line-height: 2.75rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"] h3:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 1.875rem;
+    line-height: 2.375rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"] h4:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"] h5:not(.sds-not-prose, .sds-not-prose *),
+    .sds-prose[data-sds-size="lg"] h6:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"]
+      .sds-prose-lead:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    margin-block: var(--sds-space-xl);
+    font-size: 1.875rem;
+    line-height: 2.5rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"]
+      blockquote:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"] pre:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 1.125rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"]
+      pre:not(.sds-not-prose, .sds-not-prose *)
+      code:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 1rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"]
+      :is(
+        figcaption,
+        caption,
+        th,
+        td
+      ):not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    font-size: 1rem;
+  }
+
+  :where(
+    .sds-prose[data-sds-size="lg"] li:not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    margin-inline-start: var(--sds-space-xl);
+  }
+
   :where(
     [data-sds-theme="plaid"] .sds-prose h1:not(
         .sds-not-prose,

@@ -31,6 +31,11 @@
     line-height: 1;
   }
 
+  :where(.sds-datapoint[data-sds-size="xl"] strong) {
+    font-size: 4rem;
+    line-height: 1;
+  }
+
   :where(.sds-datapoint[data-sds-tone="neutral"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-gray-600),
@@ -81,6 +86,13 @@
   }
 
   :where(.sds-datapoint[data-sds-tone="warning"][data-sds-size="lg"]) {
+    --sds-datapoint-color: light-dark(
+      var(--sds-orange-400),
+      var(--sds-orange-300)
+    );
+  }
+
+  :where(.sds-datapoint[data-sds-tone="warning"][data-sds-size="xl"]) {
     --sds-datapoint-color: light-dark(
       var(--sds-orange-400),
       var(--sds-orange-300)

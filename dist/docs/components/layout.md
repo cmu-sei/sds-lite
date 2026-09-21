@@ -17,9 +17,9 @@
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-columns` | `1`, `2`, `3`, `4`, `5`, `6` | Automatic fit |
-| `data-sds-min-column-width` | `sm`, `md`, `lg`, `xl` | `md` |
+| `data-sds-min-column-width` | `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
 | `data-sds-orientation` | `horizontal`, `vertical` | `horizontal` |
-| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
+| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | `lg` |
 | `data-sds-place-items` | `start`, `center`, `end`, `stretch` | `stretch` |
 | `data-sds-column-span` on a direct child | `full` | One column |
 | `data-sds-place-self` on a direct child | `start`, `center`, `end`, `stretch` | Inherits the grid |
@@ -34,6 +34,7 @@ how much room each column's content needs:
 | `md` | `14rem` |
 | `lg` | `18rem` |
 | `xl` | `24rem` |
+| `2xl` | `32rem` |
 
 ```html
 <div
@@ -94,7 +95,7 @@ expanding the utility interface with the full CSS Box Alignment grammar.
 | `data-sds-stack-at` | `sm`, `md`, `lg`, `xl` | No automatic stacking |
 | `data-sds-align` | `start`, `center`, `end`, `stretch` | `stretch` |
 | `data-sds-justify` | `start`, `center`, `end`, `between` | `start` |
-| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
+| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | `lg` |
 | `data-sds-grow` on a direct child | Presence | Content-sized |
 | `data-sds-no-shrink` on a direct child | Presence | May shrink |
 

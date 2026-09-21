@@ -609,6 +609,9 @@
         },
         {
           "name": "xl"
+        },
+        {
+          "name": "2xl"
         }
       ]
     },
@@ -672,6 +675,12 @@
         },
         {
           "name": "2xl"
+        },
+        {
+          "name": "3xl"
+        },
+        {
+          "name": "4xl"
         }
       ]
     },
@@ -775,6 +784,9 @@
       "name": "data-sds-min-column-width",
       "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
       "values": [
+        {
+          "name": "2xl"
+        },
         {
           "name": "lg"
         },

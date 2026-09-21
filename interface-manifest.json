@@ -114,7 +114,7 @@
     "size": {
       "nativeName": "data-sds-size",
       "description": "Visual scale.",
-      "values": ["xs", "sm", "md", "lg", "xl"]
+      "values": ["xs", "sm", "md", "lg", "xl", "2xl"]
     },
     "width": {
       "nativeName": "data-sds-width",
@@ -146,7 +146,7 @@
     "gap": {
       "nativeName": "data-sds-gap",
       "description": "Layout spacing.",
-      "values": ["none", "xs", "sm", "md", "lg", "xl", "2xl"]
+      "values": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"]
     },
     "space": {
       "description": "Tokenized margin or padding.",
@@ -298,7 +298,7 @@
       "classes": ["sds-spinner"],
       "description": "Animated loading indicator.",
       "options": {
-        "data-sds-size": ["sm", "md", "lg"],
+        "data-sds-size": ["sm", "md", "lg", "xl"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
       }
     },
@@ -322,7 +322,7 @@
       "classes": ["sds-avatar", "sds-avatar-group"],
       "description": "Person image or initials and overlapping groups.",
       "options": {
-        "data-sds-size": ["xs", "sm", "md", "lg", "xl"],
+        "data-sds-size": ["xs", "sm", "md", "lg", "xl", "2xl"],
         "data-sds-shape": ["circle", "square", "portrait"],
         "data-sds-variant": ["subtle", "solid", "outline"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
@@ -342,7 +342,7 @@
       "classes": ["sds-datapoint"],
       "description": "Label, value, and context.",
       "options": {
-        "data-sds-size": ["sm", "md", "lg"],
+        "data-sds-size": ["sm", "md", "lg", "xl"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
       }
     },
@@ -383,9 +383,9 @@
       "description": "Responsive equal-width grid.",
       "options": {
         "data-sds-columns": ["1", "2", "3", "4", "5", "6"],
-        "data-sds-min-column-width": ["sm", "md", "lg", "xl"],
+        "data-sds-min-column-width": ["sm", "md", "lg", "xl", "2xl"],
         "data-sds-orientation": ["horizontal", "vertical"],
-        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl"],
+        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
         "data-sds-place-items": ["start", "center", "end", "stretch"]
       }
     },
@@ -399,7 +399,7 @@
         "data-sds-wrap": [],
         "data-sds-align": ["start", "center", "end", "stretch"],
         "data-sds-justify": ["start", "center", "end", "between"],
-        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl"],
+        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
         "data-sds-stack-at": ["sm", "md", "lg", "xl"],
         "data-sds-grow": [],
         "data-sds-no-shrink": []
@@ -486,7 +486,7 @@
       "classes": ["sds-prose", "sds-prose-lead", "sds-not-prose", "sds-sr-only"],
       "description": "Long-form semantic typography and opt-out.",
       "options": {
-        "data-sds-size": ["sm", "md"],
+        "data-sds-size": ["sm", "md", "lg"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
       }
     },

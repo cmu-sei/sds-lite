@@ -73,6 +73,7 @@
   }
 
   :where(.sds-callout[data-sds-size="lg"]) {
+    padding: var(--sds-space-xl);
     font-size: 1.125rem;
     line-height: 1.75rem;
   }

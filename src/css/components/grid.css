@@ -63,6 +63,10 @@
     --sds-grid-min-column-width: 24rem;
   }
 
+  :where(.sds-grid[data-sds-min-column-width="2xl"]) {
+    --sds-grid-min-column-width: 32rem;
+  }
+
   :where(.sds-grid[data-sds-columns="1"]) {
     --sds-grid-column-share: 100%;
 
@@ -104,7 +108,8 @@
         [data-sds-min-column-width="sm"],
         [data-sds-min-column-width="md"],
         [data-sds-min-column-width="lg"],
-        [data-sds-min-column-width="xl"]
+        [data-sds-min-column-width="xl"],
+        [data-sds-min-column-width="2xl"]
       )
   ) {
     grid-template-columns: repeat(
@@ -149,5 +154,13 @@
 
   :where(.sds-grid[data-sds-gap="2xl"]) {
     --sds-grid-gap: var(--sds-space-2xl);
+  }
+
+  :where(.sds-grid[data-sds-gap="3xl"]) {
+    --sds-grid-gap: var(--sds-space-3xl);
+  }
+
+  :where(.sds-grid[data-sds-gap="4xl"]) {
+    --sds-grid-gap: var(--sds-space-4xl);
   }
 }

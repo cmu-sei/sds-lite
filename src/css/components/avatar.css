@@ -80,6 +80,13 @@
     font-weight: 400;
   }
 
+  :where(.sds-avatar[data-sds-size="2xl"]) {
+    --sds-avatar-size: 8rem;
+
+    font-size: 2.5rem;
+    font-weight: 400;
+  }
+
   :where(.sds-avatar-group) {
     --sds-avatar-overlap: 0.5rem;
 

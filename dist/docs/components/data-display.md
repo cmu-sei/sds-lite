@@ -30,7 +30,7 @@ accessible label; SDS Lite does not derive initials from names:
 
 | Option | Values | Default |
 |---|---|---|
-| `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
+| `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
 | `data-sds-shape` | `circle`, `square`, `portrait` | `circle` |
 | `data-sds-variant` | `subtle`, `solid`, `outline` | `subtle` |
 | `data-sds-tone` | Any semantic tone | Neutral |
@@ -134,7 +134,9 @@ context:
 </div>
 ```
 
-`data-sds-size` accepts `sm`, `md`, or `lg`. `data-sds-tone` accepts every semantic
+`data-sds-size` accepts `sm`, `md`, `lg`, or `xl`. Use `xl` for a primary
+metric in a dashboard summary or report hero; smaller sizes are preferable
+when several metrics appear together. `data-sds-tone` accepts every semantic
 tone.
 
 ## List
@@ -232,7 +234,8 @@ Use native structure, a caption, and scoped headers:
 | `data-sds-sticky` on cells | `start`, `end` | Normal cell |
 
 Apply the same `data-sds-sticky` value to the header and every cell in that
-column. Use `.sds-table-container` whenever content can exceed the viewport.
+column. Table size changes header, body, and footer row density together. Use
+`.sds-table-container` whenever content can exceed the viewport.
 
 Keep visually hidden headers in the accessibility tree:
 

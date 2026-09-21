@@ -43,11 +43,15 @@ svg, video, hr, table, caption, thead, tbody, tfoot, tr, th, td
 
 | Option | Values | Default |
 |---|---|---|
-| `data-sds-size` | `sm`, `md` | `md` |
+| `data-sds-size` | `sm`, `md`, `lg` | `md` |
 | `data-sds-tone` | All semantic tones | Neutral text links |
 | `data-sds-theme` | `forge`, `plaid` | Inherited |
 | `.sds-prose-lead` | Introductory text | Normal paragraph |
 | `.sds-not-prose` | Excluded subtree | Prose styles apply |
+
+Use `sm` for narrow supporting documentation, `md` for general content, and
+`lg` for editorial articles with an `18px` body size and a narrower readable
+line length.
 
 Use `.sds-not-prose` when embedding another SDS recipe:
 

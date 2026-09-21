@@ -120,6 +120,7 @@
     }
 
     &[data-sds-size="xs"] {
+      min-block-size: 1.5rem;
       padding: var(--sds-space-2xs) var(--sds-space-sm);
       font-size: 0.75rem;
     }

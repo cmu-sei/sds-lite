@@ -29,6 +29,10 @@ Native buttons inside an SDS root are styled automatically. Use
 | `aria-disabled="true"` | Link or custom disabled state | Enabled |
 | `aria-busy="true"` | Action is processing | Not busy |
 
+Extra-small buttons retain a minimum `24px` target dimension. Use them only in
+dense interfaces with sufficient separation from adjacent controls; `md`
+remains the general-purpose size.
+
 ### Action hierarchy
 
 Use one primary action per local decision:
@@ -105,6 +109,9 @@ to apply link options:
 | `data-sds-tone` | All semantic tones | Action blue |
 | `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | Inherited |
 | `aria-disabled="true"` | Disabled appearance | Enabled |
+
+An unsized link inherits its surrounding text size. An explicit
+`data-sds-size="md"` establishes the standard `1rem` size.
 
 Use `data-sds-unstyled` when a third-party or application recipe must opt out:
 

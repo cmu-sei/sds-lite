@@ -86,11 +86,11 @@
     );
   }
 
-  :where(.sds-table[data-sds-size="sm"] tbody td) {
+  :where(.sds-table[data-sds-size="sm"] :is(th, td)) {
     padding-block: var(--sds-space-xs);
   }
 
-  :where(.sds-table[data-sds-size="lg"] tbody td) {
+  :where(.sds-table[data-sds-size="lg"] :is(th, td)) {
     padding-block: var(--sds-space-lg);
   }
 

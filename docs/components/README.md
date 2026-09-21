@@ -39,6 +39,11 @@ Semantic tones are:
 neutral | accent | info | success | warning | danger
 ```
 
+Size values are recipe-specific rather than a promise that every recipe
+supports every tier. Controls intentionally stop at their useful interaction
+sizes, while content and layout recipes may provide larger tiers such as
+`xl` or `2xl`.
+
 Use `accent` for emphasized brand actions. `primary` is not a semantic tone; it is
 reserved for action hierarchy through `data-sds-variant="primary"`.
 

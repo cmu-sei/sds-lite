@@ -51,7 +51,7 @@
 | tag | `.sds-tag`<br>`.sds-tag-action`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Static or interactive category with optional counter and action. |
 | callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-variant`: `outline`, `bold`<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`<br>`data-sds-inset`<br>`data-sds-callout-close` | Contextual message in page content. |
 | toast-region | `.sds-toaster` |  | `data-sds-toast-open`<br>`data-sds-toast-close` | Fixed notification region. |
-| spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Animated loading indicator. |
+| spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Animated loading indicator. |
 | skeleton | `.sds-skeleton` |  |  | Loading placeholder. |
 | empty-state | `.sds-empty-state` |  |  | Empty-result message. |
 
@@ -59,9 +59,9 @@
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| avatar | `.sds-avatar`<br>`.sds-avatar-group` |  | `data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl`<br>`data-sds-shape`: `circle`, `square`, `portrait`<br>`data-sds-variant`: `subtle`, `solid`, `outline`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-density`: `condensed` | Person image or initials and overlapping groups. |
+| avatar | `.sds-avatar`<br>`.sds-avatar-group` |  | `data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-shape`: `circle`, `square`, `portrait`<br>`data-sds-variant`: `subtle`, `solid`, `outline`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-density`: `condensed` | Person image or initials and overlapping groups. |
 | card | `.sds-card`<br>`.sds-card-label` |  |  | Raised content container and muted label. |
-| datapoint | `.sds-datapoint` |  | `data-sds-size`: `sm`, `md`, `lg`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Label, value, and context. |
+| datapoint | `.sds-datapoint` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Label, value, and context. |
 | list | `.sds-list`<br>`.sds-list-item`<br>`.sds-list-marker` |  | `data-sds-divided` | Structured content list. |
 | timeline | `.sds-timeline`<br>`.sds-timeline-item`<br>`.sds-timeline-marker` |  | `data-sds-orientation`: `horizontal`, `vertical` | Vertical or horizontal event sequence. |
 | table | `.sds-table`<br>`.sds-table-container` |  | `data-sds-size`: `sm`, `md`, `lg`<br>`data-sds-standalone`<br>`data-sds-row-highlight`<br>`data-sds-sticky`: `start`, `end` | Application data table and overflow container. |
@@ -70,8 +70,8 @@
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6`<br>`data-sds-min-column-width`: `sm`, `md`, `lg`, `xl`<br>`data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-place-items`: `start`, `center`, `end`, `stretch` | Responsive equal-width grid. |
-| flex | `.sds-flex` |  | `data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-wrap`<br>`data-sds-align`: `start`, `center`, `end`, `stretch`<br>`data-sds-justify`: `start`, `center`, `end`, `between`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl`<br>`data-sds-grow`<br>`data-sds-no-shrink` | Configurable flex layout. |
+| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6`<br>`data-sds-min-column-width`: `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`<br>`data-sds-place-items`: `start`, `center`, `end`, `stretch` | Responsive equal-width grid. |
+| flex | `.sds-flex` |  | `data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-wrap`<br>`data-sds-align`: `start`, `center`, `end`, `stretch`<br>`data-sds-justify`: `start`, `center`, `end`, `between`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl`<br>`data-sds-grow`<br>`data-sds-no-shrink` | Configurable flex layout. |
 | page | `.sds-page`<br>`.sds-page-header`<br>`.sds-section-header`<br>`.sds-eyebrow` |  |  | Page content, headers, and section context. |
 | sidebar | `.sds-sidebar`<br>`.sds-sidebar-close`<br>`.sds-sidebar-layout` |  |  | Persistent or mobile navigation layout. |
 
@@ -91,7 +91,7 @@
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| prose | `.sds-prose`<br>`.sds-prose-lead`<br>`.sds-not-prose`<br>`.sds-sr-only` |  | `data-sds-size`: `sm`, `md`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Long-form semantic typography and opt-out. |
+| prose | `.sds-prose`<br>`.sds-prose-lead`<br>`.sds-not-prose`<br>`.sds-sr-only` |  | `data-sds-size`: `sm`, `md`, `lg`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Long-form semantic typography and opt-out. |
 
 ## Application shells
 
