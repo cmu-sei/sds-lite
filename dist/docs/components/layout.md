@@ -17,20 +17,67 @@
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-columns` | `1`, `2`, `3`, `4`, `5`, `6` | Automatic fit |
+| `data-sds-min-column-width` | `sm`, `md`, `lg`, `xl` | `md` |
 | `data-sds-orientation` | `horizontal`, `vertical` | `horizontal` |
 | `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
+| `data-sds-place-items` | `start`, `center`, `end`, `stretch` | `stretch` |
+| `data-sds-column-span` on a direct child | `full` | One column |
+| `data-sds-place-self` on a direct child | `start`, `center`, `end`, `stretch` | Inherits the grid |
 
-The automatic grid uses a 14rem minimum column width. Exact column counts stay
-exact; use the default when content must choose its own responsive count.
-Vertical orientation creates one column and takes precedence over
-`data-sds-columns`.
+The automatic grid chooses its column count from the space available to the
+grid, rather than the viewport. Use `data-sds-min-column-width` to describe
+how much room each column's content needs:
+
+| Value | Minimum column width |
+|---|---:|
+| `sm` | `10rem` |
+| `md` | `14rem` |
+| `lg` | `18rem` |
+| `xl` | `24rem` |
+
+```html
+<div
+  class="sds-grid"
+  data-sds-columns="3"
+  data-sds-min-column-width="lg"
+>
+  <article class="sds-card">First</article>
+  <article class="sds-card">Second</article>
+  <article class="sds-card">Third</article>
+</div>
+```
+
+By itself, `data-sds-columns` creates an exact column count. When combined
+with `data-sds-min-column-width`, it becomes the maximum column count: the
+example above uses up to three columns and collapses to two or one when each
+column would otherwise become narrower than `18rem`. Vertical orientation
+creates one column, takes precedence over both, and keeps its rows packed at
+their intrinsic height instead of stretching them to fill a taller container.
+
+Use `data-sds-column-span="full"` when one direct child, such as a file upload
+or summary, should occupy every available grid column.
+
+Use `data-sds-place-items` to align every item within its grid area on both
+axes. Add `data-sds-place-self` to a direct child when one item needs different
+alignment:
+
+```html
+<div class="sds-grid" data-sds-place-items="center">
+  <span class="sds-badge">Centered</span>
+  <span class="sds-badge" data-sds-place-self="end">End aligned</span>
+</div>
+```
+
+Both attributes intentionally accept a single logical value. For independent
+axis control or track distribution, use authored layout CSS rather than
+expanding the utility interface with the full CSS Box Alignment grammar.
 
 ## Flex
 
 ```html
 <div
   class="sds-flex"
-  data-sds-wrap
+  data-sds-stack-at="md"
   data-sds-align="center"
   data-sds-justify="between"
   data-sds-gap="sm"
@@ -44,11 +91,46 @@ Vertical orientation creates one column and takes precedence over
 |---|---|---|
 | `data-sds-orientation` | `horizontal`, `vertical` | `horizontal` |
 | `data-sds-wrap` | Presence | No wrapping |
+| `data-sds-stack-at` | `sm`, `md`, `lg`, `xl` | No automatic stacking |
 | `data-sds-align` | `start`, `center`, `end`, `stretch` | `stretch` |
 | `data-sds-justify` | `start`, `center`, `end`, `between` | `start` |
 | `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | `lg` |
 | `data-sds-grow` on a direct child | Presence | Content-sized |
 | `data-sds-no-shrink` on a direct child | Presence | May shrink |
+
+`data-sds-stack-at` keeps direct children in a row while they have enough
+space and gives each child a full row when the flex container reaches the
+selected width:
+
+| Value | Stack at or below |
+|---|---:|
+| `sm` | `30rem` |
+| `md` | `40rem` |
+| `lg` | `48rem` |
+| `xl` | `64rem` |
+
+```html
+<header
+  class="sds-flex"
+  data-sds-stack-at="md"
+  data-sds-align="center"
+  data-sds-justify="between"
+>
+  <div>
+    <h1>Projects</h1>
+    <p>Manage active projects.</p>
+  </div>
+  <div class="sds-action-group">
+    <button type="button">Import</button>
+    <button type="button">New project</button>
+  </div>
+</header>
+```
+
+The threshold uses the flex container's own available width, so the same
+markup works in a full page, sidebar, dialog, or embedded region. It does not
+depend on the viewport. Explicit vertical orientation remains vertical at
+every width.
 
 ## Spacing utilities
 
@@ -113,7 +195,10 @@ usual. For unusual values, use standard CSS with an SDS token:
 
 `.sds-page` centers content at a maximum width of 80rem and supplies section
 spacing. `.sds-page-header` is the sticky application title and action row.
-`.sds-section-header` aligns section context and actions.
+It wraps actions naturally as space narrows and stacks below 40rem.
+`.sds-section-header` aligns section context and actions. The default rhythm
+uses 4XL space between page sections, 2XL space within a section, and 2XL card
+padding that reduces to XL on narrow screens.
 
 ```html
 <main>
@@ -157,7 +242,7 @@ spacing. `.sds-page-header` is the sticky application title and action row.
 </div>
 ```
 
-This layout stacks at viewport widths of 48rem or less. Do not add `popover`
+This layout stacks at viewport widths of 64rem or less. Do not add `popover`
 to a contained standalone sidebar. Override its desktop width on the layout:
 
 ```html
@@ -279,7 +364,10 @@ import '@cmu-sei/sds-lite/brand.css'
 The desktop sidebar and mobile header remain fixed while `.sds-app-body`
 scrolls. `popover="auto"` lets the same sidebar become a light-dismiss mobile
 surface. Match `popovertarget` to the sidebar `id`. Mark the current page with
-`aria-current="page"`.
+`aria-current="page"`. The sidebar animates when opened and disappears
+with the matching exit motion when explicitly closed. An already-closed
+desktop sidebar disappears immediately when the layout crosses into the mobile
+breakpoint.
 
 Keep the footer brand and both legal paragraphs. Render the current year from
 the server or build. The wordmark artwork is bundled; the empty span needs no

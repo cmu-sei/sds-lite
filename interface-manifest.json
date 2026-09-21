@@ -25,6 +25,16 @@
       "type": "boolean"
     },
     {
+      "name": "data-sds-column-span",
+      "description": "Lets a direct grid child span the full grid width.",
+      "values": ["full"]
+    },
+    {
+      "name": "data-sds-place-self",
+      "description": "Aligns a direct grid child within its grid area on both axes.",
+      "values": ["start", "center", "end", "stretch"]
+    },
+    {
       "name": "data-sds-padding",
       "description": "Applies tokenized padding on every side.",
       "family": "space"
@@ -373,8 +383,10 @@
       "description": "Responsive equal-width grid.",
       "options": {
         "data-sds-columns": ["1", "2", "3", "4", "5", "6"],
+        "data-sds-min-column-width": ["sm", "md", "lg", "xl"],
         "data-sds-orientation": ["horizontal", "vertical"],
-        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl"]
+        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl"],
+        "data-sds-place-items": ["start", "center", "end", "stretch"]
       }
     },
     {
@@ -388,6 +400,7 @@
         "data-sds-align": ["start", "center", "end", "stretch"],
         "data-sds-justify": ["start", "center", "end", "between"],
         "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl"],
+        "data-sds-stack-at": ["sm", "md", "lg", "xl"],
         "data-sds-grow": [],
         "data-sds-no-shrink": []
       }

@@ -12,6 +12,8 @@
 | `data-sds-theme` | `forge`, `plaid` | Selects an SDS Lite theme. |
 | `data-sds-color-scheme` | `light`, `dark`, `system` | Selects a light, dark, or system color scheme. |
 | `data-sds-unstyled` | Presence | Opts a link out of automatic SDS Lite styling. |
+| `data-sds-column-span` | `full` | Lets a direct grid child span the full grid width. |
+| `data-sds-place-self` | `start`, `center`, `end`, `stretch` | Aligns a direct grid child within its grid area on both axes. |
 | `data-sds-padding` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding on every side. |
 | `data-sds-padding-block` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the block start and end. |
 | `data-sds-padding-inline` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the inline start and end. |
@@ -68,8 +70,8 @@
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6`<br>`data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` | Responsive equal-width grid. |
-| flex | `.sds-flex` |  | `data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-wrap`<br>`data-sds-align`: `start`, `center`, `end`, `stretch`<br>`data-sds-justify`: `start`, `center`, `end`, `between`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-grow`<br>`data-sds-no-shrink` | Configurable flex layout. |
+| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6`<br>`data-sds-min-column-width`: `sm`, `md`, `lg`, `xl`<br>`data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-place-items`: `start`, `center`, `end`, `stretch` | Responsive equal-width grid. |
+| flex | `.sds-flex` |  | `data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-wrap`<br>`data-sds-align`: `start`, `center`, `end`, `stretch`<br>`data-sds-justify`: `start`, `center`, `end`, `between`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl`<br>`data-sds-grow`<br>`data-sds-no-shrink` | Configurable flex layout. |
 | page | `.sds-page`<br>`.sds-page-header`<br>`.sds-section-header`<br>`.sds-eyebrow` |  |  | Page content, headers, and section context. |
 | sidebar | `.sds-sidebar`<br>`.sds-sidebar-close`<br>`.sds-sidebar-layout` |  |  | Persistent or mobile navigation layout. |
 

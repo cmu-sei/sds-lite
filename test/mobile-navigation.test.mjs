@@ -54,7 +54,7 @@ test('mobile menu icons use centered, font-independent geometry', () => {
   )
 })
 
-test('mobile sidebars animate through native Popover entry and exit', () => {
+test('mobile sidebars animate on user entry and exit', () => {
   assert.match(
     sidebarCss,
     /\.sds-sidebar\[popover\][^}]*\{[^}]*transform:\s*translateX\(-100%\)[^}]*transition:/s,
@@ -65,6 +65,14 @@ test('mobile sidebars animate through native Popover entry and exit', () => {
   )
   assert.match(sidebarCss, /display\s+var\(--sds-duration-normal\)\s+allow-discrete/)
   assert.match(sidebarCss, /overlay\s+var\(--sds-duration-normal\)\s+allow-discrete/)
+  assert.match(
+    sidebarCss,
+    /\.sds-sidebar\[popover\]:not\(:popover-open\)[^}]*\{[^}]*transition:\s*none/s,
+  )
+  assert.match(
+    sidebarCss,
+    /\.sds-sidebar\[popover\]\[sds-closing\]:not\(:popover-open\)[^}]*\{[^}]*transition:/s,
+  )
   assert.match(
     sidebarCss,
     /@starting-style[^}]*\.sds-sidebar\[popover\]:popover-open[^}]*\{[^}]*transform:\s*translateX\(-100%\)/s,

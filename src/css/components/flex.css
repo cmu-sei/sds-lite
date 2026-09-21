@@ -13,6 +13,19 @@
     flex-wrap: wrap;
   }
 
+  :where(
+    .sds-flex:not([data-sds-orientation="vertical"]):is(
+        [data-sds-stack-at="sm"],
+        [data-sds-stack-at="md"],
+        [data-sds-stack-at="lg"],
+        [data-sds-stack-at="xl"]
+      )
+  ) {
+    container-name: sds-flex;
+    container-type: inline-size;
+    flex-wrap: wrap;
+  }
+
   :where(.sds-flex[data-sds-align="start"]) {
     align-items: flex-start;
   }
@@ -76,5 +89,49 @@
 
   :where(.sds-flex > [data-sds-no-shrink]) {
     flex-shrink: 0;
+  }
+
+  @container sds-flex (max-width: 30rem) {
+    :where(
+      .sds-flex[data-sds-stack-at="sm"]:not(
+          [data-sds-orientation="vertical"]
+        )
+        > *
+    ) {
+      flex-basis: 100%;
+    }
+  }
+
+  @container sds-flex (max-width: 40rem) {
+    :where(
+      .sds-flex[data-sds-stack-at="md"]:not(
+          [data-sds-orientation="vertical"]
+        )
+        > *
+    ) {
+      flex-basis: 100%;
+    }
+  }
+
+  @container sds-flex (max-width: 48rem) {
+    :where(
+      .sds-flex[data-sds-stack-at="lg"]:not(
+          [data-sds-orientation="vertical"]
+        )
+        > *
+    ) {
+      flex-basis: 100%;
+    }
+  }
+
+  @container sds-flex (max-width: 64rem) {
+    :where(
+      .sds-flex[data-sds-stack-at="xl"]:not(
+          [data-sds-orientation="vertical"]
+        )
+        > *
+    ) {
+      flex-basis: 100%;
+    }
   }
 }

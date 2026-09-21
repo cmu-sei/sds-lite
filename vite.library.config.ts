@@ -71,6 +71,7 @@ export default defineConfig({
         popover: 'src/elements/popover.ts',
         prose: 'src/prose.css',
         sds: 'src/sds.ts',
+        sidebar: 'src/elements/sidebar.ts',
         tabs: 'src/elements/tabs.ts',
         toast: 'src/elements/toast.ts',
         tooltip: 'src/elements/tooltip.ts',

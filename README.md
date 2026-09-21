@@ -155,7 +155,7 @@ playground containing every component, option family, theme, and color scheme.
 SDS Lite targets modern browsers and ships no polyfills. Interactive recipes
 use Custom Elements, the Popover API, and `HTMLDialogElement`; styles use
 modern CSS including cascade layers, `:where()`, `:has()`, `light-dark()`, and
-`color-mix()`.
+`color-mix()`. Responsive flex composition also uses CSS container queries.
 
 See [Browser support](./docs/guides/browser-support.md) for integration policy
 and fallback guidance.

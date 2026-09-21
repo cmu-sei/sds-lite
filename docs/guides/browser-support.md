@@ -21,6 +21,7 @@ support is not claimed until it is tested and recorded.
 | Popover API | Dropdown, popover, tooltip, and mobile application sidebar |
 | `HTMLDialogElement` | Dialogs and panels |
 | CSS cascade layers | Predictable application overrides |
+| CSS container queries | Flex layouts that stack within narrow containers |
 | `:where()` and `:has()` | Low-specificity recipes and relationship styling |
 | `light-dark()` and `color-mix()` | Themes, schemes, and semantic colors |
 

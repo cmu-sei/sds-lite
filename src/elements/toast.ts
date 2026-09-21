@@ -68,6 +68,9 @@ export class SdsToastElement extends HTMLElementBase {
   }
 
   connectedCallback(): void {
+    void window.getComputedStyle(this).display
+    this.setAttribute('sds-ready', '')
+
     if (!this.hasAttribute('role')) this.setAttribute('role', 'status')
     if (!this.hasAttribute('aria-atomic')) {
       this.setAttribute('aria-atomic', 'true')

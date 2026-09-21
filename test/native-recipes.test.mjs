@@ -36,7 +36,7 @@ test('the file input example uses native constraints and an associated label', (
   const input = document.querySelector('input.sds-file-input')
   const upload = input?.closest('.sds-file-upload')
   assert.ok(upload)
-  assert.ok(upload?.closest('.demo-span'))
+  assert.ok(upload?.closest('form.sds-grid'))
   assert.equal(input?.getAttribute('type'), 'file')
   assert.ok(input?.hasAttribute('name'))
   assert.ok(input?.hasAttribute('accept'))

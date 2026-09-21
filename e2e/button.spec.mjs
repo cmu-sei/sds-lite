@@ -7,7 +7,7 @@ test('secondary buttons retain a neutral border across tones', async ({
   await page.goto('/')
 
   const secondaryButtons = page.locator(
-    '.demo-tone-matrix [data-sds-variant="secondary"]',
+    '#actions article[aria-labelledby="button-variants-heading"] [data-sds-tone] [data-sds-variant="secondary"]',
   )
   const expectedBorder = await page.evaluate(() => {
     const probe = document.createElement('div')

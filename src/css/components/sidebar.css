@@ -164,7 +164,7 @@
     pointer-events: none;
   }
 
-  @media (min-width: 48.001rem) {
+  @media (min-width: 64.001rem) {
     :where(
       .sds-app[data-sds-variant="application"] .sds-sidebar[popover],
       .sds-app:not([data-sds-variant]) .sds-sidebar[popover]
@@ -179,7 +179,7 @@
     }
   }
 
-  @media (max-width: 48rem) {
+  @media (max-width: 64rem) {
     :where(.sds-sidebar-layout) {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto minmax(0, 1fr);
@@ -211,6 +211,15 @@
 
     :where(.sds-sidebar[popover]:not(:popover-open)) {
       display: none;
+      transition: none;
+    }
+
+    :where(.sds-sidebar[popover][sds-closing]:not(:popover-open)) {
+      display: flex;
+      transition:
+        transform var(--sds-duration-normal) var(--sds-easing-standard),
+        display var(--sds-duration-normal) allow-discrete,
+        overlay var(--sds-duration-normal) allow-discrete;
     }
 
     :where(.sds-sidebar[popover]:popover-open) {

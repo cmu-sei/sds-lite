@@ -5,8 +5,12 @@ import test from 'node:test'
 import { Window } from 'happy-dom'
 
 const source = await readFile('index.html', 'utf8')
+const mainSource = await readFile('src/main.ts', 'utf8')
 const customElementsManifest = JSON.parse(
   await readFile('custom-elements.json', 'utf8'),
+)
+const interfaceManifest = JSON.parse(
+  await readFile('interface-manifest.json', 'utf8'),
 )
 const window = new Window({ url: 'https://example.test/' })
 window.document.write(source)
@@ -38,13 +42,14 @@ test('catalog examples use the current tone vocabulary', () => {
   assert.match(source, /data-sds-tone="accent"[^>]*aria-label="Loading accent"/)
 
   assert.equal(
-    document.querySelector('.demo-tone-row[data-sds-tone="accent"] > strong')
-      ?.textContent,
+    document.querySelector(
+      '#actions .sds-grid[data-sds-tone="accent"] > strong',
+    )?.textContent,
     'Accent',
   )
   assert.equal(
     document.querySelector(
-      '.demo-link-list > .sds-link[data-sds-tone="accent"]',
+      '#actions .sds-link[data-sds-tone="accent"]',
     )?.textContent,
     'Accent',
   )
@@ -60,6 +65,152 @@ test('catalog examples use the current tone vocabulary', () => {
     )?.textContent,
     'Accent',
   )
+})
+
+test('catalog includes every public recipe and custom element', () => {
+  const missing = []
+
+  for (const recipe of interfaceManifest.recipes) {
+    for (const className of recipe.classes) {
+      if (!document.querySelector(`.${className}`)) {
+        missing.push(`${recipe.name}: .${className}`)
+      }
+    }
+  }
+
+  for (const module of customElementsManifest.modules) {
+    for (const declaration of module.declarations ?? []) {
+      if (declaration.tagName && !document.querySelector(declaration.tagName)) {
+        missing.push(declaration.tagName)
+      }
+    }
+  }
+
+  assert.deepEqual(missing, [])
+})
+
+test('catalog sections follow a coherent task progression', () => {
+  assert.deepEqual(
+    Array.from(
+      document.querySelectorAll('main#top > .sds-page > section[id]'),
+      (section) => section.id,
+    ),
+    [
+      'getting-started',
+      'actions',
+      'forms',
+      'feedback',
+      'content',
+      'composition',
+      'prose',
+      'navigation',
+      'structure',
+      'loading',
+    ],
+  )
+})
+
+test('component sections prioritize live examples over reference syntax', () => {
+  for (const section of document.querySelectorAll(
+    'main#top > .sds-page > section[id]:not(#getting-started)',
+  )) {
+    const reference = section.querySelector(
+      ':scope > details.sds-card.sds-disclosure',
+    )
+    assert.ok(reference, `${section.id} is missing its reference disclosure`)
+    assert.equal(reference.hasAttribute('open'), false)
+    assert.equal(
+      reference.querySelector(':scope > summary')?.textContent,
+      'API reference and copy-ready markup',
+    )
+  }
+})
+
+test('catalog demonstrates every recipe option and shared floating placement', () => {
+  const missing = []
+
+  for (const recipe of interfaceManifest.recipes) {
+    for (const [attribute, values] of Object.entries(recipe.options)) {
+      if (values.length === 0) {
+        if (!document.querySelector(`[${attribute}]`)) {
+          missing.push(`${attribute} for ${recipe.name}`)
+        }
+        continue
+      }
+
+      for (const value of values) {
+        if (!document.querySelector(`[${attribute}="${value}"]`)) {
+          missing.push(`${attribute}="${value}" for ${recipe.name}`)
+        }
+      }
+    }
+  }
+
+  const placements = new Set()
+  for (const module of customElementsManifest.modules) {
+    for (const declaration of module.declarations ?? []) {
+      const placement = declaration.attributes?.find(
+        (attribute) => attribute.name === 'placement',
+      )
+      if (!placement) continue
+      for (const match of placement.type.text.matchAll(/"([^"]+)"/g)) {
+        placements.add(match[1])
+      }
+    }
+  }
+  for (const placement of placements) {
+    if (!document.querySelector(`[placement="${placement}"]`)) {
+      missing.push(`placement="${placement}"`)
+    }
+  }
+
+  assert.deepEqual(missing, [])
+})
+
+test('catalog demonstrates every authored custom-element option', () => {
+  const missing = []
+  const runtimeState = new Set(['open', 'value'])
+
+  for (const module of customElementsManifest.modules) {
+    for (const declaration of module.declarations ?? []) {
+      if (!declaration.tagName) continue
+
+      for (const attribute of declaration.attributes ?? []) {
+        if (runtimeState.has(attribute.name) || attribute.name === 'placement') {
+          continue
+        }
+
+        const values = Array.from(
+          attribute.type.text.matchAll(/"([^"]+)"/g),
+          (match) => match[1],
+        )
+        if (values.length > 0) {
+          for (const value of values) {
+            if (
+              !document.querySelector(
+                `${declaration.tagName}[${attribute.name}="${value}"]`,
+              )
+            ) {
+              missing.push(
+                `${declaration.tagName} ${attribute.name}="${value}"`,
+              )
+            }
+          }
+          continue
+        }
+
+        if (
+          !document.querySelector(
+            `${declaration.tagName}[${attribute.name}]`,
+          )
+        ) {
+          missing.push(`${declaration.tagName} ${attribute.name}`)
+        }
+      }
+    }
+  }
+
+  assert.deepEqual(missing, [])
 })
 
 test('catalog quick starts load automatic behavior', () => {
@@ -190,8 +341,25 @@ test('the playground uses valid interactive and landmark semantics', () => {
   }
 
   for (const scrollRegion of document.querySelectorAll(
-    '.demo-code, .sds-timeline[data-sds-orientation="horizontal"]',
+    '#getting-started pre, .sds-disclosure.sds-prose pre, .sds-timeline[data-sds-orientation="horizontal"]',
   )) {
     assert.equal(scrollRegion.getAttribute('tabindex'), '0')
   }
+})
+
+test('the playground uses only package styles and built-in presentation hooks', () => {
+  assert.deepEqual(
+    Array.from(
+      mainSource.matchAll(/^import ['"](.+\.css)['"]$/gm),
+      (match) => match[1],
+    ),
+    ['./style.css', './brand.css'],
+  )
+
+  for (const element of document.querySelectorAll('[class]')) {
+    for (const className of element.classList) {
+      assert.doesNotMatch(className, /^demo-/)
+    }
+  }
+  assert.equal(document.querySelector('[style]'), null)
 })

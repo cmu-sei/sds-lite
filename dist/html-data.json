@@ -37,6 +37,33 @@
       "description": "Opts a link out of automatic SDS Lite styling."
     },
     {
+      "name": "data-sds-column-span",
+      "description": "Lets a direct grid child span the full grid width.",
+      "values": [
+        {
+          "name": "full"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-place-self",
+      "description": "Aligns a direct grid child within its grid area on both axes.",
+      "values": [
+        {
+          "name": "start"
+        },
+        {
+          "name": "center"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "stretch"
+        }
+      ]
+    },
+    {
       "name": "data-sds-padding",
       "description": "Applies tokenized padding on every side.",
       "values": [
@@ -745,8 +772,44 @@
       ]
     },
     {
+      "name": "data-sds-min-column-width",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "lg"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "xl"
+        }
+      ]
+    },
+    {
       "name": "data-sds-no-shrink",
       "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+    },
+    {
+      "name": "data-sds-place-items",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "center"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "start"
+        },
+        {
+          "name": "stretch"
+        }
+      ]
     },
     {
       "name": "data-sds-return-value",
@@ -786,6 +849,24 @@
         },
         {
           "name": "right"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-stack-at",
+      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "values": [
+        {
+          "name": "lg"
+        },
+        {
+          "name": "md"
+        },
+        {
+          "name": "sm"
+        },
+        {
+          "name": "xl"
         }
       ]
     },

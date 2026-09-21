@@ -1,6 +1,5 @@
 import './style.css'
 import './brand.css'
-import './demo.css'
 import { defineSds } from './sds.ts'
 
 defineSds()
@@ -21,10 +20,10 @@ colorSchemeSelect?.addEventListener('change', () => {
 const copyStatus = document.querySelector<HTMLElement>('#copy-status')
 
 for (const button of document.querySelectorAll<HTMLButtonElement>(
-  '[data-demo-copy-target]',
+  '[data-copy-target]',
 )) {
   button.addEventListener('click', async () => {
-    const targetId = button.dataset.demoCopyTarget
+    const targetId = button.dataset.copyTarget
     const target = targetId ? document.getElementById(targetId) : null
 
     if (!target) {
@@ -51,6 +50,19 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(
     window.setTimeout(() => {
       button.textContent = originalLabel
     }, 2000)
+  })
+}
+
+for (const button of document.querySelectorAll<HTMLButtonElement>(
+  '[data-sds-callout-close]',
+)) {
+  button.addEventListener('click', () => {
+    const callout = button.closest<HTMLElement>('.sds-callout')
+    if (!callout) {
+      console.error('Callout close control is not inside an SDS callout.')
+      return
+    }
+    callout.hidden = true
   })
 }
 

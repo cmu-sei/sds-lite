@@ -472,7 +472,7 @@
     }
   }
 
-  @media (max-width: 48rem) {
+  @media (max-width: 64rem) {
     :where(.sds-app[data-sds-variant="application"] > .sds-app-mobile-header),
     :where(.sds-app:not([data-sds-variant]) > .sds-app-mobile-header) {
       display: flex;
@@ -481,7 +481,9 @@
     :where(.sds-app-layout) {
       grid-template-columns: minmax(0, 1fr);
     }
+  }
 
+  @media (max-width: 48rem) {
     :where(.sds-app-header) {
       align-items: flex-start;
       flex-direction: column;

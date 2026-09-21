@@ -4,7 +4,8 @@
     z-index: 5;
     inset-block-start: 0;
     display: flex;
-    gap: var(--sds-space-lg);
+    flex-wrap: wrap;
+    gap: var(--sds-space-xl);
     align-items: center;
     justify-content: space-between;
     padding: var(--sds-space-md) var(--sds-space-lg);
@@ -13,13 +14,13 @@
     background: var(--sds-color-surface-default);
   }
 
-  :where(.sds-page-header h1) {
+  :where(.sds-page-header :is(h1, h2, h3, h4, h5, h6)) {
+    margin: 0;
     font-size: 1.25rem;
-    font-weight: 300;
+    font-weight: 500;
   }
 
   :where(.sds-eyebrow) {
-    margin-block-end: var(--sds-space-xs);
     color: var(--sds-color-brand);
     font-size: 0.6875rem;
     font-weight: 700;
@@ -30,14 +31,16 @@
   :where(.sds-page) {
     display: grid;
     inline-size: min(80rem, 100%);
-    gap: var(--sds-space-2xl);
+    gap: var(--sds-space-4xl);
     margin-inline: auto;
-    padding: var(--sds-space-lg);
+    padding: var(--sds-space-2xl);
   }
 
   :where(.sds-page > section) {
     display: grid;
-    gap: var(--sds-space-lg);
+    gap: var(--sds-space-2xl);
+    scroll-margin-block-start:
+      calc(var(--sds-space-4xl) + var(--sds-space-lg));
   }
 
   :where(.sds-section-header) {
@@ -53,10 +56,23 @@
     color: var(--sds-color-text-muted);
   }
 
-  @media (max-width: 48rem) {
+  @media (max-width: 40rem) {
     :where(.sds-page-header) {
       align-items: flex-start;
       flex-direction: column;
+    }
+
+    :where(.sds-page) {
+      padding-inline: var(--sds-space-lg);
+    }
+
+    :where(.sds-page > section) {
+      scroll-margin-block-start:
+        calc(
+          var(--sds-space-4xl) +
+          var(--sds-space-4xl) +
+          var(--sds-space-lg)
+        );
     }
   }
 }

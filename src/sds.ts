@@ -1,6 +1,7 @@
 import { registerSdsDialog } from './elements/dialog.js'
 import { registerSdsDropdown } from './elements/dropdown.js'
 import { registerSdsPopover } from './elements/popover.js'
+import { registerSdsSidebar } from './elements/sidebar.js'
 import { registerSdsTabs } from './elements/tabs.js'
 import { registerSdsTooltip } from './elements/tooltip.js'
 import { registerSdsToast } from './elements/toast.js'
@@ -31,6 +32,7 @@ export function defineSds(): void {
   registerSdsDialog()
   registerSdsDropdown()
   registerSdsPopover()
+  registerSdsSidebar()
   registerSdsTabs()
   registerSdsToast()
   registerSdsTooltip()

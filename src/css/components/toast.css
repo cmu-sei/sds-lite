@@ -21,6 +21,9 @@
     opacity: 0;
     pointer-events: auto;
     transform: translateY(var(--sds-space-sm));
+  }
+
+  :where(sds-toast[sds-ready]) {
     transition:
       opacity var(--sds-duration-normal) var(--sds-easing-standard),
       transform var(--sds-duration-normal) var(--sds-easing-standard),
@@ -78,6 +81,13 @@
   }
 
   @starting-style {
+    :where(sds-toast:not([open])) {
+      display: none;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(var(--sds-space-sm));
+    }
+
     :where(sds-toast[open]) {
       opacity: 0;
       transform: translateY(var(--sds-space-sm));

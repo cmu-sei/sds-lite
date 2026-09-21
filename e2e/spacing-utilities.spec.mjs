@@ -121,11 +121,12 @@ test('spacing utilities override SDS recipe defaults', async ({ page }) => {
 
     document.body.append(pageLayout, applicationFooter)
   })
+  await expect(eyebrow).toHaveCSS('margin-block-end', '0px')
   await eyebrow.evaluate((element) => {
-    element.setAttribute('data-sds-margin-block-end', 'none')
+    element.setAttribute('data-sds-margin-block-end', 'md')
   })
 
-  await expect(eyebrow).toHaveCSS('margin-block-end', '0px')
+  await expect(eyebrow).toHaveCSS('margin-block-end', '12px')
   await expect(page.locator('#spacing-page-recipe')).toHaveCSS('padding', '0px')
   await expect(page.locator('#spacing-application-recipe')).toHaveCSS(
     'padding',
