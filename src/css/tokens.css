@@ -1,5 +1,5 @@
 @layer sds.tokens {
-  :where(:root, [data-sds-root]) {
+  :where(:root, [data-sds-root], [data-sds-theme]) {
     --sds-white: #fff;
     --sds-black: #000;
     --sds-gray-25: #f8f8f8;
@@ -352,6 +352,9 @@
       var(--sds-white),
       var(--sds-black)
     );
+  }
+
+  :where(:root, [data-sds-root]) {
     color-scheme: light;
   }
 
@@ -434,6 +437,20 @@
   }
 
   :where([data-sds-theme="plaid"]) {
+    --sds-gray-25: #f9f8f8;
+    --sds-gray-50: #f2f1f1;
+    --sds-gray-100: #e4e3e3;
+    --sds-gray-200: #c9c8c7;
+    --sds-gray-300: #adacac;
+    --sds-gray-400: #929190;
+    --sds-gray-500: #777574;
+    --sds-gray-600: #625f5d;
+    --sds-gray-700: #4c4946;
+    --sds-gray-750: #3f3c39;
+    --sds-gray-800: #322f2b;
+    --sds-gray-850: #2d2a26;
+    --sds-gray-900: #1e1d1b;
+    --sds-gray-950: #141211;
     --sds-font-heading: var(--sds-font-serif);
     --sds-radius-control: 0;
     --sds-radius-container: 0;

@@ -41,6 +41,10 @@ test('recipe options are namespaced and custom-element attributes are not', () =
   for (const recipe of manifest.recipes) {
     for (const option of Object.keys(recipe.options)) {
       assert.match(option, /^data-sds-/)
+      assert.ok(
+        Object.hasOwn(recipe.defaults ?? {}, option),
+        `${recipe.name} does not declare the default for ${option}`,
+      )
     }
   }
 
@@ -48,6 +52,41 @@ test('recipe options are namespaced and custom-element attributes are not', () =
     for (const attribute of element.attributes) {
       assert.doesNotMatch(attribute.name, /^data-/)
     }
+  }
+})
+
+test('custom-element attributes declare their omission defaults', () => {
+  for (const element of manifest.customElements) {
+    for (const attribute of element.attributes) {
+      assert.notEqual(
+        attribute.default,
+        undefined,
+        `${element.tagName} does not declare the default for ${attribute.name}`,
+      )
+    }
+  }
+})
+
+test('tone-aware interfaces default to a semantic tone', () => {
+  const tones = new Set(manifest.optionFamilies.tone.values)
+
+  for (const recipe of manifest.recipes) {
+    if (!Object.hasOwn(recipe.options, 'data-sds-tone')) continue
+    assert.ok(
+      tones.has(recipe.defaults['data-sds-tone']),
+      `${recipe.name} does not default to a semantic tone`,
+    )
+  }
+
+  for (const element of manifest.customElements) {
+    const tone = element.attributes.find(
+      (attribute) => attribute.family === 'tone',
+    )
+    if (!tone) continue
+    assert.ok(
+      tones.has(tone.default),
+      `${element.tagName} does not default to a semantic tone`,
+    )
   }
 })
 

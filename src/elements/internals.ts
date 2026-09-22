@@ -19,6 +19,10 @@ export function directElementChildren(element: Element): HTMLElement[] {
   )
 }
 
+export function defaultButtonType(button: HTMLButtonElement): void {
+  if (!button.hasAttribute('type')) button.type = 'button'
+}
+
 export function reflectBooleanAttribute(
   element: Element,
   name: string,

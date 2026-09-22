@@ -89,6 +89,7 @@ export type SdsRecipeClass =
   | "sds-skeleton"
   | "sds-spinner"
   | "sds-sr-only"
+  | "sds-stack"
   | "sds-switch"
   | "sds-tab"
   | "sds-tab-list"

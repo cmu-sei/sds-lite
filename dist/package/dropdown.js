@@ -1,7 +1,7 @@
 import { FloatingPositioner as e } from "./floating.js";
-import { a as t, c as n, i as r, n as i, o as a, r as o, s, t as c } from "./internals-BLPvKvsH.js";
+import { a as t, c as n, i as r, l as i, n as a, o, r as s, s as c, t as l } from "./internals-CEyyQZKd.js";
 //#region src/elements/dropdown.ts
-var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
+var u = typeof HTMLElement > "u" ? class {} : HTMLElement, d = class extends u {
 	static observedAttributes = [
 		"open",
 		"placement",
@@ -11,46 +11,47 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 	menu = null;
 	items = [];
 	positioner = null;
-	connection = new c();
+	connection = new l();
 	get open() {
 		return this.hasAttribute("open");
 	}
 	set open(e) {
-		a(this, "open", e);
+		c(this, "open", e);
 	}
 	get placement() {
 		return this.getAttribute("placement") ?? "block-end-start";
 	}
 	set placement(e) {
-		n(this, "placement", e);
+		i(this, "placement", e);
 	}
 	get offset() {
-		return t(this, "offset", 5);
+		return o(this, "offset", 5);
 	}
 	set offset(e) {
-		s(this, "offset", e);
+		n(this, "offset", e);
 	}
 	get width() {
 		return this.getAttribute("width") ?? "md";
 	}
 	set width(e) {
-		n(this, "width", e);
+		i(this, "width", e);
 	}
 	get hideCaret() {
 		return this.hasAttribute("hide-caret");
 	}
 	set hideCaret(e) {
-		a(this, "hide-caret", e);
+		c(this, "hide-caret", e);
 	}
 	connectedCallback() {
 		this.positioner = null, this.trigger = null, this.menu = null, this.items = [];
-		let t = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), n = o(this), i = n.find((e) => e instanceof HTMLButtonElement), a = i?.getAttribute("popovertarget"), s = n.filter((e) => e !== i), c = n.find((e) => e.id === a) ?? s.find((e) => e.matches("menu, [popover], .sds-dropdown-menu")) ?? (s.length === 1 ? s[0] : null) ?? null;
-		if (!i || !c) {
+		let n = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), i = r(this), o = i.find((e) => e instanceof HTMLButtonElement), s = o?.getAttribute("popovertarget"), c = i.filter((e) => e !== o), l = i.find((e) => e.id === s) ?? c.find((e) => e.matches("menu, [popover], .sds-dropdown-menu")) ?? (c.length === 1 ? c[0] : null) ?? null;
+		if (!o || !l) {
 			console.warn("<sds-dropdown> requires one direct child button and one direct child menu or popover.");
 			return;
 		}
-		let l = r(c, "sds-dropdown");
-		c.classList.add("sds-dropdown-menu"), c.setAttribute("popover", c.getAttribute("popover") || "auto"), i.setAttribute("popovertarget", l), i.setAttribute("aria-controls", l), i.setAttribute("aria-expanded", String(c.matches(":popover-open"))), i.hasAttribute("aria-haspopup") || i.setAttribute("aria-haspopup", "menu"), c.setAttribute("role", "menu"), c.hasAttribute("aria-orientation") || c.setAttribute("aria-orientation", "vertical"), this.trigger = i, this.menu = c, this.positioner = new e(i, c, () => this.placement, () => this.getAttribute("offset") ?? void 0), this.collectItems(), i.addEventListener("keydown", this.handleTriggerKeydown, { signal: t }), c.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: t }), c.addEventListener("toggle", this.handleToggle, { signal: t }), c.addEventListener("keydown", this.handleMenuKeydown, { signal: t }), c.addEventListener("click", this.handleMenuClick, { signal: t }), this.positioner.observe(t), this.open && this.show();
+		a(o);
+		let u = t(l, "sds-dropdown");
+		l.classList.add("sds-dropdown-menu"), l.setAttribute("popover", l.getAttribute("popover") || "auto"), o.setAttribute("popovertarget", u), o.setAttribute("aria-controls", u), o.setAttribute("aria-expanded", String(l.matches(":popover-open"))), o.hasAttribute("aria-haspopup") || o.setAttribute("aria-haspopup", "menu"), l.setAttribute("role", "menu"), l.hasAttribute("aria-orientation") || l.setAttribute("aria-orientation", "vertical"), this.trigger = o, this.menu = l, this.positioner = new e(o, l, () => this.placement, () => this.getAttribute("offset") ?? void 0), this.collectItems(), o.addEventListener("keydown", this.handleTriggerKeydown, { signal: n }), l.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: n }), l.addEventListener("toggle", this.handleToggle, { signal: n }), l.addEventListener("keydown", this.handleMenuKeydown, { signal: n }), l.addEventListener("click", this.handleMenuClick, { signal: n }), this.positioner.observe(n), this.open && this.show();
 	}
 	disconnectedCallback() {
 		this.connection.disconnect(), this.positioner = null, this.trigger = null, this.menu = null, this.items = [];
@@ -97,7 +98,7 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 	}
 	handleToggle = () => {
 		let e = this.isSurfaceOpen();
-		a(this, "open", e), e ? this.positioner?.position() : this.positioner?.reset(), this.dispatchEvent(new CustomEvent("sds-toggle", {
+		c(this, "open", e), e ? this.positioner?.position() : this.positioner?.reset(), this.dispatchEvent(new CustomEvent("sds-toggle", {
 			bubbles: !0,
 			composed: !0,
 			detail: { open: e }
@@ -135,8 +136,8 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 		}
 	};
 };
-function d() {
-	i("sds-dropdown", u);
+function f() {
+	s("sds-dropdown", d);
 }
 //#endregion
-export { u as SdsDropdownElement, d as registerSdsDropdown };
+export { d as SdsDropdownElement, f as registerSdsDropdown };

@@ -6,52 +6,52 @@
 
 ## Global attributes
 
-| Attribute | Values | Purpose |
-|---|---|---|
-| `data-sds-root` | Presence | Scopes SDS Lite foundations, recipes, and tokens. |
-| `data-sds-theme` | `forge`, `plaid` | Selects an SDS Lite theme. |
-| `data-sds-color-scheme` | `light`, `dark`, `system` | Selects a light, dark, or system color scheme. |
-| `data-sds-unstyled` | Presence | Opts a link out of automatic SDS Lite styling. |
-| `data-sds-column-span` | `full` | Lets a direct grid child span the full grid width. |
-| `data-sds-place-self` | `start`, `center`, `end`, `stretch` | Aligns a direct grid child within its grid area on both axes. |
-| `data-sds-padding` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding on every side. |
-| `data-sds-padding-block` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the block start and end. |
-| `data-sds-padding-inline` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the inline start and end. |
-| `data-sds-padding-block-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the block start. |
-| `data-sds-padding-block-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the block end. |
-| `data-sds-padding-inline-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the inline start. |
-| `data-sds-padding-inline-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized padding at the inline end. |
-| `data-sds-margin` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized margin on every side. |
-| `data-sds-margin-block` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized margin at the block start and end. |
-| `data-sds-margin-inline` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized margin at the inline start and end. |
-| `data-sds-margin-block-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized margin at the block start. |
-| `data-sds-margin-block-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized margin at the block end. |
-| `data-sds-margin-inline-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized margin at the inline start. |
-| `data-sds-margin-inline-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | Applies tokenized margin at the inline end. |
+| Attribute | Values | Default | Purpose |
+|---|---|---|---|
+| `data-sds-root` | Presence |  | Scopes SDS Lite foundations, recipes, and tokens. |
+| `data-sds-theme` | `forge`, `plaid` | forge | Selects an SDS Lite theme. |
+| `data-sds-color-scheme` | `light`, `dark`, `system` | light | Selects a light, dark, or system color scheme. |
+| `data-sds-unstyled` | Presence |  | Opts a link out of automatic SDS Lite styling. |
+| `data-sds-column-span` | `full` |  | Lets a direct grid child span the full grid width. |
+| `data-sds-place-self` | `start`, `center`, `end`, `stretch` |  | Aligns a direct grid child within its grid area on both axes. |
+| `data-sds-padding` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding on every side. |
+| `data-sds-padding-block` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the block start and end. |
+| `data-sds-padding-inline` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the inline start and end. |
+| `data-sds-padding-block-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the block start. |
+| `data-sds-padding-block-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the block end. |
+| `data-sds-padding-inline-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the inline start. |
+| `data-sds-padding-inline-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the inline end. |
+| `data-sds-margin` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin on every side. |
+| `data-sds-margin-block` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the block start and end. |
+| `data-sds-margin-inline` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the inline start and end. |
+| `data-sds-margin-block-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the block start. |
+| `data-sds-margin-block-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the block end. |
+| `data-sds-margin-inline-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the inline start. |
+| `data-sds-margin-inline-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the inline end. |
 
 ## Actions and forms
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `primary`, `secondary`, `tertiary`, `ghost`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl`<br>`data-sds-density`: `compact`<br>`data-sds-shape`: `icon`<br>`data-sds-avatar`<br>`data-sds-block` | Action styling for native buttons and links. |
-| link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` | Link styling with semantic tone and emphasis. |
-| field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-tone`: `success`, `danger` | Label, control, help, and validation layout. |
+| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `primary`, `secondary`, `tertiary`, `ghost` (default: `primary`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (default: `comfortable`)<br>`data-sds-shape`: `icon` (default: `text`)<br>`data-sds-avatar` (default: `false`)<br>`data-sds-block` (default: `false`) | Action styling for native buttons and links. |
+| link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (default: `primary`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `inherited`) | Link styling with semantic tone and emphasis. |
+| field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `success`, `danger` (default: `neutral`) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
-| form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` | Explicit hooks for native form controls. |
+| form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit hooks for native form controls. |
 | choice | `.sds-choice` | `<label>` |  | Checkbox or radio with label text. |
-| switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Native checkbox with switch appearance. |
-| file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` | Native file input and composed upload surface. |
+| switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`) | Native checkbox with switch appearance. |
+| file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native file input and composed upload surface. |
 | action-group | `.sds-action-group` |  |  | Responsive layout for related actions. |
 
 ## Feedback and loading
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-variant`: `light`, `light-border`, `dark` | Compact status or category. |
-| tag | `.sds-tag`<br>`.sds-tag-action`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Static or interactive category with optional counter and action. |
-| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-variant`: `outline`, `bold`<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`<br>`data-sds-inset`<br>`data-sds-callout-close` | Contextual message in page content. |
-| toast-region | `.sds-toaster` |  | `data-sds-toast-open`<br>`data-sds-toast-close` | Fixed notification region. |
-| spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Animated loading indicator. |
+| badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (default: `solid`) | Compact status or category. |
+| tag | `.sds-tag`<br>`.sds-tag-action`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md` (default: `sm`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Static or interactive category with optional counter and action. |
+| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (default: `tinted`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (default: `false`)<br>`data-sds-callout-close` (default: `false`) | Contextual message in page content. |
+| toast-region | `.sds-toaster` |  | `data-sds-toast-open` (default: `false`)<br>`data-sds-toast-close` (default: `false`) | Fixed notification region. |
+| spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Animated loading indicator. |
 | skeleton | `.sds-skeleton` |  |  | Loading placeholder. |
 | empty-state | `.sds-empty-state` |  |  | Empty-result message. |
 
@@ -59,19 +59,20 @@
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| avatar | `.sds-avatar`<br>`.sds-avatar-group` |  | `data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-shape`: `circle`, `square`, `portrait`<br>`data-sds-variant`: `subtle`, `solid`, `outline`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger`<br>`data-sds-density`: `condensed` | Person image or initials and overlapping groups. |
+| avatar | `.sds-avatar`<br>`.sds-avatar-group` |  | `data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl`, `2xl` (default: `md`)<br>`data-sds-shape`: `circle`, `square`, `portrait` (default: `circle`)<br>`data-sds-variant`: `subtle`, `solid`, `outline` (default: `subtle`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-density`: `condensed` (default: `comfortable`) | Person image or initials and overlapping groups. |
 | card | `.sds-card`<br>`.sds-card-label` |  |  | Raised content container and muted label. |
-| datapoint | `.sds-datapoint` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Label, value, and context. |
-| list | `.sds-list`<br>`.sds-list-item`<br>`.sds-list-marker` |  | `data-sds-divided` | Structured content list. |
-| timeline | `.sds-timeline`<br>`.sds-timeline-item`<br>`.sds-timeline-marker` |  | `data-sds-orientation`: `horizontal`, `vertical` | Vertical or horizontal event sequence. |
-| table | `.sds-table`<br>`.sds-table-container` |  | `data-sds-size`: `sm`, `md`, `lg`<br>`data-sds-standalone`<br>`data-sds-row-highlight`<br>`data-sds-sticky`: `start`, `end` | Application data table and overflow container. |
+| datapoint | `.sds-datapoint` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Label, value, and context. |
+| list | `.sds-list`<br>`.sds-list-item`<br>`.sds-list-marker` |  | `data-sds-divided` (default: `false`) | Structured content list. |
+| timeline | `.sds-timeline`<br>`.sds-timeline-item`<br>`.sds-timeline-marker` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`) | Vertical or horizontal event sequence. |
+| table | `.sds-table`<br>`.sds-table-container` |  | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-standalone` (default: `false`)<br>`data-sds-row-highlight` (default: `false`)<br>`data-sds-sticky`: `start`, `end` (default: `none`) | Application data table and overflow container. |
 
 ## Layout
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6`<br>`data-sds-min-column-width`: `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`<br>`data-sds-place-items`: `start`, `center`, `end`, `stretch` | Responsive equal-width grid. |
-| flex | `.sds-flex` |  | `data-sds-orientation`: `horizontal`, `vertical`<br>`data-sds-wrap`<br>`data-sds-align`: `start`, `center`, `end`, `stretch`<br>`data-sds-justify`: `start`, `center`, `end`, `between`<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl`<br>`data-sds-grow`<br>`data-sds-no-shrink` | Configurable flex layout. |
+| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6` (default: `automatic`)<br>`data-sds-min-column-width`: `sm`, `md`, `lg`, `xl`, `2xl` (default: `md`)<br>`data-sds-orientation`: `horizontal`, `vertical` (default: `horizontal`)<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`)<br>`data-sds-place-items`: `start`, `center`, `end`, `stretch` (default: `stretch`) | Responsive equal-width grid. |
+| flex | `.sds-flex` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `horizontal`)<br>`data-sds-wrap` (default: `false`)<br>`data-sds-align`: `start`, `center`, `end`, `stretch` (default: `stretch`)<br>`data-sds-justify`: `start`, `center`, `end`, `between` (default: `start`)<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`)<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl` (default: `none`)<br>`data-sds-grow` (default: `false`)<br>`data-sds-no-shrink` (default: `false`) | Configurable flex layout. |
+| stack | `.sds-stack` |  | `data-sds-align`: `start`, `center`, `end`, `stretch` (default: `stretch`)<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`) | Intrinsic vertical layout for content with consistent spacing. |
 | page | `.sds-page`<br>`.sds-page-header`<br>`.sds-section-header`<br>`.sds-eyebrow` |  |  | Page content, headers, and section context. |
 | sidebar | `.sds-sidebar`<br>`.sds-sidebar-close`<br>`.sds-sidebar-layout` |  |  | Persistent or mobile navigation layout. |
 
@@ -79,25 +80,25 @@
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| dialog | `.sds-dialog`<br>`.sds-dialog-header`<br>`.sds-dialog-footer` | `<dialog>` | `data-sds-width`: `sm`, `md`, `lg`, `xl`, `2xl`<br>`data-sds-return-value` | Native dialog surface and action layout. |
-| panel | `.sds-panel` | `<dialog>` | `data-sds-side`: `left`, `right`, `bottom`<br>`data-sds-width`: `sm`, `md`, `lg`, `xl` | Edge-attached native dialog. |
+| dialog | `.sds-dialog`<br>`.sds-dialog-header`<br>`.sds-dialog-footer` | `<dialog>` | `data-sds-width`: `sm`, `md`, `lg`, `xl`, `2xl` (default: `md`)<br>`data-sds-return-value` (default: `empty string`) | Native dialog surface and action layout. |
+| panel | `.sds-panel` | `<dialog>` | `data-sds-side`: `left`, `right`, `bottom` (default: `right`)<br>`data-sds-width`: `sm`, `md`, `lg`, `xl` (default: `md`) | Edge-attached native dialog. |
 | disclosure | `.sds-disclosure` | `<details>` |  | Native details disclosure. |
 | pagination | `.sds-pagination`<br>`.sds-pagination-status` | `<nav>` |  | Page navigation and result status. |
 | tabs-parts | `.sds-tab`<br>`.sds-tab-list`<br>`.sds-tab-panel` |  |  | Generated or server-rendered tab structure. |
-| dropdown-parts | `.sds-dropdown-menu`<br>`.sds-dropdown-divider`<br>`.sds-dropdown-label` |  | `data-sds-tone`: `danger` | Dropdown menu surface, separator, and label. |
+| dropdown-parts | `.sds-dropdown-menu`<br>`.sds-dropdown-divider`<br>`.sds-dropdown-label` |  | `data-sds-tone`: `danger` (default: `neutral`) | Dropdown menu surface, separator, and label. |
 | floating-parts | `.sds-popover-content`<br>`.sds-tooltip-content` |  |  | Popover and tooltip surfaces. |
 
 ## Prose
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| prose | `.sds-prose`<br>`.sds-prose-lead`<br>`.sds-not-prose`<br>`.sds-sr-only` |  | `data-sds-size`: `sm`, `md`, `lg`<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Long-form semantic typography and opt-out. |
+| prose | `.sds-prose`<br>`.sds-prose-lead`<br>`.sds-not-prose`<br>`.sds-sr-only` |  | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Long-form semantic typography and opt-out. |
 
 ## Application shells
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| application-shell | `.sds-app`<br>`.sds-app-action-bar`<br>`.sds-app-body`<br>`.sds-app-brand`<br>`.sds-app-brand-prefix`<br>`.sds-app-footer`<br>`.sds-app-footer-brand`<br>`.sds-app-footer-content`<br>`.sds-app-footer-legal`<br>`.sds-app-footer-middle`<br>`.sds-app-footer-top`<br>`.sds-app-header`<br>`.sds-app-layout`<br>`.sds-app-main`<br>`.sds-app-mobile-header`<br>`.sds-sei-wordmark`<br>`.sds-brochure-brand`<br>`.sds-brochure-container`<br>`.sds-brochure-footer-about`<br>`.sds-brochure-footer-actions`<br>`.sds-brochure-footer-content`<br>`.sds-brochure-footer-legal`<br>`.sds-brochure-footer-links`<br>`.sds-brochure-footer-main`<br>`.sds-brochure-footer-navigation`<br>`.sds-brochure-header`<br>`.sds-brochure-main`<br>`.sds-brochure-masthead`<br>`.sds-brochure-navigation`<br>`.sds-cmu-wordmark` |  | `data-sds-variant`: `application`, `simple`, `brochure` | SEI application, simple, and brochure shells. |
+| application-shell | `.sds-app`<br>`.sds-app-action-bar`<br>`.sds-app-body`<br>`.sds-app-brand`<br>`.sds-app-brand-prefix`<br>`.sds-app-footer`<br>`.sds-app-footer-brand`<br>`.sds-app-footer-content`<br>`.sds-app-footer-legal`<br>`.sds-app-footer-middle`<br>`.sds-app-footer-top`<br>`.sds-app-header`<br>`.sds-app-layout`<br>`.sds-app-main`<br>`.sds-app-mobile-header`<br>`.sds-sei-wordmark`<br>`.sds-brochure-brand`<br>`.sds-brochure-container`<br>`.sds-brochure-footer-about`<br>`.sds-brochure-footer-actions`<br>`.sds-brochure-footer-content`<br>`.sds-brochure-footer-legal`<br>`.sds-brochure-footer-links`<br>`.sds-brochure-footer-main`<br>`.sds-brochure-footer-navigation`<br>`.sds-brochure-header`<br>`.sds-brochure-main`<br>`.sds-brochure-masthead`<br>`.sds-brochure-navigation`<br>`.sds-cmu-wordmark` |  | `data-sds-variant`: `application`, `simple`, `brochure` (default: `application`) | SEI application, simple, and brochure shells. |
 
 ## Custom elements
 
@@ -110,13 +111,13 @@ Enhances a direct child button and menu with Popover positioning and menu keyboa
 - One direct child button trigger.
 - One direct child menu or Popover surface.
 
-| Attribute | Values or type | Purpose |
-|---|---|---|
-| `open` | `boolean` | Whether the menu is open. |
-| `placement` | `block-start`, `block-start-start`, `block-start-end`, `block-end`, `block-end-start`, `block-end-end`, `inline-start`, `inline-start-start`, `inline-start-end`, `inline-end`, `inline-end-start`, `inline-end-end` | Preferred logical floating placement. |
-| `offset` | `number` | Nonnegative offset in CSS pixels. |
-| `width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | Recipe or overlay width. |
-| `hide-caret` | `boolean` | Hides the visual caret. |
+| Attribute | Values or type | Default | Purpose |
+|---|---|---|---|
+| `open` | `boolean` | false | Whether the menu is open. |
+| `placement` | `block-start`, `block-start-start`, `block-start-end`, `block-end`, `block-end-start`, `block-end-end`, `inline-start`, `inline-start-start`, `inline-start-end`, `inline-end`, `inline-end-start`, `inline-end-end` | block-end-start | Preferred logical floating placement. |
+| `offset` | `number` | 5 | Nonnegative offset in CSS pixels. |
+| `width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | md | Recipe or overlay width. |
+| `hide-caret` | `boolean` | false | Hides the visual caret. |
 
 | Property or method | Type | Purpose |
 |---|---|---|
@@ -141,12 +142,12 @@ Enhances a direct child button and rich Popover surface with delayed hover and f
 - One direct child button trigger.
 - One direct child rich-content Popover surface.
 
-| Attribute | Values or type | Purpose |
-|---|---|---|
-| `open` | `boolean` | Whether the popover is open. |
-| `placement` | `block-start`, `block-start-start`, `block-start-end`, `block-end`, `block-end-start`, `block-end-end`, `inline-start`, `inline-start-start`, `inline-start-end`, `inline-end`, `inline-end-start`, `inline-end-end` | Preferred logical floating placement. |
-| `offset` | `number` | Nonnegative offset in CSS pixels. |
-| `width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | Recipe or overlay width. |
+| Attribute | Values or type | Default | Purpose |
+|---|---|---|---|
+| `open` | `boolean` | false | Whether the popover is open. |
+| `placement` | `block-start`, `block-start-start`, `block-start-end`, `block-end`, `block-end-start`, `block-end-end`, `inline-start`, `inline-start-start`, `inline-start-end`, `inline-end`, `inline-end-start`, `inline-end-end` | block-end-start | Preferred logical floating placement. |
+| `offset` | `number` | 9 | Nonnegative offset in CSS pixels. |
+| `width` | `auto`, `sm`, `md`, `lg`, `xl`, `2xl` | md | Recipe or overlay width. |
 
 | Property or method | Type | Purpose |
 |---|---|---|
@@ -170,14 +171,14 @@ Coordinates a tab list and one panel per tab.
 - A direct child tab-list container with button or link children.
 - One direct child panel for every tab.
 
-| Attribute | Values or type | Purpose |
-|---|---|---|
-| `value` | `string` | Value of the selected tab. |
-| `activation` | `automatic`, `manual` | Whether focus automatically selects a tab. |
-| `orientation` | `horizontal`, `vertical` | Layout or interaction orientation. |
-| `size` | `md`, `lg` | Visual scale. |
-| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Semantic color intent. |
-| `variant` | `folder`, `block`, `underline` | Visual treatment. |
+| Attribute | Values or type | Default | Purpose |
+|---|---|---|---|
+| `value` | `string` | first enabled tab | Value of the selected tab. |
+| `activation` | `automatic`, `manual` | automatic | Whether focus automatically selects a tab. |
+| `orientation` | `horizontal`, `vertical` | horizontal | Layout or interaction orientation. |
+| `size` | `md`, `lg` | md | Visual scale. |
+| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | danger | Semantic color intent. |
+| `variant` | `folder`, `block`, `underline` | folder | Visual treatment. |
 
 | Property or method | Type | Purpose |
 |---|---|---|
@@ -201,10 +202,10 @@ Enhances a direct child trigger and short description with accessible tooltip be
 - One direct child trigger.
 - One direct child text description.
 
-| Attribute | Values or type | Purpose |
-|---|---|---|
-| `placement` | `block-start`, `block-start-start`, `block-start-end`, `block-end`, `block-end-start`, `block-end-end`, `inline-start`, `inline-start-start`, `inline-start-end`, `inline-end`, `inline-end-start`, `inline-end-end` | Preferred logical floating placement. |
-| `offset` | `number` | Nonnegative offset in CSS pixels. |
+| Attribute | Values or type | Default | Purpose |
+|---|---|---|---|
+| `placement` | `block-start`, `block-start-start`, `block-start-end`, `block-end`, `block-end-start`, `block-end-end`, `inline-start`, `inline-start-start`, `inline-start-end`, `inline-end`, `inline-end-start`, `inline-end-end` | block-start | Preferred logical floating placement. |
+| `offset` | `number` | 6 | Nonnegative offset in CSS pixels. |
 
 | Property or method | Type | Purpose |
 |---|---|---|
@@ -221,12 +222,12 @@ A timed or persistent notification.
 - Message content.
 - A close control for persistent notifications.
 
-| Attribute | Values or type | Purpose |
-|---|---|---|
-| `open` | `boolean` | Whether the toast is visible. |
-| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Semantic color intent. |
-| `duration` | `number` | Positive duration in milliseconds. |
-| `persistent` | `boolean` | Disables automatic dismissal. |
+| Attribute | Values or type | Default | Purpose |
+|---|---|---|---|
+| `open` | `boolean` | false | Whether the toast is visible. |
+| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | accent | Semantic color intent. |
+| `duration` | `number` | 5000 | Positive duration in milliseconds. |
+| `persistent` | `boolean` | false | Disables automatic dismissal. |
 
 | Property or method | Type | Purpose |
 |---|---|---|

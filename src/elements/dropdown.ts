@@ -1,6 +1,7 @@
 import { FloatingPositioner } from './floating.js'
 import {
   defineCustomElement,
+  defaultButtonType,
   directElementChildren,
   ElementConnection,
   ensureId,
@@ -103,6 +104,7 @@ export class SdsDropdownElement extends HTMLElementBase {
       return
     }
 
+    defaultButtonType(trigger)
     const menuId = ensureId(menu, 'sds-dropdown')
     menu.classList.add('sds-dropdown-menu')
     menu.setAttribute('popover', menu.getAttribute('popover') || 'auto')

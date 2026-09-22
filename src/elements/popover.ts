@@ -4,6 +4,7 @@ import {
 } from './floating.js'
 import {
   defineCustomElement,
+  defaultButtonType,
   directElementChildren,
   ElementConnection,
   ensureId,
@@ -97,6 +98,7 @@ export class SdsPopoverElement extends HTMLElementBase {
       return
     }
 
+    defaultButtonType(trigger)
     const contentId = ensureId(content, 'sds-popover')
     content.classList.add('sds-popover-content')
     content.setAttribute('popover', content.getAttribute('popover') || 'auto')

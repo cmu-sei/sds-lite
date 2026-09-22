@@ -4,7 +4,7 @@
     [data-sds-root] a[href]:not([class*="sds-"], [data-sds-unstyled])
   ) {
     display: inline-block;
-    color: var(--sds-color-action-primary);
+    color: var(--sds-color-accent-text);
     overflow-wrap: break-word;
     text-decoration: none;
     text-underline-offset: 0.15em;
@@ -15,7 +15,11 @@
         var(--sds-easing-standard);
   }
 
-  :where(.sds-link[data-sds-tone], [data-sds-root] a[data-sds-tone]) {
+  :where(
+    .sds-link[data-sds-tone],
+    [data-sds-root]
+      a[data-sds-tone]:not([class*="sds-"], [data-sds-unstyled])
+  ) {
     color: var(--sds-tone-text);
   }
 

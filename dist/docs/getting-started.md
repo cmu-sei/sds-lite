@@ -57,7 +57,6 @@ follows the operating system can be explicit:
 ```html
 <body
   data-sds-root
-  data-sds-theme="forge"
   data-sds-color-scheme="system"
 >
 ```
@@ -106,8 +105,8 @@ SDS Lite can supply classes, IDs, relationships, and initial state:
 ```html
 <sds-tabs>
   <div aria-label="Project sections">
-    <button type="button" aria-selected="true">Overview</button>
-    <button type="button">Activity</button>
+    <button aria-selected="true">Overview</button>
+    <button>Activity</button>
   </div>
 
   <section>Overview content</section>
@@ -117,7 +116,7 @@ SDS Lite can supply classes, IDs, relationships, and initial state:
 
 ```html
 <sds-dropdown>
-  <button type="button" data-sds-variant="ghost">Actions</button>
+  <button data-sds-variant="ghost">Actions</button>
   <menu>
     <li><button type="button">Rename</button></li>
     <li><button type="button" data-sds-tone="danger">Delete</button></li>

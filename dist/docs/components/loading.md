@@ -19,7 +19,8 @@ Use a spinner when an action or compact region is waiting:
 | `lg` | `3rem` | Sections and cards |
 | `xl` | `5rem` | Page-level loading |
 
-`md` is the default. `data-sds-tone` accepts every semantic tone.
+`md` is the default size, and `neutral` is the default tone.
+`data-sds-tone` accepts every semantic tone.
 
 Use specific accessible text. “Loading projects” is more useful than
 “Loading.” Avoid adding a live spinner repeatedly during frequent background

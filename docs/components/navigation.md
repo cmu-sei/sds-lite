@@ -9,8 +9,8 @@ For client-rendered markup, provide a named tab list and one panel per tab:
 ```html
 <sds-tabs>
   <div aria-label="Project settings">
-    <button type="button">Profile</button>
-    <button type="button" aria-selected="true">Security</button>
+    <button>Profile</button>
+    <button aria-selected="true">Security</button>
   </div>
   <section>Profile settings</section>
   <section>Security settings</section>
@@ -25,7 +25,7 @@ first enabled tab is used when it is omitted.
 |---|---|---|
 | `variant` | `folder`, `block`, `underline` | `folder` |
 | `size` | `md`, `lg` | `md` |
-| `tone` | All semantic tones | Brand treatment |
+| `tone` | All semantic tones | `danger` |
 | `activation` | `automatic`, `manual` | `automatic` |
 | `orientation` | `horizontal`, `vertical` | `horizontal` |
 | `value` | Selected tab value | Selected tab's `value` or `id` |
@@ -121,7 +121,7 @@ solid-button treatment.
 
 ```html
 <sds-dropdown>
-  <button type="button">Actions</button>
+  <button>Actions</button>
   <menu>
     <li><button type="button">Rename</button></li>
     <li><a href="/duplicate">Duplicate</a></li>
@@ -153,7 +153,8 @@ Dropdowns support:
 
 Use `aria-disabled="true"` on unavailable menu items. Unlike a native disabled
 button, an ARIA-disabled menu item remains in the arrow-key sequence; SDS Lite
-prevents its activation. The trigger and menu must be direct children. Invalid
+prevents its activation. The trigger and menu must be direct children. SDS Lite defaults an omitted
+trigger `type` to `button`; an explicit type is preserved. Invalid
 or ambiguous structures are not enhanced and produce a console warning.
 
 Use `hide-caret` when the trigger already communicates that it opens a

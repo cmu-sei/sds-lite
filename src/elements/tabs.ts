@@ -1,5 +1,6 @@
 import {
   defineCustomElement,
+  defaultButtonType,
   directElementChildren,
   ElementConnection,
   ensureId,
@@ -76,7 +77,7 @@ export class SdsTabsElement extends HTMLElementBase {
   }
 
   get tone(): SdsTone {
-    return (this.getAttribute('tone') ?? 'accent') as SdsTone
+    return (this.getAttribute('tone') ?? 'danger') as SdsTone
   }
 
   set tone(value: SdsTone) {
@@ -143,6 +144,7 @@ export class SdsTabsElement extends HTMLElementBase {
 
     const unassignedPanels = new Set(availablePanels)
     for (const [index, tab] of this.tabs.entries()) {
+      if (tab instanceof HTMLButtonElement) defaultButtonType(tab)
       const requestedPanelId = tab.getAttribute('aria-controls')
       const requestedPanel =
         availablePanels.find((candidate) => candidate.id === requestedPanelId) ??

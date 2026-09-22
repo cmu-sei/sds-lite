@@ -27,7 +27,7 @@ function handleClick(event: MouseEvent): void {
   if (!(event.target instanceof Element)) return
 
   const trigger = event.target.closest<HTMLElement>(
-    '[commandfor]',
+    '[commandfor], dialog.sds-dialog [command], dialog.sds-panel [command]',
   )
 
   if (trigger) {

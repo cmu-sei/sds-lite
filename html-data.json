@@ -7,7 +7,7 @@
     },
     {
       "name": "data-sds-theme",
-      "description": "Selects an SDS Lite theme.",
+      "description": "Selects an SDS Lite theme. Default: forge.",
       "values": [
         {
           "name": "forge"
@@ -19,7 +19,7 @@
     },
     {
       "name": "data-sds-color-scheme",
-      "description": "Selects a light, dark, or system color scheme.",
+      "description": "Selects a light, dark, or system color scheme. Default: light.",
       "values": [
         {
           "name": "light"
@@ -972,11 +972,11 @@
       "attributes": [
         {
           "name": "open",
-          "description": "Whether the menu is open."
+          "description": "Whether the menu is open. Default: false."
         },
         {
           "name": "placement",
-          "description": "Preferred logical floating placement.",
+          "description": "Preferred logical floating placement. Default: block-end-start.",
           "values": [
             {
               "name": "block-start"
@@ -1018,11 +1018,11 @@
         },
         {
           "name": "offset",
-          "description": "Nonnegative offset in CSS pixels."
+          "description": "Nonnegative offset in CSS pixels. Default: 5."
         },
         {
           "name": "width",
-          "description": "Recipe or overlay width.",
+          "description": "Recipe or overlay width. Default: md.",
           "values": [
             {
               "name": "auto"
@@ -1046,7 +1046,7 @@
         },
         {
           "name": "hide-caret",
-          "description": "Hides the visual caret."
+          "description": "Hides the visual caret. Default: false."
         }
       ]
     },
@@ -1056,11 +1056,11 @@
       "attributes": [
         {
           "name": "open",
-          "description": "Whether the popover is open."
+          "description": "Whether the popover is open. Default: false."
         },
         {
           "name": "placement",
-          "description": "Preferred logical floating placement.",
+          "description": "Preferred logical floating placement. Default: block-end-start.",
           "values": [
             {
               "name": "block-start"
@@ -1102,11 +1102,11 @@
         },
         {
           "name": "offset",
-          "description": "Nonnegative offset in CSS pixels."
+          "description": "Nonnegative offset in CSS pixels. Default: 9."
         },
         {
           "name": "width",
-          "description": "Recipe or overlay width.",
+          "description": "Recipe or overlay width. Default: md.",
           "values": [
             {
               "name": "auto"
@@ -1136,11 +1136,11 @@
       "attributes": [
         {
           "name": "value",
-          "description": "Value of the selected tab."
+          "description": "Value of the selected tab. Default: first enabled tab."
         },
         {
           "name": "activation",
-          "description": "Whether focus automatically selects a tab.",
+          "description": "Whether focus automatically selects a tab. Default: automatic.",
           "values": [
             {
               "name": "automatic"
@@ -1152,7 +1152,7 @@
         },
         {
           "name": "orientation",
-          "description": "Layout or interaction orientation.",
+          "description": "Layout or interaction orientation. Default: horizontal.",
           "values": [
             {
               "name": "horizontal"
@@ -1164,7 +1164,7 @@
         },
         {
           "name": "size",
-          "description": "Visual scale.",
+          "description": "Visual scale. Default: md.",
           "values": [
             {
               "name": "md"
@@ -1176,7 +1176,7 @@
         },
         {
           "name": "tone",
-          "description": "Semantic color intent.",
+          "description": "Semantic color intent. Default: danger.",
           "values": [
             {
               "name": "neutral"
@@ -1200,7 +1200,7 @@
         },
         {
           "name": "variant",
-          "description": "Visual treatment.",
+          "description": "Visual treatment. Default: folder.",
           "values": [
             {
               "name": "folder"
@@ -1221,7 +1221,7 @@
       "attributes": [
         {
           "name": "placement",
-          "description": "Preferred logical floating placement.",
+          "description": "Preferred logical floating placement. Default: block-start.",
           "values": [
             {
               "name": "block-start"
@@ -1263,7 +1263,7 @@
         },
         {
           "name": "offset",
-          "description": "Nonnegative offset in CSS pixels."
+          "description": "Nonnegative offset in CSS pixels. Default: 6."
         }
       ]
     },
@@ -1273,11 +1273,11 @@
       "attributes": [
         {
           "name": "open",
-          "description": "Whether the toast is visible."
+          "description": "Whether the toast is visible. Default: false."
         },
         {
           "name": "tone",
-          "description": "Semantic color intent.",
+          "description": "Semantic color intent. Default: accent.",
           "values": [
             {
               "name": "neutral"
@@ -1301,11 +1301,11 @@
         },
         {
           "name": "duration",
-          "description": "Positive duration in milliseconds."
+          "description": "Positive duration in milliseconds. Default: 5000."
         },
         {
           "name": "persistent",
-          "description": "Disables automatic dismissal."
+          "description": "Disables automatic dismissal. Default: false."
         }
       ]
     }

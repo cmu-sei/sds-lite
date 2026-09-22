@@ -115,6 +115,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-sidebar` | Persistent or mobile navigation |
 | `.sds-sidebar-close` | Mobile-sidebar close control |
 | `.sds-sidebar-layout` | Contained sidebar and content |
+| `.sds-stack` | Intrinsic vertical content layout |
 
 ### Navigation and overlays
 

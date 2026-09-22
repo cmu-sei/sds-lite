@@ -17,35 +17,40 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "Whether the menu is open."
+              "description": "Whether the menu is open.",
+              "default": "false"
             },
             {
               "name": "placement",
               "type": {
                 "text": "\"block-start\" | \"block-start-start\" | \"block-start-end\" | \"block-end\" | \"block-end-start\" | \"block-end-end\" | \"inline-start\" | \"inline-start-start\" | \"inline-start-end\" | \"inline-end\" | \"inline-end-start\" | \"inline-end-end\""
               },
-              "description": "Preferred logical floating placement."
+              "description": "Preferred logical floating placement.",
+              "default": "block-end-start"
             },
             {
               "name": "offset",
               "type": {
                 "text": "number"
               },
-              "description": "Nonnegative offset in CSS pixels."
+              "description": "Nonnegative offset in CSS pixels.",
+              "default": "5"
             },
             {
               "name": "width",
               "type": {
                 "text": "\"auto\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\""
               },
-              "description": "Recipe or overlay width."
+              "description": "Recipe or overlay width.",
+              "default": "md"
             },
             {
               "name": "hide-caret",
               "type": {
                 "text": "boolean"
               },
-              "description": "Hides the visual caret."
+              "description": "Hides the visual caret.",
+              "default": "false"
             }
           ],
           "members": [
@@ -127,28 +132,32 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "Whether the popover is open."
+              "description": "Whether the popover is open.",
+              "default": "false"
             },
             {
               "name": "placement",
               "type": {
                 "text": "\"block-start\" | \"block-start-start\" | \"block-start-end\" | \"block-end\" | \"block-end-start\" | \"block-end-end\" | \"inline-start\" | \"inline-start-start\" | \"inline-start-end\" | \"inline-end\" | \"inline-end-start\" | \"inline-end-end\""
               },
-              "description": "Preferred logical floating placement."
+              "description": "Preferred logical floating placement.",
+              "default": "block-end-start"
             },
             {
               "name": "offset",
               "type": {
                 "text": "number"
               },
-              "description": "Nonnegative offset in CSS pixels."
+              "description": "Nonnegative offset in CSS pixels.",
+              "default": "9"
             },
             {
               "name": "width",
               "type": {
                 "text": "\"auto\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\""
               },
-              "description": "Recipe or overlay width."
+              "description": "Recipe or overlay width.",
+              "default": "md"
             }
           ],
           "members": [
@@ -222,42 +231,48 @@
               "type": {
                 "text": "string"
               },
-              "description": "Value of the selected tab."
+              "description": "Value of the selected tab.",
+              "default": "first enabled tab"
             },
             {
               "name": "activation",
               "type": {
                 "text": "\"automatic\" | \"manual\""
               },
-              "description": "Whether focus automatically selects a tab."
+              "description": "Whether focus automatically selects a tab.",
+              "default": "automatic"
             },
             {
               "name": "orientation",
               "type": {
                 "text": "\"horizontal\" | \"vertical\""
               },
-              "description": "Layout or interaction orientation."
+              "description": "Layout or interaction orientation.",
+              "default": "horizontal"
             },
             {
               "name": "size",
               "type": {
                 "text": "\"md\" | \"lg\""
               },
-              "description": "Visual scale."
+              "description": "Visual scale.",
+              "default": "md"
             },
             {
               "name": "tone",
               "type": {
                 "text": "\"neutral\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\""
               },
-              "description": "Semantic color intent."
+              "description": "Semantic color intent.",
+              "default": "danger"
             },
             {
               "name": "variant",
               "type": {
                 "text": "\"folder\" | \"block\" | \"underline\""
               },
-              "description": "Visual treatment."
+              "description": "Visual treatment.",
+              "default": "folder"
             }
           ],
           "members": [
@@ -337,14 +352,16 @@
               "type": {
                 "text": "\"block-start\" | \"block-start-start\" | \"block-start-end\" | \"block-end\" | \"block-end-start\" | \"block-end-end\" | \"inline-start\" | \"inline-start-start\" | \"inline-start-end\" | \"inline-end\" | \"inline-end-start\" | \"inline-end-end\""
               },
-              "description": "Preferred logical floating placement."
+              "description": "Preferred logical floating placement.",
+              "default": "block-start"
             },
             {
               "name": "offset",
               "type": {
                 "text": "number"
               },
-              "description": "Nonnegative offset in CSS pixels."
+              "description": "Nonnegative offset in CSS pixels.",
+              "default": "6"
             }
           ],
           "members": [
@@ -383,28 +400,32 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "Whether the toast is visible."
+              "description": "Whether the toast is visible.",
+              "default": "false"
             },
             {
               "name": "tone",
               "type": {
                 "text": "\"neutral\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\""
               },
-              "description": "Semantic color intent."
+              "description": "Semantic color intent.",
+              "default": "accent"
             },
             {
               "name": "duration",
               "type": {
                 "text": "number"
               },
-              "description": "Positive duration in milliseconds."
+              "description": "Positive duration in milliseconds.",
+              "default": "5000"
             },
             {
               "name": "persistent",
               "type": {
                 "text": "boolean"
               },
-              "description": "Disables automatic dismissal."
+              "description": "Disables automatic dismissal.",
+              "default": "false"
             }
           ],
           "members": [

@@ -13,7 +13,7 @@ function n(e, t) {
 }
 function r(e) {
 	if (!(e.target instanceof Element)) return;
-	let r = e.target.closest("[commandfor]");
+	let r = e.target.closest("[commandfor], dialog.sds-dialog [command], dialog.sds-panel [command]");
 	if (r) {
 		let i = t(r);
 		if (!i) return;

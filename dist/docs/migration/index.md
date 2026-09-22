@@ -73,7 +73,7 @@ provide the namespace:
   <section>Overview content</section>
 </sds-tabs>
 
-<sds-dropdown placement="block-end-start" offset="5" width="md" hide-caret>
+<sds-dropdown hide-caret>
   <button type="button">Actions</button>
   <menu><li><button type="button">Rename</button></li></menu>
 </sds-dropdown>

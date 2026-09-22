@@ -19,6 +19,12 @@ function attributeValues(attribute) {
   return attribute.values ?? familyFor(attribute)?.values ?? []
 }
 
+function withDefault(description, defaultValue) {
+  return defaultValue === undefined
+    ? description
+    : `${description}${description ? ' ' : ''}Default: ${defaultValue}.`
+}
+
 function customElementsManifest() {
   return {
     schemaVersion: '1.0.0',
@@ -44,6 +50,9 @@ function customElementsManifest() {
                 }
               : {}),
             description: attributeDescription(attribute),
+            ...(attribute.default !== undefined
+              ? { default: attribute.default }
+              : {}),
           })),
           members: element.members.map((member) => ({
             kind: member.kind,
@@ -117,7 +126,10 @@ function htmlData() {
     version: 1.1,
     globalAttributes: globalAttributes.map((attribute) => ({
       name: attribute.name,
-      description: attributeDescription(attribute),
+      description: withDefault(
+        attributeDescription(attribute),
+        attribute.default,
+      ),
       ...(attributeValues(attribute).length
         ? {
             values: attributeValues(attribute).map((value) => ({ name: value })),
@@ -129,7 +141,10 @@ function htmlData() {
       description: `${element.description} ${element.content.join(' ')}`,
       attributes: element.attributes.map((attribute) => ({
         name: attribute.name,
-        description: attributeDescription(attribute),
+        description: withDefault(
+          attributeDescription(attribute),
+          attribute.default,
+        ),
         ...(attributeValues(attribute).length
           ? {
               values: attributeValues(attribute).map((value) => ({
@@ -171,8 +186,8 @@ function generatedReference() {
     '',
     '## Global attributes',
     '',
-    '| Attribute | Values | Purpose |',
-    '|---|---|---|',
+    '| Attribute | Values | Default | Purpose |',
+    '|---|---|---|---|',
     ...manifest.globalAttributes.map(
       (attribute) => {
         const values = attributeValues(attribute)
@@ -180,7 +195,7 @@ function generatedReference() {
           values.length
             ? values.map((value) => `\`${value}\``).join(', ')
             : 'Presence'
-        } | ${attributeDescription(attribute)} |`
+        } | ${attribute.default ?? ''} | ${attributeDescription(attribute)} |`
       },
     ),
     '',
@@ -196,9 +211,13 @@ function generatedReference() {
     )) {
       const options = Object.entries(recipe.options)
         .map(([name, values]) =>
-          values.length
+          `${values.length
             ? `\`${name}\`: ${values.map((value) => `\`${value}\``).join(', ')}`
-            : `\`${name}\``,
+            : `\`${name}\``}${
+            Object.hasOwn(recipe.defaults ?? {}, name)
+              ? ` (default: \`${String(recipe.defaults[name])}\`)`
+              : ''
+          }`,
         )
         .join('<br>')
       lines.push(
@@ -219,15 +238,15 @@ function generatedReference() {
       '',
       ...element.content.map((item) => `- ${item}`),
       '',
-      '| Attribute | Values or type | Purpose |',
-      '|---|---|---|',
+      '| Attribute | Values or type | Default | Purpose |',
+      '|---|---|---|---|',
       ...element.attributes.map((attribute) => {
         const values = attributeValues(attribute)
         return `| \`${attribute.name}\` | ${
           values.length
             ? values.map((value) => `\`${value}\``).join(', ')
             : `\`${attribute.type ?? 'string'}\``
-        } | ${attributeDescription(attribute)} |`
+        } | ${attribute.default ?? ''} | ${attributeDescription(attribute)} |`
       }),
       '',
       '| Property or method | Type | Purpose |',

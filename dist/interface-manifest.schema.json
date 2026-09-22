@@ -33,6 +33,12 @@
           "classes": {"type": "array", "items": {"type": "string"}},
           "elements": {"type": "array", "items": {"type": "string"}},
           "description": {"type": "string"},
+          "defaults": {
+            "type": "object",
+            "additionalProperties": {
+              "type": ["string", "boolean"]
+            }
+          },
           "options": {
             "type": "object",
             "additionalProperties": {

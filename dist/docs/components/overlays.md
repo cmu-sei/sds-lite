@@ -34,8 +34,8 @@ text.
 ## Popover
 
 ```html
-<sds-popover width="lg" placement="block-end-start">
-  <button type="button">Project details</button>
+<sds-popover width="lg">
+  <button>Project details</button>
   <section>
     <h2>Project Atlas</h2>
     <p>Updated five minutes ago.</p>
@@ -71,7 +71,6 @@ Tooltips, popovers, and dropdowns:
 <dialog
   id="confirm-dialog"
   class="sds-dialog"
-  data-sds-width="md"
   closedby="any"
   aria-labelledby="confirm-title"
   aria-describedby="confirm-description"
@@ -84,7 +83,6 @@ Tooltips, popovers, and dropdowns:
     <button
       type="button"
       data-sds-shape="icon"
-      commandfor="confirm-dialog"
       command="request-close"
       aria-label="Close"
     >
@@ -98,7 +96,6 @@ Tooltips, popovers, and dropdowns:
     <button
       type="button"
       data-sds-variant="ghost"
-      commandfor="confirm-dialog"
       command="close"
       data-sds-return-value="cancel"
     >
@@ -106,7 +103,6 @@ Tooltips, popovers, and dropdowns:
     </button>
     <button
       type="button"
-      commandfor="confirm-dialog"
       command="close"
       data-sds-return-value="confirm"
     >
@@ -133,8 +129,6 @@ Use direct native `header`, `main`, and `footer` children:
 <dialog
   id="help-panel"
   class="sds-panel"
-  data-sds-side="right"
-  data-sds-width="md"
   closedby="any"
   aria-labelledby="help-title"
 >
@@ -143,7 +137,6 @@ Use direct native `header`, `main`, and `footer` children:
     <button
       type="button"
       data-sds-shape="icon"
-      commandfor="help-panel"
       command="request-close"
       aria-label="Close"
     >
@@ -152,7 +145,7 @@ Use direct native `header`, `main`, and `footer` children:
   </header>
   <section aria-label="Panel content">Help content goes here.</section>
   <footer>
-    <button type="button" commandfor="help-panel" command="close">Done</button>
+    <button type="button" command="close">Done</button>
   </footer>
 </dialog>
 ```
@@ -169,7 +162,7 @@ Header and footer remain visible while `main` consumes the flexible space.
 
 | Interface | Meaning |
 |---|---|
-| `commandfor="id"` | Target dialog or panel |
+| `commandfor="id"` | Target an external dialog or panel |
 | `command="show-modal"` | Open modally |
 | `command="close"` | Close immediately |
 | `command="request-close"` | Request a cancelable close |
@@ -177,6 +170,9 @@ Header and footer remain visible while `main` consumes the flexible space.
 | `closedby="any"` | Escape, close controls, and backdrop dismissal |
 | `closedby="closerequest"` | Close requests, no backdrop dismissal |
 | `closedby="none"` | No implicit dismissal |
+
+Controls inside a dialog or panel infer their nearest dialog when
+`commandfor` is omitted. External controls still require `commandfor`.
 
 Native `cancel`, `close`, `beforetoggle`, and `toggle` events remain available.
 Prevent `cancel` when unsaved work must keep the surface open:

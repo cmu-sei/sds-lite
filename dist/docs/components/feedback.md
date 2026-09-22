@@ -114,7 +114,7 @@ notify('Your project was saved.', {
 |---|---|---|
 | `container` | An `HTMLElement` or toaster owner | First SDS root, then `body` |
 | `title` | String | `Notification` |
-| `tone` | All semantic tones | `info` |
+| `tone` | All semantic tones | `accent` |
 | `duration` | Positive milliseconds | `5000` |
 | `persistent` | Boolean | `false` |
 | `urgent` | Boolean; changes role to `alert` | `false` |

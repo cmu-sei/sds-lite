@@ -1,81 +1,82 @@
-import { c as e, i as t, n, r, t as i } from "./internals-BLPvKvsH.js";
+import { a as e, i as t, l as n, n as r, r as i, t as a } from "./internals-CEyyQZKd.js";
 //#region src/elements/tabs.ts
-var a = "sds-change", o = typeof HTMLElement > "u" ? class {} : HTMLElement, s = class extends o {
+var o = "sds-change", s = typeof HTMLElement > "u" ? class {} : HTMLElement, c = class extends s {
 	static observedAttributes = ["value"];
 	tabs = [];
 	panels = /* @__PURE__ */ new Map();
-	connection = new i();
+	connection = new a();
 	reflectingValue = !1;
 	get value() {
 		return this.getAttribute("value") ?? "";
 	}
-	set value(t) {
-		if (this.isConnected && !this.tabs.some((e) => this.tabValue(e) === t && !this.isDisabled(e))) throw RangeError(`<sds-tabs> has no enabled tab with value "${t}".`);
-		e(this, "value", t);
+	set value(e) {
+		if (this.isConnected && !this.tabs.some((t) => this.tabValue(t) === e && !this.isDisabled(t))) throw RangeError(`<sds-tabs> has no enabled tab with value "${e}".`);
+		n(this, "value", e);
 	}
 	get activation() {
 		return this.getAttribute("activation") ?? "automatic";
 	}
-	set activation(t) {
-		e(this, "activation", t);
+	set activation(e) {
+		n(this, "activation", e);
 	}
 	get orientation() {
 		return this.getAttribute("orientation") ?? "horizontal";
 	}
-	set orientation(t) {
-		e(this, "orientation", t), this.syncOrientation();
+	set orientation(e) {
+		n(this, "orientation", e), this.syncOrientation();
 	}
 	get size() {
 		return this.getAttribute("size") ?? "md";
 	}
-	set size(t) {
-		e(this, "size", t);
+	set size(e) {
+		n(this, "size", e);
 	}
 	get tone() {
-		return this.getAttribute("tone") ?? "accent";
+		return this.getAttribute("tone") ?? "danger";
 	}
-	set tone(t) {
-		e(this, "tone", t);
+	set tone(e) {
+		n(this, "tone", e);
 	}
 	get variant() {
 		return this.getAttribute("variant") ?? "folder";
 	}
-	set variant(t) {
-		e(this, "variant", t);
+	set variant(e) {
+		n(this, "variant", e);
 	}
 	connectedCallback() {
-		let e = this.connection.connect(this, () => this.connectedCallback(), {
+		let n = this.connection.connect(this, () => this.connectedCallback(), {
 			childList: !0,
 			subtree: !0
-		}), n = r(this), i = n.find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")) ?? n[0] ?? null;
-		if (this.tabs = i ? r(i).filter((e) => e instanceof HTMLButtonElement || e instanceof HTMLAnchorElement) : [], this.panels.clear(), !i || this.tabs.length === 0) {
+		}), i = t(this), a = i.find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")) ?? i[0] ?? null;
+		if (this.tabs = a ? t(a).filter((e) => e instanceof HTMLButtonElement || e instanceof HTMLAnchorElement) : [], this.panels.clear(), !a || this.tabs.length === 0) {
 			console.warn("<sds-tabs> requires a tab-list container with button or link children.");
 			return;
 		}
-		let a = n.filter((e) => e !== i);
-		if (a.length < this.tabs.length) {
+		let o = i.filter((e) => e !== a);
+		if (o.length < this.tabs.length) {
 			console.warn("<sds-tabs> requires one panel for every tab.");
 			return;
 		}
-		i.classList.add("sds-tab-list"), i.setAttribute("role", "tablist"), this.syncOrientation(i), !i.hasAttribute("aria-label") && !i.hasAttribute("aria-labelledby") && console.warn("<sds-tabs> requires an accessible name on its tab list.");
-		let o = new Set(a);
-		for (let [e, n] of this.tabs.entries()) {
-			let r = n.getAttribute("aria-controls"), i = a.find((e) => e.id === r) ?? null, s = i && o.has(i) ? i : a[e] && o.has(a[e]) ? a[e] : o.values().next().value;
-			if (!s) continue;
-			o.delete(s);
-			let c = t(n, "sds-tab"), l = t(s, "sds-tab-panel");
-			n.classList.add("sds-tab"), n.setAttribute("role", "tab"), n.setAttribute("aria-controls", l), s.classList.add("sds-tab-panel"), s.setAttribute("role", "tabpanel"), s.setAttribute("aria-labelledby", c), this.panels.set(n, s);
+		a.classList.add("sds-tab-list"), a.setAttribute("role", "tablist"), this.syncOrientation(a), !a.hasAttribute("aria-label") && !a.hasAttribute("aria-labelledby") && console.warn("<sds-tabs> requires an accessible name on its tab list.");
+		let s = new Set(o);
+		for (let [t, n] of this.tabs.entries()) {
+			n instanceof HTMLButtonElement && r(n);
+			let i = n.getAttribute("aria-controls"), a = o.find((e) => e.id === i) ?? null, c = a && s.has(a) ? a : o[t] && s.has(o[t]) ? o[t] : s.values().next().value;
+			if (!c) continue;
+			s.delete(c);
+			let l = e(n, "sds-tab"), u = e(c, "sds-tab-panel");
+			n.classList.add("sds-tab"), n.setAttribute("role", "tab"), n.setAttribute("aria-controls", u), c.classList.add("sds-tab-panel"), c.setAttribute("role", "tabpanel"), c.setAttribute("aria-labelledby", l), this.panels.set(n, c);
 		}
-		let s = this.value ? this.tabs.find((e) => this.tabValue(e) === this.value && !this.isDisabled(e)) : null;
-		this.value && !s && console.warn(`<sds-tabs> has no enabled tab with value "${this.value}".`);
-		let c = s ?? this.tabs.find((e) => e.getAttribute("aria-selected") === "true" && !this.isDisabled(e)) ?? this.tabs.find((e) => !this.isDisabled(e)) ?? null;
+		let c = this.value ? this.tabs.find((e) => this.tabValue(e) === this.value && !this.isDisabled(e)) : null;
+		this.value && !c && console.warn(`<sds-tabs> has no enabled tab with value "${this.value}".`);
+		let l = c ?? this.tabs.find((e) => e.getAttribute("aria-selected") === "true" && !this.isDisabled(e)) ?? this.tabs.find((e) => !this.isDisabled(e)) ?? null;
 		for (let e of this.tabs) {
-			let t = e === c;
+			let t = e === l;
 			e.setAttribute("aria-selected", String(t)), e.tabIndex = t ? 0 : -1;
 			let n = this.panels.get(e);
 			n && (n.hidden = !t);
 		}
-		c && this.reflectValue(this.tabValue(c)), i.addEventListener("click", this.handleClick, { signal: e }), i.addEventListener("keydown", this.handleKeydown, { signal: e });
+		l && this.reflectValue(this.tabValue(l)), a.addEventListener("click", this.handleClick, { signal: n }), a.addEventListener("keydown", this.handleKeydown, { signal: n });
 	}
 	disconnectedCallback() {
 		this.connection.disconnect();
@@ -95,24 +96,24 @@ var a = "sds-change", o = typeof HTMLElement > "u" ? class {} : HTMLElement, s =
 		return e instanceof HTMLButtonElement && e.disabled || e.getAttribute("aria-disabled") === "true";
 	}
 	syncOrientation(e) {
-		this.hasAttribute("orientation") && (e ?? r(this).find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")))?.setAttribute("aria-orientation", this.orientation);
+		this.hasAttribute("orientation") && (e ?? t(this).find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")))?.setAttribute("aria-orientation", this.orientation);
 	}
 	tabValue(e) {
 		return e.getAttribute("value") ?? e.id;
 	}
-	reflectValue(t) {
-		this.reflectingValue = !0, e(this, "value", t), this.reflectingValue = !1;
+	reflectValue(e) {
+		this.reflectingValue = !0, n(this, "value", e), this.reflectingValue = !1;
 	}
 	select(e, t = !1, n = !0) {
 		let r = this.tabs[e], i = this.panels.get(r);
 		if (!r || !i || this.isDisabled(r)) return;
-		let o = this.tabs.findIndex((e) => e.getAttribute("aria-selected") === "true");
+		let a = this.tabs.findIndex((e) => e.getAttribute("aria-selected") === "true");
 		this.tabs.forEach((e) => {
 			let t = e === r;
 			e.setAttribute("aria-selected", String(t)), e.tabIndex = t ? 0 : -1;
 			let n = this.panels.get(e);
 			n && (n.hidden = !t);
-		}), this.reflectValue(this.tabValue(r)), t && r.focus(), n && o !== e && this.dispatchEvent(new CustomEvent(a, {
+		}), this.reflectValue(this.tabValue(r)), t && r.focus(), n && a !== e && this.dispatchEvent(new CustomEvent(o, {
 			bubbles: !0,
 			composed: !0,
 			detail: {
@@ -139,8 +140,8 @@ var a = "sds-change", o = typeof HTMLElement > "u" ? class {} : HTMLElement, s =
 		this.activation === "manual" || s instanceof HTMLAnchorElement ? s.focus() : this.select(c, !0);
 	};
 };
-function c() {
-	n("sds-tabs", s);
+function l() {
+	i("sds-tabs", c);
 }
 //#endregion
-export { s as SdsTabsElement, c as registerSdsTabs };
+export { c as SdsTabsElement, l as registerSdsTabs };

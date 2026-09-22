@@ -82,6 +82,7 @@ test('popover enhancement preserves native activation semantics', async () => {
   const trigger = document.querySelector('sds-popover > button')
   const content = document.querySelector('sds-popover > section')
   assert.equal(trigger?.getAttribute('popovertarget'), content?.id)
+  assert.equal(trigger?.getAttribute('type'), 'button')
   assert.equal(content?.getAttribute('popover'), 'auto')
   assert.equal(trigger?.hasAttribute('aria-haspopup'), false)
 
@@ -181,6 +182,33 @@ test('tabs expose reflected configuration and selected value', async () => {
   assert.throws(() => {
     tabs.value = 'missing'
   }, /no enabled tab/)
+})
+
+test('enhanced controls default buttons without overriding explicit types', async () => {
+  document.body.innerHTML = `
+    <sds-dropdown>
+      <button>Actions</button>
+      <menu><li><button type="submit">Save</button></li></menu>
+    </sds-dropdown>
+    <sds-tabs>
+      <div aria-label="Sections">
+        <button>Overview</button>
+        <button type="submit">Submit</button>
+      </div>
+      <section>Overview</section>
+      <section>Submit</section>
+    </sds-tabs>
+  `
+  await browser.happyDOM.whenAsyncComplete()
+
+  assert.equal(
+    document.querySelector('sds-dropdown > button')?.getAttribute('type'),
+    'button',
+  )
+  const tabs = document.querySelectorAll('sds-tabs [role="tab"]')
+  assert.equal(tabs[0]?.getAttribute('type'), 'button')
+  assert.equal(tabs[1]?.getAttribute('type'), 'submit')
+  assert.equal(document.querySelector('sds-tabs')?.tone, 'danger')
 })
 
 test('floating element options reflect through host properties', () => {

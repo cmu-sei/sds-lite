@@ -10,7 +10,7 @@
     color: var(--sds-tone-text, var(--sds-color-neutral-text));
     background: var(
       --sds-tone-surface,
-      var(--sds-color-surface-default)
+      var(--sds-color-neutral-surface)
     );
     transition:
       color var(--sds-duration-normal) var(--sds-easing-standard),

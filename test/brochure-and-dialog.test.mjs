@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
+import { Window } from 'happy-dom'
+
 const applicationCss = await readFile(
   'src/css/components/application.css',
   'utf8',
@@ -57,4 +59,33 @@ test('modal and panel actions share one right-aligned layout', () => {
     dialogCss,
     /:where\(\s*\.sds-dialog-footer,\s*\.sds-panel\s*>\s*footer\s*\)[^}]*>\s*:is\(button,\s*\.sds-button\)/s,
   )
+})
+
+test('commands inside a dialog infer the nearest dialog target', async () => {
+  const browser = new Window({ url: 'https://example.test/' })
+  for (const name of [
+    'Element',
+    'HTMLDialogElement',
+    'HTMLElement',
+    'MouseEvent',
+    'document',
+  ]) {
+    Object.defineProperty(globalThis, name, {
+      configurable: true,
+      value: browser[name],
+    })
+  }
+
+  const { registerSdsDialog } = await import('../dist/package/dialog.js')
+  registerSdsDialog()
+  document.body.innerHTML = `
+    <dialog class="sds-dialog" open>
+      <button command="close" data-sds-return-value="saved">Done</button>
+    </dialog>
+  `
+
+  const dialog = document.querySelector('dialog')
+  document.querySelector('button')?.click()
+  assert.equal(dialog?.open, false)
+  assert.equal(dialog?.returnValue, 'saved')
 })

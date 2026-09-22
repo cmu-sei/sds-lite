@@ -168,6 +168,15 @@
         "data-sds-shape": ["icon"],
         "data-sds-avatar": [],
         "data-sds-block": []
+      },
+      "defaults": {
+        "data-sds-variant": "primary",
+        "data-sds-tone": "accent",
+        "data-sds-size": "md",
+        "data-sds-density": "comfortable",
+        "data-sds-shape": "text",
+        "data-sds-avatar": false,
+        "data-sds-block": false
       }
     },
     {
@@ -180,6 +189,11 @@
         "data-sds-variant": ["secondary", "tertiary", "inline", "cta"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
         "data-sds-size": ["xs", "sm", "md", "lg", "xl"]
+      },
+      "defaults": {
+        "data-sds-variant": "primary",
+        "data-sds-tone": "accent",
+        "data-sds-size": "inherited"
       }
     },
     {
@@ -190,6 +204,10 @@
       "options": {
         "data-sds-orientation": ["horizontal", "vertical"],
         "data-sds-tone": ["success", "danger"]
+      },
+      "defaults": {
+        "data-sds-orientation": "vertical",
+        "data-sds-tone": "neutral"
       }
     },
     {
@@ -207,6 +225,9 @@
       "description": "Explicit hooks for native form controls.",
       "options": {
         "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-size": "md"
       }
     },
     {
@@ -226,6 +247,10 @@
       "options": {
         "data-sds-size": ["sm", "md", "lg"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "defaults": {
+        "data-sds-size": "md",
+        "data-sds-tone": "accent"
       }
     },
     {
@@ -240,6 +265,9 @@
       "description": "Native file input and composed upload surface.",
       "options": {
         "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-size": "md"
       }
     },
     {
@@ -257,6 +285,10 @@
       "options": {
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
         "data-sds-variant": ["light", "light-border", "dark"]
+      },
+      "defaults": {
+        "data-sds-tone": "neutral",
+        "data-sds-variant": "solid"
       }
     },
     {
@@ -267,6 +299,10 @@
       "options": {
         "data-sds-size": ["sm", "md"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "defaults": {
+        "data-sds-size": "sm",
+        "data-sds-tone": "neutral"
       }
     },
     {
@@ -280,6 +316,13 @@
         "data-sds-size": ["xs", "sm", "md", "lg"],
         "data-sds-inset": [],
         "data-sds-callout-close": []
+      },
+      "defaults": {
+        "data-sds-tone": "neutral",
+        "data-sds-variant": "tinted",
+        "data-sds-size": "md",
+        "data-sds-inset": false,
+        "data-sds-callout-close": false
       }
     },
     {
@@ -290,6 +333,10 @@
       "options": {
         "data-sds-toast-open": [],
         "data-sds-toast-close": []
+      },
+      "defaults": {
+        "data-sds-toast-open": false,
+        "data-sds-toast-close": false
       }
     },
     {
@@ -300,6 +347,10 @@
       "options": {
         "data-sds-size": ["sm", "md", "lg", "xl"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "defaults": {
+        "data-sds-size": "md",
+        "data-sds-tone": "neutral"
       }
     },
     {
@@ -327,6 +378,13 @@
         "data-sds-variant": ["subtle", "solid", "outline"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
         "data-sds-density": ["condensed"]
+      },
+      "defaults": {
+        "data-sds-size": "md",
+        "data-sds-shape": "circle",
+        "data-sds-variant": "subtle",
+        "data-sds-tone": "neutral",
+        "data-sds-density": "comfortable"
       }
     },
     {
@@ -344,6 +402,10 @@
       "options": {
         "data-sds-size": ["sm", "md", "lg", "xl"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "defaults": {
+        "data-sds-size": "md",
+        "data-sds-tone": "neutral"
       }
     },
     {
@@ -353,6 +415,9 @@
       "description": "Structured content list.",
       "options": {
         "data-sds-divided": []
+      },
+      "defaults": {
+        "data-sds-divided": false
       }
     },
     {
@@ -362,6 +427,9 @@
       "description": "Vertical or horizontal event sequence.",
       "options": {
         "data-sds-orientation": ["horizontal", "vertical"]
+      },
+      "defaults": {
+        "data-sds-orientation": "vertical"
       }
     },
     {
@@ -374,6 +442,12 @@
         "data-sds-standalone": [],
         "data-sds-row-highlight": [],
         "data-sds-sticky": ["start", "end"]
+      },
+      "defaults": {
+        "data-sds-size": "md",
+        "data-sds-standalone": false,
+        "data-sds-row-highlight": false,
+        "data-sds-sticky": "none"
       }
     },
     {
@@ -387,6 +461,13 @@
         "data-sds-orientation": ["horizontal", "vertical"],
         "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
         "data-sds-place-items": ["start", "center", "end", "stretch"]
+      },
+      "defaults": {
+        "data-sds-columns": "automatic",
+        "data-sds-min-column-width": "md",
+        "data-sds-orientation": "horizontal",
+        "data-sds-gap": "lg",
+        "data-sds-place-items": "stretch"
       }
     },
     {
@@ -403,6 +484,30 @@
         "data-sds-stack-at": ["sm", "md", "lg", "xl"],
         "data-sds-grow": [],
         "data-sds-no-shrink": []
+      },
+      "defaults": {
+        "data-sds-orientation": "horizontal",
+        "data-sds-wrap": false,
+        "data-sds-align": "stretch",
+        "data-sds-justify": "start",
+        "data-sds-gap": "lg",
+        "data-sds-stack-at": "none",
+        "data-sds-grow": false,
+        "data-sds-no-shrink": false
+      }
+    },
+    {
+      "name": "stack",
+      "category": "Layout",
+      "classes": ["sds-stack"],
+      "description": "Intrinsic vertical layout for content with consistent spacing.",
+      "options": {
+        "data-sds-align": ["start", "center", "end", "stretch"],
+        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"]
+      },
+      "defaults": {
+        "data-sds-align": "stretch",
+        "data-sds-gap": "lg"
       }
     },
     {
@@ -428,6 +533,10 @@
       "options": {
         "data-sds-width": ["sm", "md", "lg", "xl", "2xl"],
         "data-sds-return-value": []
+      },
+      "defaults": {
+        "data-sds-width": "md",
+        "data-sds-return-value": "empty string"
       }
     },
     {
@@ -439,6 +548,10 @@
       "options": {
         "data-sds-side": ["left", "right", "bottom"],
         "data-sds-width": ["sm", "md", "lg", "xl"]
+      },
+      "defaults": {
+        "data-sds-side": "right",
+        "data-sds-width": "md"
       }
     },
     {
@@ -471,6 +584,9 @@
       "description": "Dropdown menu surface, separator, and label.",
       "options": {
         "data-sds-tone": ["danger"]
+      },
+      "defaults": {
+        "data-sds-tone": "neutral"
       }
     },
     {
@@ -488,6 +604,10 @@
       "options": {
         "data-sds-size": ["sm", "md", "lg"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "defaults": {
+        "data-sds-size": "md",
+        "data-sds-tone": "neutral"
       }
     },
     {
@@ -528,6 +648,9 @@
       "description": "SEI application, simple, and brochure shells.",
       "options": {
         "data-sds-variant": ["application", "simple", "brochure"]
+      },
+      "defaults": {
+        "data-sds-variant": "application"
       }
     }
   ],
@@ -542,11 +665,11 @@
         "One direct child menu or Popover surface."
       ],
       "attributes": [
-        {"name": "open", "type": "boolean", "description": "Whether the menu is open."},
-        {"name": "placement", "family": "placement"},
-        {"name": "offset", "type": "number", "description": "Nonnegative offset in CSS pixels."},
-        {"name": "width", "family": "width"},
-        {"name": "hide-caret", "type": "boolean", "description": "Hides the visual caret."}
+        {"name": "open", "type": "boolean", "default": "false", "description": "Whether the menu is open."},
+        {"name": "placement", "family": "placement", "default": "block-end-start"},
+        {"name": "offset", "type": "number", "default": "5", "description": "Nonnegative offset in CSS pixels."},
+        {"name": "width", "family": "width", "default": "md"},
+        {"name": "hide-caret", "type": "boolean", "default": "false", "description": "Hides the visual caret."}
       ],
       "members": [
         {"name": "open", "kind": "field", "type": "boolean", "description": "Reflects the open attribute."},
@@ -571,10 +694,10 @@
         "One direct child rich-content Popover surface."
       ],
       "attributes": [
-        {"name": "open", "type": "boolean", "description": "Whether the popover is open."},
-        {"name": "placement", "family": "placement"},
-        {"name": "offset", "type": "number", "description": "Nonnegative offset in CSS pixels."},
-        {"name": "width", "family": "width"}
+        {"name": "open", "type": "boolean", "default": "false", "description": "Whether the popover is open."},
+        {"name": "placement", "family": "placement", "default": "block-end-start"},
+        {"name": "offset", "type": "number", "default": "9", "description": "Nonnegative offset in CSS pixels."},
+        {"name": "width", "family": "width", "default": "md"}
       ],
       "members": [
         {"name": "open", "kind": "field", "type": "boolean", "description": "Reflects the open attribute."},
@@ -598,12 +721,12 @@
         "One direct child panel for every tab."
       ],
       "attributes": [
-        {"name": "value", "type": "string", "description": "Value of the selected tab."},
-        {"name": "activation", "values": ["automatic", "manual"], "description": "Whether focus automatically selects a tab."},
-        {"name": "orientation", "family": "orientation"},
-        {"name": "size", "values": ["md", "lg"], "description": "Visual scale."},
-        {"name": "tone", "family": "tone"},
-        {"name": "variant", "values": ["folder", "block", "underline"], "description": "Visual treatment."}
+        {"name": "value", "type": "string", "default": "first enabled tab", "description": "Value of the selected tab."},
+        {"name": "activation", "values": ["automatic", "manual"], "default": "automatic", "description": "Whether focus automatically selects a tab."},
+        {"name": "orientation", "family": "orientation", "default": "horizontal"},
+        {"name": "size", "values": ["md", "lg"], "default": "md", "description": "Visual scale."},
+        {"name": "tone", "family": "tone", "default": "danger"},
+        {"name": "variant", "values": ["folder", "block", "underline"], "default": "folder", "description": "Visual treatment."}
       ],
       "members": [
         {"name": "value", "kind": "field", "type": "string", "description": "Gets or selects the current tab by value."},
@@ -627,8 +750,8 @@
         "One direct child text description."
       ],
       "attributes": [
-        {"name": "placement", "family": "placement"},
-        {"name": "offset", "type": "number", "description": "Nonnegative offset in CSS pixels."}
+        {"name": "placement", "family": "placement", "default": "block-start"},
+        {"name": "offset", "type": "number", "default": "6", "description": "Nonnegative offset in CSS pixels."}
       ],
       "members": [
         {"name": "placement", "kind": "field", "type": "SdsPlacement", "description": "Reflects the placement attribute."},
@@ -646,10 +769,10 @@
         "A close control for persistent notifications."
       ],
       "attributes": [
-        {"name": "open", "type": "boolean", "description": "Whether the toast is visible."},
-        {"name": "tone", "family": "tone"},
-        {"name": "duration", "type": "number", "description": "Positive duration in milliseconds."},
-        {"name": "persistent", "type": "boolean", "description": "Disables automatic dismissal."}
+        {"name": "open", "type": "boolean", "default": "false", "description": "Whether the toast is visible."},
+        {"name": "tone", "family": "tone", "default": "accent"},
+        {"name": "duration", "type": "number", "default": "5000", "description": "Positive duration in milliseconds."},
+        {"name": "persistent", "type": "boolean", "default": "false", "description": "Disables automatic dismissal."}
       ],
       "members": [
         {"name": "open", "kind": "field", "type": "boolean", "description": "Reflects the open attribute."},

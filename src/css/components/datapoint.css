@@ -14,7 +14,7 @@
   :where(.sds-datapoint strong) {
     color: var(
       --sds-datapoint-color,
-      light-dark(var(--sds-black), var(--sds-white))
+      light-dark(var(--sds-gray-600), var(--sds-gray-300))
     );
     font-size: 1.875rem;
     font-weight: 700;

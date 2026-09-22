@@ -1,4 +1,87 @@
 @layer sds.components {
+  :where([data-sds-tone="neutral"]) {
+    --sds-button-tone-color: light-dark(
+      var(--sds-gray-800),
+      var(--sds-gray-300)
+    );
+    --sds-button-tone-color-hover: light-dark(
+      var(--sds-gray-800),
+      var(--sds-gray-200)
+    );
+    --sds-button-ghost-hover: light-dark(
+      var(--sds-gray-100),
+      color-mix(in srgb, var(--sds-gray-700) 40%, transparent)
+    );
+  }
+
+  :where([data-sds-tone="accent"]) {
+    --sds-button-tone-color: light-dark(
+      var(--sds-blue-600),
+      var(--sds-blue-300)
+    );
+    --sds-button-tone-color-hover: light-dark(
+      var(--sds-blue-600),
+      var(--sds-blue-200)
+    );
+  }
+
+  :where([data-sds-tone="info"]) {
+    --sds-button-tone-color: light-dark(
+      var(--sds-teal-600),
+      var(--sds-teal-300)
+    );
+    --sds-button-tone-color-hover: light-dark(
+      var(--sds-teal-600),
+      var(--sds-teal-200)
+    );
+  }
+
+  :where([data-sds-tone="success"]) {
+    --sds-button-tone-color: light-dark(
+      var(--sds-green-600),
+      var(--sds-green-300)
+    );
+    --sds-button-tone-color-hover: light-dark(
+      var(--sds-green-600),
+      var(--sds-green-200)
+    );
+  }
+
+  :where([data-sds-tone="warning"]) {
+    --sds-button-tone-color: light-dark(
+      var(--sds-orange-800),
+      var(--sds-orange-200)
+    );
+    --sds-button-tone-color-hover: light-dark(
+      var(--sds-orange-800),
+      var(--sds-orange-100)
+    );
+  }
+
+  :where([data-sds-tone="danger"]) {
+    --sds-button-tone-color: light-dark(
+      var(--sds-red-600),
+      var(--sds-red-300)
+    );
+    --sds-button-tone-color-hover: light-dark(
+      var(--sds-red-600),
+      var(--sds-red-200)
+    );
+  }
+
+  :where(
+    [data-sds-tone="accent"],
+    [data-sds-tone="info"],
+    [data-sds-tone="success"],
+    [data-sds-tone="warning"],
+    [data-sds-tone="danger"]
+  ) {
+    --sds-button-ghost-hover: light-dark(
+      var(--sds-gray-50),
+      color-mix(in srgb, var(--sds-gray-700) 40%, transparent)
+    );
+  }
+
   :where(.sds-button, [data-sds-root] button:not(.sds-tab)) {
     --sds-button-accent: var(
       --sds-tone-strong,
@@ -12,8 +95,35 @@
       --sds-tone-on-strong,
       var(--sds-color-action-text)
     );
+    --sds-button-rest-color: var(
+      --sds-button-tone-color,
+      light-dark(var(--sds-blue-600), var(--sds-blue-300))
+    );
+    --sds-button-hover-color: var(
+      --sds-button-tone-color-hover,
+      light-dark(var(--sds-blue-600), var(--sds-blue-200))
+    );
+    --sds-button-secondary-hover: light-dark(
+      var(--sds-gray-50),
+      var(--sds-gray-850)
+    );
+    --sds-button-secondary-active: light-dark(
+      var(--sds-gray-100),
+      var(--sds-gray-900)
+    );
+    --sds-button-ghost-hover-background: var(
+      --sds-button-ghost-hover,
+      light-dark(
+        var(--sds-gray-50),
+        color-mix(in srgb, var(--sds-gray-700) 40%, transparent)
+      )
+    );
+    --sds-button-ghost-active: light-dark(
+      var(--sds-gray-100),
+      color-mix(in srgb, var(--sds-gray-800) 40%, transparent)
+    );
     --sds-button-background: var(--sds-button-accent);
-    --sds-button-border: var(--sds-button-accent);
+    --sds-button-border: transparent;
     --sds-button-color: var(--sds-button-on-accent);
 
     display: inline-flex;
@@ -37,20 +147,9 @@
       box-shadow var(--sds-duration-fast) var(--sds-easing-standard);
 
     &[data-sds-density="compact"] {
-      --sds-button-accent: var(
-        --sds-tone-strong,
-        var(--sds-color-neutral-strong)
-      );
-      --sds-button-accent-hover: var(
-        --sds-tone-strong-hover,
-        var(--sds-color-neutral-strong-hover)
-      );
       --sds-button-background: transparent;
       --sds-button-border: transparent;
-      --sds-button-color: var(
-        --sds-tone-text,
-        var(--sds-color-neutral-text)
-      );
+      --sds-button-color: var(--sds-button-rest-color);
 
       justify-content: flex-start;
       padding: 0.375rem;
@@ -84,35 +183,26 @@
 
     &[data-sds-variant="secondary"] {
       --sds-button-background: var(--sds-color-surface-default);
-      --sds-button-border: var(--sds-color-border-strong);
-      --sds-button-color: var(
-        --sds-tone-text,
-        var(--sds-color-action-primary)
-      );
+      --sds-button-border: var(--sds-gray-500);
+      --sds-button-color: var(--sds-button-rest-color);
     }
 
     &:is([data-sds-density="compact"], [data-sds-shape="icon"])[data-sds-variant="primary"] {
       --sds-button-background: var(--sds-button-accent);
-      --sds-button-border: var(--sds-button-accent);
+      --sds-button-border: transparent;
       --sds-button-color: var(--sds-button-on-accent);
     }
 
     &[data-sds-variant="tertiary"] {
       --sds-button-background: transparent;
-      --sds-button-border: var(--sds-button-accent);
-      --sds-button-color: var(
-        --sds-tone-text,
-        var(--sds-color-action-primary)
-      );
+      --sds-button-border: var(--sds-button-rest-color);
+      --sds-button-color: var(--sds-button-rest-color);
     }
 
     &[data-sds-variant="ghost"] {
       --sds-button-background: transparent;
       --sds-button-border: transparent;
-      --sds-button-color: var(
-        --sds-tone-text,
-        var(--sds-color-action-primary)
-      );
+      --sds-button-color: var(--sds-button-rest-color);
     }
 
     &[data-sds-block] {
@@ -210,30 +300,76 @@
       font-size: 2rem;
     }
 
+    &:focus-visible {
+      outline: 2px solid
+        light-dark(var(--sds-blue-300), var(--sds-blue-700));
+      outline-offset: 2px;
+    }
+
     &:is(:disabled, [aria-disabled="true"], [aria-busy="true"]) {
+      --sds-button-color: var(--sds-gray-500);
+
       cursor: not-allowed;
       opacity: 0.5;
       pointer-events: none;
     }
 
+    &:is(:disabled, [aria-disabled="true"], [aria-busy="true"]):not(
+        [data-sds-density="compact"],
+        [data-sds-shape="icon"],
+        [data-sds-variant="secondary"],
+        [data-sds-variant="tertiary"],
+        [data-sds-variant="ghost"]
+      ),
+    &[data-sds-variant="primary"]:is(
+        :disabled,
+        [aria-disabled="true"],
+        [aria-busy="true"]
+      ) {
+      --sds-button-background: var(--sds-gray-500);
+      --sds-button-border: var(--sds-gray-500);
+      --sds-button-color: var(--sds-gray-100);
+    }
+
+    &:is(
+        [data-sds-variant="secondary"],
+        [data-sds-variant="tertiary"]
+      ):is(:disabled, [aria-disabled="true"], [aria-busy="true"]) {
+      --sds-button-border: var(--sds-gray-500);
+    }
+
     @media (hover: hover) {
       &:not(:disabled, [aria-disabled="true"]):hover {
         --sds-button-background: var(--sds-button-accent-hover);
+        --sds-button-border: transparent;
+      }
+
+      &[data-sds-variant="secondary"]:not(
+          :disabled,
+          [aria-disabled="true"]
+        ):hover {
+        --sds-button-background: var(--sds-button-secondary-hover);
+        --sds-button-border: var(--sds-gray-500);
+        --sds-button-color: var(--sds-button-hover-color);
+      }
+
+      &[data-sds-variant="tertiary"]:not(
+          :disabled,
+          [aria-disabled="true"]
+        ):hover {
         --sds-button-border: var(--sds-button-accent-hover);
-      }
-
-      &[data-sds-variant="secondary"]:not(:disabled):hover {
-        --sds-button-background: var(--sds-color-interactive-subtle-hover);
-        --sds-button-border: var(--sds-color-border-strong);
-      }
-
-      &[data-sds-variant="tertiary"]:not(:disabled):hover {
         --sds-button-color: var(--sds-button-on-accent);
       }
 
-      &[data-sds-variant="ghost"]:not(:disabled):hover {
-        --sds-button-background: var(--sds-color-interactive-subtle-hover);
+      &[data-sds-variant="ghost"]:not(
+          :disabled,
+          [aria-disabled="true"]
+        ):hover {
+        --sds-button-background: var(
+          --sds-button-ghost-hover-background
+        );
         --sds-button-border: transparent;
+        --sds-button-color: var(--sds-button-hover-color);
       }
 
       &:is([data-sds-density="compact"], [data-sds-shape="icon"]):not(
@@ -253,10 +389,46 @@
       box-shadow: inset 0 2px 4px rgb(0 0 0 / 18%);
     }
 
-    &:is([data-sds-variant="secondary"], [data-sds-variant="ghost"]):not(
-        :disabled
+    &:not(
+        [data-sds-density="compact"],
+        [data-sds-shape="icon"],
+        [data-sds-variant="secondary"],
+        [data-sds-variant="tertiary"],
+        [data-sds-variant="ghost"]
+      ):not(:disabled, [aria-disabled="true"]):active,
+    &[data-sds-variant="primary"]:not(
+        :disabled,
+        [aria-disabled="true"]
       ):active {
-      --sds-button-background: var(--sds-color-interactive-subtle-active);
+      --sds-button-background: var(--sds-button-accent);
+      --sds-button-border: transparent;
+    }
+
+    &[data-sds-variant="secondary"]:not(
+        :disabled,
+        [aria-disabled="true"]
+      ):active {
+      --sds-button-background: var(--sds-button-secondary-active);
+      --sds-button-border: var(--sds-gray-500);
+      --sds-button-color: var(--sds-button-rest-color);
+    }
+
+    &[data-sds-variant="tertiary"]:not(
+        :disabled,
+        [aria-disabled="true"]
+      ):active {
+      --sds-button-background: var(--sds-button-accent);
+      --sds-button-border: var(--sds-button-accent);
+      --sds-button-color: var(--sds-button-on-accent);
+    }
+
+    &[data-sds-variant="ghost"]:not(
+        :disabled,
+        [aria-disabled="true"]
+      ):active {
+      --sds-button-background: var(--sds-button-ghost-active);
+      --sds-button-border: transparent;
+      --sds-button-color: var(--sds-button-hover-color);
     }
   }
 }

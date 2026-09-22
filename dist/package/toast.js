@@ -1,4 +1,4 @@
-import { a as e, c as t, n, o as r, s as i } from "./internals-BLPvKvsH.js";
+import { c as e, l as t, o as n, r, s as i } from "./internals-CEyyQZKd.js";
 //#region src/elements/toast.ts
 var a = 5e3, o = 250, s = typeof HTMLElement > "u" ? class {} : HTMLElement, c = class extends s {
 	static observedAttributes = [
@@ -11,27 +11,27 @@ var a = 5e3, o = 250, s = typeof HTMLElement > "u" ? class {} : HTMLElement, c =
 		return this.hasAttribute("open");
 	}
 	set open(e) {
-		r(this, "open", e);
+		i(this, "open", e);
 	}
 	get tone() {
-		return this.getAttribute("tone") ?? "info";
+		return this.getAttribute("tone") ?? "accent";
 	}
 	set tone(e) {
 		t(this, "tone", e);
 	}
 	get duration() {
-		let t = e(this, "duration", a);
-		return t > 0 ? t : a;
+		let e = n(this, "duration", a);
+		return e > 0 ? e : a;
 	}
-	set duration(e) {
-		if (!Number.isFinite(e) || e <= 0) throw RangeError("duration must be a positive finite number.");
-		i(this, "duration", e);
+	set duration(t) {
+		if (!Number.isFinite(t) || t <= 0) throw RangeError("duration must be a positive finite number.");
+		e(this, "duration", t);
 	}
 	get persistent() {
 		return this.hasAttribute("persistent");
 	}
 	set persistent(e) {
-		r(this, "persistent", e);
+		i(this, "persistent", e);
 	}
 	connectedCallback() {
 		window.getComputedStyle(this).display, this.setAttribute("sds-ready", ""), this.hasAttribute("role") || this.setAttribute("role", "status"), this.hasAttribute("aria-atomic") || this.setAttribute("aria-atomic", "true"), this.addEventListener("click", this.handleClick), this.addEventListener("focusin", this.pauseAutoHide), this.addEventListener("focusout", this.handleFocusOut), this.addEventListener("pointerenter", this.pauseAutoHide), this.addEventListener("pointerleave", this.resumeAutoHide), this.open && this.scheduleAutoHide();
@@ -86,7 +86,7 @@ function u() {
 	}));
 }
 function d() {
-	n("sds-toast", c), u();
+	r("sds-toast", c), u();
 }
 function f(e, t = {}) {
 	if (typeof document > "u") throw Error("notify() can only be called in a browser.");
@@ -100,7 +100,7 @@ function f(e, t = {}) {
 	}
 	r.localName === "div" && !r.hasAttribute("role") && r.setAttribute("role", "region"), !r.hasAttribute("aria-label") && !r.hasAttribute("aria-labelledby") && r.setAttribute("aria-label", "Notifications");
 	let i = document.createElement("sds-toast");
-	i.tone = t.tone ?? "info", i.setAttribute("role", t.urgent ? "alert" : "status"), i.setAttribute("aria-atomic", "true"), t.duration !== void 0 && (i.duration = t.duration), i.persistent = t.persistent ?? !1;
+	i.tone = t.tone ?? "accent", i.setAttribute("role", t.urgent ? "alert" : "status"), i.setAttribute("aria-atomic", "true"), t.duration !== void 0 && (i.duration = t.duration), i.persistent = t.persistent ?? !1;
 	let a = document.createElement("strong");
 	a.textContent = t.title ?? "Notification";
 	let s = document.createElement("span");

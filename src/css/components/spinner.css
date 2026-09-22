@@ -6,7 +6,7 @@
     border: 0.1875rem solid currentColor;
     border-inline-end-color: transparent;
     border-radius: var(--sds-radius-full);
-    color: var(--sds-tone-text, currentColor);
+    color: var(--sds-tone-text, var(--sds-color-neutral-text));
     vertical-align: -0.2em;
     animation: sds-spin 700ms linear infinite;
   }

@@ -1,5 +1,5 @@
 import { FloatingHoverController as e, FloatingPositioner as t } from "./floating.js";
-import { a as n, c as r, i, n as a, r as o, s, t as c } from "./internals-BLPvKvsH.js";
+import { a as n, c as r, i, l as a, o, r as s, t as c } from "./internals-CEyyQZKd.js";
 //#region src/elements/tooltip.ts
 var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 	static observedAttributes = ["placement", "offset"];
@@ -11,26 +11,26 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 		return this.getAttribute("placement") ?? "block-start";
 	}
 	set placement(e) {
-		r(this, "placement", e);
+		a(this, "placement", e);
 	}
 	get offset() {
-		return n(this, "offset", 6);
+		return o(this, "offset", 6);
 	}
 	set offset(e) {
-		s(this, "offset", e);
+		r(this, "offset", e);
 	}
 	connectedCallback() {
 		this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
-		let n = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), r = o(this), a = r.find((e) => e.matches("[role=\"tooltip\"], .sds-tooltip-content, [popover]")) ?? (r.length === 2 ? r[1] : null) ?? null, s = r.find((e) => e !== a) ?? null;
-		if (!s || !a) {
+		let r = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), a = i(this), o = a.find((e) => e.matches("[role=\"tooltip\"], .sds-tooltip-content, [popover]")) ?? (a.length === 2 ? a[1] : null) ?? null, s = a.find((e) => e !== o) ?? null;
+		if (!s || !o) {
 			console.warn("<sds-tooltip> requires one direct child trigger and one direct child text element.");
 			return;
 		}
-		let c = i(a, "sds-tooltip"), l = new Set((s.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean));
-		l.add(c), a.classList.add("sds-tooltip-content"), a.setAttribute("role", "tooltip"), a.setAttribute("popover", "manual"), s.setAttribute("aria-describedby", [...l].join(" ")), this.content = a, this.positioner = new t(s, a, () => this.placement, () => this.getAttribute("offset") ?? void 0, 6), this.hoverController = new e(s, a, this.positioner, {
+		let c = n(o, "sds-tooltip"), l = new Set((s.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean));
+		l.add(c), o.classList.add("sds-tooltip-content"), o.setAttribute("role", "tooltip"), o.setAttribute("popover", "manual"), s.setAttribute("aria-describedby", [...l].join(" ")), this.content = o, this.positioner = new t(s, o, () => this.placement, () => this.getAttribute("offset") ?? void 0, 6), this.hoverController = new e(s, o, this.positioner, {
 			closeDelay: 0,
 			hoverOpenDelay: 0
-		}), this.hoverController.observe(n), this.positioner.observe(n);
+		}), this.hoverController.observe(r), this.positioner.observe(r);
 	}
 	disconnectedCallback() {
 		this.connection.disconnect(), this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
@@ -40,7 +40,7 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 	}
 };
 function d() {
-	a("sds-tooltip", u);
+	s("sds-tooltip", u);
 }
 //#endregion
 export { u as SdsTooltipElement, d as registerSdsTooltip };

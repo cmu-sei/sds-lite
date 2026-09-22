@@ -42,7 +42,6 @@ Save this as `index.html` and open it through any web server:
   </head>
   <body
     data-sds-root
-    data-sds-theme="forge"
     data-sds-color-scheme="system"
   >
     <main class="sds-page">

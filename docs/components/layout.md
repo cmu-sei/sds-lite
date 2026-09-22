@@ -133,6 +133,23 @@ markup works in a full page, sidebar, dialog, or embedded region. It does not
 depend on the viewport. Explicit vertical orientation remains vertical at
 every width.
 
+## Stack
+
+Use `.sds-stack` for intrinsic vertical content instead of configuring a grid
+or flex layout:
+
+```html
+<article class="sds-card sds-stack" data-sds-gap="xl">
+  <h2>Project details</h2>
+  <p>Review the project before continuing.</p>
+  <div class="sds-action-group">...</div>
+</article>
+```
+
+`data-sds-gap` accepts the shared gap scale and defaults to `lg`.
+`data-sds-align` accepts `start`, `center`, `end`, or `stretch`, and defaults
+to `stretch`.
+
 ## Spacing utilities
 
 Add tokenized margin or padding to any element without writing CSS:
@@ -269,7 +286,7 @@ import '@cmu-sei/sds-lite/brand.css'
 ### Application shell
 
 ```html
-<div class="sds-app" data-sds-variant="application">
+<div class="sds-app">
   <header class="sds-app-mobile-header">
     <button
       type="button"

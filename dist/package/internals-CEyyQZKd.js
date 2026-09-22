@@ -11,23 +11,26 @@ function t(t, n) {
 function n(e) {
 	return Array.from(e.children).filter((e) => e instanceof HTMLElement);
 }
-function r(e, t, n) {
-	e.toggleAttribute(t, n);
+function r(e) {
+	e.hasAttribute("type") || (e.type = "button");
 }
 function i(e, t, n) {
-	e.setAttribute(t, n);
+	e.toggleAttribute(t, n);
 }
 function a(e, t, n) {
+	e.setAttribute(t, n);
+}
+function o(e, t, n) {
 	let r = e.getAttribute(t);
 	if (r === null || r.trim() === "") return n;
 	let i = Number(r);
 	return Number.isFinite(i) && i >= 0 ? i : n;
 }
-function o(e, t, n) {
+function s(e, t, n) {
 	if (!Number.isFinite(n) || n < 0) throw RangeError(`${t} must be a nonnegative finite number.`);
 	e.setAttribute(t, String(n));
 }
-var s = class {
+var c = class {
 	controller = null;
 	observer = null;
 	connect(e, t, n) {
@@ -37,11 +40,11 @@ var s = class {
 		this.controller?.abort(), this.observer?.disconnect(), this.controller = null, this.observer = null;
 	}
 };
-function c(e, t) {
+function l(e, t) {
 	if (typeof customElements > "u") return;
 	let n = customElements.get(e);
 	if (n && n !== t) throw Error(`Cannot register ${e}: another constructor already uses that name.`);
 	n || customElements.define(e, t);
 }
 //#endregion
-export { a, i as c, t as i, c as n, r as o, n as r, o as s, s as t };
+export { t as a, s as c, n as i, a as l, r as n, o, l as r, i as s, c as t };
