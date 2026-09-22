@@ -102,6 +102,100 @@ for (const selector of [
   })
 }
 
+for (const [selector, axis, direction] of [
+  ['#panel-left-sm', 'x', -1],
+  ['#panel-right-md', 'x', 1],
+  ['#panel-bottom', 'y', 1],
+]) {
+  test(`${selector} can be dragged closed from its pill handle`, async ({
+    page,
+  }) => {
+    const panel = page.locator(selector)
+    await panel.evaluate((element) => element.showModal())
+
+    const handle = panel.locator(':scope > ._sds-panel-handle')
+    await expect(handle).toHaveAttribute('aria-hidden', 'true')
+    await page.waitForTimeout(200)
+    const handleBox = await handle.boundingBox()
+    const panelBox = await panel.boundingBox()
+    expect(handleBox).not.toBeNull()
+    expect(panelBox).not.toBeNull()
+
+    const startX = handleBox.x + handleBox.width / 2
+    const startY = handleBox.y + handleBox.height / 2
+    const travel =
+      (axis === 'x' ? panelBox.width : panelBox.height) * 0.6 * direction
+
+    await page.mouse.move(startX, startY)
+    await page.mouse.down()
+    await page.mouse.move(
+      startX + (axis === 'x' ? travel : 0),
+      startY + (axis === 'y' ? travel : 0),
+      { steps: 5 },
+    )
+    await page.mouse.up()
+
+    await expect(panel).not.toBeVisible()
+    await expect(panel).not.toHaveAttribute('open')
+  })
+}
+
+test('preventing a dragged panel cancel returns it to the open position', async ({
+  page,
+}) => {
+  const panel = page.locator('#panel-bottom')
+  await panel.evaluate((element) => {
+    element.addEventListener('cancel', (event) => event.preventDefault(), {
+      once: true,
+    })
+    element.showModal()
+  })
+  await page.waitForTimeout(200)
+
+  const handleBox = await panel
+    .locator(':scope > ._sds-panel-handle')
+    .boundingBox()
+  const panelBox = await panel.boundingBox()
+  expect(handleBox).not.toBeNull()
+  expect(panelBox).not.toBeNull()
+
+  const startX = handleBox.x + handleBox.width / 2
+  const startY = handleBox.y + handleBox.height / 2
+  await page.mouse.move(startX, startY)
+  await page.mouse.down()
+  await page.mouse.move(startX, startY + panelBox.height * 0.6, { steps: 5 })
+  await page.mouse.up()
+
+  await expect(panel).toHaveAttribute('open')
+  await expect
+    .poll(() => panel.evaluate((element) => element.style.transform))
+    .toBe('')
+})
+
+test('a short deliberate panel drag settles back open', async ({ page }) => {
+  const panel = page.locator('#panel-bottom')
+  await panel.evaluate((element) => element.showModal())
+  await page.waitForTimeout(200)
+
+  const handleBox = await panel
+    .locator(':scope > ._sds-panel-handle')
+    .boundingBox()
+  expect(handleBox).not.toBeNull()
+
+  const startX = handleBox.x + handleBox.width / 2
+  const startY = handleBox.y + handleBox.height / 2
+  await page.mouse.move(startX, startY)
+  await page.mouse.down()
+  await page.mouse.move(startX, startY + 24, { steps: 3 })
+  await page.waitForTimeout(100)
+  await page.mouse.up()
+  await expect(panel).toHaveAttribute('open')
+  await expect(panel).toHaveAttribute('open')
+  await expect
+    .poll(() => panel.evaluate((element) => element.style.transform))
+    .toBe('')
+})
+
 test('popover opens after hover delay, stays open over content, and closes after leaving', async ({
   page,
 }) => {

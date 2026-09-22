@@ -1,6 +1,6 @@
 //#region src/elements/dialog.ts
-var e = !1;
-function t(e) {
+var e = !1, t = 6, n = 180, r = null, i = /* @__PURE__ */ new WeakMap();
+function a(e) {
 	let t = e.getAttribute("commandfor");
 	if (t) {
 		let e = document.getElementById(t);
@@ -8,72 +8,210 @@ function t(e) {
 	}
 	return e.closest("dialog.sds-dialog, dialog.sds-panel");
 }
-function n(e, t) {
+function o(e, t) {
 	e.open || (t ? e.showModal() : e.show());
 }
-function r(e) {
+function s(e) {
+	let t = e.dataset.sdsSide;
+	return t === "bottom" || t === "left" ? t : "right";
+}
+function c(e, t) {
+	return t === "bottom" ? e.clientY : t === "left" ? -e.clientX : e.clientX;
+}
+function l(e, t) {
+	return t === "bottom" ? e.clientX : e.clientY;
+}
+function u(e, t) {
+	let n = e.getBoundingClientRect();
+	return t === "bottom" ? n.height : n.width;
+}
+function d(e, t) {
+	return e === "bottom" ? `translate3d(0, ${t}px, 0)` : `translate3d(${e === "left" ? -t : t}px, 0, 0)`;
+}
+function f(e) {
+	let t = i.get(e);
+	if (!t) return;
+	let n = Array.from(e.children).find((e) => e.classList.contains("_sds-panel-handle"));
+	n instanceof HTMLElement && (n.style.cursor = t.handleCursor), e.style.transform = t.transform, e.style.transitionDuration = t.transitionDuration, e.style.transitionTimingFunction = t.transitionTimingFunction, e.style.setProperty("--sds-panel-backdrop-opacity", t.backdropOpacity), i.delete(e);
+}
+function p(e) {
+	e.frame = null;
+	let t = u(e.panel, e.side), n = Math.min(e.distance, t), r = t > 0 ? n / t : 0;
+	e.panel.style.transform = d(e.side, n), e.panel.style.setProperty("--sds-panel-backdrop-opacity", String(1 - r));
+}
+function m(e, t) {
+	let { panel: n } = e, r = n.ownerDocument.defaultView;
+	if (!r) {
+		f(n);
+		return;
+	}
+	n.style.transitionDuration = "var(--sds-duration-normal)", n.style.transitionTimingFunction = t === "close" ? "var(--sds-easing-exit)" : "var(--sds-easing-enter)";
+	let i = () => {
+		r.clearTimeout(o), n.removeEventListener("transitionend", a), t === "close" && n.open && n.close(), f(n);
+	}, a = (e) => {
+		e.target === n && e.propertyName === "transform" && i();
+	}, o = r.setTimeout(i, 250);
+	if (n.addEventListener("transitionend", a), t === "close") {
+		let t = u(n, e.side);
+		n.style.transform = d(e.side, t), n.style.setProperty("--sds-panel-backdrop-opacity", "0");
+	} else n.style.transform = d(e.side, 0), n.style.setProperty("--sds-panel-backdrop-opacity", "1");
+}
+function h(e) {
+	e.handle.hasPointerCapture(e.pointerId) && e.handle.releasePointerCapture(e.pointerId);
+}
+function ee(e) {
+	if (!e.isPrimary || e.button !== 0 || !(e.target instanceof Element)) return;
+	let t = e.target.closest("._sds-panel-handle"), n = t?.closest("dialog.sds-panel[open]");
+	if (!t || !n || t.parentElement !== n || i.has(n)) return;
+	let a = s(n);
+	i.set(n, {
+		backdropOpacity: n.style.getPropertyValue("--sds-panel-backdrop-opacity"),
+		handleCursor: t.style.cursor,
+		transform: n.style.transform,
+		transitionDuration: n.style.transitionDuration,
+		transitionTimingFunction: n.style.transitionTimingFunction
+	}), r = {
+		distance: 0,
+		dragging: !1,
+		frame: null,
+		handle: t,
+		lastDistance: 0,
+		lastTime: e.timeStamp,
+		panel: n,
+		pointerId: e.pointerId,
+		side: a,
+		startCrossCoordinate: l(e, a),
+		startCoordinate: c(e, a),
+		velocity: 0
+	}, t.setPointerCapture(e.pointerId);
+}
+function te(e) {
+	let n = r;
+	if (!n || e.pointerId !== n.pointerId) return;
+	let i = Math.max(0, c(e, n.side) - n.startCoordinate), a = Math.abs(l(e, n.side) - n.startCrossCoordinate);
+	if (!n.dragging) {
+		if (i < t || i < a * 1.15) return;
+		n.dragging = !0, n.panel.style.transitionDuration = "0s", n.handle.style.cursor = "grabbing";
+	}
+	e.preventDefault();
+	let o = e.timeStamp - n.lastTime;
+	if (o > 0) {
+		let e = (i - n.lastDistance) / o;
+		n.velocity = n.velocity * .7 + e * .3;
+	}
+	n.distance = i, n.lastDistance = i, n.lastTime = e.timeStamp, n.frame === null && (n.frame = n.panel.ownerDocument.defaultView?.requestAnimationFrame(() => p(n)) ?? null);
+}
+function g(e, t) {
+	let i = r;
+	if (!i || e.pointerId !== i.pointerId) return;
+	if (r = null, h(i), !i.dragging) {
+		f(i.panel);
+		return;
+	}
+	let a = i.panel.ownerDocument.defaultView;
+	i.frame !== null && a && (a.cancelAnimationFrame(i.frame), p(i));
+	let o = u(i.panel, i.side), s = e.timeStamp - i.lastTime > 80 ? 0 : Math.max(0, i.velocity), c = i.distance + s * n;
+	if (!(!t && i.distance > 0 && c >= o * .45)) {
+		m(i, "open");
+		return;
+	}
+	let l = i.panel.ownerDocument.defaultView?.Event;
+	m(i, l && i.panel.dispatchEvent(new l("cancel", { cancelable: !0 })) ? "close" : "open");
+}
+function _(e) {
+	if (Array.from(e.children).find((e) => e.classList.contains("_sds-panel-handle"))) return;
+	let t = e.ownerDocument.createElement("div");
+	t.className = "_sds-panel-handle", t.setAttribute("aria-hidden", "true"), e.prepend(t);
+}
+function v(e) {
+	e instanceof HTMLDialogElement && e.matches(".sds-panel") && _(e);
+	for (let t of e.querySelectorAll("dialog.sds-panel")) _(t);
+}
+function y(e) {
 	if (!(e.target instanceof Element)) return;
-	let r = e.target.closest("[commandfor], dialog.sds-dialog [command], dialog.sds-panel [command]");
-	if (r) {
-		let i = t(r);
-		if (!i) return;
-		let a = r.getAttribute("command");
-		if ((a === "show-modal" || a === "close" || a === "request-close") && e.preventDefault(), a === "show-modal") n(i, !0);
-		else if (a === "close") i.close(r.getAttribute("data-sds-return-value") ?? "");
-		else if (a === "request-close") {
-			let e = Reflect.get(i, "requestClose");
-			if (typeof e == "function") e.call(i, r.getAttribute("data-sds-return-value") ?? "");
+	let t = e.target.closest("[commandfor], dialog.sds-dialog [command], dialog.sds-panel [command]");
+	if (t) {
+		let n = a(t);
+		if (!n) return;
+		let r = t.getAttribute("command");
+		if ((r === "show-modal" || r === "close" || r === "request-close") && e.preventDefault(), r === "show-modal") o(n, !0);
+		else if (r === "close") n.close(t.getAttribute("data-sds-return-value") ?? "");
+		else if (r === "request-close") {
+			let e = Reflect.get(n, "requestClose");
+			if (typeof e == "function") e.call(n, t.getAttribute("data-sds-return-value") ?? "");
 			else {
 				let e = new Event("cancel", { cancelable: !0 });
-				i.dispatchEvent(e) && i.close(r.getAttribute("data-sds-return-value") ?? "");
+				n.dispatchEvent(e) && n.close(t.getAttribute("data-sds-return-value") ?? "");
 			}
 		}
 		return;
 	}
-	let i = e.target.closest("dialog.sds-dialog[open], dialog.sds-panel[open]");
-	if (!i || e.target !== i) return;
-	let a = i.getBoundingClientRect();
-	(e.clientX < a.left || e.clientX > a.right || e.clientY < a.top || e.clientY > a.bottom) && i.getAttribute("closedby") === "any" && i.close();
+	let n = e.target.closest("dialog.sds-dialog[open], dialog.sds-panel[open]");
+	if (!n || e.target !== n) return;
+	let r = n.getBoundingClientRect();
+	(e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) && n.getAttribute("closedby") === "any" && n.close();
 }
-function i() {
-	e || typeof document > "u" || (e = !0, document.addEventListener("click", r));
+function ne() {
+	if (e || typeof document > "u") return;
+	e = !0, document.addEventListener("click", y), document.addEventListener("pointerdown", ee), document.addEventListener("pointermove", te), document.addEventListener("pointerup", (e) => g(e, !1)), document.addEventListener("pointercancel", (e) => g(e, !0)), document.addEventListener("lostpointercapture", (e) => g(e, !0)), document.addEventListener("close", (e) => {
+		if (e.target instanceof HTMLDialogElement && e.target.matches(".sds-panel")) {
+			if (r?.panel === e.target) {
+				h(r);
+				let t = e.target.ownerDocument.defaultView;
+				r.frame !== null && t && t.cancelAnimationFrame(r.frame), r = null;
+			}
+			f(e.target);
+		}
+	}, !0), v(document);
+	let t = document.defaultView?.MutationObserver;
+	t && new t((e) => {
+		for (let t of e) {
+			t.type === "attributes" && t.target instanceof HTMLDialogElement && t.target.matches(".sds-panel") && _(t.target);
+			for (let e of t.addedNodes) e instanceof Element && v(e);
+		}
+	}).observe(document.documentElement, {
+		attributeFilter: ["class"],
+		attributes: !0,
+		childList: !0,
+		subtree: !0
+	});
 }
 //#endregion
 //#region src/elements/floating.ts
-var a = [
+var b = [
 	"top",
 	"right",
 	"bottom",
 	"left"
-], o = {
+], x = {
 	top: "bottom",
 	right: "left",
 	bottom: "top",
 	left: "right"
 };
-function s(e, t, n) {
+function re(e, t, n) {
 	let r = [
 		"block-start",
 		"block-end",
 		"inline-start",
 		"inline-end"
-	].find((t) => e === t || e.startsWith(`${t}-`)), i = r ? e.slice(r.length + 1) : "", a = i === "start" || i === "end" ? i : "center", o = n.startsWith("vertical"), s = n === "vertical-rl", c = t === "rtl", u, d = a;
-	return r ? (o ? (u = r === "block-start" ? s ? "right" : "left" : r === "block-end" ? s ? "left" : "right" : r === "inline-start" ? c ? "bottom" : "top" : c ? "top" : "bottom", a !== "center" && (u === "top" || u === "bottom" ? s : c) && (d = a === "start" ? "end" : "start")) : (u = r === "block-start" ? "top" : r === "block-end" ? "bottom" : r === "inline-start" ? t === "rtl" ? "right" : "left" : t === "rtl" ? "left" : "right", (u === "top" || u === "bottom") && t === "rtl" && a !== "center" && (d = a === "start" ? "end" : "start")), l(u, d)) : "bottom-start";
+	].find((t) => e === t || e.startsWith(`${t}-`)), i = r ? e.slice(r.length + 1) : "", a = i === "start" || i === "end" ? i : "center", o = n.startsWith("vertical"), s = n === "vertical-rl", c = t === "rtl", l, u = a;
+	return r ? (o ? (l = r === "block-start" ? s ? "right" : "left" : r === "block-end" ? s ? "left" : "right" : r === "inline-start" ? c ? "bottom" : "top" : c ? "top" : "bottom", a !== "center" && (l === "top" || l === "bottom" ? s : c) && (u = a === "start" ? "end" : "start")) : (l = r === "block-start" ? "top" : r === "block-end" ? "bottom" : r === "inline-start" ? t === "rtl" ? "right" : "left" : t === "rtl" ? "left" : "right", (l === "top" || l === "bottom") && t === "rtl" && a !== "center" && (u = a === "start" ? "end" : "start")), C(l, u)) : "bottom-start";
 }
-function c(e, t) {
+function S(e, t) {
 	let [n, r] = e.split("-");
 	return {
-		side: a.includes(n) ? n : c(t, "bottom-start").side,
+		side: b.includes(n) ? n : S(t, "bottom-start").side,
 		alignment: r === "start" || r === "end" ? r : "center"
 	};
 }
-function l(e, t) {
+function C(e, t) {
 	return t === "center" ? e : `${e}-${t}`;
 }
-function u(e, t, n) {
+function w(e, t, n) {
 	return Math.max(0, -e) + Math.max(0, e + t - n);
 }
-function d(e, t, n, r, i) {
+function T(e, t, n, r, i) {
 	let a = {
 		start: e.left,
 		center: e.left + (e.width - t.width) / 2,
@@ -97,33 +235,33 @@ function d(e, t, n, r, i) {
 		left: e.right + i
 	};
 }
-function f(e, t, n, r) {
-	return r === "top" || r === "bottom" ? u(e.top, t.height, n.height) : u(e.left, t.width, n.width);
+function E(e, t, n, r) {
+	return r === "top" || r === "bottom" ? w(e.top, t.height, n.height) : w(e.left, t.width, n.width);
 }
-function p(e, t, n, r) {
-	return r === "top" || r === "bottom" ? u(e.left, t.width, n.width) : u(e.top, t.height, n.height);
+function D(e, t, n, r) {
+	return r === "top" || r === "bottom" ? w(e.left, t.width, n.width) : w(e.top, t.height, n.height);
 }
-function m(e, t) {
+function O(e, t) {
 	return e.reduce((e, n) => t(n) < t(e) ? n : e);
 }
-function h({ anchor: e, surface: t, viewport: n, preferredPlacement: r, previousPlacement: i, offset: a }) {
-	let s = c(r, "bottom-start"), u = i ? c(i, "bottom-start") : null, h = u?.side ?? s.side, g = [h, o[h]], _ = (r) => f(d(e, t, r, s.alignment, a), t, n, r), v = u && _(h) === 0 ? h : m(g, _), y = u?.alignment ?? s.alignment, b = y === "center" ? [
+function ie({ anchor: e, surface: t, viewport: n, preferredPlacement: r, previousPlacement: i, offset: a }) {
+	let o = S(r, "bottom-start"), s = i ? S(i, "bottom-start") : null, c = s?.side ?? o.side, l = [c, x[c]], u = (r) => E(T(e, t, r, o.alignment, a), t, n, r), d = s && u(c) === 0 ? c : O(l, u), f = s?.alignment ?? o.alignment, p = f === "center" ? [
 		"center",
 		"start",
 		"end"
-	] : [y, y === "start" ? "end" : "start"], x = (r) => p(d(e, t, v, r, a), t, n, v), S = u && x(y) === 0 ? y : m(b, x);
+	] : [f, f === "start" ? "end" : "start"], m = (r) => D(T(e, t, d, r, a), t, n, d), h = s && m(f) === 0 ? f : O(p, m);
 	return {
-		...d(e, t, v, S, a),
-		side: v,
-		placement: l(v, S)
+		...T(e, t, d, h, a),
+		side: d,
+		placement: C(d, h)
 	};
 }
-function g(e, t) {
+function k(e, t) {
 	if (e === void 0 || e.trim() === "") return t;
 	let n = Number(e);
 	return Number.isFinite(n) && n >= 0 ? n : t;
 }
-var _ = class {
+var A = class {
 	previousPlacement = null;
 	preferredPlacement = "";
 	anchor;
@@ -144,9 +282,9 @@ var _ = class {
 		this.previousPlacement = null, this.preferredPlacement = "";
 	}
 	position = () => {
-		let e = getComputedStyle(this.anchor), t = s(this.getPlacement(), e.direction, e.writingMode);
+		let e = getComputedStyle(this.anchor), t = re(this.getPlacement(), e.direction, e.writingMode);
 		t !== this.preferredPlacement && (this.previousPlacement = null, this.preferredPlacement = t);
-		let n = this.anchor.getBoundingClientRect(), r = h({
+		let n = this.anchor.getBoundingClientRect(), r = ie({
 			anchor: n,
 			surface: {
 				width: this.surface.offsetWidth,
@@ -158,13 +296,13 @@ var _ = class {
 			},
 			preferredPlacement: t,
 			previousPlacement: this.previousPlacement,
-			offset: g(this.getOffset(), this.defaultOffset)
+			offset: k(this.getOffset(), this.defaultOffset)
 		});
 		this.previousPlacement = r.placement, this.surface.style.left = `${r.left}px`, this.surface.style.top = `${r.top}px`, this.surface.setAttribute("data-sds-side", r.side);
 		let i = Math.min(Math.max(n.left + n.width / 2 - r.left, 12), Math.max(12, this.surface.offsetWidth - 12)), a = Math.min(Math.max(n.top + n.height / 2 - r.top, 12), Math.max(12, this.surface.offsetHeight - 12));
 		this.surface.style.setProperty("--sds-floating-arrow-x", `${i}px`), this.surface.style.setProperty("--sds-floating-arrow-y", `${a}px`);
 	};
-}, v = class {
+}, j = class {
 	anchor;
 	surface;
 	positioner;
@@ -229,38 +367,38 @@ var _ = class {
 	handleKeydown = (e) => {
 		e.key === "Escape" && this.isOpen() && (e.preventDefault(), this.clearTimers(), this.surface.hidePopover());
 	};
-}, y = 0;
-function b(e, t) {
+}, M = 0;
+function N(e, t) {
 	if (e.id) return e.id;
 	let n;
 	do
-		y += 1, n = `${t}-${y}`;
+		M += 1, n = `${t}-${M}`;
 	while (document.getElementById(n));
 	return e.id = n, n;
 }
-function x(e) {
+function P(e) {
 	return Array.from(e.children).filter((e) => e instanceof HTMLElement);
 }
-function S(e) {
+function F(e) {
 	e.hasAttribute("type") || (e.type = "button");
 }
-function C(e, t, n) {
+function I(e, t, n) {
 	e.toggleAttribute(t, n);
 }
-function w(e, t, n) {
+function L(e, t, n) {
 	e.setAttribute(t, n);
 }
-function T(e, t, n) {
+function R(e, t, n) {
 	let r = e.getAttribute(t);
 	if (r === null || r.trim() === "") return n;
 	let i = Number(r);
 	return Number.isFinite(i) && i >= 0 ? i : n;
 }
-function E(e, t, n) {
+function z(e, t, n) {
 	if (!Number.isFinite(n) || n < 0) throw RangeError(`${t} must be a nonnegative finite number.`);
 	e.setAttribute(t, String(n));
 }
-var D = class {
+var B = class {
 	controller = null;
 	observer = null;
 	connect(e, t, n) {
@@ -270,7 +408,7 @@ var D = class {
 		this.controller?.abort(), this.observer?.disconnect(), this.controller = null, this.observer = null;
 	}
 };
-function O(e, t) {
+function V(e, t) {
 	if (typeof customElements > "u") return;
 	let n = customElements.get(e);
 	if (n && n !== t) throw Error(`Cannot register ${e}: another constructor already uses that name.`);
@@ -278,7 +416,7 @@ function O(e, t) {
 }
 //#endregion
 //#region src/elements/dropdown.ts
-var k = typeof HTMLElement > "u" ? class {} : HTMLElement, A = class extends k {
+var H = typeof HTMLElement > "u" ? class {} : HTMLElement, U = class extends H {
 	static observedAttributes = [
 		"open",
 		"placement",
@@ -288,47 +426,47 @@ var k = typeof HTMLElement > "u" ? class {} : HTMLElement, A = class extends k {
 	menu = null;
 	items = [];
 	positioner = null;
-	connection = new D();
+	connection = new B();
 	get open() {
 		return this.hasAttribute("open");
 	}
 	set open(e) {
-		C(this, "open", e);
+		I(this, "open", e);
 	}
 	get placement() {
 		return this.getAttribute("placement") ?? "block-end-start";
 	}
 	set placement(e) {
-		w(this, "placement", e);
+		L(this, "placement", e);
 	}
 	get offset() {
-		return T(this, "offset", 5);
+		return R(this, "offset", 5);
 	}
 	set offset(e) {
-		E(this, "offset", e);
+		z(this, "offset", e);
 	}
 	get width() {
 		return this.getAttribute("width") ?? "md";
 	}
 	set width(e) {
-		w(this, "width", e);
+		L(this, "width", e);
 	}
 	get hideCaret() {
 		return this.hasAttribute("hide-caret");
 	}
 	set hideCaret(e) {
-		C(this, "hide-caret", e);
+		I(this, "hide-caret", e);
 	}
 	connectedCallback() {
 		this.positioner = null, this.trigger = null, this.menu = null, this.items = [];
-		let e = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), t = x(this), n = t.find((e) => e instanceof HTMLButtonElement), r = n?.getAttribute("popovertarget"), i = t.filter((e) => e !== n), a = t.find((e) => e.id === r) ?? i.find((e) => e.matches("menu, [popover], .sds-dropdown-menu")) ?? (i.length === 1 ? i[0] : null) ?? null;
+		let e = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), t = P(this), n = t.find((e) => e instanceof HTMLButtonElement), r = n?.getAttribute("popovertarget"), i = t.filter((e) => e !== n), a = t.find((e) => e.id === r) ?? i.find((e) => e.matches("menu, [popover], .sds-dropdown-menu")) ?? (i.length === 1 ? i[0] : null) ?? null;
 		if (!n || !a) {
 			console.warn("<sds-dropdown> requires one direct child button and one direct child menu or popover.");
 			return;
 		}
-		S(n);
-		let o = b(a, "sds-dropdown");
-		a.classList.add("sds-dropdown-menu"), a.setAttribute("popover", a.getAttribute("popover") || "auto"), n.setAttribute("popovertarget", o), n.setAttribute("aria-controls", o), n.setAttribute("aria-expanded", String(a.matches(":popover-open"))), n.hasAttribute("aria-haspopup") || n.setAttribute("aria-haspopup", "menu"), a.setAttribute("role", "menu"), a.hasAttribute("aria-orientation") || a.setAttribute("aria-orientation", "vertical"), this.trigger = n, this.menu = a, this.positioner = new _(n, a, () => this.placement, () => this.getAttribute("offset") ?? void 0), this.collectItems(), n.addEventListener("keydown", this.handleTriggerKeydown, { signal: e }), a.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: e }), a.addEventListener("toggle", this.handleToggle, { signal: e }), a.addEventListener("keydown", this.handleMenuKeydown, { signal: e }), a.addEventListener("click", this.handleMenuClick, { signal: e }), this.positioner.observe(e), this.open && this.show();
+		F(n);
+		let o = N(a, "sds-dropdown");
+		a.classList.add("sds-dropdown-menu"), a.setAttribute("popover", a.getAttribute("popover") || "auto"), n.setAttribute("popovertarget", o), n.setAttribute("aria-controls", o), n.setAttribute("aria-expanded", String(a.matches(":popover-open"))), n.hasAttribute("aria-haspopup") || n.setAttribute("aria-haspopup", "menu"), a.setAttribute("role", "menu"), a.hasAttribute("aria-orientation") || a.setAttribute("aria-orientation", "vertical"), this.trigger = n, this.menu = a, this.positioner = new A(n, a, () => this.placement, () => this.getAttribute("offset") ?? void 0), this.collectItems(), n.addEventListener("keydown", this.handleTriggerKeydown, { signal: e }), a.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: e }), a.addEventListener("toggle", this.handleToggle, { signal: e }), a.addEventListener("keydown", this.handleMenuKeydown, { signal: e }), a.addEventListener("click", this.handleMenuClick, { signal: e }), this.positioner.observe(e), this.open && this.show();
 	}
 	disconnectedCallback() {
 		this.connection.disconnect(), this.positioner = null, this.trigger = null, this.menu = null, this.items = [];
@@ -375,7 +513,7 @@ var k = typeof HTMLElement > "u" ? class {} : HTMLElement, A = class extends k {
 	}
 	handleToggle = () => {
 		let e = this.isSurfaceOpen();
-		C(this, "open", e), e ? this.positioner?.position() : this.positioner?.reset(), this.dispatchEvent(new CustomEvent("sds-toggle", {
+		I(this, "open", e), e ? this.positioner?.position() : this.positioner?.reset(), this.dispatchEvent(new CustomEvent("sds-toggle", {
 			bubbles: !0,
 			composed: !0,
 			detail: { open: e }
@@ -413,12 +551,12 @@ var k = typeof HTMLElement > "u" ? class {} : HTMLElement, A = class extends k {
 		}
 	};
 };
-function j() {
-	O("sds-dropdown", A);
+function W() {
+	V("sds-dropdown", U);
 }
 //#endregion
 //#region src/elements/popover.ts
-var M = typeof HTMLElement > "u" ? class {} : HTMLElement, N = class extends M {
+var G = typeof HTMLElement > "u" ? class {} : HTMLElement, K = class extends G {
 	static observedAttributes = [
 		"open",
 		"placement",
@@ -427,41 +565,41 @@ var M = typeof HTMLElement > "u" ? class {} : HTMLElement, N = class extends M {
 	content = null;
 	positioner = null;
 	hoverController = null;
-	connection = new D();
+	connection = new B();
 	get open() {
 		return this.hasAttribute("open");
 	}
 	set open(e) {
-		C(this, "open", e);
+		I(this, "open", e);
 	}
 	get placement() {
 		return this.getAttribute("placement") ?? "block-end-start";
 	}
 	set placement(e) {
-		w(this, "placement", e);
+		L(this, "placement", e);
 	}
 	get offset() {
-		return T(this, "offset", 9);
+		return R(this, "offset", 9);
 	}
 	set offset(e) {
-		E(this, "offset", e);
+		z(this, "offset", e);
 	}
 	get width() {
 		return this.getAttribute("width") ?? "md";
 	}
 	set width(e) {
-		w(this, "width", e);
+		L(this, "width", e);
 	}
 	connectedCallback() {
 		this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
-		let e = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), t = x(this), n = t.find((e) => e instanceof HTMLButtonElement), r = n?.getAttribute("popovertarget"), i = t.filter((e) => e !== n), a = t.find((e) => e.id === r) ?? i.find((e) => e.matches("[popover], .sds-popover-content")) ?? (i.length === 1 ? i[0] : null) ?? null;
+		let e = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), t = P(this), n = t.find((e) => e instanceof HTMLButtonElement), r = n?.getAttribute("popovertarget"), i = t.filter((e) => e !== n), a = t.find((e) => e.id === r) ?? i.find((e) => e.matches("[popover], .sds-popover-content")) ?? (i.length === 1 ? i[0] : null) ?? null;
 		if (!n || !a) {
 			console.warn("<sds-popover> requires one direct child button and one direct child content element.");
 			return;
 		}
-		S(n);
-		let o = b(a, "sds-popover");
-		a.classList.add("sds-popover-content"), a.setAttribute("popover", a.getAttribute("popover") || "auto"), n.setAttribute("popovertarget", o), this.content = a, this.positioner = new _(n, a, () => this.placement, () => this.getAttribute("offset") ?? void 0, 9), this.hoverController = new v(n, a, this.positioner, {
+		F(n);
+		let o = N(a, "sds-popover");
+		a.classList.add("sds-popover-content"), a.setAttribute("popover", a.getAttribute("popover") || "auto"), n.setAttribute("popovertarget", o), this.content = a, this.positioner = new A(n, a, () => this.placement, () => this.getAttribute("offset") ?? void 0, 9), this.hoverController = new j(n, a, this.positioner, {
 			focusOpenDelay: 500,
 			hoverOpenDelay: 500
 		}), this.hoverController.observe(e), this.positioner.observe(e), a.addEventListener("toggle", this.handleToggle, { signal: e }), this.open && this.show();
@@ -494,83 +632,83 @@ var M = typeof HTMLElement > "u" ? class {} : HTMLElement, N = class extends M {
 	}
 	handleToggle = () => {
 		let e = this.content?.matches(":popover-open") ?? !1;
-		C(this, "open", e), this.dispatchEvent(new CustomEvent("sds-toggle", {
+		I(this, "open", e), this.dispatchEvent(new CustomEvent("sds-toggle", {
 			bubbles: !0,
 			composed: !0,
 			detail: { open: e }
 		}));
 	};
 };
-function P() {
-	O("sds-popover", N);
+function q() {
+	V("sds-popover", K);
 }
 //#endregion
 //#region src/elements/sidebar.ts
-var F = !1, I = /* @__PURE__ */ new WeakMap();
-function L(e) {
-	let t = I.get(e);
-	t !== void 0 && window.clearTimeout(t), I.delete(e), e.removeAttribute("sds-closing");
+var J = !1, Y = /* @__PURE__ */ new WeakMap();
+function X(e) {
+	let t = Y.get(e);
+	t !== void 0 && window.clearTimeout(t), Y.delete(e), e.removeAttribute("sds-closing");
 }
-function R() {
-	F || typeof document > "u" || (F = !0, document.addEventListener("beforetoggle", (e) => {
+function ae() {
+	J || typeof document > "u" || (J = !0, document.addEventListener("beforetoggle", (e) => {
 		if (!(e instanceof ToggleEvent) || e.oldState !== "open" || e.newState !== "closed" || !(e.target instanceof HTMLElement) || !e.target.matches(".sds-sidebar[popover]")) return;
 		let t = e.target;
-		L(t), t.setAttribute("sds-closing", ""), I.set(t, window.setTimeout(() => L(t), 500));
+		X(t), t.setAttribute("sds-closing", ""), Y.set(t, window.setTimeout(() => X(t), 500));
 	}, !0), document.addEventListener("transitionend", (e) => {
-		e.propertyName === "transform" && e.target instanceof HTMLElement && e.target.matches(".sds-sidebar[sds-closing]") && L(e.target);
+		e.propertyName === "transform" && e.target instanceof HTMLElement && e.target.matches(".sds-sidebar[sds-closing]") && X(e.target);
 	}, !0));
 }
 //#endregion
 //#region src/elements/tabs.ts
-var z = "sds-change", B = typeof HTMLElement > "u" ? class {} : HTMLElement, V = class extends B {
+var oe = "sds-change", se = typeof HTMLElement > "u" ? class {} : HTMLElement, ce = class extends se {
 	static observedAttributes = ["value"];
 	tabs = [];
 	panels = /* @__PURE__ */ new Map();
-	connection = new D();
+	connection = new B();
 	reflectingValue = !1;
 	get value() {
 		return this.getAttribute("value") ?? "";
 	}
 	set value(e) {
 		if (this.isConnected && !this.tabs.some((t) => this.tabValue(t) === e && !this.isDisabled(t))) throw RangeError(`<sds-tabs> has no enabled tab with value "${e}".`);
-		w(this, "value", e);
+		L(this, "value", e);
 	}
 	get activation() {
 		return this.getAttribute("activation") ?? "automatic";
 	}
 	set activation(e) {
-		w(this, "activation", e);
+		L(this, "activation", e);
 	}
 	get orientation() {
 		return this.getAttribute("orientation") ?? "horizontal";
 	}
 	set orientation(e) {
-		w(this, "orientation", e), this.syncOrientation();
+		L(this, "orientation", e), this.syncOrientation();
 	}
 	get size() {
 		return this.getAttribute("size") ?? "md";
 	}
 	set size(e) {
-		w(this, "size", e);
+		L(this, "size", e);
 	}
 	get tone() {
 		return this.getAttribute("tone") ?? "danger";
 	}
 	set tone(e) {
-		w(this, "tone", e);
+		L(this, "tone", e);
 	}
 	get variant() {
 		return this.getAttribute("variant") ?? "folder";
 	}
 	set variant(e) {
-		w(this, "variant", e);
+		L(this, "variant", e);
 	}
 	connectedCallback() {
 		let e = this.connection.connect(this, () => this.connectedCallback(), {
 			childList: !0,
 			subtree: !0
-		}), t = x(this), n = t.find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")) ?? t[0] ?? null;
-		if (this.tabs = n ? x(n).filter((e) => e instanceof HTMLButtonElement || e instanceof HTMLAnchorElement) : [], this.panels.clear(), !n || this.tabs.length === 0) {
+		}), t = P(this), n = t.find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")) ?? t[0] ?? null;
+		if (this.tabs = n ? P(n).filter((e) => e instanceof HTMLButtonElement || e instanceof HTMLAnchorElement) : [], this.panels.clear(), !n || this.tabs.length === 0) {
 			console.warn("<sds-tabs> requires a tab-list container with button or link children.");
 			return;
 		}
@@ -582,11 +720,11 @@ var z = "sds-change", B = typeof HTMLElement > "u" ? class {} : HTMLElement, V =
 		n.classList.add("sds-tab-list"), n.setAttribute("role", "tablist"), this.syncOrientation(n), !n.hasAttribute("aria-label") && !n.hasAttribute("aria-labelledby") && console.warn("<sds-tabs> requires an accessible name on its tab list.");
 		let i = new Set(r);
 		for (let [e, t] of this.tabs.entries()) {
-			t instanceof HTMLButtonElement && S(t);
+			t instanceof HTMLButtonElement && F(t);
 			let n = t.getAttribute("aria-controls"), a = r.find((e) => e.id === n) ?? null, o = a && i.has(a) ? a : r[e] && i.has(r[e]) ? r[e] : i.values().next().value;
 			if (!o) continue;
 			i.delete(o);
-			let s = b(t, "sds-tab"), c = b(o, "sds-tab-panel");
+			let s = N(t, "sds-tab"), c = N(o, "sds-tab-panel");
 			t.classList.add("sds-tab"), t.setAttribute("role", "tab"), t.setAttribute("aria-controls", c), o.classList.add("sds-tab-panel"), o.setAttribute("role", "tabpanel"), o.setAttribute("aria-labelledby", s), this.panels.set(t, o);
 		}
 		let a = this.value ? this.tabs.find((e) => this.tabValue(e) === this.value && !this.isDisabled(e)) : null;
@@ -618,13 +756,13 @@ var z = "sds-change", B = typeof HTMLElement > "u" ? class {} : HTMLElement, V =
 		return e instanceof HTMLButtonElement && e.disabled || e.getAttribute("aria-disabled") === "true";
 	}
 	syncOrientation(e) {
-		this.hasAttribute("orientation") && (e ?? x(this).find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")))?.setAttribute("aria-orientation", this.orientation);
+		this.hasAttribute("orientation") && (e ?? P(this).find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")))?.setAttribute("aria-orientation", this.orientation);
 	}
 	tabValue(e) {
 		return e.getAttribute("value") ?? e.id;
 	}
 	reflectValue(e) {
-		this.reflectingValue = !0, w(this, "value", e), this.reflectingValue = !1;
+		this.reflectingValue = !0, L(this, "value", e), this.reflectingValue = !1;
 	}
 	select(e, t = !1, n = !0) {
 		let r = this.tabs[e], i = this.panels.get(r);
@@ -635,7 +773,7 @@ var z = "sds-change", B = typeof HTMLElement > "u" ? class {} : HTMLElement, V =
 			e.setAttribute("aria-selected", String(t)), e.tabIndex = t ? 0 : -1;
 			let n = this.panels.get(e);
 			n && (n.hidden = !t);
-		}), this.reflectValue(this.tabValue(r)), t && r.focus(), n && a !== e && this.dispatchEvent(new CustomEvent(z, {
+		}), this.reflectValue(this.tabValue(r)), t && r.focus(), n && a !== e && this.dispatchEvent(new CustomEvent(oe, {
 			bubbles: !0,
 			composed: !0,
 			detail: {
@@ -662,38 +800,38 @@ var z = "sds-change", B = typeof HTMLElement > "u" ? class {} : HTMLElement, V =
 		this.activation === "manual" || s instanceof HTMLAnchorElement ? s.focus() : this.select(c, !0);
 	};
 };
-function H() {
-	O("sds-tabs", V);
+function le() {
+	V("sds-tabs", ce);
 }
 //#endregion
 //#region src/elements/tooltip.ts
-var U = typeof HTMLElement > "u" ? class {} : HTMLElement, W = class extends U {
+var ue = typeof HTMLElement > "u" ? class {} : HTMLElement, de = class extends ue {
 	static observedAttributes = ["placement", "offset"];
 	content = null;
 	positioner = null;
 	hoverController = null;
-	connection = new D();
+	connection = new B();
 	get placement() {
 		return this.getAttribute("placement") ?? "block-start";
 	}
 	set placement(e) {
-		w(this, "placement", e);
+		L(this, "placement", e);
 	}
 	get offset() {
-		return T(this, "offset", 6);
+		return R(this, "offset", 6);
 	}
 	set offset(e) {
-		E(this, "offset", e);
+		z(this, "offset", e);
 	}
 	connectedCallback() {
 		this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
-		let e = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), t = x(this), n = t.find((e) => e.matches("[role=\"tooltip\"], .sds-tooltip-content, [popover]")) ?? (t.length === 2 ? t[1] : null) ?? null, r = t.find((e) => e !== n) ?? null;
+		let e = this.connection.connect(this, () => this.connectedCallback(), { childList: !0 }), t = P(this), n = t.find((e) => e.matches("[role=\"tooltip\"], .sds-tooltip-content, [popover]")) ?? (t.length === 2 ? t[1] : null) ?? null, r = t.find((e) => e !== n) ?? null;
 		if (!r || !n) {
 			console.warn("<sds-tooltip> requires one direct child trigger and one direct child text element.");
 			return;
 		}
-		let i = b(n, "sds-tooltip"), a = new Set((r.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean));
-		a.add(i), n.classList.add("sds-tooltip-content"), n.setAttribute("role", "tooltip"), n.setAttribute("popover", "manual"), r.setAttribute("aria-describedby", [...a].join(" ")), this.content = n, this.positioner = new _(r, n, () => this.placement, () => this.getAttribute("offset") ?? void 0, 6), this.hoverController = new v(r, n, this.positioner, {
+		let i = N(n, "sds-tooltip"), a = new Set((r.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean));
+		a.add(i), n.classList.add("sds-tooltip-content"), n.setAttribute("role", "tooltip"), n.setAttribute("popover", "manual"), r.setAttribute("aria-describedby", [...a].join(" ")), this.content = n, this.positioner = new A(r, n, () => this.placement, () => this.getAttribute("offset") ?? void 0, 6), this.hoverController = new j(r, n, this.positioner, {
 			closeDelay: 0,
 			hoverOpenDelay: 0
 		}), this.hoverController.observe(e), this.positioner.observe(e);
@@ -705,12 +843,12 @@ var U = typeof HTMLElement > "u" ? class {} : HTMLElement, W = class extends U {
 		t !== n && this.isConnected && this.content?.matches(":popover-open") && (this.positioner?.reset(), this.positioner?.position());
 	}
 };
-function G() {
-	O("sds-tooltip", W);
+function fe() {
+	V("sds-tooltip", de);
 }
 //#endregion
 //#region src/elements/toast.ts
-var K = 5e3, q = typeof HTMLElement > "u" ? class {} : HTMLElement, J = class extends q {
+var Z = 5e3, pe = typeof HTMLElement > "u" ? class {} : HTMLElement, Q = class extends pe {
 	static observedAttributes = [
 		"open",
 		"duration",
@@ -721,27 +859,27 @@ var K = 5e3, q = typeof HTMLElement > "u" ? class {} : HTMLElement, J = class ex
 		return this.hasAttribute("open");
 	}
 	set open(e) {
-		C(this, "open", e);
+		I(this, "open", e);
 	}
 	get tone() {
 		return this.getAttribute("tone") ?? "accent";
 	}
 	set tone(e) {
-		w(this, "tone", e);
+		L(this, "tone", e);
 	}
 	get duration() {
-		let e = T(this, "duration", K);
-		return e > 0 ? e : K;
+		let e = R(this, "duration", Z);
+		return e > 0 ? e : Z;
 	}
 	set duration(e) {
 		if (!Number.isFinite(e) || e <= 0) throw RangeError("duration must be a positive finite number.");
-		E(this, "duration", e);
+		z(this, "duration", e);
 	}
 	get persistent() {
 		return this.hasAttribute("persistent");
 	}
 	set persistent(e) {
-		C(this, "persistent", e);
+		I(this, "persistent", e);
 	}
 	connectedCallback() {
 		window.getComputedStyle(this).display, this.setAttribute("sds-ready", ""), this.hasAttribute("role") || this.setAttribute("role", "status"), this.hasAttribute("aria-atomic") || this.setAttribute("aria-atomic", "true"), this.addEventListener("click", this.handleClick), this.addEventListener("focusin", this.pauseAutoHide), this.addEventListener("focusout", this.handleFocusOut), this.addEventListener("pointerenter", this.pauseAutoHide), this.addEventListener("pointerleave", this.resumeAutoHide), this.open && this.scheduleAutoHide();
@@ -787,23 +925,23 @@ var K = 5e3, q = typeof HTMLElement > "u" ? class {} : HTMLElement, J = class ex
 	handleFocusOut = (e) => {
 		(!(e.relatedTarget instanceof Node) || !this.contains(e.relatedTarget)) && this.resumeAutoHide();
 	};
-}, Y = !1;
-function X() {
-	Y || typeof document > "u" || (Y = !0, document.addEventListener("click", (e) => {
+}, $ = !1;
+function me() {
+	$ || typeof document > "u" || ($ = !0, document.addEventListener("click", (e) => {
 		if (!(e.target instanceof Element)) return;
 		let t = e.target.closest("[data-sds-toast-open]")?.getAttribute("data-sds-toast-open"), n = t ? document.getElementById(t) : null;
-		n instanceof J && n.show();
+		n instanceof Q && n.show();
 	}));
 }
-function Z() {
-	O("sds-toast", J), X();
+function he() {
+	V("sds-toast", Q), me();
 }
 //#endregion
 //#region src/sds.ts
-function Q() {
-	i(), j(), P(), R(), H(), Z(), G();
+function ge() {
+	ne(), W(), q(), ae(), le(), he(), fe();
 }
 //#endregion
 //#region src/auto.ts
-Q();
+ge();
 //#endregion

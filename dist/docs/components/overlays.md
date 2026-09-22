@@ -157,6 +157,11 @@ Use direct native `header`, `main`, and `footer` children:
 
 For side panels size controls width; for bottom panels it controls height.
 Header and footer remain visible while `main` consumes the flexible space.
+`setupSds()` automatically adds an iOS-style pill handle; no additional markup
+is required. Drag toward the attached edge to dismiss. Short or slow drags
+settle back into place, while deliberate swipes use release velocity to
+complete naturally. Dragging emits the native cancelable `cancel` event before
+dismissal, so preventing that event returns the panel to its open position.
 
 ## Commands and dismissal
 

@@ -70,6 +70,27 @@ test('the root entry is side-effect-free and hydration-safe', () => {
   assert.equal(dropdown?.outerHTML, before)
 })
 
+test('panels receive one decorative drag handle', async () => {
+  document.body.innerHTML = `
+    <dialog class="sds-panel">
+      <header><h2>Panel</h2></header>
+    </dialog>
+  `
+  await browser.happyDOM.whenAsyncComplete()
+
+  const panel = document.querySelector('.sds-panel')
+  const handle = panel?.querySelector(':scope > ._sds-panel-handle')
+  assert.ok(handle)
+  assert.equal(handle.getAttribute('aria-hidden'), 'true')
+
+  panel?.setAttribute('data-example', 'updated')
+  await browser.happyDOM.whenAsyncComplete()
+  assert.equal(
+    panel?.querySelectorAll(':scope > ._sds-panel-handle').length,
+    1,
+  )
+})
+
 test('popover enhancement preserves native activation semantics', async () => {
   document.body.innerHTML = `
     <sds-popover>

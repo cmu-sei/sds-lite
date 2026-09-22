@@ -20,6 +20,8 @@
     background: light-dark(var(--sds-white), var(--sds-gray-900));
     box-shadow: var(--sds-shadow-xl);
     transform: translateX(100%);
+    will-change: transform;
+    overscroll-behavior: contain;
     transition:
       transform var(--sds-duration-normal) var(--sds-easing-standard),
       display var(--sds-duration-normal) allow-discrete,
@@ -93,6 +95,56 @@
 
   :where(.sds-panel[data-sds-side="bottom"][data-sds-width="xl"]) {
     block-size: 90dvh;
+  }
+
+  :where(._sds-panel-handle) {
+    position: fixed;
+    z-index: 2;
+    inset-block-start: 50%;
+    inset-inline-start: 0;
+    display: grid;
+    place-items: center;
+    inline-size: 1.5rem;
+    block-size: 3rem;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    transform: translateY(-50%);
+  }
+
+  :where(._sds-panel-handle)::before {
+    inline-size: 0.3125rem;
+    block-size: 2.25rem;
+    border-radius: 999px;
+    background: color-mix(
+      in srgb,
+      var(--sds-color-text-muted) 55%,
+      transparent
+    );
+    content: "";
+  }
+
+  :where(
+    .sds-panel[data-sds-side="left"] > ._sds-panel-handle
+  ) {
+    inset-inline: auto 0;
+  }
+
+  :where(
+    .sds-panel[data-sds-side="bottom"] > ._sds-panel-handle
+  ) {
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    inline-size: 3rem;
+    block-size: 1.5rem;
+    transform: translateX(-50%);
+  }
+
+  :where(
+    .sds-panel[data-sds-side="bottom"] > ._sds-panel-handle
+  )::before {
+    inline-size: 2.25rem;
+    block-size: 0.3125rem;
   }
 
   :where(

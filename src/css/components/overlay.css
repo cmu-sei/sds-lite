@@ -12,6 +12,10 @@
     opacity: 1;
   }
 
+  :where(.sds-panel[open])::backdrop {
+    opacity: var(--sds-panel-backdrop-opacity, 1);
+  }
+
   @starting-style {
     :where(.sds-dialog[open], .sds-panel[open])::backdrop {
       opacity: 0;
