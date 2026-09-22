@@ -264,7 +264,7 @@
                 "text": "\"neutral\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\""
               },
               "description": "Semantic color intent.",
-              "default": "danger"
+              "default": "accent"
             },
             {
               "name": "variant",

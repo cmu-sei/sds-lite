@@ -49,7 +49,7 @@
 |---|---|---|---|---|
 | badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (default: `solid`) | Compact status or category. |
 | tag | `.sds-tag`<br>`.sds-tag-action`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md` (default: `sm`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Static or interactive category with optional counter and action. |
-| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (default: `tinted`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (default: `false`)<br>`data-sds-callout-close` (default: `false`) | Contextual message in page content. |
+| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (default: `subtle`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (default: `false`)<br>`data-sds-callout-close` (default: `false`) | Contextual message in page content. |
 | toast-region | `.sds-toaster` |  | `data-sds-toast-open` (default: `false`)<br>`data-sds-toast-close` (default: `false`) | Fixed notification region. |
 | spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Animated loading indicator. |
 | skeleton | `.sds-skeleton` |  |  | Loading placeholder. |
@@ -177,7 +177,7 @@ Coordinates a tab list and one panel per tab.
 | `activation` | `automatic`, `manual` | automatic | Whether focus automatically selects a tab. |
 | `orientation` | `horizontal`, `vertical` | horizontal | Layout or interaction orientation. |
 | `size` | `md`, `lg` | md | Visual scale. |
-| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | danger | Semantic color intent. |
+| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | accent | Semantic color intent. |
 | `variant` | `folder`, `block`, `underline` | folder | Visual treatment. |
 
 | Property or method | Type | Purpose |

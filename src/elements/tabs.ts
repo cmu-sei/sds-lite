@@ -77,7 +77,7 @@ export class SdsTabsElement extends HTMLElementBase {
   }
 
   get tone(): SdsTone {
-    return (this.getAttribute('tone') ?? 'danger') as SdsTone
+    return (this.getAttribute('tone') ?? 'accent') as SdsTone
   }
 
   set tone(value: SdsTone) {

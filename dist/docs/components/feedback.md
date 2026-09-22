@@ -71,7 +71,7 @@ does not hide tag state behind a component event API.
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-tone` | All semantic tones | `neutral` |
-| `data-sds-variant` | `outline`, `bold` | Tinted surface |
+| `data-sds-variant` | `outline`, `bold` | Subtle surface |
 | `data-sds-size` | `xs`, `sm`, `md`, `lg` | `md` |
 | `data-sds-inset` | Presence; removes rounding | Rounded |
 

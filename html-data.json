@@ -1176,7 +1176,7 @@
         },
         {
           "name": "tone",
-          "description": "Semantic color intent. Default: danger.",
+          "description": "Semantic color intent. Default: accent.",
           "values": [
             {
               "name": "neutral"

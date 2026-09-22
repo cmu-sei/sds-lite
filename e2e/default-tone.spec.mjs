@@ -78,7 +78,7 @@ const cases = [
   },
   {
     name: 'tabs',
-    defaultTone: 'danger',
+    defaultTone: 'accent',
     attribute: 'tone',
     properties: ['color', 'backgroundColor', 'borderBlockEndColor'],
     markup:

@@ -90,6 +90,51 @@ test('tone-aware interfaces default to a semantic tone', () => {
   }
 })
 
+test('recipe omission defaults use audited implementation values', () => {
+  const expected = new Map([
+    ['button:data-sds-density', 'comfortable'],
+    ['button:data-sds-shape', 'text'],
+    ['link:data-sds-variant', 'primary'],
+    ['link:data-sds-size', 'inherited'],
+    ['field:data-sds-tone', 'neutral'],
+    ['badge:data-sds-variant', 'solid'],
+    ['callout:data-sds-variant', 'subtle'],
+    ['avatar:data-sds-density', 'comfortable'],
+    ['table:data-sds-sticky', 'none'],
+    ['grid:data-sds-columns', 'automatic'],
+    ['flex:data-sds-stack-at', 'none'],
+    ['dialog:data-sds-return-value', 'empty string'],
+    ['dropdown-parts:data-sds-tone', 'neutral'],
+  ])
+
+  for (const [key, defaultValue] of expected) {
+    const [recipeName, optionName] = key.split(':')
+    const recipe = manifest.recipes.find(
+      (candidate) => candidate.name === recipeName,
+    )
+
+    assert.equal(recipe?.defaults[optionName], defaultValue, key)
+    assert.ok(!recipe?.options[optionName].includes(defaultValue), key)
+  }
+
+  for (const recipe of manifest.recipes) {
+    for (const [optionName, values] of Object.entries(recipe.options)) {
+      const defaultValue = recipe.defaults[optionName]
+      if (
+        typeof defaultValue !== 'string' ||
+        values.includes(defaultValue)
+      ) {
+        continue
+      }
+
+      assert.ok(
+        expected.has(`${recipe.name}:${optionName}`),
+        `${recipe.name}:${optionName} has an unaudited omission default`,
+      )
+    }
+  }
+})
+
 test('manifest names and generated targets are unique', () => {
   const classes = manifest.recipes.flatMap((recipe) => recipe.classes)
   const tags = manifest.customElements.map((element) => element.tagName)

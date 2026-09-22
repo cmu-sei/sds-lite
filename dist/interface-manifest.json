@@ -319,7 +319,7 @@
       },
       "defaults": {
         "data-sds-tone": "neutral",
-        "data-sds-variant": "tinted",
+        "data-sds-variant": "subtle",
         "data-sds-size": "md",
         "data-sds-inset": false,
         "data-sds-callout-close": false
@@ -725,7 +725,7 @@
         {"name": "activation", "values": ["automatic", "manual"], "default": "automatic", "description": "Whether focus automatically selects a tab."},
         {"name": "orientation", "family": "orientation", "default": "horizontal"},
         {"name": "size", "values": ["md", "lg"], "default": "md", "description": "Visual scale."},
-        {"name": "tone", "family": "tone", "default": "danger"},
+        {"name": "tone", "family": "tone", "default": "accent"},
         {"name": "variant", "values": ["folder", "block", "underline"], "default": "folder", "description": "Visual treatment."}
       ],
       "members": [

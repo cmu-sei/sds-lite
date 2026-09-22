@@ -692,7 +692,7 @@ var oe = "sds-change", se = typeof HTMLElement > "u" ? class {} : HTMLElement, c
 		L(this, "size", e);
 	}
 	get tone() {
-		return this.getAttribute("tone") ?? "danger";
+		return this.getAttribute("tone") ?? "accent";
 	}
 	set tone(e) {
 		L(this, "tone", e);

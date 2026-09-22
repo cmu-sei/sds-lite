@@ -2,11 +2,11 @@
   :where(sds-tabs) {
     --sds-tab-accent: var(
       --sds-tone-text,
-      var(--sds-color-danger-text)
+      var(--sds-color-accent-text)
     );
     --sds-tab-active-background: light-dark(
-      var(--sds-red-700),
-      var(--sds-red-200)
+      var(--sds-blue-700),
+      var(--sds-blue-200)
     );
     --sds-tab-active-text: light-dark(var(--sds-white), var(--sds-black));
 
