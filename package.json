@@ -36,10 +36,7 @@
   "files": [
     "LICENSE",
     "dist/brand.css",
-    "dist/core.css",
-    "dist/layouts.css",
     "dist/package",
-    "dist/prose.css",
     "dist/sds.css",
     "!dist/custom-elements.json",
     "!dist/html-data.json",
@@ -62,30 +59,6 @@
       "types": "./dist/package/auto.d.ts",
       "import": "./dist/package/auto.js"
     },
-    "./dialog": {
-      "types": "./dist/package/elements/dialog.d.ts",
-      "import": "./dist/package/dialog.js"
-    },
-    "./dropdown": {
-      "types": "./dist/package/elements/dropdown.d.ts",
-      "import": "./dist/package/dropdown.js"
-    },
-    "./popover": {
-      "types": "./dist/package/elements/popover.d.ts",
-      "import": "./dist/package/popover.js"
-    },
-    "./tabs": {
-      "types": "./dist/package/elements/tabs.d.ts",
-      "import": "./dist/package/tabs.js"
-    },
-    "./tooltip": {
-      "types": "./dist/package/elements/tooltip.d.ts",
-      "import": "./dist/package/tooltip.js"
-    },
-    "./toast": {
-      "types": "./dist/package/elements/toast.d.ts",
-      "import": "./dist/package/toast.js"
-    },
     "./react": {
       "types": "./framework-types/react.d.ts",
       "import": "./framework-types/empty.js"
@@ -97,9 +70,6 @@
     "./html-data.json": "./html-data.json",
     "./interface-manifest.json": "./interface-manifest.json",
     "./sds.css": "./dist/sds.css",
-    "./core.css": "./dist/core.css",
-    "./layouts.css": "./dist/layouts.css",
-    "./prose.css": "./dist/prose.css",
     "./brand.css": "./dist/brand.css",
     "./package.json": "./package.json"
   },
@@ -108,7 +78,7 @@
     "generate:interface": "node scripts/generate-interface.mjs",
     "prebuild": "node scripts/generate-interface.mjs --check",
     "dev": "vite",
-    "build": "tsc && vite build && vite build --config vite.library.config.ts && tsc -p tsconfig.declarations.json && node scripts/prepare-package.mjs",
+    "build": "tsc && vite build && vite build --config vite.library.config.ts && vite build --config vite.cdn.config.ts && tsc -p tsconfig.declarations.json && node scripts/prepare-package.mjs",
     "preview": "vite preview",
     "release:prepare": "node scripts/prepare-release.mjs",
     "test": "npm run build && npm run test:standards && node --test && playwright test && npm run test:workspace",

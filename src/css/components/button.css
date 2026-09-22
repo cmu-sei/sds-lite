@@ -300,12 +300,6 @@
       font-size: 2rem;
     }
 
-    &:focus-visible {
-      outline: 2px solid
-        light-dark(var(--sds-blue-300), var(--sds-blue-700));
-      outline-offset: 2px;
-    }
-
     &:is(:disabled, [aria-disabled="true"], [aria-busy="true"]) {
       --sds-button-color: var(--sds-gray-500);
 

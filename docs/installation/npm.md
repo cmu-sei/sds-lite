@@ -61,7 +61,7 @@ Then scope SDS Lite to your application:
 ```
 
 `sds.css` includes foundations, common recipes, layout recipes, prose, tokens,
-and utilities. `/auto` registers dialogs, panels, dropdowns, popovers, tabs,
+and utilities. `/auto` sets up dialogs, panels, dropdowns, popovers, tabs,
 tooltips, and toasts.
 
 ## Where imports belong
@@ -71,7 +71,7 @@ tooltips, and toasts.
 | Client-rendered SPA | Top-level client entry | Top-level client entry |
 | SSR framework | Framework stylesheet entry | Client entry after hydration |
 | Static site generator | Global stylesheet or layout | Shared browser script |
-| Component library | Consumer-facing stylesheet entry | Prefer selective registration |
+| Component library | Consumer-facing stylesheet entry | Consumer browser entry |
 
 Avoid importing global SDS CSS inside a component that can mount more than
 once. Import it once at the application boundary.
@@ -94,9 +94,9 @@ All JavaScript entries ship declarations. Types are inferred when importing
 exports or querying a registered custom element:
 
 ```ts
-import type { SdsToastElement } from '@cmu-sei/sds-lite/toast'
+import '@cmu-sei/sds-lite'
 
-const toast = document.querySelector<SdsToastElement>('#saved-toast')
+const toast = document.querySelector('sds-toast')
 toast?.show()
 ```
 
@@ -160,4 +160,4 @@ If the button is unstyled, confirm that the CSS import is included in the
 browser build and that the button is inside `[data-sds-root]`. If a custom
 element does not respond, confirm that `/auto` is loaded in the browser.
 
-[Use only selected modules →](./selective-imports.md)
+[Browse component recipes →](../components/README.md)

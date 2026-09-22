@@ -32,8 +32,8 @@ for (const name of browserGlobals) {
 globalThis.window = browser
 globalThis.getComputedStyle = browser.getComputedStyle.bind(browser)
 
-const { defineSds, notify } = await import('@cmu-sei/sds-lite')
-const { SdsDropdownElement } = await import('@cmu-sei/sds-lite/dropdown')
+const { notify, setupSds } = await import('@cmu-sei/sds-lite')
+const { SdsDropdownElement } = await import('../dist/package/dropdown.js')
 
 test('the root entry is side-effect-free and hydration-safe', () => {
   assert.equal(customElements.get('sds-dropdown'), undefined)
@@ -63,8 +63,8 @@ test('the root entry is side-effect-free and hydration-safe', () => {
   const dropdown = document.querySelector('sds-dropdown')
   const before = dropdown?.outerHTML
 
-  defineSds()
-  defineSds()
+  setupSds()
+  setupSds()
 
   assert.equal(customElements.get('sds-dropdown'), SdsDropdownElement)
   assert.equal(dropdown?.outerHTML, before)

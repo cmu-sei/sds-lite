@@ -10,7 +10,6 @@ without a framework or runtime dependency.
 | Try SDS Lite in an existing project | [5-minute quick start](./getting-started.md) |
 | Install it from NPM | [NPM installation](./installation/npm.md) |
 | Use it from a CDN | [CDN installation](./installation/cdn.md) |
-| Use only selected CSS or behavior | [Selective imports](./installation/selective-imports.md) |
 | Find a component recipe | [Component guides](./components/README.md) |
 | Integrate with a framework | [Framework integration](./guides/frameworks.md) |
 | Migrate from another design system | [Migration guides](./migration/index.md) |
@@ -33,11 +32,12 @@ without a framework or runtime dependency.
 - No runtime dependencies and no required framework, utility CSS, build
   plugin, or client-side renderer.
 
-## The three rules
+## The four rules
 
 1. Load SDS Lite CSS.
-2. Put `data-sds-root` around the content SDS Lite should style.
-3. Start with semantic HTML, then add an SDS class or `data-sds-*` option only
+2. Load automatic behavior if the page uses interactive SDS elements.
+3. Put `data-sds-root` around the content SDS Lite should style.
+4. Start with semantic HTML, then add an SDS class or `data-sds-*` option only
    when the recipe calls for it.
 
 ```html
@@ -52,6 +52,10 @@ Native semantics remain the API: use links for navigation, buttons for
 actions, `disabled` for unavailable controls, `checked` for choices, and
 `hidden` for content that is not displayed.
 
+Everything else in this documentation is progressive detail. You do not need
+JavaScript setup functions, framework types, or the machine-readable
+interface to build an ordinary page.
+
 ## Documentation map
 
 ### Start
@@ -59,7 +63,6 @@ actions, `disabled` for unavailable controls, `checked` for choices, and
 - [5-minute quick start](./getting-started.md)
 - [NPM installation](./installation/npm.md)
 - [CDN installation](./installation/cdn.md)
-- [Selective imports](./installation/selective-imports.md)
 
 ### Components
 

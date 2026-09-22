@@ -1,4 +1,7 @@
-export { notify, type SdsNotifyOptions, type SdsToastCloseReason, type SdsToastTone, } from './elements/toast.js';
-export type { SdsTabsChangeDetail } from './elements/tabs.js';
+export { notify, type SdsNotifyOptions, type SdsToastElement, type SdsToastCloseReason, type SdsToastTone, } from './elements/toast.js';
+export type { SdsDropdownElement } from './elements/dropdown.js';
+export type { SdsPopoverElement } from './elements/popover.js';
+export type { SdsTabsChangeDetail, SdsTabsElement, } from './elements/tabs.js';
+export type { SdsTooltipElement } from './elements/tooltip.js';
 export type { SdsGap, SdsOrientation, SdsPlacement, SdsRecipeAttribute, SdsRecipeClass, SdsSize, SdsTabsActivation, SdsTabsSize, SdsTabsVariant, SdsToggleDetail, SdsTone, SdsWidth, } from './generated/interface.js';
-export declare function defineSds(): void;
+export declare function setupSds(): void;

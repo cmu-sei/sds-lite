@@ -2,7 +2,7 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Prose
 
-Import `sds.css` or the selective `prose.css` stylesheet, then add
+Import `sds.css`, then add
 `.sds-prose` to a long-form content container:
 
 ```html

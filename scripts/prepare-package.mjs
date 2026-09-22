@@ -3,15 +3,15 @@ import { cp, readFile, rm, writeFile } from 'node:fs/promises'
 const distributionDirectory = 'dist'
 const packageDirectory = `${distributionDirectory}/package`
 
-const stylesheets = [
-  'brand.css',
-  'core.css',
-  'layouts.css',
-  'prose.css',
-  'sds.css',
-]
-for (const filename of stylesheets) {
-  const source = await readFile(`${packageDirectory}/${filename}`, 'utf8')
+const stylesheets = new Map([
+  ['brand.css', 'brand.css'],
+  ['sds.css', 'styles.css'],
+])
+for (const [filename, sourceFilename] of stylesheets) {
+  const source = await readFile(
+    `${packageDirectory}/${sourceFilename}`,
+    'utf8',
+  )
   await writeFile(
     `${distributionDirectory}/${filename}`,
     source.replaceAll(
@@ -19,49 +19,26 @@ for (const filename of stylesheets) {
       'url("./package/assets/sei-wordmark.svg")',
     ),
   )
-  await rm(`${packageDirectory}/${filename}`)
+  await rm(`${packageDirectory}/${sourceFilename}`)
 }
 
 const autoDeclaration = await readFile(`${packageDirectory}/auto.d.ts`, 'utf8')
-const publishableAutoDeclaration = autoDeclaration.replace(
-  "import './style.css';\n",
-  '',
-)
-if (publishableAutoDeclaration === autoDeclaration) {
-  throw new Error('Expected auto.d.ts to import the source stylesheet')
+if (autoDeclaration !== 'export {};\n') {
+  throw new Error('Expected auto.d.ts to contain no public declarations')
 }
 await writeFile(
   `${packageDirectory}/auto.d.ts`,
-  publishableAutoDeclaration,
+  "import './sds.js'\n",
 )
 
 await Promise.all([
   rm(`${packageDirectory}/elements/floating.d.ts`),
   rm(`${packageDirectory}/elements/internals.d.ts`),
 ])
-const browserModules = [
-  'dialog',
-  'dropdown',
-  'popover',
-  'sds',
-  'tabs',
-  'toast',
-  'tooltip',
-]
-const topLevelModules = [
-  'auto.js',
-  ...browserModules.map((name) => `${name}.js`),
-]
 await Promise.all([
   writeFile(
-    `${distributionDirectory}/auto.js`,
-    "import './package/auto.js'\n",
-  ),
-  ...browserModules.map((name) =>
-    writeFile(
-      `${distributionDirectory}/${name}.js`,
-      `export * from './package/${name}.js'\n`,
-    ),
+    `${distributionDirectory}/sds.js`,
+    "export * from './package/sds.js'\n",
   ),
 ])
 

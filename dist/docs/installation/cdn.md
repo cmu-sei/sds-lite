@@ -101,21 +101,9 @@ Use an inline module when you need `notify()` or another export:
 </script>
 ```
 
-The stable `auto.js` file is for automatic registration. Selective top-level
-modules use the same names as NPM entries: `dialog.js`, `dropdown.js`,
-`popover.js`, `tabs.js`, `tooltip.js`, and `toast.js`.
-
-For example, register only tabs:
-
-```html
-<script type="module">
-  import {
-    registerSdsTabs,
-  } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/tabs.js'
-
-  registerSdsTabs()
-</script>
-```
+The stable, self-contained `auto.js` file sets up all SDS Lite behavior. The
+complete script is about 7.3 KB compressed, so there are no public per-element
+CDN entries to choose or coordinate.
 
 ## Add brand shells
 
@@ -130,8 +118,11 @@ Use it in addition to `sds.css` for SEI application or brochure layouts.
 
 ## Content Security Policy
 
-SDS Lite does not inject external scripts, evaluate strings, or require inline
-styles for ordinary recipes. A Content Security Policy must allow
+SDS Lite does not inject external scripts or evaluate strings. Ordinary
+recipes do not require inline styles, but dropdowns, popovers, and tooltips
+write `left`, `top`, and arrow-position custom properties to their floating
+surface. A strict policy must therefore permit these element style
+attributes. A Content Security Policy must also allow
 `https://cdn.jsdelivr.net` in `style-src` for CDN stylesheets and in
 `script-src` for CDN modules. If you use an inline module like the examples
 above, authorize it with your application's nonce or move it into an external
@@ -140,24 +131,19 @@ allowed.
 
 ## Self-hosting
 
-Download the `dist/` directory from the same protected release tag used by the
-CDN URL. The simplest and safest option is to copy the entire directory to a
-versioned location on your server.
+Download files from the same protected release tag used by the CDN URL.
 
-For the standard stylesheet and automatic behavior, these paths are
-load-bearing:
+The recommended setup only needs `sds.css` and `auto.js`. Copy these two
+independent files:
 
 ```text
 dist/
 |-- auto.js
-|-- sds.css
-`-- package/
+`-- sds.css
 ```
 
-Keep that relative layout unchanged because `auto.js` imports
-`./package/auto.js` and the selective top-level modules re-export their built
-modules from `package/`. Keep `brand.css` and `package/assets/` together when
-using branded shells. The remaining top-level CSS, JavaScript, and metadata
-files can be copied when your application uses those entries.
+Keep `brand.css` and `package/assets/` together when using branded shells.
+Copy the complete `dist/` directory when using `sds.js` for `notify()` or
+`setupSds()`, because that module loads its implementation from `package/`.
 
 [Browse component recipes →](../components/README.md)

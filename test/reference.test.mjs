@@ -22,9 +22,9 @@ const documentationFiles = [
 const reference = (
   await Promise.all(documentationFiles.map((file) => readFile(file, 'utf8')))
 ).join('\n')
+const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
 
 test('CDN documentation uses the versioned GitHub repository location', async () => {
-  const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
   const cdnGuide = await readFile('docs/installation/cdn.md', 'utf8')
   const sources = [
     reference,
@@ -48,7 +48,7 @@ test('CDN documentation uses the versioned GitHub repository location', async ()
     cdnGuide,
     /cdn\.jsdelivr\.net\/gh\/cmu-sei\/sds-lite@vVERSION\/dist\/FILE/,
   )
-  assert.match(cdnGuide, /Download the `dist\/` directory/)
+  assert.match(cdnGuide, /only needs `sds\.css` and `auto\.js`/)
   assert.doesNotMatch(cdnGuide, /published package files/)
 })
 
@@ -116,7 +116,6 @@ test('documentation lists every public data attribute', async () => {
 })
 
 test('documentation lists every package entry', async () => {
-  const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
   for (const entry of Object.keys(packageJson.exports)) {
     if (entry === './package.json') continue
     const publicEntry =
@@ -125,22 +124,40 @@ test('documentation lists every package entry', async () => {
   }
 })
 
-test('documentation lists every exported declaration', async () => {
-  const files = [
-    'dist/package/elements/dialog.d.ts',
-    'dist/package/elements/dropdown.d.ts',
-    'dist/package/elements/popover.d.ts',
-    'dist/package/elements/tabs.d.ts',
-    'dist/package/elements/tooltip.d.ts',
-    'dist/package/elements/toast.d.ts',
-  ]
-  const declarations = (
-    await Promise.all(
-      ['dist/package/sds.d.ts', ...files].map((file) =>
-        readFile(file, 'utf8'),
-      ),
-    )
-  ).join('\n')
+test('documentation does not reference package entries that do not exist', () => {
+  const packageEntries = new Set(
+    Object.keys(packageJson.exports).map((entry) =>
+      entry === '.'
+        ? '@cmu-sei/sds-lite'
+        : `@cmu-sei/sds-lite/${entry.slice(2)}`,
+    ),
+  )
+  const documentedEntries = matches(
+    reference,
+    /[`'"](@cmu-sei\/sds-lite(?:\/[a-z0-9./-]+)?)[`'"]/gi,
+  )
+
+  assert.deepEqual(
+    [...documentedEntries].filter((entry) => !packageEntries.has(entry)),
+    [],
+  )
+})
+
+test('every documented versioned CDN file exists in the build', async () => {
+  const urls = Array.from(
+    reference.matchAll(
+      /https:\/\/cdn\.jsdelivr\.net\/gh\/cmu-sei\/sds-lite@v\d+\.\d+\.\d+\/dist\/([^'"<>\s)]+)/g,
+    ),
+    (match) => match[1],
+  )
+
+  for (const filename of new Set(urls)) {
+    await assert.doesNotReject(access(path.resolve('dist', filename)), filename)
+  }
+})
+
+test('documentation lists every root declaration', async () => {
+  const declarations = await readFile('dist/package/sds.d.ts', 'utf8')
   const names = matches(
     declarations,
     /export (?:declare )?(?:class|function|interface|type) ([A-Za-z0-9_]+)/g,

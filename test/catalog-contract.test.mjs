@@ -43,7 +43,7 @@ test('catalog examples use the current tone vocabulary', () => {
 
   assert.equal(
     document.querySelector(
-      '#actions .sds-grid[data-sds-tone="accent"] > strong',
+      '#actions .sds-card[data-sds-tone="accent"] > strong',
     )?.textContent,
     'Accent',
   )

@@ -152,7 +152,7 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
 | Interface | Values | Default |
 |---|---|---|
 | `open` | Presence | Closed |
-| `tone` | All semantic tones | `info` |
+| `tone` | All semantic tones | `accent` |
 | `duration` | Positive milliseconds | `5000` |
 | `persistent` | Presence | Auto-dismiss |
 | `data-sds-toast-open="id"` | Target toast on any trigger | None |
@@ -167,9 +167,9 @@ content; reserve automatic dismissal for brief, nonessential status that is
 also available elsewhere.
 
 ```ts
-import type { SdsToastElement } from '@cmu-sei/sds-lite/toast'
+import '@cmu-sei/sds-lite'
 
-const toast = document.querySelector<SdsToastElement>('#saved-toast')
+const toast = document.querySelector('sds-toast')
 if (toast) {
   toast.tone = 'success'
   toast.duration = 8000

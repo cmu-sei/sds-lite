@@ -4,7 +4,7 @@
 
 ## Nothing is styled
 
-1. Confirm `sds.css` or `core.css` is present in the browser build.
+1. Confirm `sds.css` is present in the browser build.
 2. Confirm the element is inside `[data-sds-root]`.
 3. Check the network panel for a failed CDN request.
 4. Check whether application CSS intentionally overrides the layered rules.
@@ -26,8 +26,8 @@ import '@cmu-sei/sds-lite/auto'
 or:
 
 ```js
-import { defineSds } from '@cmu-sei/sds-lite'
-defineSds()
+import { setupSds } from '@cmu-sei/sds-lite'
+setupSds()
 ```
 
 Check the console. Invalid tabs and dropdown structures produce warnings
@@ -35,17 +35,20 @@ instead of guessing an ambiguous relationship.
 
 ## Hydration reports a mismatch
 
-Use the side-effect-free entry, hydrate first, and register second:
+Use the side-effect-free entry, hydrate first, and set up SDS Lite second:
 
 ```js
-import { defineSds } from '@cmu-sei/sds-lite'
+import { setupSds } from '@cmu-sei/sds-lite'
 
 hydrateApplication()
-defineSds()
+setupSds()
 ```
 
-Render complete IDs, roles, ARIA relationships, selected state, tab order, and
-`hidden` panels on the server. See [Server rendering](./guides/server-rendering.md).
+If the mismatch happens before `setupSds()` runs, it comes from application
+markup rather than SDS Lite. To minimize changes after setup, render complete
+IDs, roles, ARIA relationships, selected state, tab order, and `hidden` panels
+on the server. See
+[Server rendering](./guides/server-rendering.md).
 
 ## A dropdown, tooltip, or popover is misplaced
 

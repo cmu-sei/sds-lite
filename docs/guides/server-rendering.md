@@ -4,9 +4,9 @@
 
 Every SDS Lite JavaScript entry is safe to import when `window`, `document`,
 `HTMLElement`, and `customElements` do not exist. The root entry has no
-registration side effects.
+setup side effects.
 
-## Recommended lifecycle
+## The simple path
 
 Import CSS through the framework's stylesheet path so it appears in the first
 response:
@@ -15,19 +15,49 @@ response:
 import '@cmu-sei/sds-lite/sds.css'
 ```
 
-Hydrate first, then register:
+Render the same beginner markup on the server:
 
-```js
-import { defineSds } from '@cmu-sei/sds-lite'
-
-hydrateApplication()
-defineSds()
+```html
+<sds-tabs>
+  <div aria-label="Project sections">
+    <button type="button" aria-selected="true">Overview</button>
+    <button type="button">Activity</button>
+  </div>
+  <section>Overview content</section>
+  <section>Activity content</section>
+</sds-tabs>
 ```
 
-Do not import `/auto` before hydration. Custom-element upgrades may fill in
-convenience attributes, which can make the client DOM differ from server HTML.
+Hydrate the application, then set up SDS Lite:
 
-## Server contract
+```js
+import { setupSds } from '@cmu-sei/sds-lite'
+
+hydrateApplication()
+setupSds()
+```
+
+This avoids hydration mismatches because SDS Lite does not enhance the markup
+until the framework has finished comparing its server and client output.
+`setupSds()` may then add classes, IDs, ARIA relationships, and initial state.
+
+Do not import `/auto` in a shared SSR entry. It sets up custom elements as soon
+as the browser evaluates it, which may be before hydration. Use `/auto` only
+from a framework hook that is guaranteed to run after hydration, or use
+`setupSds()` as shown above.
+
+See [Framework integration](./frameworks.md#copy-ready-ssr-setups) for Next.js,
+Nuxt, SvelteKit, Astro, Remix, and Angular examples.
+
+## The pre-authored path
+
+Some applications want the initial response to contain the same accessible
+structure and state that SDS Lite produces during setup. For that requirement,
+render the complete markup shown below. SDS Lite still attaches behavior and
+may update runtime state or floating-position styles. Most applications do not
+need this extra authoring.
+
+### Server contract
 
 Render:
 
@@ -44,7 +74,7 @@ positioning without moving, wrapping, cloning, replacing, or generating
 application nodes. `notify()` is the intentional exception: it creates a
 transient toast in the browser.
 
-## Fully authored tabs
+### Fully authored tabs
 
 ```html
 <sds-tabs value="overview" variant="underline">
@@ -94,7 +124,7 @@ transient toast in the browser.
 </sds-tabs>
 ```
 
-## Fully authored dropdown
+### Fully authored dropdown
 
 ```html
 <sds-dropdown>
@@ -124,7 +154,7 @@ transient toast in the browser.
 </sds-dropdown>
 ```
 
-## Fully authored tooltip and popover
+### Fully authored tooltip and popover
 
 ```html
 <sds-tooltip>
@@ -176,7 +206,7 @@ environment branch to shared render code.
 - Render inactive tab panels with `hidden`.
 - Render `aria-expanded="false"` on closed dropdown triggers.
 - Do not generate IDs independently on server and client.
-- Do not call `defineSds()` until hydration has completed.
+- Do not call `setupSds()` until hydration has completed.
 - Avoid rendering a toast both on the server and through `notify()` on startup.
 
 [Review the accessibility contract →](./accessibility.md)

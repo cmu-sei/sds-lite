@@ -168,5 +168,6 @@ available for defining a semantic assignment:
 
 Properties prefixed with `--sds-tone-*`, `--sds-avatar-*`, `--sds-button-*`,
 `--sds-prose-*`, `--sds-tab-*`, `--sds-timeline-*`,
-`--sds-datapoint-*`, `--sds-floating-*`, or `--sds-grid-*` are implementation
-details. Use a semantic token or documented data attribute instead.
+`--sds-datapoint-*`, `--sds-floating-*`, `--sds-grid-*`, or `--sds-tag-*`
+are implementation details. Use a semantic token or documented data attribute
+instead.

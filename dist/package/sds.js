@@ -10,4 +10,4 @@ function c() {
 	e(), t(), n(), r(), i(), s(), a();
 }
 //#endregion
-export { c as defineSds, o as notify };
+export { o as notify, c as setupSds };

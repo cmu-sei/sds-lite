@@ -1,4 +1,3 @@
-import './style.css'
-import { defineSds } from './sds.js'
+import { setupSds } from './sds.js'
 
-defineSds()
+setupSds()

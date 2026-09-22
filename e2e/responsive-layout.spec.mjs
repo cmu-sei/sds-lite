@@ -506,8 +506,9 @@ test('closed toasts never paint during initial rendering', async ({ page }) => {
     })),
   )
 
+  expect(styles.length).toBeGreaterThan(0)
   expect(styles).toEqual(
-    Array.from({ length: 6 }, () => ({
+    Array.from({ length: styles.length }, () => ({
       display: 'none',
       visibility: 'hidden',
     })),
@@ -537,4 +538,18 @@ test('section anchors remain visible below the sticky page header', async ({
     expect(heading).not.toBeNull()
     expect(heading.y).toBeGreaterThanOrEqual(header.y + header.height)
   }
+})
+
+test('section anchors do not move the application shell', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+
+  const sidebar = page.locator('#catalog-sidebar')
+  await expect(sidebar).toBeVisible()
+  expect((await sidebar.boundingBox())?.y).toBe(0)
+
+  await page.getByRole('link', { name: 'Loading', exact: true }).click()
+
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  expect((await sidebar.boundingBox())?.y).toBe(0)
 })

@@ -7,6 +7,20 @@ const customElementsManifest = JSON.parse(
   await readFile('custom-elements.json', 'utf8'),
 )
 
+test('the package keeps one small primary interface', () => {
+  assert.deepEqual(Object.keys(packageJson.exports), [
+    '.',
+    './auto',
+    './react',
+    './vue',
+    './html-data.json',
+    './interface-manifest.json',
+    './sds.css',
+    './brand.css',
+    './package.json',
+  ])
+})
+
 test('every public package target exists', async () => {
   for (const target of Object.values(packageJson.exports)) {
     const paths = typeof target === 'string' ? [target] : Object.values(target)
@@ -24,19 +38,13 @@ test('all JavaScript entries are safe to import during SSR', async () => {
   const entries = [
     '@cmu-sei/sds-lite',
     '@cmu-sei/sds-lite/auto',
-    '@cmu-sei/sds-lite/dialog',
-    '@cmu-sei/sds-lite/dropdown',
-    '@cmu-sei/sds-lite/popover',
     '@cmu-sei/sds-lite/react',
-    '@cmu-sei/sds-lite/tabs',
-    '@cmu-sei/sds-lite/tooltip',
-    '@cmu-sei/sds-lite/toast',
     '@cmu-sei/sds-lite/vue',
   ]
 
   const modules = await Promise.all(entries.map((entry) => import(entry)))
   assert.equal(typeof modules[0].notify, 'function')
-  assert.equal(typeof modules[0].defineSds, 'function')
+  assert.equal(typeof modules[0].setupSds, 'function')
 })
 
 test('browser-only helpers fail clearly when called during SSR', async () => {
@@ -47,7 +55,10 @@ test('browser-only helpers fail clearly when called during SSR', async () => {
 test('declarations use publishable JavaScript specifiers', async () => {
   const declarations = await readFile('dist/package/sds.d.ts', 'utf8')
   assert.doesNotMatch(declarations, /from ['"].+\.ts['"]/)
-  assert.equal(await readFile('dist/package/auto.d.ts', 'utf8'), '')
+  assert.equal(
+    await readFile('dist/package/auto.d.ts', 'utf8'),
+    "import './sds.js'\n",
+  )
 })
 
 test('the application build retains automatic registration', async () => {
@@ -73,23 +84,28 @@ test('the application build includes stable CDN entries', async () => {
   for (const filename of [
     'auto.js',
     'brand.css',
-    'core.css',
-    'dialog.js',
-    'dropdown.js',
     'interface-manifest.schema.json',
-    'layouts.css',
-    'popover.js',
-    'prose.css',
     'sds.css',
     'sds.js',
-    'tabs.js',
-    'toast.js',
-    'tooltip.js',
   ]) {
     await access(`dist/${filename}`)
   }
   await access('dist/package/auto.js')
   await access('dist/package/assets/sei-wordmark.svg')
+
+  for (const filename of [
+    'core.css',
+    'dialog.js',
+    'dropdown.js',
+    'layouts.css',
+    'popover.js',
+    'prose.css',
+    'tabs.js',
+    'toast.js',
+    'tooltip.js',
+  ]) {
+    await assert.rejects(access(`dist/${filename}`))
+  }
 })
 
 test('the automatic entry and root entry share behavior modules', async () => {
@@ -102,24 +118,14 @@ test('the automatic entry and root entry share behavior modules', async () => {
 })
 
 test('the CDN entries use stable top-level paths', async () => {
+  const auto = await readFile('dist/auto.js', 'utf8')
+  assert.match(auto, /sds-dropdown/)
+  assert.match(auto, /sds-tabs/)
+  assert.doesNotMatch(auto, /\b(?:import|export)\s/)
   assert.equal(
-    await readFile('dist/auto.js', 'utf8'),
-    "import './package/auto.js'\n",
+    await readFile('dist/sds.js', 'utf8'),
+    "export * from './package/sds.js'\n",
   )
-  for (const name of [
-    'dialog',
-    'dropdown',
-    'popover',
-    'sds',
-    'tabs',
-    'toast',
-    'tooltip',
-  ]) {
-    assert.equal(
-      await readFile(`dist/${name}.js`, 'utf8'),
-      `export * from './package/${name}.js'\n`,
-    )
-  }
   const stylesheet = await readFile('dist/sds.css', 'utf8')
   assert.match(stylesheet, /@layer sds\.tokens/)
 })

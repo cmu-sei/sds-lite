@@ -183,14 +183,161 @@ SDS recipes directly from templates:
 Escape untrusted content exactly as you would for any HTML template. SDS Lite
 does not interpret template values.
 
+## Copy-ready SSR setups
+
+Each setup follows one rule: include CSS in the server response, let the
+framework hydrate, and then call `setupSds()`. The root import is safe during
+server rendering.
+
+### Next.js App Router
+
+Import the stylesheet in `app/layout.tsx`, then render one client setup module:
+
+```tsx
+// app/layout.tsx
+import '@cmu-sei/sds-lite/sds.css'
+import type { ReactNode } from 'react'
+import { SdsSetup } from './sds-setup'
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body data-sds-root>
+        {children}
+        <SdsSetup />
+      </body>
+    </html>
+  )
+}
+```
+
+```tsx
+// app/sds-setup.tsx
+'use client'
+
+import { useEffect } from 'react'
+import { setupSds } from '@cmu-sei/sds-lite'
+
+export function SdsSetup() {
+  useEffect(() => setupSds(), [])
+  return null
+}
+```
+
+### Nuxt
+
+Add the stylesheet globally and set up behavior after the application mounts:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  css: ['@cmu-sei/sds-lite/sds.css'],
+})
+```
+
+```ts
+// plugins/sds.client.ts
+import { setupSds } from '@cmu-sei/sds-lite'
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.hook('app:mounted', setupSds)
+})
+```
+
+### SvelteKit
+
+Use the root layout so setup happens once:
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script>
+  import '@cmu-sei/sds-lite/sds.css'
+  import { setupSds } from '@cmu-sei/sds-lite'
+  import { onMount } from 'svelte'
+
+  onMount(setupSds)
+</script>
+
+<div data-sds-root>
+  <slot />
+</div>
+```
+
+### Astro
+
+Static Astro pages do not hydrate their ordinary HTML, so the standard
+automatic entry can load from the shared layout:
+
+```astro
+---
+import '@cmu-sei/sds-lite/sds.css'
+---
+
+<html lang="en">
+  <body data-sds-root>
+    <slot />
+    <script>
+      import '@cmu-sei/sds-lite/auto'
+    </script>
+  </body>
+</html>
+```
+
+If an Astro island renders SDS custom elements through React, Vue, or Svelte,
+call `setupSds()` from that island's mounted hook instead.
+
+### Remix
+
+Import global CSS through the application's configured stylesheet path, then
+set up SDS Lite once in the root:
+
+```tsx
+import { useEffect } from 'react'
+import { Outlet } from '@remix-run/react'
+import { setupSds } from '@cmu-sei/sds-lite'
+
+export default function App() {
+  useEffect(() => setupSds(), [])
+  return (
+    <main data-sds-root>
+      <Outlet />
+    </main>
+  )
+}
+```
+
+### Angular SSR
+
+Add `@cmu-sei/sds-lite/sds.css` to the workspace's global styles. Set up
+behavior after the first browser render:
+
+```ts
+import { Component, afterNextRender } from '@angular/core'
+import { setupSds } from '@cmu-sei/sds-lite'
+
+@Component({
+  selector: 'app-root',
+  template: '<main data-sds-root><router-outlet /></main>',
+})
+export class AppComponent {
+  constructor() {
+    afterNextRender(setupSds)
+  }
+}
+```
+
+Angular applications using SDS custom elements must also include
+`CUSTOM_ELEMENTS_SCHEMA`, as described above.
+
 ## Framework rules that prevent surprises
 
-1. Import global CSS and register behavior once, not per component instance.
+1. Import global CSS and set up behavior once, not per component instance.
 2. Use native properties for state: `disabled`, `checked`, `hidden`, `open`,
    and ARIA attributes.
 3. Keep custom-element children in the documented order.
 4. Use refs or framework-native event bindings for `sds-*` custom events.
-5. For hydration, render complete markup and call `defineSds()` only after the
-   framework hydrates.
+5. For hydration, call `setupSds()` only after the framework hydrates. Render
+   complete authored markup only when the initial response must include the
+   enhanced accessibility state.
 
 [Configure server rendering →](./server-rendering.md)

@@ -6,33 +6,38 @@
 
 ```ts
 import {
-  defineSds,
   notify,
+  setupSds,
 } from '@cmu-sei/sds-lite'
 ```
 
 The root also exports these types:
 
+- `SdsDropdownElement`
 - `SdsGap`
 - `SdsOrientation`
 - `SdsPlacement`
+- `SdsPopoverElement`
 - `SdsRecipeAttribute`
 - `SdsRecipeClass`
 - `SdsSize`
 - `SdsTabsActivation`
+- `SdsTabsElement`
 - `SdsNotifyOptions`
 - `SdsTabsSize`
 - `SdsTabsChangeDetail`
 - `SdsTabsVariant`
 - `SdsToggleDetail`
 - `SdsToastCloseReason`
+- `SdsToastElement`
 - `SdsToastTone`
 - `SdsTone`
+- `SdsTooltipElement`
 - `SdsWidth`
 
-### `defineSds()`
+### `setupSds()`
 
-Registers dialogs, panels, dropdowns, popovers, tabs, tooltips, and toasts.
+Sets up dialogs, panels, dropdowns, popovers, tabs, tooltips, and toasts.
 Repeated calls are safe. Call it after hydration when using SSR.
 
 ### `notify(message, options?)`
@@ -42,30 +47,17 @@ Creates an accessible toast notification. See
 
 It chooses the supplied `container`, then an existing toaster, then the first
 SDS root, then `body`. When no root exists, it creates a self-contained root
-for the toaster. It registers `<sds-toast>` without `/auto`.
+for the toaster. It sets up `<sds-toast>` without `/auto`.
 
 `duration` must be a positive finite number. Calling `notify()` outside a
 browser throws because it creates DOM.
 
-## Individual entries
-
-| Entry | Exports |
-|---|---|
-| `/dialog` | `registerSdsDialog()` |
-| `/dropdown` | `SdsDropdownElement`, `registerSdsDropdown()` |
-| `/popover` | `SdsPopoverElement`, `registerSdsPopover()` |
-| `/tabs` | `SdsTabsElement`, `registerSdsTabs()` |
-| `/tooltip` | `SdsTooltipElement`, `registerSdsTooltip()` |
-| `/toast` | `SdsToastElement`, `SdsToastCloseReason`, `SdsToastTone`, `SdsNotifyOptions`, `notify()`, `registerSdsToast()` |
-
-Import custom-element classes from their individual entries.
-
 ## Toast element
 
 ```ts
-import type { SdsToastElement } from '@cmu-sei/sds-lite/toast'
+import '@cmu-sei/sds-lite'
 
-const toast = document.querySelector<SdsToastElement>('#saved-toast')
+const toast = document.querySelector('sds-toast')
 toast?.show()
 toast?.close('programmatic')
 ```

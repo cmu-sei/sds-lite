@@ -22,7 +22,7 @@ classes, options, custom-element attributes, properties, methods, and events.
 | `data-sds-size` | Recipe-specific size |
 | `data-sds-width` | Recipe or overlay width |
 | `data-sds-orientation` | `horizontal`, `vertical` |
-| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` |
+| `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |
 
 Spacing utilities accept `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`,
 `3xl`, or `4xl`:
@@ -189,13 +189,13 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 
 ## Custom elements
 
-| Element | Purpose | Entry |
-|---|---|---|
-| `<sds-dropdown>` | Menu positioning and keyboard interaction | `/dropdown` |
-| `<sds-popover>` | Delayed-hover interactive anchored content | `/popover` |
-| `<sds-tabs>` | Tab selection and keyboard interaction | `/tabs` |
-| `<sds-toast>` | Timed or persistent notification | `/toast` |
-| `<sds-tooltip>` | Hover and focus description | `/tooltip` |
+| Element | Purpose |
+|---|---|
+| `<sds-dropdown>` | Menu positioning and keyboard interaction |
+| `<sds-popover>` | Delayed-hover interactive anchored content |
+| `<sds-tabs>` | Tab selection and keyboard interaction |
+| `<sds-toast>` | Timed or persistent notification |
+| `<sds-tooltip>` | Hover and focus description |
 
 There are intentionally no custom elements for buttons, links, inputs, tags,
 dialogs, panels, or disclosures. Native HTML supplies their semantics.

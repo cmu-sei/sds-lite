@@ -138,7 +138,7 @@ notify('Your project was saved.', {
 })
 ```
 
-`notify()` registers the toast behavior it needs, creates or reuses a toaster,
+`notify()` sets up the toast behavior it needs, creates or reuses a toaster,
 and supplies accessible markup. It does not require the `/auto` import.
 
 ## What to read next

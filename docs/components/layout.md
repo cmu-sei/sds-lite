@@ -415,8 +415,9 @@ image URL.
 
 ### Brochure shell
 
-The brochure shell automatically uses the Plaid theme and square corners. It
-composes `.sds-brochure-header`, `.sds-brochure-masthead`,
+The brochure shell uses Plaid-style serif headings and square corners. Add
+`data-sds-theme="plaid"` when the shell should also use the complete Plaid
+color palette. It composes `.sds-brochure-header`, `.sds-brochure-masthead`,
 `.sds-brochure-navigation`, `.sds-brochure-main`, and the brochure footer
 regions. Preserve the canonical CMU/SEI links, sponsorship language, legal
 navigation, `.sds-cmu-wordmark`, and `.sds-sei-wordmark` from the SEI Design

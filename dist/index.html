@@ -8,8 +8,8 @@
       content="Interactive SDS Lite playground with copy-ready NPM and CDN examples for every component."
     />
     <title>SDS Lite Interactive Playground</title>
-    <script type="module" crossorigin src="./assets/index-SkjRXvA5.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-auONv0F7.css">
+    <script type="module" crossorigin src="./assets/index-QlU3XiPj.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-NSYmMJhW.css">
   </head>
   <body data-sds-root>
     <div class="sds-app">
@@ -1429,7 +1429,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Application shell preview</summary>
-              <div class="sds-app" data-sds-margin-block-start="lg">
+              <div class="sds-app" data-sds-variant="application" data-sds-margin-block-start="lg">
                 <header class="sds-app-mobile-header">
                   <button type="button"
                     data-sds-shape="icon"
@@ -2191,7 +2191,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <article class="sds-card sds-stack">
                 <h3>Dropdowns</h3>
                 <div class="sds-action-group">
-                  <sds-dropdown id="default-dropdown" width="sm" placement="block-end" offset="4">
+                  <sds-dropdown id="default-dropdown" width="sm" placement="block-end-start" offset="4">
                     <button type="button" aria-haspopup="menu" aria-controls="primary-menu" aria-expanded="false" popovertarget="primary-menu">Default menu</button>
                     <menu id="primary-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical">
                       <li role="none"><span class="sds-dropdown-label">Actions</span></li>
@@ -2466,6 +2466,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
     <dialog
       id="catalog-dialog"
       class="sds-dialog"
+      data-sds-width="md"
       closedby="any"
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
@@ -2527,7 +2528,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
       <footer><button type="button" command="close">Done</button></footer>
     </dialog>
 
-    <dialog id="panel-right-md" class="sds-panel" closedby="any" aria-labelledby="panel-right-title">
+    <dialog id="panel-right-md" class="sds-panel" data-sds-side="right" data-sds-width="md" closedby="any" aria-labelledby="panel-right-title">
       <header>
         <h2 id="panel-right-title">Medium right panel</h2>
         <button type="button" data-sds-shape="icon" command="request-close" aria-label="Close panel">&times;</button>

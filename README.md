@@ -7,21 +7,27 @@ templates, and static sites.
 
 ## Start in 60 seconds
 
-### NPM
+### 1. Choose one installation method
+
+#### NPM
 
 Configure npm for GitHub Packages as described in the
-[installation guide](./docs/installation/npm.md), then install:
+[NPM installation guide](./docs/installation/npm.md), then install SDS Lite:
 
 ```sh
 npm install @cmu-sei/sds-lite
 ```
+
+Load the stylesheet and automatic browser setup:
 
 ```js
 import '@cmu-sei/sds-lite/sds.css'
 import '@cmu-sei/sds-lite/auto'
 ```
 
-### CDN
+#### CDN
+
+Add these two tags to the page:
 
 ```html
 <link
@@ -34,9 +40,9 @@ import '@cmu-sei/sds-lite/auto'
 ></script>
 ```
 
-### HTML
+### 2. Write semantic HTML
 
-Add an SDS root and use native elements:
+Add `data-sds-root` to the element that contains your interface:
 
 ```html
 <main data-sds-root>
@@ -46,8 +52,18 @@ Add an SDS root and use native elements:
 </main>
 ```
 
-That is enough for headings, text, links, buttons, inputs, selects,
-checkboxes, and radio buttons. Add an SDS recipe only for larger patterns:
+That is a complete SDS Lite page.
+
+## The four rules
+
+1. Load `sds.css`.
+2. Load `/auto` if the page uses interactive SDS custom elements.
+3. Put `data-sds-root` around the interface.
+4. Write semantic HTML.
+
+SDS Lite styles headings, text, links, buttons, inputs, selects, checkboxes,
+and radio buttons without requiring classes. Add a class only for a larger
+visual recipe:
 
 ```html
 <article class="sds-card">
@@ -57,11 +73,10 @@ checkboxes, and radio buttons. Add an SDS recipe only for larger patterns:
 </article>
 ```
 
-Native elements and CSS recipes use namespaced options such as
-`data-sds-tone="danger"`. Namespaced custom elements use ordinary reflected
-attributes such as `<sds-tabs variant="underline">`.
+## Interactive behavior
 
-## Accessible behavior without boilerplate
+Use a custom element when native HTML needs accessible keyboard behavior,
+relationships, state, or positioning:
 
 ```html
 <sds-tabs>
@@ -74,21 +89,26 @@ attributes such as `<sds-tabs variant="underline">`.
 </sds-tabs>
 ```
 
-```html
-<sds-dropdown>
-  <button type="button">Actions</button>
-  <menu>
-    <li><button type="button">Rename</button></li>
-    <li><button type="button">Duplicate</button></li>
-  </menu>
-</sds-dropdown>
+The `/auto` entry sets up every SDS custom element on the page. SDS Lite adds
+the missing classes, IDs, relationships, state, positioning, and keyboard
+behavior.
+
+## JavaScript when you need control
+
+Most browser applications should use `/auto`. Applications that control when
+custom elements are registered can instead use the root JavaScript interface:
+
+```js
+import '@cmu-sei/sds-lite/sds.css'
+import { setupSds } from '@cmu-sei/sds-lite'
+
+setupSds()
 ```
 
-SDS Lite supplies the missing client-side classes, IDs, relationships, state,
-positioning, and keyboard behavior. Server-rendered applications can author
-the complete pre-upgrade markup for zero hydration mutations.
+Call `setupSds()` after the DOM is available. Do not load `/auto` when calling
+`setupSds()` yourself.
 
-## Notifications
+The root interface also provides notifications:
 
 ```js
 import { notify } from '@cmu-sei/sds-lite'
@@ -99,11 +119,16 @@ notify('Your project was saved.', {
 })
 ```
 
-`notify()` registers its own toast behavior; it does not require `/auto`.
+`notify()` sets up its own toast behavior and does not require `/auto` or a
+separate `setupSds()` call.
 
-## Themes
+## Options and themes
 
-Forge is the default. Select a theme and color scheme on any SDS root:
+CSS recipes use namespaced options such as `data-sds-tone="danger"`.
+Namespaced custom elements use ordinary reflected attributes such as
+`<sds-tabs variant="underline">`.
+
+Forge is the default theme. Select a theme and color scheme on any SDS root:
 
 ```html
 <main
@@ -115,62 +140,60 @@ Forge is the default. Select a theme and color scheme on any SDS root:
 </main>
 ```
 
-Themes are `forge` and `plaid`. Schemes are `light`, `dark`, and `system`.
-Specialized SEI application and brochure shells use an additional import:
+Themes are `forge` and `plaid`. Color schemes are `light`, `dark`, and
+`system`. Specialized SEI application and brochure shells use one additional
+stylesheet:
 
 ```js
 import '@cmu-sei/sds-lite/brand.css'
 ```
 
-## Documentation
+## Server rendering
 
-The documentation is organized for both learning and lookup:
+Every JavaScript entry is safe to import without browser globals. Most
+hydrating applications can render the same simple HTML shown above, hydrate,
+and then set up behavior:
 
-- **[Documentation home](./docs/README.md)** — choose a path by task.
-- **[5-minute quick start](./docs/getting-started.md)** — build a useful page.
-- **[NPM](./docs/installation/npm.md)** or
-  **[CDN](./docs/installation/cdn.md)** — complete installation instructions.
-- **[Component guides](./docs/components/README.md)** — focused, copy-ready
-  recipes.
-- **[Framework integration](./docs/guides/frameworks.md)** — React, Vue,
-  Angular, Svelte, and server templates.
-- **[Migration guides](./docs/migration/index.md)** — crosswalks and a
-  conservative codemod for existing design systems.
-- **[Server rendering](./docs/guides/server-rendering.md)** — hydration-safe
-  lifecycle and authored markup.
-- **[Accessibility](./docs/guides/accessibility.md)** — application contract
-  and release checklist.
-- **[API reference](./docs/reference/README.md)** — imports, exports, events,
-  classes, attributes, and tokens.
+```js
+import { setupSds } from '@cmu-sei/sds-lite'
 
-The published [`interface-manifest.json`](./interface-manifest.json) is the
-machine-readable source for recipes, attributes, classes, custom elements,
-editor metadata, and generated framework types.
+hydrateApplication()
+setupSds()
+```
 
-The repository's [`index.html`](./index.html) is a runnable interactive
-playground containing every component, option family, theme, and color scheme.
+Static and client-only applications can use `/auto`. Applications that want
+their initial server markup to include the enhanced accessibility state can
+instead author the complete markup described in the
+[server-rendering guide](./docs/guides/server-rendering.md).
 
 ## Browser support
 
 SDS Lite targets modern browsers and ships no polyfills. Interactive recipes
-use Custom Elements, the Popover API, and `HTMLDialogElement`; styles use
-modern CSS including cascade layers, `:where()`, `:has()`, `light-dark()`, and
-`color-mix()`. Responsive flex composition also uses CSS container queries.
+use Custom Elements, the Popover API, and `HTMLDialogElement`. Styles use
+modern CSS including cascade layers, `:where()`, `:has()`, `light-dark()`,
+`color-mix()`, and container queries.
 
 See [Browser support](./docs/guides/browser-support.md) for integration policy
 and fallback guidance.
 
-## Server rendering
+## Learn more
 
-Every JavaScript entry is safe to import without browser globals. Hydrating
-applications should import the side-effect-free root, hydrate, and then
-register behavior:
+| Goal | Guide |
+|---|---|
+| Build a useful page | [5-minute quick start](./docs/getting-started.md) |
+| Install the package | [NPM](./docs/installation/npm.md) or [CDN](./docs/installation/cdn.md) |
+| Copy a visual or interactive recipe | [Component guides](./docs/components/README.md) |
+| Integrate a framework | [Framework integration](./docs/guides/frameworks.md) |
+| Configure server rendering | [Server rendering](./docs/guides/server-rendering.md) |
+| Check accessibility responsibilities | [Accessibility guide](./docs/guides/accessibility.md) |
+| Migrate an existing interface | [Migration guides](./docs/migration/index.md) |
+| Look up imports, attributes, events, or tokens | [Interface reference](./docs/reference/README.md) |
 
-```js
-import { defineSds } from '@cmu-sei/sds-lite'
+Start from the [documentation home](./docs/README.md) when you are not sure
+which guide you need.
 
-hydrateApplication()
-defineSds()
-```
-
-Static and client-only applications can use `/auto`.
+The published [`interface-manifest.json`](./interface-manifest.json) is the
+machine-readable source for recipes, attributes, classes, custom elements,
+editor metadata, and generated framework types. The repository's
+[`index.html`](./index.html) is a runnable playground containing every
+component, option family, theme, and color scheme.
