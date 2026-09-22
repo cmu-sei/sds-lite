@@ -73,7 +73,8 @@ release.
 
 ## CSS-only page
 
-If the page has no SDS custom elements or dialogs, omit the script:
+If the page uses only CSS recipes and native controls, and does not rely on
+SDS dialog, panel, or mobile-sidebar compatibility behavior, omit the script:
 
 ```html
 <link
@@ -84,7 +85,7 @@ If the page has no SDS custom elements or dialogs, omit the script:
 
 ## Import JavaScript functions
 
-Use an inline module when you need `notify()` or another export:
+Use an inline module when you need `notify()` or `setupSds()`:
 
 ```html
 <script type="module">

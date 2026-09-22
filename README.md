@@ -152,12 +152,12 @@ import '@cmu-sei/sds-lite/brand.css'
 
 Every JavaScript entry is safe to import without browser globals. Most
 hydrating applications can render the same simple HTML shown above, hydrate,
-and then set up behavior:
+and then set up behavior from the framework's post-hydration client lifecycle:
 
 ```js
 import { setupSds } from '@cmu-sei/sds-lite'
 
-hydrateApplication()
+// Run after the framework has hydrated this subtree.
 setupSds()
 ```
 

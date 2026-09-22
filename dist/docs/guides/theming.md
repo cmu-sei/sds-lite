@@ -87,9 +87,10 @@ themes.
 - Override semantic tokens at an application boundary.
 - Keep complete light and dark values when changing color assignments.
 - Validate text, icon, border, focus, disabled, hover, and active contrast.
-- Do not depend on `--sds-tone-*`, `--sds-button-*`, `--sds-prose-*`,
-  `--sds-tab-*`, `--sds-timeline-*`, `--sds-datapoint-*`, or
-  `--sds-floating-*`; they are implementation details.
+- Do not depend on `--sds-tone-*`, `--sds-avatar-*`, `--sds-button-*`,
+  `--sds-prose-*`, `--sds-tab-*`, `--sds-timeline-*`,
+  `--sds-datapoint-*`, `--sds-floating-*`, `--sds-grid-*`, or `--sds-tag-*`;
+  they are implementation details.
 - Treat undocumented selectors and custom properties as private.
 
 SDS Lite intentionally does not expose a second, exhaustive token for every

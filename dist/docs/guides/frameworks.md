@@ -56,7 +56,7 @@ For React 18 and earlier, attach custom events with a ref:
 import { useEffect, useRef } from 'react'
 
 export function ProjectTabs() {
-  const tabsRef = useRef<HTMLElement>(null)
+  const tabsRef = useRef<HTMLElementTagNameMap['sds-tabs']>(null)
 
   useEffect(() => {
     const tabs = tabsRef.current
@@ -97,8 +97,8 @@ import '@cmu-sei/sds-lite/vue'
 <template>
   <sds-tabs @sds-change="onChange">
     <div aria-label="Project sections">
-      <button type="button">Overview</button>
-      <button type="button">Activity</button>
+      <button type="button" value="overview">Overview</button>
+      <button type="button" value="activity">Activity</button>
     </div>
     <section>Overview content</section>
     <section>Activity content</section>
@@ -118,33 +118,67 @@ has no runtime behavior:
 
 ```ts
 // vite.config.ts
-vue({
-  template: {
-    compilerOptions: {
-      isCustomElement: (tag) => tag.startsWith('sds-'),
-    },
-  },
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('sds-'),
+        },
+      },
+    }),
+  ],
 })
 ```
 
 ## Angular
 
-Import styles through the workspace's global styles entry and import `/auto`
-from the browser bootstrap:
+Import styles through the workspace's global stylesheet:
+
+```css
+/* src/styles.css */
+@import '@cmu-sei/sds-lite/sds.css';
+```
+
+For a client-rendered application, import `/auto` from the browser bootstrap:
 
 ```ts
 import '@cmu-sei/sds-lite/auto'
 ```
 
-Allow custom elements with `CUSTOM_ELEMENTS_SCHEMA` in the module or
-standalone component that uses them. Listen to custom events with the normal
+Allow custom elements with `CUSTOM_ELEMENTS_SCHEMA` in the standalone
+component or NgModule that uses them. Listen to custom events with normal
 event binding:
 
-```html
-<sds-tabs (sds-change)="onTabChange($event)">
-  ...
-</sds-tabs>
+```ts
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+import type { SdsTabsChangeDetail } from '@cmu-sei/sds-lite'
+
+@Component({
+  selector: 'app-project-tabs',
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  template: `
+    <sds-tabs (sds-change)="onTabChange($event)">
+      ...
+    </sds-tabs>
+  `,
+})
+export class ProjectTabsComponent {
+  onTabChange(event: Event): void {
+    const { value } =
+      (event as CustomEvent<SdsTabsChangeDetail>).detail
+    console.log(value)
+  }
+}
 ```
+
+For an NgModule application, add `CUSTOM_ELEMENTS_SCHEMA` to the `schemas`
+array of the module that declares the consuming component. With current
+Angular versions, that component must also declare `standalone: false`.
 
 ## Svelte
 
@@ -157,15 +191,16 @@ import '@cmu-sei/sds-lite/auto'
 ```svelte
 <sds-tabs onsds-change={(event) => console.log(event.detail.value)}>
   <div aria-label="Project sections">
-    <button type="button">Overview</button>
-    <button type="button">Activity</button>
+    <button type="button" value="overview">Overview</button>
+    <button type="button" value="activity">Activity</button>
   </div>
   <section>Overview content</section>
   <section>Activity content</section>
 </sds-tabs>
 ```
 
-Use the event-listener syntax supported by your installed Svelte version.
+The example uses Svelte 5 event-property syntax. Svelte 4 and Svelte 5 legacy
+mode use `on:sds-change={handler}` instead.
 
 ## Server templates and static generators
 
@@ -185,9 +220,11 @@ does not interpret template values.
 
 ## Copy-ready SSR setups
 
-Each setup follows one rule: include CSS in the server response, let the
-framework hydrate, and then call `setupSds()`. The root import is safe during
-server rendering.
+Each setup includes CSS in the server response and prevents custom-element
+registration during server rendering. Next.js, Nuxt, SvelteKit, Astro islands,
+and Remix can call `setupSds()` after their normal client mount or hydration
+lifecycle. Angular's different hydration guarantee is explained in its
+section. The root import itself is safe during server rendering.
 
 ### Next.js App Router
 
@@ -196,6 +233,7 @@ Import the stylesheet in `app/layout.tsx`, then render one client setup module:
 ```tsx
 // app/layout.tsx
 import '@cmu-sei/sds-lite/sds.css'
+import '@cmu-sei/sds-lite/react'
 import type { ReactNode } from 'react'
 import { SdsSetup } from './sds-setup'
 
@@ -232,17 +270,26 @@ Add the stylesheet globally and set up behavior after the application mounts:
 // nuxt.config.ts
 export default defineNuxtConfig({
   css: ['@cmu-sei/sds-lite/sds.css'],
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith('sds-'),
+    },
+  },
 })
 ```
 
 ```ts
-// plugins/sds.client.ts
+// app/plugins/sds.client.ts (Nuxt 4)
+import '@cmu-sei/sds-lite/vue'
 import { setupSds } from '@cmu-sei/sds-lite'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook('app:mounted', setupSds)
 })
 ```
+
+Nuxt 3 projects using the default source layout place the same plugin at
+`plugins/sds.client.ts`.
 
 ### SvelteKit
 
@@ -255,13 +302,17 @@ Use the root layout so setup happens once:
   import { setupSds } from '@cmu-sei/sds-lite'
   import { onMount } from 'svelte'
 
+  let { children } = $props()
+
   onMount(setupSds)
 </script>
 
 <div data-sds-root>
-  <slot />
+  {@render children()}
 </div>
 ```
+
+SvelteKit projects using Svelte's legacy mode can render `<slot />` instead.
 
 ### Astro
 
@@ -288,16 +339,42 @@ call `setupSds()` from that island's mounted hook instead.
 
 ### Remix
 
-Import global CSS through the application's configured stylesheet path, then
-set up SDS Lite once in the root:
+With Remix Vite, import global CSS and the React type augmentation in the root
+route, then set up SDS Lite once:
 
 ```tsx
-import { useEffect } from 'react'
-import { Outlet } from '@remix-run/react'
+// app/root.tsx
+import '@cmu-sei/sds-lite/sds.css'
+import '@cmu-sei/sds-lite/react'
+import { useEffect, type ReactNode } from 'react'
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from '@remix-run/react'
 import { setupSds } from '@cmu-sei/sds-lite'
+
+export function Layout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  )
+}
 
 export default function App() {
   useEffect(() => setupSds(), [])
+
   return (
     <main data-sds-root>
       <Outlet />
@@ -306,28 +383,51 @@ export default function App() {
 }
 ```
 
+Classic Remix builds may require a stylesheet URL import and `links` export
+instead of the CSS side-effect import.
+
 ### Angular SSR
 
-Add `@cmu-sei/sds-lite/sds.css` to the workspace's global styles. Set up
-behavior after the first browser render:
+Add `@cmu-sei/sds-lite/sds.css` to the workspace's global styles. For standard
+hydration, wait for the first browser render and application stability before
+setting up SDS Lite:
 
 ```ts
-import { Component, afterNextRender } from '@angular/core'
+import {
+  ApplicationRef,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  afterNextRender,
+  inject,
+} from '@angular/core'
+import { RouterOutlet } from '@angular/router'
 import { setupSds } from '@cmu-sei/sds-lite'
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: '<main data-sds-root><router-outlet /></main>',
 })
 export class AppComponent {
+  private readonly appRef = inject(ApplicationRef)
+
   constructor() {
-    afterNextRender(setupSds)
+    afterNextRender(() => {
+      void this.appRef.whenStable().then(() => {
+        queueMicrotask(setupSds)
+      })
+    })
   }
 }
 ```
 
-Angular applications using SDS custom elements must also include
-`CUSTOM_ELEMENTS_SCHEMA`, as described above.
+`afterNextRender()` prevents setup during server rendering, but Angular does
+not guarantee that every component has hydrated before that callback.
+`ApplicationRef.whenStable()` makes this safe for standard hydration. For
+incremental hydration, coordinate setup with the affected subtree's hydration
+or place that subtree behind Angular's `ngSkipHydration`.
 
 ## Framework rules that prevent surprises
 
@@ -336,8 +436,8 @@ Angular applications using SDS custom elements must also include
    and ARIA attributes.
 3. Keep custom-element children in the documented order.
 4. Use refs or framework-native event bindings for `sds-*` custom events.
-5. For hydration, call `setupSds()` only after the framework hydrates. Render
-   complete authored markup only when the initial response must include the
-   enhanced accessibility state.
+5. For hydration, delay `setupSds()` until the framework's applicable
+   hydration or stability signal. Render complete authored markup only when
+   the initial response must include the enhanced accessibility state.
 
 [Configure server rendering →](./server-rendering.md)

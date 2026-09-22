@@ -35,12 +35,13 @@ instead of guessing an ambiguous relationship.
 
 ## Hydration reports a mismatch
 
-Use the side-effect-free entry, hydrate first, and set up SDS Lite second:
+Use the side-effect-free entry and call `setupSds()` from the framework's
+post-hydration client lifecycle:
 
 ```js
 import { setupSds } from '@cmu-sei/sds-lite'
 
-hydrateApplication()
+// Run after the framework has hydrated this subtree.
 setupSds()
 ```
 

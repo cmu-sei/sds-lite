@@ -28,7 +28,7 @@ Hydration-safe:
 import '@cmu-sei/sds-lite/sds.css'
 import { setupSds } from '@cmu-sei/sds-lite'
 
-hydrateApplication()
+// Run from the framework's post-hydration client lifecycle.
 setupSds()
 ```
 

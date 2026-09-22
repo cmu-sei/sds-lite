@@ -62,7 +62,7 @@ Then scope SDS Lite to your application:
 
 `sds.css` includes foundations, common recipes, layout recipes, prose, tokens,
 and utilities. `/auto` sets up dialogs, panels, dropdowns, popovers, tabs,
-tooltips, and toasts.
+tooltips, toasts, and mobile sidebars.
 
 ## Where imports belong
 
@@ -85,13 +85,14 @@ import '@cmu-sei/sds-lite/sds.css'
 ```
 
 Buttons, links, forms, cards, grids, lists, tables, timelines, disclosure
-elements, spinners, skeletons, and prose do not require SDS JavaScript.
-Dropdowns, tooltips, popovers, tabs, toasts, and dialog command fallbacks do.
+elements, spinners, skeletons, and prose do not require SDS JavaScript. SDS
+custom elements and the dialog, panel, and mobile-sidebar compatibility
+behavior do.
 
 ## TypeScript
 
 All JavaScript entries ship declarations. Types are inferred when importing
-exports or querying a registered custom element:
+exports or querying a known SDS custom element:
 
 ```ts
 import '@cmu-sei/sds-lite'

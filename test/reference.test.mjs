@@ -167,3 +167,41 @@ test('documentation lists every root declaration', async () => {
     assert.match(reference, new RegExp(`\\b${name}\\b`), name)
   }
 })
+
+test('framework guides retain current SSR integration contracts', async () => {
+  const frameworks = await readFile('docs/guides/frameworks.md', 'utf8')
+  const serverRendering = await readFile(
+    'docs/guides/server-rendering.md',
+    'utf8',
+  )
+
+  assert.match(frameworks, /defineConfig\(\{\s*plugins:/)
+  assert.match(frameworks, /app\/plugins\/sds\.client\.ts \(Nuxt 4\)/)
+  assert.match(frameworks, /let \{ children \} = \$props\(\)/)
+  assert.match(frameworks, /<Scripts \/>/)
+  assert.match(frameworks, /this\.appRef\.whenStable\(\)/)
+  assert.doesNotMatch(frameworks, /afterNextRender\(setupSds\)/)
+  assert.doesNotMatch(
+    `${reference}\n${serverRendering}`,
+    /hydrateApplication\(\)\s*setupSds\(\)/,
+  )
+})
+
+test('theming guidance identifies every private property family', async () => {
+  const theming = await readFile('docs/guides/theming.md', 'utf8')
+
+  for (const prefix of [
+    'avatar',
+    'button',
+    'datapoint',
+    'floating',
+    'grid',
+    'prose',
+    'tab',
+    'tag',
+    'timeline',
+    'tone',
+  ]) {
+    assert.ok(theming.includes(`--sds-${prefix}-*`), prefix)
+  }
+})

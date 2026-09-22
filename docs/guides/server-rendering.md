@@ -28,12 +28,12 @@ Render the same beginner markup on the server:
 </sds-tabs>
 ```
 
-Hydrate the application, then set up SDS Lite:
+Set up SDS Lite from the framework's post-hydration client lifecycle:
 
 ```js
 import { setupSds } from '@cmu-sei/sds-lite'
 
-hydrateApplication()
+// Run after the framework has hydrated this subtree.
 setupSds()
 ```
 
@@ -43,7 +43,7 @@ until the framework has finished comparing its server and client output.
 
 Do not import `/auto` in a shared SSR entry. It sets up custom elements as soon
 as the browser evaluates it, which may be before hydration. Use `/auto` only
-from a framework hook that is guaranteed to run after hydration, or use
+through a dynamic import inside a hook that runs after hydration, or use
 `setupSds()` as shown above.
 
 See [Framework integration](./frameworks.md#copy-ready-ssr-setups) for Next.js,
