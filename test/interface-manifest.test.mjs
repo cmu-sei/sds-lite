@@ -221,6 +221,6 @@ test('current examples use only the final attribute vocabulary', async () => {
   assert.doesNotMatch(source, formerPattern)
   assert.doesNotMatch(
     source,
-    /(?:<|&lt;)sds-(?:tabs|dropdown|popover|tooltip|toast)\b[^>]*\bdata-sds-(?:activation|duration|hide-caret|offset|orientation|persistent|placement|size|tone|value|variant|width)\b/,
+    /(?:<|&lt;)sds-(?:combobox|tabs|dropdown|popover|tooltip|toast)\b[^>]*\bdata-sds-(?:activation|duration|filter|hide-caret|offset|orientation|persistent|placement|size|tone|value|variant|width)\b/,
   )
 })

@@ -8,7 +8,7 @@ that expresses the interaction, then copy the smallest documented structure.
 | Need | Guide | Recipes |
 |---|---|---|
 | Actions and navigation links | [Actions](./actions.md) | Button, link, action group |
-| Data entry | [Forms](./forms.md) | Form, field, input, select, textarea, checkbox, radio, switch, file input |
+| Data entry | [Forms](./forms.md) | Form, field, input, select, combobox, textarea, checkbox, radio, switch, file input |
 | Status and notifications | [Feedback](./feedback.md) | Badge, tag, callout, toast |
 | Structured information | [Data display](./data-display.md) | Avatar, card, datapoint, list, timeline, table |
 | Page composition | [Layout](./layout.md) | Grid, flex, page, section, sidebar, application shells |

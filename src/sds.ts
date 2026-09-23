@@ -1,3 +1,4 @@
+import { registerSdsCombobox } from './elements/combobox.js'
 import { registerSdsDialog } from './elements/dialog.js'
 import { registerSdsDropdown } from './elements/dropdown.js'
 import { registerSdsPopover } from './elements/popover.js'
@@ -13,6 +14,7 @@ export {
   type SdsToastCloseReason,
   type SdsToastTone,
 } from './elements/toast.js'
+export type { SdsComboboxElement } from './elements/combobox.js'
 export type { SdsDropdownElement } from './elements/dropdown.js'
 export type { SdsPopoverElement } from './elements/popover.js'
 export type {
@@ -36,6 +38,7 @@ export type {
 } from './generated/interface.js'
 
 export function setupSds(): void {
+  registerSdsCombobox()
   registerSdsDialog()
   registerSdsDropdown()
   registerSdsPopover()

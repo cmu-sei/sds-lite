@@ -13,7 +13,7 @@ classes, options, custom-element attributes, properties, methods, and events.
 
 | Interface | Values or purpose |
 |---|---|
-| `data-sds-root` | Scope foundations and tokens |
+| `data-sds-root` | Scope native-element styling and establish theme tokens |
 | `data-sds-theme` | `forge`, `plaid` |
 | `data-sds-color-scheme` | `light`, `dark`, `system` |
 | `data-sds-unstyled` | Opt a link out of automatic styling |
@@ -59,6 +59,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-action-group` | Responsive related-action layout |
 | `.sds-button` | Button appearance for a button or link |
 | `.sds-choice` | Checkbox or radio with label text |
+| `.sds-combobox-list` | Combobox suggestion list |
 | `.sds-field` | Label, control, help, and validation layout |
 | `.sds-file-input` | Explicit native file-input hook |
 | `.sds-file-upload` | Dashed file-upload container |
@@ -192,6 +193,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 
 | Element | Purpose |
 |---|---|
+| `<sds-combobox>` | Searchable native input with accessible suggestions |
 | `<sds-dropdown>` | Menu positioning and keyboard interaction |
 | `<sds-popover>` | Delayed-hover interactive anchored content |
 | `<sds-tabs>` | Tab selection and keyboard interaction |

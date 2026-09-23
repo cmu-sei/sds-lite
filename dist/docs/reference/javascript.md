@@ -14,6 +14,7 @@ import {
 The root also exports these types:
 
 - `SdsDropdownElement`
+- `SdsComboboxElement`
 - `SdsGap`
 - `SdsOrientation`
 - `SdsPlacement`
@@ -37,7 +38,8 @@ The root also exports these types:
 
 ### `setupSds()`
 
-Sets up dialogs, panels, dropdowns, popovers, tabs, tooltips, and toasts.
+Sets up comboboxes, dialogs, panels, dropdowns, popovers, mobile sidebars,
+tabs, tooltips, and toasts.
 Repeated calls are safe. Call it after hydration when using SSR.
 
 ### `notify(message, options?)`
@@ -106,6 +108,7 @@ SDS custom events bubble and cross shadow roots.
 
 | Event | Target | Detail | When |
 |---|---|---|---|
+| `sds-select` | `<sds-combobox>` | `{ option: HTMLLIElement }` | A suggestion is chosen by keyboard or pointer |
 | `sds-change` | `<sds-tabs>` | `{ index: number, value: string }` | A new tab is selected |
 | `sds-toggle` | `<sds-dropdown>`, `<sds-popover>` | `{ open: boolean }` | Native Popover visibility changes |
 | `sds-open` | `<sds-toast>` | None | `show()` opens a closed toast |
@@ -120,3 +123,14 @@ document.querySelector('sds-tabs')?.addEventListener('sds-change', (event) => {
 
 Native dialogs retain `cancel` and `close`; read `dialog.returnValue` after
 close. Popover surfaces retain native `beforetoggle` and `toggle`.
+
+The combobox's `detail.option` is the selected DOM `<li>`. Read
+application-owned attributes such as `option.dataset.projectId` and look up
+the original record yourself; SDS Lite never creates or submits a record ID.
+An optional `data-label` on the option controls the text written to the input
+in either mode. The combobox dispatches native `input` and `change` on the
+input before `sds-select`. With `keep-open`, the other matches from the last
+query remain available until the user edits the input. Applications can set
+the native input's `.value = ''` in `sds-select` after saving a record ID or
+adding a tag; this does not dispatch another `input` event or clear
+application-owned state.

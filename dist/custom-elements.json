@@ -4,6 +4,46 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "dist/package/combobox.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "name": "SdsComboboxElement",
+          "tagName": "sds-combobox",
+          "description": "Enhances a native text input and suggestion list with accessible combobox keyboard behavior. Content model: One direct child labeled text or search input. One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and application-owned data attributes for identity. Optional direct child output for an accessible empty-result message; data-empty-message overrides the default text.",
+          "attributes": [
+            {
+              "name": "filter",
+              "type": {
+                "text": "\"automatic\" | \"manual\""
+              },
+              "description": "Automatic filtering of option text, or application-managed results.",
+              "default": "automatic"
+            },
+            {
+              "name": "keep-open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Keep matching suggestions available after selecting an option while writing its text to the input.",
+              "default": "false"
+            }
+          ],
+          "members": [],
+          "events": [
+            {
+              "name": "sds-select",
+              "type": {
+                "text": "CustomEvent<{ option: HTMLLIElement }>"
+              },
+              "description": "Dispatched when an option is selected; detail.option is the selected li."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "dist/package/dropdown.js",
       "declarations": [
         {

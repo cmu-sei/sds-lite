@@ -58,7 +58,9 @@ Neither JavaScript entry needs the internal `package/` directory.
 - `/auto` sets up all behavior when evaluated in a browser and exports `notify()`.
 - `/react` and `/vue` have empty runtime modules; their value is generated
   TypeScript augmentation.
-- CSS imports add global rules scoped to `[data-sds-root]`.
+- CSS imports define tokens on `:root` and SDS roots. Automatic native-element
+  styling is scoped to `[data-sds-root]`; explicit `.sds-*` recipe classes
+  also apply outside a root.
 - `notify()` creates DOM only when called.
 
 Every JavaScript entry can be imported in an SSR environment.

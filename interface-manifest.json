@@ -231,6 +231,13 @@
       }
     },
     {
+      "name": "combobox-parts",
+      "category": "Actions and forms",
+      "classes": ["sds-combobox-list"],
+      "description": "Suggestion list for a native text input.",
+      "options": {}
+    },
+    {
       "name": "choice",
       "category": "Actions and forms",
       "classes": ["sds-choice"],
@@ -655,6 +662,25 @@
     }
   ],
   "customElements": [
+    {
+      "tagName": "sds-combobox",
+      "className": "SdsComboboxElement",
+      "module": "dist/package/combobox.js",
+      "description": "Enhances a native text input and suggestion list with accessible combobox keyboard behavior.",
+      "content": [
+        "One direct child labeled text or search input.",
+        "One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and application-owned data attributes for identity.",
+        "Optional direct child output for an accessible empty-result message; data-empty-message overrides the default text."
+      ],
+      "attributes": [
+        {"name": "filter", "values": ["automatic", "manual"], "default": "automatic", "description": "Automatic filtering of option text, or application-managed results."},
+        {"name": "keep-open", "type": "boolean", "default": "false", "description": "Keep matching suggestions available after selecting an option while writing its text to the input."}
+      ],
+      "members": [],
+      "events": [
+        {"name": "sds-select", "type": "CustomEvent<{ option: HTMLLIElement }>", "description": "Dispatched when an option is selected; detail.option is the selected li."}
+      ]
+    },
     {
       "tagName": "sds-dropdown",
       "className": "SdsDropdownElement",

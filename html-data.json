@@ -967,6 +967,28 @@
   ],
   "tags": [
     {
+      "name": "sds-combobox",
+      "description": "Enhances a native text input and suggestion list with accessible combobox keyboard behavior. One direct child labeled text or search input. One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and application-owned data attributes for identity. Optional direct child output for an accessible empty-result message; data-empty-message overrides the default text.",
+      "attributes": [
+        {
+          "name": "filter",
+          "description": "Automatic filtering of option text, or application-managed results. Default: automatic.",
+          "values": [
+            {
+              "name": "automatic"
+            },
+            {
+              "name": "manual"
+            }
+          ]
+        },
+        {
+          "name": "keep-open",
+          "description": "Keep matching suggestions available after selecting an option while writing its text to the input. Default: false."
+        }
+      ]
+    },
+    {
       "name": "sds-dropdown",
       "description": "Enhances a direct child button and menu with Popover positioning and menu keyboard behavior. One direct child button trigger. One direct child menu or Popover surface.",
       "attributes": [

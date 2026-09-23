@@ -8,8 +8,8 @@
       content="Interactive SDS Lite playground with copy-ready NPM and CDN examples for every component."
     />
     <title>SDS Lite Interactive Playground</title>
-    <script type="module" crossorigin src="./assets/index-DN7dcaCd.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DmGZ3mjW.css">
+    <script type="module" crossorigin src="./assets/index-DfStJNy3.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DPYff4do.css">
   </head>
   <body data-sds-root>
     <div class="sds-app">
@@ -490,6 +490,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <summary>API reference and copy-ready markup</summary>
               <div class="sds-flex sds-prose" data-sds-wrap data-sds-gap="sm">
                 <code>.sds-field</code>
+                <code>sds-combobox filter="automatic | manual"</code>
+                <code>sds-combobox keep-open</code>
                 <code>.sds-switch</code>
                 <code>.sds-file-input</code>
                 <code>.sds-file-upload</code>
@@ -526,6 +528,87 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   Default switch · accent
                 </label>
               </div>
+            </article>
+
+            <article class="sds-card sds-stack">
+              <h3>Searchable choices</h3>
+              <div class="sds-grid" data-sds-columns="2" data-sds-gap="lg">
+                <div class="sds-field">
+                  <label for="project-combobox">Project</label>
+                  <sds-combobox filter="automatic">
+                    <input id="project-combobox" name="project" type="search" autocomplete="off"
+                      role="combobox" aria-autocomplete="list" aria-controls="project-options" aria-expanded="false" />
+                    <ul id="project-options" class="sds-combobox-list" role="listbox" popover="manual" hidden>
+                      <li id="project-atlas" role="option" aria-selected="false">Atlas</li>
+                      <li id="project-orion" role="option" aria-selected="false">Orion</li>
+                      <li id="project-vega" role="option" aria-selected="false">Vega</li>
+                    </ul>
+                    <output data-empty-message="No matching projects."></output>
+                  </sds-combobox>
+                </div>
+                <div class="sds-field">
+                  <label for="remote-combobox">Search teams</label>
+                  <sds-combobox filter="manual">
+                    <input id="remote-combobox" name="team" type="search" autocomplete="off"
+                      role="combobox" aria-autocomplete="list" aria-controls="team-options" aria-expanded="false" />
+                    <ul id="team-options" class="sds-combobox-list" role="listbox" popover="manual" hidden></ul>
+                    <output></output>
+                  </sds-combobox>
+                  <small>Results are supplied by the application as you type.</small>
+                </div>
+              </div>
+            </article>
+
+            <form id="record-form" class="sds-card sds-stack">
+              <h3>Rich suggestions with stable IDs</h3>
+              <div class="sds-field">
+                <label for="record-combobox">Project record</label>
+                <sds-combobox id="record-picker">
+                  <input id="record-combobox" name="projectQuery" type="search" autocomplete="off"
+                    aria-describedby="record-help" role="combobox" aria-autocomplete="list"
+                    aria-controls="record-options" aria-expanded="false" />
+                  <ul id="record-options" class="sds-combobox-list" role="listbox" popover="manual" hidden>
+                    <li id="record-atlas" role="option" aria-selected="false" data-label="Atlas" data-project-id="p-atlas">
+                      <span class="sds-stack" data-sds-gap="none"><strong>Atlas</strong><small>Research · owner Avery</small></span>
+                    </li>
+                    <li id="record-orion" role="option" aria-selected="false" data-label="Orion" data-project-id="p-orion">
+                      <span class="sds-stack" data-sds-gap="none"><strong>Orion</strong><small>Operations · owner Blair</small></span>
+                    </li>
+                    <li id="record-vega" role="option" aria-selected="false" data-label="Vega" data-project-id="p-vega">
+                      <span class="sds-stack" data-sds-gap="none"><strong>Vega</strong><small>Engineering · owner Casey</small></span>
+                    </li>
+                  </ul>
+                  <output></output>
+                </sds-combobox>
+                <small id="record-help">Search by name, team, or owner. The selected project's ID is submitted separately.</small>
+              </div>
+              <input id="record-id" type="hidden" name="projectId" />
+              <p id="record-selection" role="status"></p>
+              <button type="submit">Submit project</button>
+            </form>
+
+            <article class="sds-card sds-stack">
+              <h3>Build a tag list from suggestions</h3>
+              <div class="sds-field">
+                <label for="topic-combobox">Add topics</label>
+                <sds-combobox id="topic-picker" keep-open>
+                  <input id="topic-combobox" type="search" autocomplete="off"
+                    aria-describedby="topic-help" role="combobox" aria-autocomplete="list"
+                    aria-controls="topic-options" aria-expanded="false" />
+                  <ul id="topic-options" class="sds-combobox-list" role="listbox" popover="manual" hidden>
+                    <li id="topic-accessibility" role="option" aria-selected="false">Accessibility</li>
+                    <li id="topic-architecture" role="option" aria-selected="false">Architecture</li>
+                    <li id="topic-automation" role="option" aria-selected="false">Automation</li>
+                    <li id="topic-design" role="option" aria-selected="false">Design systems</li>
+                    <li id="topic-security" role="option" aria-selected="false">Security</li>
+                  </ul>
+                  <output></output>
+                </sds-combobox>
+                <small id="topic-help">Search and select several matches; remove a tag to make it available again.</small>
+              </div>
+              <div id="topic-tags" class="sds-flex" data-sds-wrap data-sds-gap="sm"
+                role="group" aria-label="Selected topics"></div>
+              <p id="topic-status" class="sds-sr-only" role="status"></p>
             </article>
 
             <form class="sds-card sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">

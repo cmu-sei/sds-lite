@@ -63,6 +63,23 @@ on the server. See
 Placement is preferred, not fixed. SDS Lite flips the surface when the
 requested side would overflow.
 
+For a combobox, keep its native input and `ul` as direct children, with an
+optional empty `<output>` for no results. Suggestions use a manual Popover;
+the status output floats beside the input but remains outside the listbox.
+Both follow the input when scrolling. If selecting a rich option writes its
+description into the input, set a nonempty `data-label` on that `<li>`.
+
+## A combobox submits text instead of a record ID
+
+The named native input always submits its visible text, not `data-label` or
+an option's application-owned ID. Listen for `sds-select` and read the ID
+from `event.detail.option.dataset`, then store it in a separate named input.
+Clear that ID on user edits, unrelated programmatic query changes, and form
+reset. Clearing the query in `sds-select` after storing the chosen ID does
+not invalidate the selection.
+Validate the ID server-side; see the
+[rich record recipe](./components/forms.md#rich-suggestions-and-record-ids).
+
 ## A link marked disabled still activates
 
 `aria-disabled="true"` supplies semantics and appearance but cannot cancel

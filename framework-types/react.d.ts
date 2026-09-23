@@ -6,6 +6,12 @@ import type { SdsTabsChangeDetail, SdsToastCloseReason, SdsToggleDetail } from '
 export type SdsElementProps<Element extends HTMLElement> =
   DetailedHTMLProps<HTMLAttributes<Element>, Element>
 
+export type SdsComboboxProps = SdsElementProps<HTMLElementTagNameMap["sds-combobox"]> & {
+  "filter"?: "automatic" | "manual"
+  "keep-open"?: boolean
+  "onsds-select"?: (event: CustomEvent<{ option: HTMLLIElement }>) => void
+}
+
 export type SdsDropdownProps = SdsElementProps<HTMLElementTagNameMap["sds-dropdown"]> & {
   "open"?: boolean
   "placement"?: "block-start" | "block-start-start" | "block-start-end" | "block-end" | "block-end-start" | "block-end-end" | "inline-start" | "inline-start-start" | "inline-start-end" | "inline-end" | "inline-end-start" | "inline-end-end"
@@ -50,6 +56,7 @@ export type SdsToastProps = SdsElementProps<HTMLElementTagNameMap["sds-toast"]> 
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
+      "sds-combobox": SdsComboboxProps
       "sds-dropdown": SdsDropdownProps
       "sds-popover": SdsPopoverProps
       "sds-tabs": SdsTabsProps
@@ -62,6 +69,7 @@ declare module 'react' {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
+      "sds-combobox": SdsComboboxProps
       "sds-dropdown": SdsDropdownProps
       "sds-popover": SdsPopoverProps
       "sds-tabs": SdsTabsProps

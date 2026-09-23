@@ -68,6 +68,7 @@ test('the application build retains automatic registration', async () => {
   assert.ok(script)
   const source = await readFile(`dist/assets/${script}`, 'utf8')
   assert.match(source, /sds-dropdown/)
+  assert.match(source, /sds-combobox/)
   assert.match(source, /sds-popover/)
   assert.match(source, /sds-tabs/)
   assert.match(source, /sds-tooltip/)
@@ -121,6 +122,7 @@ test('the automatic entry and root entry share behavior modules', async () => {
 test('the CDN entries use stable top-level paths', async () => {
   const auto = await readFile('dist/auto.js', 'utf8')
   assert.match(auto, /sds-dropdown/)
+  assert.match(auto, /sds-combobox/)
   assert.match(auto, /sds-tabs/)
   const cdn = await readFile('dist/sds.js', 'utf8')
   const standalone = await import(
@@ -186,7 +188,7 @@ test('custom-element metadata describes every registered element', () => {
   )
   assert.deepEqual(
     declarations.map((declaration) => declaration.tagName).sort(),
-    ['sds-dropdown', 'sds-popover', 'sds-tabs', 'sds-toast', 'sds-tooltip'],
+    ['sds-combobox', 'sds-dropdown', 'sds-popover', 'sds-tabs', 'sds-toast', 'sds-tooltip'],
   )
 
   const attributes = declarations.flatMap(

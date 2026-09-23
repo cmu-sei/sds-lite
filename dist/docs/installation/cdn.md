@@ -58,6 +58,12 @@ Save this as `index.html` and open it through any web server:
 </html>
 ```
 
+For searchable choices, start with the
+[plain combobox markup](../components/forms.md#combobox). A
+[`sds-select` handler](../components/forms.md#rich-suggestions-and-record-ids)
+can store an ID or tag and clear the search; the same HTML and JavaScript
+work with the CDN tags above or NPM imports.
+
 ## Always pin the release tag
 
 Use the exact protected Git tag for the release:
@@ -136,9 +142,10 @@ Use it in addition to `sds.css` for SEI application or brochure layouts.
 ## Content Security Policy
 
 SDS Lite does not inject external scripts or evaluate strings. Ordinary
-recipes do not require inline styles, but dropdowns, popovers, and tooltips
-write `left`, `top`, and arrow-position custom properties to their floating
-surface. A strict policy must therefore permit these element style
+recipes do not require inline styles, but comboboxes, dropdowns, popovers,
+and tooltips set inline positioning, sizing, and arrow styles on floating
+surfaces; draggable panels set inline transform, transition, and handle
+styles. A strict policy must therefore permit these element style
 attributes. A Content Security Policy must also allow
 `https://cdn.jsdelivr.net` in `style-src` for CDN stylesheets and in
 `script-src` for CDN modules. If you use an inline module like the examples

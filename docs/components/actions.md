@@ -67,6 +67,10 @@ Use `data-sds-density="compact"` for toolbar and menu-like actions:
 <button type="button" data-sds-density="compact">Edit</button>
 ```
 
+Compact secondary buttons use a translucent (20%) tone-colored border,
+matching SEI action buttons; standard secondary buttons retain their solid
+neutral border. A disabled compact secondary uses a 10% neutral border.
+
 An `svg`, `img`, or descendant with `data-sds-avatar` is treated as leading media:
 
 ```html

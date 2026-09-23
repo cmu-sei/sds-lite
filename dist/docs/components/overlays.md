@@ -119,7 +119,7 @@ after other variants.
 
 ## Panel
 
-Use direct native `header`, `main`, and `footer` children:
+Use direct `header`, `main` or `section`, and `footer` children:
 
 ```html
 <button type="button" commandfor="help-panel" command="show-modal">

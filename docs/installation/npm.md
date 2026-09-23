@@ -61,9 +61,15 @@ Then scope SDS Lite to your application:
 ```
 
 `sds.css` includes foundations, common recipes, layout recipes, prose, tokens,
-and utilities. `/auto` sets up dialogs, panels, dropdowns, popovers, tabs,
+and utilities. `/auto` sets up comboboxes, dialogs, panels, dropdowns, popovers, tabs,
 tooltips, toasts, and mobile sidebars. It also exports `notify()` for
 application notifications.
+
+For searchable choices, start with the
+[plain combobox markup](../components/forms.md#combobox). Add the
+[record ID or tag handler](../components/forms.md#rich-suggestions-and-record-ids)
+only when your application needs it; clearing the search after selection is
+one line of application code.
 
 ## Where imports belong
 

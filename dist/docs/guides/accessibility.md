@@ -53,6 +53,14 @@ Use documented ARIA state only where native HTML has no equivalent:
 `disabled` for buttons and controls; otherwise application code must prevent
 the action.
 
+For rich combobox suggestions, keep each `<li>` as one option with readable
+text for its label and description. Do not nest links or buttons in an
+option. The optional `data-label` changes the input's selected text, **not**
+the option's accessible name. Keep the no-results `<output>` outside the
+listbox so its implicit status role announces it without posing as an
+option. If the application submits a separate record ID, clear it when the
+user edits the query and validate it on the server.
+
 ## Validation
 
 Connect help and error messages with `aria-describedby`:
@@ -100,7 +108,7 @@ find-in-page behavior.
 
 ## Keyboard behavior
 
-SDS Lite implements documented keyboard interaction for tabs and dropdowns
+SDS Lite implements documented keyboard interaction for comboboxes, tabs, and dropdowns
 and preserves native interaction for dialogs, popovers, buttons, links,
 details, and form controls.
 

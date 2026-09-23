@@ -49,6 +49,7 @@ export default defineConfig({
       entry: {
         auto: 'src/auto.ts',
         brand: 'src/brand.css',
+        combobox: 'src/elements/combobox.ts',
         dialog: 'src/elements/dialog.ts',
         dropdown: 'src/elements/dropdown.ts',
         floating: 'src/elements/floating.ts',

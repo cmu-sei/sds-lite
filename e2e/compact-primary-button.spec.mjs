@@ -35,6 +35,52 @@ test('catalog shows every compact button variant across tones', async ({
   }
 })
 
+test('compact secondary borders match SEI action-btn tones in light and dark modes', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const palette = {
+    neutral: ['gray-600', 'gray-400'],
+    accent: ['blue-600', 'blue-400'],
+    danger: ['red-600', 'red-400'],
+  }
+
+  for (const [scheme, index] of [['light', 0], ['dark', 1]]) {
+    await page.locator('[data-sds-root]').evaluate((root, value) => {
+      root.setAttribute('data-sds-color-scheme', value)
+    }, scheme)
+    for (const [tone, colors] of Object.entries(palette)) {
+      const expected = await page.evaluate((color) => {
+        const probe = document.createElement('div')
+        probe.style.borderColor = `color-mix(in srgb, var(--sds-${color}) 20%, transparent)`
+        document.querySelector('[data-sds-root]').append(probe)
+        const result = getComputedStyle(probe).borderColor
+        probe.remove()
+        return result
+      }, colors[index])
+      const button = page.locator(
+        `article[aria-labelledby="compact-button-tones-heading"] [data-sds-tone="${tone}"] [data-sds-variant="secondary"]`,
+      )
+      await expect(button).toHaveCSS('border-color', expected)
+      await button.hover()
+      await expect(button).toHaveCSS('border-color', expected)
+      await page.mouse.down()
+      await expect(button).toHaveCSS('border-color', expected)
+      await page.mouse.up()
+      await button.evaluate((element) => element.setAttribute('aria-disabled', 'true'))
+      const disabled = await page.evaluate(() => {
+        const probe = document.createElement('div')
+        probe.style.borderColor = 'color-mix(in srgb, light-dark(var(--sds-gray-600), var(--sds-gray-400)) 10%, transparent)'
+        document.querySelector('[data-sds-root]').append(probe)
+        const result = getComputedStyle(probe).borderColor
+        probe.remove()
+        return result
+      })
+      await expect(button).toHaveCSS('border-color', disabled)
+      await button.evaluate((element) => element.removeAttribute('aria-disabled'))
+    }
+  }
+})
+
 test('button density and omitted tones preserve tone colors', async ({
   page,
 }) => {
@@ -47,6 +93,9 @@ test('button density and omitted tones preserve tone colors', async ({
 
   for (const tone of tones) {
     for (const variant of variants) {
+      const comparedProperties = variant === 'secondary'
+        ? ['color', 'backgroundColor']
+        : properties
       const regularScope = page.locator(
         `article[aria-labelledby="button-variants-heading"] [data-sds-tone="${tone}"]`,
       )
@@ -64,11 +113,11 @@ test('button density and omitted tones preserve tone colors', async ({
         regular.evaluate((element, names) => {
           const style = getComputedStyle(element)
           return names.map((name) => style[name])
-        }, properties),
+        }, comparedProperties),
         compact.evaluate((element, names) => {
           const style = getComputedStyle(element)
           return names.map((name) => style[name])
-        }, properties),
+        }, comparedProperties),
       ])
 
       expect(compactColors).toEqual(regularColors)

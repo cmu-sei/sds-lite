@@ -38,6 +38,7 @@
 | field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `success`, `danger` (default: `neutral`) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
 | form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit hooks for native form controls. |
+| combobox-parts | `.sds-combobox-list` |  |  | Suggestion list for a native text input. |
 | choice | `.sds-choice` | `<label>` |  | Checkbox or radio with label text. |
 | switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`) | Native checkbox with switch appearance. |
 | file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native file input and composed upload surface. |
@@ -101,6 +102,28 @@
 | application-shell | `.sds-app`<br>`.sds-app-action-bar`<br>`.sds-app-body`<br>`.sds-app-brand`<br>`.sds-app-brand-prefix`<br>`.sds-app-footer`<br>`.sds-app-footer-brand`<br>`.sds-app-footer-content`<br>`.sds-app-footer-legal`<br>`.sds-app-footer-middle`<br>`.sds-app-footer-top`<br>`.sds-app-header`<br>`.sds-app-layout`<br>`.sds-app-main`<br>`.sds-app-mobile-header`<br>`.sds-sei-wordmark`<br>`.sds-brochure-brand`<br>`.sds-brochure-container`<br>`.sds-brochure-footer-about`<br>`.sds-brochure-footer-actions`<br>`.sds-brochure-footer-content`<br>`.sds-brochure-footer-legal`<br>`.sds-brochure-footer-links`<br>`.sds-brochure-footer-main`<br>`.sds-brochure-footer-navigation`<br>`.sds-brochure-header`<br>`.sds-brochure-main`<br>`.sds-brochure-masthead`<br>`.sds-brochure-navigation`<br>`.sds-cmu-wordmark` |  | `data-sds-variant`: `application`, `simple`, `brochure` (default: `application`) | SEI application, simple, and brochure shells. |
 
 ## Custom elements
+
+### `<sds-combobox>`
+
+Enhances a native text input and suggestion list with accessible combobox keyboard behavior.
+
+**Content model:**
+
+- One direct child labeled text or search input.
+- One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and application-owned data attributes for identity.
+- Optional direct child output for an accessible empty-result message; data-empty-message overrides the default text.
+
+| Attribute | Values or type | Default | Purpose |
+|---|---|---|---|
+| `filter` | `automatic`, `manual` | automatic | Automatic filtering of option text, or application-managed results. |
+| `keep-open` | `boolean` | false | Keep matching suggestions available after selecting an option while writing its text to the input. |
+
+| Property or method | Type | Purpose |
+|---|---|---|
+
+| Event | Detail | Purpose |
+|---|---|---|
+| `sds-select` | `CustomEvent<{ option: HTMLLIElement }>` | Dispatched when an option is selected; detail.option is the selected li. |
 
 ### `<sds-dropdown>`
 

@@ -1,13 +1,14 @@
-import { registerSdsDialog as e } from "./dialog.js";
-import { registerSdsDropdown as t } from "./dropdown.js";
-import { registerSdsPopover as n } from "./popover.js";
-import { registerSdsSidebar as r } from "./sidebar.js";
-import { registerSdsTabs as i } from "./tabs.js";
-import { registerSdsTooltip as a } from "./tooltip.js";
-import { notify as o, registerSdsToast as s } from "./toast.js";
+import { registerSdsCombobox as e } from "./combobox.js";
+import { registerSdsDialog as t } from "./dialog.js";
+import { registerSdsDropdown as n } from "./dropdown.js";
+import { registerSdsPopover as r } from "./popover.js";
+import { registerSdsSidebar as i } from "./sidebar.js";
+import { registerSdsTabs as a } from "./tabs.js";
+import { registerSdsTooltip as o } from "./tooltip.js";
+import { notify as s, registerSdsToast as c } from "./toast.js";
 //#region src/sds.ts
-function c() {
-	e(), t(), n(), r(), i(), s(), a();
+function l() {
+	e(), t(), n(), r(), i(), a(), c(), o();
 }
 //#endregion
-export { o as notify, c as setupSds };
+export { s as notify, l as setupSds };

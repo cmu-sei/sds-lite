@@ -48,6 +48,7 @@ export type SdsRecipeClass =
   | "sds-card-label"
   | "sds-choice"
   | "sds-cmu-wordmark"
+  | "sds-combobox-list"
   | "sds-datapoint"
   | "sds-dialog"
   | "sds-dialog-footer"

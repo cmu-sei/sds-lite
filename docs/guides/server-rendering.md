@@ -66,6 +66,7 @@ Render:
 - stable, unique IDs and ARIA relationships;
 - native and ARIA state;
 - exactly one selected tab and matching visible panel;
+- a closed, labeled combobox input with a hidden listbox and stable option IDs;
 - dialog, popover, and toast initial visibility;
 - required roles and tab order.
 
@@ -123,6 +124,48 @@ transient toast in the browser.
   </section>
 </sds-tabs>
 ```
+
+### Fully authored combobox
+
+Render a named native input and a hidden list before JavaScript loads. Author
+stable IDs and the same ARIA state SDS Lite would add; registration after
+hydration attaches behavior without changing this initial markup.
+
+```html
+<div class="sds-field">
+  <label for="project">Project</label>
+  <sds-combobox>
+    <input
+      id="project"
+      name="project"
+      type="search"
+      autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
+      aria-controls="project-options"
+      aria-expanded="false"
+    >
+    <ul id="project-options" class="sds-combobox-list" role="listbox" popover="manual" hidden>
+      <li id="project-atlas" role="option" aria-selected="false">Atlas</li>
+      <li id="project-orion" role="option" aria-selected="false">Orion</li>
+    </ul>
+    <output></output>
+  </sds-combobox>
+</div>
+```
+
+The list remains hidden without JavaScript; the labeled native input still
+accepts and submits text. When server-rendering dynamic suggestions, give
+each option a stable, unique ID and preserve the same option order through
+hydration. Add `filter="manual"` if the application supplies filtered results.
+Rich options may contain noninteractive label and description markup; author
+`data-label` on each `<li>` when only the label should populate the input.
+Application-owned `data-*` attributes can carry a stable record key for
+`sds-select`. They do not change form submission: render and synchronize a
+separate named input for the record ID, and validate that ID on the server.
+Keep the optional `<output>` empty in the closed SSR state so registration
+preserves the markup. The [forms guide](../components/forms.md#rich-suggestions-and-record-ids)
+has a complete record-selection example.
 
 ### Fully authored dropdown
 

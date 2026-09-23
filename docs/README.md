@@ -25,7 +25,8 @@ without a framework or runtime dependency.
   checkboxes, and radio buttons.
 - Copy-ready recipes for application content, feedback, navigation, data
   display, loading states, and long-form prose.
-- Small custom elements for tabs, dropdowns, tooltips, popovers, and toasts.
+- Small custom elements for comboboxes, tabs, dropdowns, tooltips, popovers,
+  and toasts.
 - Native-dialog behavior for dialogs and panels.
 - Forge and Plaid themes with light, dark, and system color schemes.
 - Side-effect-free JavaScript entries for hydration-safe applications.

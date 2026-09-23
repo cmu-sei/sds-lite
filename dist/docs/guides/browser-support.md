@@ -17,8 +17,8 @@ support is not claimed until it is tested and recorded.
 
 | Feature | Used by |
 |---|---|
-| Custom Elements | Dropdowns, popovers, tabs, tooltips, and toasts |
-| Popover API | Dropdown, popover, tooltip, and mobile application sidebar |
+| Custom Elements | Comboboxes, dropdowns, popovers, tabs, tooltips, and toasts |
+| Popover API | Combobox, dropdown, popover, tooltip, and mobile application sidebar |
 | `HTMLDialogElement` | Dialogs and panels |
 | CSS cascade layers | Predictable application overrides |
 | CSS container queries | Flex layouts that stack within narrow containers |

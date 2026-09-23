@@ -5,6 +5,22 @@
 SDS Lite uses ordinary HTML attributes, light DOM, native events, and custom
 elements. Framework adapters are not required.
 
+`<sds-combobox>` contains a native input, so frameworks can listen for its
+ordinary `input` and `change` events and keep the input's `name` for
+submitting text. For rich options, add `data-label` to control the selected
+input text and an application-owned `data-*` ID to locate the original
+record from `sds-select`'s `event.detail.option`. If submitting an ID, use
+a separate named input and clear it on a new search or form reset. Invalidate
+it explicitly for unrelated programmatic query changes. In the
+default close-on-select mode and with `keep-open`, the chosen text replaces
+the input value and `input` and `change` fire before `sds-select`. `keep-open`
+keeps the last search's other matches available until the user edits the
+input. Do not assume the combobox submits IDs or stores records.
+See the [forms recipe](../components/forms.md#rich-suggestions-and-record-ids).
+When rendering on the server, author the complete closed markup and register
+behavior after hydration as described in the
+[server-rendering guide](./server-rendering.md#fully-authored-combobox).
+
 ## React
 
 Import SDS Lite once from the client entry:
@@ -50,6 +66,64 @@ function ProjectTabs() {
 }
 ```
 
+For a record picker in React 19, `onsds-select` receives the selected
+`<li>`; the hidden input remains application-owned:
+
+```tsx
+import { useRef, useState } from 'react'
+
+function RecordPicker() {
+  const [projectId, setProjectId] = useState('')
+  const [projectName, setProjectName] = useState('')
+  const queryRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <form onReset={() => {
+      setProjectId('')
+      setProjectName('')
+    }}>
+      <label htmlFor="record-query">Project</label>
+      <sds-combobox
+        onsds-select={(event) => {
+          const id = event.detail.option.dataset.projectId
+          const name = event.detail.option.dataset.label
+          if (!id || !name) throw new Error('Selected project has no ID or label')
+          setProjectId(id)
+          setProjectName(name)
+          if (queryRef.current) queryRef.current.value = ''
+        }}
+      >
+        <input ref={queryRef} id="record-query" name="projectQuery" type="search"
+          role="combobox" aria-autocomplete="list"
+          aria-controls="record-options" aria-expanded={false}
+          onInput={() => {
+            setProjectId('')
+            setProjectName('')
+          }} />
+        <ul id="record-options" className="sds-combobox-list"
+          role="listbox" popover="manual" hidden>
+          <li id="record-atlas" role="option" aria-selected="false"
+            data-label="Atlas" data-project-id="p-atlas">
+            <strong>Atlas</strong> — Research
+          </li>
+        </ul>
+      </sds-combobox>
+      <input type="hidden" name="projectId" value={projectId} readOnly />
+      <p role="status">{projectId ? `Selected project: ${projectName}` : ''}</p>
+      <button type="submit">Submit project</button>
+    </form>
+  )
+}
+```
+
+Server validation must still check `projectId`. Without JavaScript, the
+search input submits text but the hidden ID stays empty; use a native
+`<select>` fallback if selecting a valid ID must work without JavaScript.
+Avoid controlling the visible input with stale framework state: the
+combobox updates its native value when an option is chosen. Clearing that
+value after saving the ID is application logic; it does not emit another
+`input` event or erase the ID.
+
 For React 18 and earlier, attach custom events with a ref:
 
 ```tsx
@@ -83,6 +157,8 @@ export function ProjectTabs() {
 ```
 
 The `/react` entry is type-only at runtime and does not install a wrapper.
+Use that same ref pattern for `sds-select` on React 18 and earlier; a ref
+to the native input can clear its value after saving the selected ID.
 
 ## Vue
 
@@ -111,6 +187,15 @@ function onChange(event) {
 }
 </script>
 ```
+
+For a Vue record picker, use `@sds-select="onSelect"` on the combobox and
+`@input="projectId = ''"` on its native input. Read
+`event.detail.option.dataset.projectId` in `onSelect`, then bind
+`:value="projectId"` to an application-owned hidden input. Validate the
+ID before using it. To leave the search field empty after selection, clear
+its native `.value` in `onSelect` after storing the ID, and show the
+selection separately. Do not use a Vue model for the visible input unless it
+also synchronizes the value SDS Lite writes on selection.
 
 Configure the Vue compiler to treat tags beginning with `sds-` as custom
 elements. The `/vue` entry contributes generated global component types and
@@ -176,6 +261,12 @@ export class ProjectTabsComponent {
 }
 ```
 
+For a combobox, bind `(sds-select)="onProjectSelect($event)"`, cast the
+`Event` to `CustomEvent<{ option: HTMLLIElement }>`, and read
+`detail.option.dataset.projectId`. Clear the ID on the input's `(input)`
+event and bind it to a separate hidden field. To clear the search on
+selection, set the input's native `.value` to `''` after saving the ID.
+
 For an NgModule application, add `CUSTOM_ELEMENTS_SCHEMA` to the `schemas`
 array of the module that declares the consuming component. With current
 Angular versions, that component must also declare `standalone: false`.
@@ -201,6 +292,10 @@ import '@cmu-sei/sds-lite/auto'
 
 The example uses Svelte 5 event-property syntax. Svelte 4 and Svelte 5 legacy
 mode use `on:sds-change={handler}` instead.
+For a combobox, use `onsds-select={onSelect}` in Svelte 5 (or
+`on:sds-select={onSelect}` in legacy mode), read the option's application
+ID, and clear the ID on native input edits. To reset the search on selection,
+set its native `.value` to `''` after saving the ID.
 
 ## Server templates and static generators
 

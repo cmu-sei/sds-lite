@@ -16,7 +16,11 @@ convert complex components, or prove visual and accessibility parity.
 
 ## Run the migrator
 
-Use explicit file paths. The default is a dry run:
+First [install `@cmu-sei/sds-lite` in the project](../installation/npm.md).
+`sds-lite-migrate` is the executable included with that package; the
+following `npx` commands run the project's installed executable, not a
+separate package named `sds-lite-migrate`. Use explicit file paths. The
+default is a dry run:
 
 ```sh
 npx sds-lite-migrate --from bootstrap src/page.html

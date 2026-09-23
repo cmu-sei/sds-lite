@@ -3,6 +3,12 @@
 import type { DefineComponent } from 'vue'
 import type { SdsTabsChangeDetail, SdsToastCloseReason, SdsToggleDetail } from '@cmu-sei/sds-lite'
 
+export interface SdsComboboxProps {
+  "filter"?: "automatic" | "manual"
+  "keep-open"?: boolean
+  onSdsSelect?: (event: CustomEvent<{ option: HTMLLIElement }>) => void
+}
+
 export interface SdsDropdownProps {
   "open"?: boolean
   "placement"?: "block-start" | "block-start-start" | "block-start-end" | "block-end" | "block-end-start" | "block-end-end" | "inline-start" | "inline-start-start" | "inline-start-end" | "inline-end" | "inline-end-start" | "inline-end-end"
@@ -46,6 +52,7 @@ export interface SdsToastProps {
 
 declare module 'vue' {
   export interface GlobalComponents {
+    "sds-combobox": DefineComponent<SdsComboboxProps>
     "sds-dropdown": DefineComponent<SdsDropdownProps>
     "sds-popover": DefineComponent<SdsPopoverProps>
     "sds-tabs": DefineComponent<SdsTabsProps>

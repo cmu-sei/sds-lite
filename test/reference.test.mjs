@@ -52,7 +52,7 @@ test('CDN documentation uses the versioned GitHub repository location', async ()
   assert.doesNotMatch(cdnGuide, /published package files/)
 })
 
-test('local documentation links resolve', async () => {
+test('local documentation links and anchors resolve', async () => {
   for (const file of documentationFiles) {
     const source = await readFile(file, 'utf8')
     const links = Array.from(
@@ -61,18 +61,48 @@ test('local documentation links resolve', async () => {
     )
 
     for (const link of links) {
-      if (
-        link.startsWith('#') ||
-        link.startsWith('http://') ||
-        link.startsWith('https://')
-      ) {
+      if (link.startsWith('http://') || link.startsWith('https://')) continue
+
+      const [relativePath, fragment] = link.split('#')
+      const target = path.resolve(
+        path.dirname(file),
+        relativePath || path.basename(file),
+      )
+      await assert.doesNotReject(
+        access(target),
+        `${file} links to missing ${link}`,
+      )
+      if (!fragment) continue
+
+      const destination = await readFile(target, 'utf8')
+      if (path.extname(target) === '.html') {
+        assert.ok(
+          destination.includes(`id="${fragment}"`) ||
+            destination.includes(`id='${fragment}'`),
+          `${file} links to missing anchor ${link}`,
+        )
         continue
       }
 
-      const target = link.split('#', 1)[0]
-      await assert.doesNotReject(
-        access(path.resolve(path.dirname(file), target)),
-        `${file} links to missing ${link}`,
+      const headingCounts = new Map()
+      const headings = Array.from(
+        destination.matchAll(/^#{1,6}\s+(.+)$/gm),
+        (match) => {
+          const slug = match[1]
+            .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+            .replace(/<[^>]+>|[*_`~]/g, '')
+            .toLowerCase()
+            .replace(/[^\p{L}\p{N}_ -]/gu, '')
+            .trim()
+            .replace(/\s+/g, '-')
+          const count = headingCounts.get(slug) ?? 0
+          headingCounts.set(slug, count + 1)
+          return count ? `${slug}-${count}` : slug
+        },
+      )
+      assert.ok(
+        headings.includes(decodeURIComponent(fragment)),
+        `${file} links to missing anchor ${link}`,
       )
     }
   }

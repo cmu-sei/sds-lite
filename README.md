@@ -93,6 +93,10 @@ The `/auto` entry sets up every SDS custom element on the page. SDS Lite adds
 the missing classes, IDs, relationships, state, positioning, and keyboard
 behavior.
 
+For searchable choices, `<sds-combobox>` enhances a native text input and
+suggestion list. See the [form guide](./docs/components/forms.md#combobox)
+for automatic filtering, application-supplied results, and SSR markup.
+
 ## JavaScript when you need control
 
 Most browser applications should use `/auto`. Applications that control when

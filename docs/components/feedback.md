@@ -36,7 +36,18 @@ Choose the native element that matches the interaction:
 
 `data-sds-size` accepts `sm` or `md`; `sm` is the default.
 
-Compose a counter, linked label, and independent action when needed:
+For a removable tag without a separate link, make the entire tag one button.
+Its danger tone highlights the whole tag on hover, with a single keyboard
+focus target. The icon is decorative; application code handles the click:
+
+```html
+<button class="sds-tag" type="button" data-sds-tone="danger" aria-label="Remove Security">
+  <span class="sds-tag-label">Security</span>
+  <span class="sds-tag-action" data-sds-tone="danger" aria-hidden="true">&times;</span>
+</button>
+```
+
+If the label links elsewhere, keep the link and action independent instead:
 
 ```html
 <span class="sds-tag" data-sds-size="md">

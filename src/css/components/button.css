@@ -1,5 +1,9 @@
 @layer sds.components {
   :where([data-sds-tone="neutral"]) {
+    --sds-button-secondary-compact-color: light-dark(
+      var(--sds-gray-600),
+      var(--sds-gray-400)
+    );
     --sds-button-tone-color: light-dark(
       var(--sds-gray-800),
       var(--sds-gray-300)
@@ -76,6 +80,7 @@
     [data-sds-tone="warning"],
     [data-sds-tone="danger"]
   ) {
+    --sds-button-secondary-compact-color: var(--sds-tone-strong);
     --sds-button-ghost-hover: light-dark(
       var(--sds-gray-50),
       color-mix(in srgb, var(--sds-gray-700) 40%, transparent)
@@ -125,6 +130,7 @@
     --sds-button-background: var(--sds-button-accent);
     --sds-button-border: transparent;
     --sds-button-color: var(--sds-button-on-accent);
+    --sds-button-secondary-border: var(--sds-gray-500);
 
     display: inline-flex;
     gap: 0.375rem;
@@ -183,8 +189,16 @@
 
     &[data-sds-variant="secondary"] {
       --sds-button-background: var(--sds-color-surface-default);
-      --sds-button-border: var(--sds-gray-500);
+      --sds-button-border: var(--sds-button-secondary-border);
       --sds-button-color: var(--sds-button-rest-color);
+    }
+
+    &[data-sds-density="compact"][data-sds-variant="secondary"] {
+      --sds-button-secondary-border: color-mix(
+        in srgb,
+        var(--sds-button-secondary-compact-color, var(--sds-button-accent)) 20%,
+        transparent
+      );
     }
 
     &:is([data-sds-density="compact"], [data-sds-shape="icon"])[data-sds-variant="primary"] {
@@ -332,6 +346,18 @@
       --sds-button-border: var(--sds-gray-500);
     }
 
+    &[data-sds-density="compact"][data-sds-variant="secondary"]:is(
+        :disabled,
+        [aria-disabled="true"],
+        [aria-busy="true"]
+      ) {
+      --sds-button-border: color-mix(
+        in srgb,
+        light-dark(var(--sds-gray-600), var(--sds-gray-400)) 10%,
+        transparent
+      );
+    }
+
     @media (hover: hover) {
       &:not(:disabled, [aria-disabled="true"]):hover {
         --sds-button-background: var(--sds-button-accent-hover);
@@ -343,7 +369,7 @@
           [aria-disabled="true"]
         ):hover {
         --sds-button-background: var(--sds-button-secondary-hover);
-        --sds-button-border: var(--sds-gray-500);
+        --sds-button-border: var(--sds-button-secondary-border);
         --sds-button-color: var(--sds-button-hover-color);
       }
 
@@ -403,7 +429,7 @@
         [aria-disabled="true"]
       ):active {
       --sds-button-background: var(--sds-button-secondary-active);
-      --sds-button-border: var(--sds-gray-500);
+      --sds-button-border: var(--sds-button-secondary-border);
       --sds-button-color: var(--sds-button-rest-color);
     }
 
