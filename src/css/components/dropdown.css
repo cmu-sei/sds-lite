@@ -62,7 +62,6 @@
     .sds-dropdown-menu a[role="menuitem"]:focus-visible
   ) {
     background: var(--sds-color-interactive-subtle-hover);
-    box-shadow: none;
   }
 
   :where(

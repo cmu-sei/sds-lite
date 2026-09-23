@@ -133,6 +133,11 @@ General roles:
 --sds-color-choice-checked
 ```
 
+Focusable controls share `--sds-color-focus-ring` (blue 300 in light mode,
+blue 700 in dark mode).
+Form borders default to `--sds-color-border-control` through
+`--sds-color-form-border` (gray 300 in light mode, gray 600 in dark mode).
+
 Every semantic tone has the same six roles:
 
 ```text

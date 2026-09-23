@@ -60,7 +60,7 @@
     [data-sds-root] input[type="checkbox"]:disabled,
     [data-sds-root] input[type="radio"]:disabled
   ) {
-    border-color: var(--sds-color-form-disabled-text);
+    border-color: var(--sds-color-form-border);
     background-color: var(--sds-color-form-disabled-background);
     cursor: not-allowed;
     pointer-events: none;
