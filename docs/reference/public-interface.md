@@ -23,6 +23,7 @@ classes, options, custom-element attributes, properties, methods, and events.
 | `data-sds-width` | Recipe or overlay width |
 | `data-sds-orientation` | `horizontal`, `vertical` |
 | `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |
+| `data-sds-place-self` | `start`, `center`, `end`, `stretch` on a direct grid child |
 
 Spacing utilities accept `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`,
 `3xl`, or `4xl`:
@@ -41,7 +42,7 @@ Other documented recipe options include `data-sds-align`,
 `data-sds-avatar`, `data-sds-block`, `data-sds-callout-close`, `data-sds-columns`,
 `data-sds-column-span`, `data-sds-density`, `data-sds-divided`, `data-sds-grow`, `data-sds-inset`,
 `data-sds-justify`, `data-sds-min-column-width`, `data-sds-no-shrink`,
-`data-sds-return-value`, `data-sds-stack-at`,
+`data-sds-place-items`, `data-sds-return-value`, `data-sds-stack-at`,
 `data-sds-row-highlight`, `data-sds-shape`, `data-sds-side`, `data-sds-standalone`,
 `data-sds-sticky`, `data-sds-toast-close`, `data-sds-toast-open`, and
 `data-sds-wrap`.
