@@ -85,13 +85,15 @@ SDS dialog, panel, or mobile-sidebar compatibility behavior, omit the script:
 
 ## Import JavaScript functions
 
-Use an inline module when you need `notify()` or `setupSds()`:
+Add this inside the SDS root when you need `notify()` alongside automatic
+behavior:
 
 ```html
+<button id="save" type="button">Save</button>
 <script type="module">
   import {
     notify,
-  } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.js'
+  } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/auto.js'
 
   document.querySelector('#save').addEventListener('click', () => {
     notify('Your changes were saved.', {
@@ -102,9 +104,23 @@ Use an inline module when you need `notify()` or `setupSds()`:
 </script>
 ```
 
-The stable, self-contained `auto.js` file sets up all SDS Lite behavior. The
-complete script is about 7.3 KB compressed, so there are no public per-element
-CDN entries to choose or coordinate.
+The self-contained `auto.js` file sets up all SDS Lite behavior and exports
+`notify()`. Importing it again from the same URL reuses the loaded module.
+If you need to control setup yourself, use the standalone, side-effect-free
+`sds.js` instead and call `setupSds()` after the DOM is ready (or after
+hydration). For a plain HTML page, omit the `auto.js` tag and use:
+
+```html
+<script type="module">
+  import { setupSds } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.js'
+
+  setupSds()
+</script>
+```
+
+Do not load both independently bundled entries on one page:
+they contain distinct custom-element constructors. There are no public
+per-element CDN entries to choose or coordinate.
 
 ## Add brand shells
 
@@ -143,8 +159,10 @@ dist/
 `-- sds.css
 ```
 
-Keep `brand.css` and `package/assets/` together when using branded shells.
-Copy the complete `dist/` directory when using `sds.js` for `notify()` or
-`setupSds()`, because that module loads its implementation from `package/`.
+Import `notify()` from `auto.js` when using automatic behavior. For manual
+setup instead, copy `sds.js` alongside the stylesheet and import
+`setupSds()` or `notify()` from it; it has no dependent files. Keep
+`brand.css` and `package/assets/` together when using branded shells,
+because `brand.css` references the wordmark from `package/assets/`.
 
 [Browse component recipes →](../components/README.md)

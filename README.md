@@ -120,7 +120,8 @@ notify('Your project was saved.', {
 ```
 
 `notify()` sets up its own toast behavior and does not require `/auto` or a
-separate `setupSds()` call.
+separate `setupSds()` call. If your application already imports `/auto`,
+you can import `notify` from that entry instead.
 
 ## Options and themes
 

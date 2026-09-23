@@ -1,1 +1,1 @@
-import './sds.js'
+export { notify } from './sds.js';

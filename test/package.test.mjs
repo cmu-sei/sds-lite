@@ -45,6 +45,7 @@ test('all JavaScript entries are safe to import during SSR', async () => {
   const modules = await Promise.all(entries.map((entry) => import(entry)))
   assert.equal(typeof modules[0].notify, 'function')
   assert.equal(typeof modules[0].setupSds, 'function')
+  assert.equal(typeof modules[1].notify, 'function')
 })
 
 test('browser-only helpers fail clearly when called during SSR', async () => {
@@ -57,7 +58,7 @@ test('declarations use publishable JavaScript specifiers', async () => {
   assert.doesNotMatch(declarations, /from ['"].+\.ts['"]/)
   assert.equal(
     await readFile('dist/package/auto.d.ts', 'utf8'),
-    "import './sds.js'\n",
+    "export { notify } from './sds.js';\n",
   )
 })
 
@@ -121,11 +122,12 @@ test('the CDN entries use stable top-level paths', async () => {
   const auto = await readFile('dist/auto.js', 'utf8')
   assert.match(auto, /sds-dropdown/)
   assert.match(auto, /sds-tabs/)
-  assert.doesNotMatch(auto, /\b(?:import|export)\s/)
-  assert.equal(
-    await readFile('dist/sds.js', 'utf8'),
-    "export * from './package/sds.js'\n",
+  const cdn = await readFile('dist/sds.js', 'utf8')
+  const standalone = await import(
+    `data:text/javascript;base64,${Buffer.from(cdn).toString('base64')}`
   )
+  assert.equal(typeof standalone.notify, 'function')
+  assert.equal(typeof standalone.setupSds, 'function')
   const stylesheet = await readFile('dist/sds.css', 'utf8')
   assert.match(stylesheet, /@layer sds\.tokens/)
 })

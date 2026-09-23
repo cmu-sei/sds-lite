@@ -23,25 +23,14 @@ for (const [filename, sourceFilename] of stylesheets) {
 }
 
 const autoDeclaration = await readFile(`${packageDirectory}/auto.d.ts`, 'utf8')
-if (autoDeclaration !== 'export {};\n') {
-  throw new Error('Expected auto.d.ts to contain no public declarations')
+if (autoDeclaration !== "export { notify } from './sds.js';\n") {
+  throw new Error('Expected auto.d.ts to export notify from sds.js')
 }
-await writeFile(
-  `${packageDirectory}/auto.d.ts`,
-  "import './sds.js'\n",
-)
 
 await Promise.all([
   rm(`${packageDirectory}/elements/floating.d.ts`),
   rm(`${packageDirectory}/elements/internals.d.ts`),
 ])
-await Promise.all([
-  writeFile(
-    `${distributionDirectory}/sds.js`,
-    "export * from './package/sds.js'\n",
-  ),
-])
-
 const metadata = [
   'custom-elements.json',
   'html-data.json',

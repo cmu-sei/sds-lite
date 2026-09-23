@@ -129,6 +129,8 @@ in the [server-rendering guide](./guides/server-rendering.md).
 
 ## 5. Send a notification
 
+With NPM, call `notify()` from your browser code:
+
 ```js
 import { notify } from '@cmu-sei/sds-lite'
 
@@ -136,6 +138,20 @@ notify('Your project was saved.', {
   title: 'Saved',
   tone: 'success',
 })
+```
+
+With CDN, import `notify()` from the `auto.js` module already loaded in
+step 1:
+
+```html
+<script type="module">
+  import { notify } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/auto.js'
+
+  notify('Your project was saved.', {
+    title: 'Saved',
+    tone: 'success',
+  })
+</script>
 ```
 
 `notify()` sets up the toast behavior it needs, creates or reuses a toaster,

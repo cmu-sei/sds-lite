@@ -7,7 +7,7 @@
 | Import | Provides |
 |---|---|
 | `@cmu-sei/sds-lite` | Side-effect-free `setupSds()`, `notify()`, and public types |
-| `@cmu-sei/sds-lite/auto` | Automatically sets up every behavior |
+| `@cmu-sei/sds-lite/auto` | Automatically sets up every behavior and exports `notify()` |
 | `@cmu-sei/sds-lite/react` | Generated React JSX custom-element types |
 | `@cmu-sei/sds-lite/vue` | Generated Vue custom-element types |
 | `@cmu-sei/sds-lite/html-data.json` | Editor HTML custom data |
@@ -45,14 +45,17 @@ https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.js
 
 Pin an exact package version in production.
 
-`auto.js` is self-contained. A CDN or self-hosted page using the recommended
-setup only needs `sds.css` and `auto.js`; it does not need the internal
-`package/` directory.
+Both `auto.js` and `sds.js` are self-contained. A CDN or self-hosted page
+using the recommended setup only needs `sds.css` and `auto.js`, which also
+exports `notify()`. Use `sds.js` instead of `auto.js` when you want to call
+`setupSds()` yourself after hydration. Do not mix the two CDN scripts on
+the same page; each bundle includes its own custom-element constructors.
+Neither JavaScript entry needs the internal `package/` directory.
 
 ## Side effects
 
 - The root JavaScript entry is side-effect-free.
-- `/auto` sets up all behavior when evaluated in a browser.
+- `/auto` sets up all behavior when evaluated in a browser and exports `notify()`.
 - `/react` and `/vue` have empty runtime modules; their value is generated
   TypeScript augmentation.
 - CSS imports add global rules scoped to `[data-sds-root]`.

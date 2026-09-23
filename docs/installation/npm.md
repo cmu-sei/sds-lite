@@ -62,7 +62,8 @@ Then scope SDS Lite to your application:
 
 `sds.css` includes foundations, common recipes, layout recipes, prose, tokens,
 and utilities. `/auto` sets up dialogs, panels, dropdowns, popovers, tabs,
-tooltips, toasts, and mobile sidebars.
+tooltips, toasts, and mobile sidebars. It also exports `notify()` for
+application notifications.
 
 ## Where imports belong
 
