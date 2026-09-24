@@ -45,6 +45,14 @@
               "type": "array",
               "items": {"type": "string"}
             }
+          },
+          "optionTypes": {
+            "type": "object",
+            "additionalProperties": {"enum": ["id", "string"]}
+          },
+          "optionTargets": {
+            "type": "object",
+            "additionalProperties": {"type": "string", "minLength": 1}
           }
         }
       }

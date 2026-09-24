@@ -19,12 +19,6 @@ const cases = [
     markup: '<a class="sds-link" data-tone-target href="#" {{tone}}>Link</a>',
   },
   {
-    name: 'field',
-    defaultTone: 'neutral',
-    markup:
-      '<div class="sds-field" {{tone}}><small data-tone-target>Help text</small></div>',
-  },
-  {
     name: 'switch',
     defaultTone: 'accent',
     markup:
@@ -154,8 +148,36 @@ for (const colorScheme of ['light', 'dark']) {
         `${testCase.name} should use its ${testCase.defaultTone} default tone`,
       ).toEqual(await readStyles('explicit'))
     }
+
   })
 }
+
+test('field helper and label context honor their declared tones', async ({
+  page,
+}) => {
+  await page.goto('/')
+  const colors = await page.locator('[data-sds-root]').evaluate((root) => {
+    const field = document.createElement('div')
+    field.className = 'sds-field'
+    field.innerHTML = `
+      <label>Label <small data-sds-tone="danger">Required</small></label>
+      <small data-sds-tone="danger">Error</small>
+      <small>Help</small>
+    `
+    root.append(field)
+    const color = (selector) =>
+      getComputedStyle(field.querySelector(selector)).color
+    const result = {
+      label: color('label small'),
+      helper: color(':scope > small[data-sds-tone]'),
+      default: color(':scope > small:not([data-sds-tone])'),
+    }
+    field.remove()
+    return result
+  })
+  expect(colors.label).toBe(colors.helper)
+  expect(colors.label).not.toBe(colors.default)
+})
 
 test('playground exposes omitted-tone examples for every interface', async ({
   page,

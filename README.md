@@ -52,7 +52,7 @@ Add `data-sds-root` to the element that contains your interface:
 </main>
 ```
 
-That is a complete SDS Lite page.
+That is enough SDS Lite markup for a styled page.
 
 ## The four rules
 

@@ -45,6 +45,22 @@ test('recipe options are namespaced and custom-element attributes are not', () =
         Object.hasOwn(recipe.defaults ?? {}, option),
         `${recipe.name} does not declare the default for ${option}`,
       )
+      if (recipe.options[option].length === 0) {
+        assert.ok(
+          recipe.optionTypes?.[option] ||
+            typeof recipe.defaults[option] === 'boolean',
+          `${recipe.name}:${option} must declare whether it takes a value`,
+        )
+      }
+    }
+    for (const option of [
+      ...Object.keys(recipe.optionTypes ?? {}),
+      ...Object.keys(recipe.optionTargets ?? {}),
+    ]) {
+      assert.ok(
+        Object.hasOwn(recipe.options, option),
+        `${recipe.name}:${option} has metadata without an option`,
+      )
     }
   }
 
@@ -69,11 +85,16 @@ test('custom-element attributes declare their omission defaults', () => {
 
 test('tone-aware interfaces default to a semantic tone', () => {
   const tones = new Set(manifest.optionFamilies.tone.values)
+  const unaccentedDefaults = new Map([
+    ['field', 'muted help; inherited label color'],
+    ['timeline', 'unaccented'],
+  ])
 
   for (const recipe of manifest.recipes) {
     if (!Object.hasOwn(recipe.options, 'data-sds-tone')) continue
     assert.ok(
-      tones.has(recipe.defaults['data-sds-tone']),
+      tones.has(recipe.defaults['data-sds-tone']) ||
+        recipe.defaults['data-sds-tone'] === unaccentedDefaults.get(recipe.name),
       `${recipe.name} does not default to a semantic tone`,
     )
   }
@@ -96,14 +117,19 @@ test('recipe omission defaults use audited implementation values', () => {
     ['button:data-sds-shape', 'text'],
     ['link:data-sds-variant', 'primary'],
     ['link:data-sds-size', 'inherited'],
-    ['field:data-sds-tone', 'neutral'],
+    ['field:data-sds-tone', 'muted help; inherited label color'],
+    ['tag:data-sds-tone', 'neutral'],
+    ['tag-action:data-sds-tone', 'accent'],
     ['badge:data-sds-variant', 'solid'],
     ['callout:data-sds-variant', 'subtle'],
+    ['toast-region:data-sds-toast-open', 'no target'],
     ['avatar:data-sds-density', 'comfortable'],
+    ['timeline:data-sds-tone', 'unaccented'],
     ['table:data-sds-sticky', 'none'],
     ['grid:data-sds-columns', 'automatic'],
     ['flex:data-sds-stack-at', 'none'],
-    ['dialog:data-sds-return-value', 'empty string'],
+    ['dialog:data-sds-return-value', ''],
+    ['panel:data-sds-return-value', ''],
     ['dropdown-parts:data-sds-tone', 'neutral'],
   ])
 
@@ -156,6 +182,97 @@ test('CSS recipe attributes are namespaced and declared', async () => {
   for (const attribute of attributes) {
     assert.match(attribute, /^data-sds-/, attribute)
     assert.ok(declared.has(attribute), attribute)
+  }
+})
+
+test('manifest values and targets reflect implemented recipe behavior', async () => {
+  const css = (
+    await Promise.all(
+      (await filesUnder('src/css', '.css')).map((file) => readFile(file, 'utf8')),
+    )
+  ).join('\n')
+  const globalAttributes = new Map(
+    manifest.globalAttributes.map((attribute) => [attribute.name, attribute]),
+  )
+  const declaredValues = new Map(
+    [...globalAttributes].map(([name, attribute]) => [
+      name,
+      new Set(attribute.values ?? manifest.optionFamilies[attribute.family]?.values ?? []),
+    ]),
+  )
+
+  for (const recipe of manifest.recipes) {
+    for (const [name, values] of Object.entries(recipe.options)) {
+      const declared = declaredValues.get(name) ?? new Set()
+      values.forEach((value) => declared.add(value))
+      declaredValues.set(name, declared)
+      for (const value of values) {
+        if (value === recipe.defaults[name]) continue
+        assert.ok(
+          css.includes(`[${name}="${value}"]`),
+          `${recipe.name}:${name}="${value}" has no CSS selector`,
+        )
+      }
+    }
+  }
+  for (const [, name, value] of css.matchAll(/\[(data-sds-[\w-]+)="([\w-]+)"\]/g)) {
+    if (name === 'data-sds-side' && value === 'top') continue
+    assert.ok(declaredValues.get(name)?.has(value), `${name}="${value}" is not declared`)
+  }
+  assert.equal(
+    manifest.recipes.find((recipe) => recipe.name === 'tag').options['data-sds-tone'].join(),
+    'danger',
+  )
+  assert.equal(
+    manifest.recipes.find((recipe) => recipe.name === 'timeline').optionTargets['data-sds-tone'],
+    '.sds-timeline-item',
+  )
+  for (const attribute of ['data-sds-column-span', 'data-sds-place-self']) {
+    assert.ok(globalAttributes.has(attribute))
+  }
+})
+
+test('value-bearing controls and reflected element interfaces are explicit', async () => {
+  const byName = new Map(
+    manifest.recipes.map((recipe) => [recipe.name, recipe]),
+  )
+  assert.equal(byName.get('toast-region').optionTypes['data-sds-toast-open'], 'id')
+  for (const recipe of ['dialog', 'panel']) {
+    assert.equal(byName.get(recipe).optionTypes['data-sds-return-value'], 'string')
+  }
+
+  for (const element of manifest.customElements) {
+    const source = await readFile(
+      `src/elements/${element.tagName.slice(4)}.ts`,
+      'utf8',
+    )
+    assert.match(source, new RegExp(`export class ${element.className} extends`))
+    assert.match(source, new RegExp(`defineCustomElement\\('${element.tagName}', ${element.className}\\)`))
+    for (const member of element.members) {
+      assert.match(
+        source,
+        new RegExp(
+          member.kind === 'method'
+            ? `\\b${member.name}\\([^)]*\\):`
+            : `get ${member.name}\\(\\):`,
+        ),
+        `${element.tagName}.${member.name}`,
+      )
+    }
+    for (const attribute of element.attributes) {
+      assert.match(
+        source,
+        new RegExp(`(?:getAttribute|hasAttribute|readNumberAttribute)\\(this, '${attribute.name}'|this\\.(?:getAttribute|hasAttribute)\\('${attribute.name}'\\)`),
+        `${element.tagName}[${attribute.name}]`,
+      )
+    }
+    for (const event of element.events ?? []) {
+      assert.match(
+        source,
+        new RegExp(`'${event.name}': ${event.type.replace(/[{}]/g, '\\$&')}`),
+        `${element.tagName} event ${event.name} must have a DOM event type`,
+      )
+    }
   }
 })
 

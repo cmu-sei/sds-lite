@@ -305,7 +305,7 @@ export class SdsComboboxElement extends HTMLElementBase {
       this.input.focus()
       this.input.dispatchEvent(new Event('input', { bubbles: true }))
       this.input.dispatchEvent(new Event('change', { bubbles: true }))
-      this.dispatchEvent(new CustomEvent('sds-select', {
+      this.dispatchEvent(new CustomEvent<{ option: HTMLLIElement }>('sds-select', {
         bubbles: true,
         composed: true,
         detail: { option },
@@ -418,6 +418,10 @@ export class SdsComboboxElement extends HTMLElementBase {
 declare global {
   interface HTMLElementTagNameMap {
     'sds-combobox': SdsComboboxElement
+  }
+
+  interface HTMLElementEventMap {
+    'sds-select': CustomEvent<{ option: HTMLLIElement }>
   }
 }
 

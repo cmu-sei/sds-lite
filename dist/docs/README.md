@@ -100,7 +100,9 @@ interface to build an ordinary page.
 - Pin an exact version in CDN URLs.
 - Import CSS early enough to include it in the first rendered page.
 - Give icon-only controls an accessible name.
-- Render complete IDs, relationships, and state before hydrating.
+- If the server response must be fully accessible before hydration, render
+  complete IDs, relationships, and state. Otherwise, register behavior after
+  hydration so SDS Lite can supply them.
 - Use `role="alert"` only for urgent notifications.
 - Test keyboard navigation, zoom, light and dark schemes, and the browsers
   supported by your application.

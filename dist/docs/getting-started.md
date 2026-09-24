@@ -81,8 +81,14 @@ Common elements need no SDS classes:
     <form class="sds-form">
       <div class="sds-field">
         <label for="project-name">Project name</label>
-        <input id="project-name" name="projectName" value="Atlas" required>
-        <small>Use a short, recognizable name.</small>
+        <input
+          id="project-name"
+          name="projectName"
+          value="Atlas"
+          aria-describedby="project-name-help"
+          required
+        >
+        <small id="project-name-help">Use a short, recognizable name.</small>
       </div>
       <div class="sds-action-group">
         <button type="submit">Save</button>

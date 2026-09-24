@@ -1,6 +1,6 @@
 {
   "$schema": "./interface-manifest.schema.json",
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "globalAttributes": [
     {
       "name": "data-sds-root",
@@ -203,11 +203,14 @@
       "description": "Label, control, help, and validation layout.",
       "options": {
         "data-sds-orientation": ["horizontal", "vertical"],
-        "data-sds-tone": ["success", "danger"]
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "optionTargets": {
+        "data-sds-tone": ".sds-field > small, .sds-field > label small"
       },
       "defaults": {
         "data-sds-orientation": "vertical",
-        "data-sds-tone": "neutral"
+        "data-sds-tone": "muted help; inherited label color"
       }
     },
     {
@@ -273,6 +276,9 @@
       "options": {
         "data-sds-size": ["sm", "md", "lg"]
       },
+      "optionTargets": {
+        "data-sds-size": ".sds-file-upload, .sds-file-input, [data-sds-root] input[type=\"file\"]"
+      },
       "defaults": {
         "data-sds-size": "md"
       }
@@ -301,15 +307,30 @@
     {
       "name": "tag",
       "category": "Feedback and loading",
-      "classes": ["sds-tag", "sds-tag-action", "sds-tag-counter", "sds-tag-label"],
-      "description": "Static or interactive category with optional counter and action.",
+      "classes": ["sds-tag", "sds-tag-counter", "sds-tag-label"],
+      "description": "Static or interactive category with an optional counter.",
       "options": {
         "data-sds-size": ["sm", "md"],
-        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+        "data-sds-tone": ["danger"]
+      },
+      "optionTargets": {
+        "data-sds-tone": "button.sds-tag"
       },
       "defaults": {
         "data-sds-size": "sm",
         "data-sds-tone": "neutral"
+      }
+    },
+    {
+      "name": "tag-action",
+      "category": "Feedback and loading",
+      "classes": ["sds-tag-action"],
+      "description": "Independent action inside a tag.",
+      "options": {
+        "data-sds-tone": ["danger"]
+      },
+      "defaults": {
+        "data-sds-tone": "accent"
       }
     },
     {
@@ -323,6 +344,9 @@
         "data-sds-size": ["xs", "sm", "md", "lg"],
         "data-sds-inset": [],
         "data-sds-callout-close": []
+      },
+      "optionTargets": {
+        "data-sds-callout-close": ".sds-callout [data-sds-callout-close]"
       },
       "defaults": {
         "data-sds-tone": "neutral",
@@ -341,8 +365,15 @@
         "data-sds-toast-open": [],
         "data-sds-toast-close": []
       },
+      "optionTypes": {
+        "data-sds-toast-open": "id"
+      },
+      "optionTargets": {
+        "data-sds-toast-open": "[data-sds-toast-open]",
+        "data-sds-toast-close": "sds-toast [data-sds-toast-close]"
+      },
       "defaults": {
-        "data-sds-toast-open": false,
+        "data-sds-toast-open": "no target",
         "data-sds-toast-close": false
       }
     },
@@ -386,6 +417,13 @@
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
         "data-sds-density": ["condensed"]
       },
+      "optionTargets": {
+        "data-sds-size": ".sds-avatar",
+        "data-sds-shape": ".sds-avatar",
+        "data-sds-variant": ".sds-avatar",
+        "data-sds-tone": ".sds-avatar",
+        "data-sds-density": ".sds-avatar-group"
+      },
       "defaults": {
         "data-sds-size": "md",
         "data-sds-shape": "circle",
@@ -423,6 +461,9 @@
       "options": {
         "data-sds-divided": []
       },
+      "optionTargets": {
+        "data-sds-divided": ".sds-list"
+      },
       "defaults": {
         "data-sds-divided": false
       }
@@ -433,10 +474,16 @@
       "classes": ["sds-timeline", "sds-timeline-item", "sds-timeline-marker"],
       "description": "Vertical or horizontal event sequence.",
       "options": {
-        "data-sds-orientation": ["horizontal", "vertical"]
+        "data-sds-orientation": ["horizontal", "vertical"],
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "optionTargets": {
+        "data-sds-orientation": ".sds-timeline",
+        "data-sds-tone": ".sds-timeline-item"
       },
       "defaults": {
-        "data-sds-orientation": "vertical"
+        "data-sds-orientation": "vertical",
+        "data-sds-tone": "unaccented"
       }
     },
     {
@@ -449,6 +496,12 @@
         "data-sds-standalone": [],
         "data-sds-row-highlight": [],
         "data-sds-sticky": ["start", "end"]
+      },
+      "optionTargets": {
+        "data-sds-size": ".sds-table",
+        "data-sds-standalone": ".sds-table",
+        "data-sds-row-highlight": ".sds-table",
+        "data-sds-sticky": ".sds-table th, .sds-table td"
       },
       "defaults": {
         "data-sds-size": "md",
@@ -491,6 +544,10 @@
         "data-sds-stack-at": ["sm", "md", "lg", "xl"],
         "data-sds-grow": [],
         "data-sds-no-shrink": []
+      },
+      "optionTargets": {
+        "data-sds-grow": ".sds-flex > *",
+        "data-sds-no-shrink": ".sds-flex > *"
       },
       "defaults": {
         "data-sds-orientation": "horizontal",
@@ -541,9 +598,16 @@
         "data-sds-width": ["sm", "md", "lg", "xl", "2xl"],
         "data-sds-return-value": []
       },
+      "optionTypes": {
+        "data-sds-return-value": "string"
+      },
+      "optionTargets": {
+        "data-sds-width": ".sds-dialog",
+        "data-sds-return-value": "[command=\"close\"], [command=\"request-close\"]"
+      },
       "defaults": {
         "data-sds-width": "md",
-        "data-sds-return-value": "empty string"
+        "data-sds-return-value": ""
       }
     },
     {
@@ -554,11 +618,21 @@
       "description": "Edge-attached native dialog.",
       "options": {
         "data-sds-side": ["left", "right", "bottom"],
-        "data-sds-width": ["sm", "md", "lg", "xl"]
+        "data-sds-width": ["sm", "md", "lg", "xl"],
+        "data-sds-return-value": []
+      },
+      "optionTypes": {
+        "data-sds-return-value": "string"
+      },
+      "optionTargets": {
+        "data-sds-side": ".sds-panel",
+        "data-sds-width": ".sds-panel",
+        "data-sds-return-value": "[command=\"close\"], [command=\"request-close\"]"
       },
       "defaults": {
         "data-sds-side": "right",
-        "data-sds-width": "md"
+        "data-sds-width": "md",
+        "data-sds-return-value": ""
       }
     },
     {
@@ -592,6 +666,9 @@
       "options": {
         "data-sds-tone": ["danger"]
       },
+      "optionTargets": {
+        "data-sds-tone": ".sds-dropdown-menu button, .sds-dropdown-menu a"
+      },
       "defaults": {
         "data-sds-tone": "neutral"
       }
@@ -611,6 +688,10 @@
       "options": {
         "data-sds-size": ["sm", "md", "lg"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
+      },
+      "optionTargets": {
+        "data-sds-size": ".sds-prose",
+        "data-sds-tone": ".sds-prose"
       },
       "defaults": {
         "data-sds-size": "md",
@@ -655,6 +736,9 @@
       "description": "SEI application, simple, and brochure shells.",
       "options": {
         "data-sds-variant": ["application", "simple", "brochure"]
+      },
+      "optionTargets": {
+        "data-sds-variant": ".sds-app"
       },
       "defaults": {
         "data-sds-variant": "application"
@@ -747,7 +831,7 @@
         "One direct child panel for every tab."
       ],
       "attributes": [
-        {"name": "value", "type": "string", "default": "first enabled tab", "description": "Value of the selected tab."},
+        {"name": "value", "type": "string", "default": "aria-selected tab or first enabled tab", "description": "Value of the selected tab; an explicit value takes precedence."},
         {"name": "activation", "values": ["automatic", "manual"], "default": "automatic", "description": "Whether focus automatically selects a tab."},
         {"name": "orientation", "family": "orientation", "default": "horizontal"},
         {"name": "size", "values": ["md", "lg"], "default": "md", "description": "Visual scale."},
@@ -790,9 +874,8 @@
       "module": "dist/package/toast.js",
       "description": "A timed or persistent notification.",
       "content": [
-        "A direct child strong title.",
-        "Message content.",
-        "A close control for persistent notifications."
+        "A direct child strong title and message content are recommended.",
+        "A close control is needed for persistent notifications."
       ],
       "attributes": [
         {"name": "open", "type": "boolean", "default": "false", "description": "Whether the toast is visible."},

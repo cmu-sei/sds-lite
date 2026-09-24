@@ -712,7 +712,7 @@
     },
     {
       "name": "data-sds-callout-close",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option. Targets: callout: .sds-callout [data-sds-callout-close]. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-columns",
@@ -740,7 +740,7 @@
     },
     {
       "name": "data-sds-density",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "description": "SDS Lite recipe option. Targets: avatar: .sds-avatar-group. Supported recipes and values are defined in interface-manifest.json.",
       "values": [
         {
           "name": "compact"
@@ -752,11 +752,11 @@
     },
     {
       "name": "data-sds-divided",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option. Targets: list: .sds-list. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-grow",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option. Targets: flex: .sds-flex > *. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-inset",
@@ -803,7 +803,7 @@
     },
     {
       "name": "data-sds-no-shrink",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option. Targets: flex: .sds-flex > *. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-place-items",
@@ -825,15 +825,15 @@
     },
     {
       "name": "data-sds-return-value",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option (string). Targets: dialog: [command=\"close\"], [command=\"request-close\"]; panel: [command=\"close\"], [command=\"request-close\"]. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-row-highlight",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option. Targets: table: .sds-table. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-shape",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "description": "SDS Lite recipe option. Targets: avatar: .sds-avatar. Supported recipes and values are defined in interface-manifest.json.",
       "values": [
         {
           "name": "circle"
@@ -851,7 +851,7 @@
     },
     {
       "name": "data-sds-side",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "description": "SDS Lite recipe option. Targets: panel: .sds-panel. Supported recipes and values are defined in interface-manifest.json.",
       "values": [
         {
           "name": "bottom"
@@ -884,11 +884,11 @@
     },
     {
       "name": "data-sds-standalone",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option. Targets: table: .sds-table. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-sticky",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "description": "SDS Lite recipe option. Targets: table: .sds-table th, .sds-table td. Supported recipes and values are defined in interface-manifest.json.",
       "values": [
         {
           "name": "end"
@@ -900,15 +900,15 @@
     },
     {
       "name": "data-sds-toast-close",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option. Targets: toast-region: sds-toast [data-sds-toast-close]. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-toast-open",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json."
+      "description": "SDS Lite recipe option (id). Targets: toast-region: [data-sds-toast-open]. Supported recipes and values are defined in interface-manifest.json."
     },
     {
       "name": "data-sds-variant",
-      "description": "SDS Lite recipe option. Supported recipes and values are defined in interface-manifest.json.",
+      "description": "SDS Lite recipe option. Targets: avatar: .sds-avatar; application-shell: .sds-app. Supported recipes and values are defined in interface-manifest.json.",
       "values": [
         {
           "name": "application"
@@ -1158,7 +1158,7 @@
       "attributes": [
         {
           "name": "value",
-          "description": "Value of the selected tab. Default: first enabled tab."
+          "description": "Value of the selected tab; an explicit value takes precedence. Default: aria-selected tab or first enabled tab."
         },
         {
           "name": "activation",
@@ -1291,7 +1291,7 @@
     },
     {
       "name": "sds-toast",
-      "description": "A timed or persistent notification. A direct child strong title. Message content. A close control for persistent notifications.",
+      "description": "A timed or persistent notification. A direct child strong title and message content are recommended. A close control is needed for persistent notifications.",
       "attributes": [
         {
           "name": "open",

@@ -210,9 +210,11 @@ input.addEventListener('input', () => {
 })
 ```
 
-With server rendering, render the complete closed-state markup *before*
-hydration (including IDs, roles, and `hidden`, plus an empty `<output>` when
-used) and call `setupSds()` after hydration. The
+When the server response must include the fully enhanced accessibility state,
+render the complete closed-state markup *before* hydration (including IDs,
+roles, and `hidden`, plus an empty `<output>` when used). Otherwise, the
+beginner markup can be enhanced after hydration. In either case, call
+`setupSds()` after hydration. The
 [server-rendering guide](../guides/server-rendering.md#fully-authored-combobox)
 has a copy-ready example. A simple `<input>` still accepts free text and
 submits normally before JavaScript runs.
@@ -267,6 +269,10 @@ Place required or optional context in the label and connect every message:
 
 Set `aria-invalid="true"` only after validation determines that the value is
 invalid. Move focus to, or summarize, errors after a failed submission.
+
+`data-sds-tone` accepts any semantic tone on a field's direct help text or
+label's small context. Putting it on the field container does not color
+either message.
 
 Native `:user-valid` provides positive appearance after interaction with a
 constrained control:
@@ -408,9 +414,11 @@ displaying selected-file previews, and performing uploads. Do not treat
 
 `.sds-file-upload`, `.sds-file-upload-surface`, and
 `.sds-file-upload-action` reproduce the established dashed SDS upload area.
-The transparent native input covers the complete surface, so clicking or
-dropping anywhere uses browser file-selection behavior. Omit those wrappers
-when the visible compact native input is preferred.
+The transparent native input covers the complete surface. Clicking anywhere
+opens the file picker; dropping files onto it uses the browser's native drop
+behavior where supported. SDS Lite does not implement custom drag-and-drop
+handling. Omit those wrappers when the visible compact native input is
+preferred.
 
 | Option | Values | Default |
 |---|---|---|

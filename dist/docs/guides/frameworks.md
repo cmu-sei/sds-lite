@@ -17,9 +17,10 @@ the input value and `input` and `change` fire before `sds-select`. `keep-open`
 keeps the last search's other matches available until the user edits the
 input. Do not assume the combobox submits IDs or stores records.
 See the [forms recipe](../components/forms.md#rich-suggestions-and-record-ids).
-When rendering on the server, author the complete closed markup and register
-behavior after hydration as described in the
+If the server response must include the fully enhanced accessibility state,
+author the complete closed markup described in the
 [server-rendering guide](./server-rendering.md#fully-authored-combobox).
+In either server-rendering path, register behavior after hydration.
 
 ## React
 

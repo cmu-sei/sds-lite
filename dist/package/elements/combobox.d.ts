@@ -37,6 +37,11 @@ declare global {
     interface HTMLElementTagNameMap {
         'sds-combobox': SdsComboboxElement;
     }
+    interface HTMLElementEventMap {
+        'sds-select': CustomEvent<{
+            option: HTMLLIElement;
+        }>;
+    }
 }
 export declare function registerSdsCombobox(): void;
 export {};

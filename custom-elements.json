@@ -271,8 +271,8 @@
               "type": {
                 "text": "string"
               },
-              "description": "Value of the selected tab.",
-              "default": "first enabled tab"
+              "description": "Value of the selected tab; an explicit value takes precedence.",
+              "default": "aria-selected tab or first enabled tab"
             },
             {
               "name": "activation",
@@ -433,7 +433,7 @@
           "kind": "class",
           "name": "SdsToastElement",
           "tagName": "sds-toast",
-          "description": "A timed or persistent notification. Content model: A direct child strong title. Message content. A close control for persistent notifications.",
+          "description": "A timed or persistent notification. Content model: A direct child strong title and message content are recommended. A close control is needed for persistent notifications.",
           "attributes": [
             {
               "name": "open",
