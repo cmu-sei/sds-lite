@@ -95,6 +95,10 @@
     );
   }
 
+  :where(a.sds-tag:focus-visible, button.sds-tag:focus-visible) {
+    box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
+  }
+
   :where(button.sds-tag[data-sds-tone="danger"]) {
     --sds-tag-action-color: light-dark(
       var(--sds-red-600),

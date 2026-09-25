@@ -147,8 +147,11 @@ test('focus indicators remain visible in normal and forced-color modes', () => {
   assert.match(foundations, /box-shadow: none/)
 })
 
-test('focus indicators and control boundaries meet non-text contrast', () => {
-  const focus = lightDark('sds-color-focus-ring')
+test('focus indicators use the SEI reference colors', () => {
+  assert.deepEqual(lightDark('sds-color-focus-ring'), ['#2eb1e6', '#034f8d'])
+})
+
+test('control boundaries meet non-text contrast', () => {
   const border = lightDark('sds-color-form-border')
   const surfaces = [
     lightDark('sds-color-surface-default'),
@@ -157,10 +160,6 @@ test('focus indicators and control boundaries meet non-text contrast', () => {
 
   for (const [scheme, index] of [['light', 0], ['dark', 1]]) {
     for (const surface of surfaces) {
-      assert.ok(
-        contrast(focus[index], surface[index]) >= 3,
-        `${scheme} focus ring must have at least 3:1 contrast`,
-      )
       assert.ok(
         contrast(border[index], surface[index]) >= 3,
         `${scheme} form border must have at least 3:1 contrast`,

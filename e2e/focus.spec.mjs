@@ -15,7 +15,7 @@ test('focusable controls share the design-system focus colors in both schemes', 
     getComputedStyle(root).getPropertyValue('--sds-color-focus-ring').trim(),
   )
   expect(focusColor.replaceAll(/\s/g, '')).toBe(
-    'light-dark(#0266a1,#2eb1e6)',
+    'light-dark(#2eb1e6,#034f8d)',
   )
 
   const fields = [
@@ -33,12 +33,15 @@ test('focusable controls share the design-system focus colors in both schemes', 
     '#record-picker > input',
     '#standalone-file',
     '#file-input',
+    'a.sds-tag',
+    'button.sds-tag',
+    '.sds-tag-action',
   ]
 
   for (const theme of ['forge', 'plaid']) {
     for (const [scheme, color] of [
-      ['light', 'rgb(2, 102, 161)'],
-      ['dark', 'rgb(46, 177, 230)'],
+      ['light', 'rgb(46, 177, 230)'],
+      ['dark', 'rgb(3, 79, 141)'],
     ]) {
       await page.locator('[data-sds-root]').evaluate(
         (root, { theme, scheme }) => {
@@ -76,6 +79,24 @@ test('focusable controls share the design-system focus colors in both schemes', 
   }
 })
 
+test('linked tag labels show the shared focus ring on their tag', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+
+  const label = page.locator('.sds-tag-label[href]').first()
+  const tag = label.locator('..')
+
+  await label.focus()
+
+  await expect(label).toBeFocused()
+  await expect(tag).toHaveCSS(
+    'box-shadow',
+    'rgb(46, 177, 230) 0px 0px 0px 2px',
+  )
+})
+
 test('dropdown menu items retain hover treatment and show the shared focus ring', async ({
   page,
 }) => {
@@ -107,12 +128,12 @@ test('dropdown menu items retain hover treatment and show the shared focus ring'
   })
 
   expect(focusStyle.background).toBe(hoverBackground)
-  expect(focusStyle.boxShadow).toContain('rgb(2, 102, 161)')
+  expect(focusStyle.boxShadow).toContain('rgb(46, 177, 230)')
 
   await page.locator('[data-sds-root]').evaluate((root) => {
     root.setAttribute('data-sds-color-scheme', 'dark')
   })
   expect(
     await items.first().evaluate((item) => getComputedStyle(item).boxShadow),
-  ).toContain('rgb(46, 177, 230)')
+  ).toContain('rgb(3, 79, 141)')
 })
