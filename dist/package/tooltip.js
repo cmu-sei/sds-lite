@@ -2,7 +2,11 @@ import { FloatingHoverController as e, FloatingPositioner as t } from "./floatin
 import { a as n, c as r, i, l as a, o, r as s, t as c } from "./internals-CEyyQZKd.js";
 //#region src/elements/tooltip.ts
 var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
-	static observedAttributes = ["placement", "offset"];
+	static observedAttributes = [
+		"placement",
+		"offset",
+		"size"
+	];
 	content = null;
 	positioner = null;
 	hoverController = null;
@@ -18,6 +22,12 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 	}
 	set offset(e) {
 		r(this, "offset", e);
+	}
+	get size() {
+		return this.getAttribute("size") ?? "sm";
+	}
+	set size(e) {
+		a(this, "size", e);
 	}
 	connectedCallback() {
 		this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;

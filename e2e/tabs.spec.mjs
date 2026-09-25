@@ -61,3 +61,22 @@ test('the selected folder tab covers the divider without vertical scrolling', as
   expect(layout.peerBorderBottomColor).not.toBe('rgba(0, 0, 0, 0)')
   expect(layout.peerBackground).toBe('rgb(248, 248, 248)')
 })
+
+  test('underline and block tabs use semantic tone colors', async ({ page }) => {
+    await page.goto('/')
+
+    const underline = page.locator(
+      'sds-tabs[variant="underline"][tone="info"] .sds-tab[aria-selected="true"]',
+    )
+    await expect(underline).toHaveCSS('color', 'rgb(0, 107, 109)')
+    await expect(underline).toHaveCSS(
+      'border-block-end-color',
+      'rgb(0, 107, 109)',
+    )
+
+    const block = page.locator(
+      'sds-tabs[variant="block"][tone="accent"] .sds-tab[aria-selected="true"]',
+    )
+    await expect(block).toHaveCSS('color', 'rgb(255, 255, 255)')
+    await expect(block).toHaveCSS('background-color', 'rgb(2, 102, 161)')
+  })

@@ -515,15 +515,15 @@ function mapBootstrapClasses(tagName, attributes, line, warnings) {
       return null
     }
 
-    const options = { variant: 'primary', tone: 'accent' }
+    const options = { variant: 'filled', tone: 'accent' }
     const variant = variants[0]
     if (variant === 'btn-secondary') {
-      options.variant = 'secondary'
+      options.variant = 'tonal'
       options.tone = 'neutral'
     } else if (variant === 'btn-link') {
-      options.variant = 'ghost'
+      options.variant = 'text'
     } else if (variant?.startsWith('btn-outline-')) {
-      options.variant = 'tertiary'
+      options.variant = 'outlined'
       options.tone = bootstrapTone(variant.slice('btn-outline-'.length))
     } else if (variant) {
       options.tone = bootstrapTone(variant.slice('btn-'.length))
@@ -616,10 +616,10 @@ function mapUswdsClasses(tagName, attributes, line, warnings) {
       return null
     }
 
-    const options = { variant: 'primary', tone: 'accent' }
-    if (classes.has('usa-button--secondary')) options.variant = 'secondary'
-    if (classes.has('usa-button--outline')) options.variant = 'tertiary'
-    if (classes.has('usa-button--unstyled')) options.variant = 'ghost'
+    const options = { variant: 'filled', tone: 'accent' }
+    if (classes.has('usa-button--secondary')) options.variant = 'tonal'
+    if (classes.has('usa-button--outline')) options.variant = 'outlined'
+    if (classes.has('usa-button--unstyled')) options.variant = 'text'
     if (classes.has('usa-button--accent-cool')) options.tone = 'info'
     if (classes.has('usa-button--accent-warm')) options.tone = 'warning'
     if (classes.has('usa-button--base')) options.tone = 'neutral'
@@ -693,9 +693,14 @@ function mapLegacyClasses(tagName, attributes, line, warnings) {
       )
       return null
     }
-    const kinds = ['primary', 'secondary', 'tertiary', 'ghost'].filter((value) =>
-      classes.has(`btn-${value}`),
-    )
+    const kinds = [
+      ['primary', 'filled'],
+      ['secondary', 'tonal'],
+      ['tertiary', 'outlined'],
+      ['ghost', 'text'],
+    ]
+      .filter(([sourceValue]) => classes.has(`btn-${sourceValue}`))
+      .map(([, targetValue]) => targetValue)
     const tones = ['gray', 'blue', 'red', 'white'].filter((value) =>
       classes.has(`btn-${value}`),
     )
@@ -712,7 +717,7 @@ function mapLegacyClasses(tagName, attributes, line, warnings) {
       return null
     }
     const options = {
-      variant: kinds[0] ?? 'primary',
+      variant: kinds[0] ?? 'filled',
       tone: classes.has('btn-red')
         ? 'danger'
         : classes.has('btn-gray') || classes.has('btn-white')
@@ -798,10 +803,17 @@ function transformComponentButton(
       )
       return null
     }
-    options.variant = staticValue(findAttribute(attributes, 'kind')) ?? 'primary'
+    const kind = staticValue(findAttribute(attributes, 'kind'))
+    options.variant =
+      {
+        primary: 'filled',
+        secondary: 'tonal',
+        tertiary: 'outlined',
+        ghost: 'text',
+      }[kind] ?? 'filled'
     const color = staticValue(findAttribute(attributes, 'variant'))
     if (
-      !['primary', 'secondary', 'tertiary', 'ghost'].includes(options.variant) ||
+      !['filled', 'tonal', 'outlined', 'text'].includes(options.variant) ||
       (color && !['gray', 'blue', 'red', 'white'].includes(color))
     ) {
       warnings.push(
@@ -853,12 +865,12 @@ function transformComponentButton(
   } else if (source === 'material') {
     options.variant =
       {
-        'md-elevated-button': 'secondary',
-        'md-filled-button': 'primary',
-        'md-filled-tonal-button': 'secondary',
-        'md-outlined-button': 'tertiary',
-        'md-text-button': 'ghost',
-      }[lowerName] ?? 'primary'
+        'md-elevated-button': 'tonal',
+        'md-filled-button': 'filled',
+        'md-filled-tonal-button': 'tonal',
+        'md-outlined-button': 'outlined',
+        'md-text-button': 'text',
+      }[lowerName] ?? 'filled'
     options.tone = 'accent'
     if (isTruthyAttribute(findAttribute(attributes, 'soft-disabled'))) {
       warnings.push(
@@ -885,11 +897,11 @@ function transformComponentButton(
       staticValue(findAttribute(attributes, 'appearance')) ?? 'accent'
     options.variant =
       {
-        accent: 'primary',
-        filled: 'primary',
-        'filled-outlined': 'secondary',
-        outlined: 'tertiary',
-        plain: 'ghost',
+        accent: 'filled',
+        filled: 'filled',
+        'filled-outlined': 'tonal',
+        outlined: 'outlined',
+        plain: 'text',
       }[appearance]
     const size = staticValue(findAttribute(attributes, 'size'))
     if (size && !['small', 'medium', 'large'].includes(size)) {
@@ -947,13 +959,14 @@ function transformComponentButton(
       return null
     }
     options.variant =
-      variant === 'secondary' ? 'secondary' : 'primary'
+      treatment === 'outline'
+        ? 'outlined'
+        : variant === 'secondary'
+          ? 'tonal'
+          : 'filled'
     options.tone = variant === 'negative' ? 'danger' : variant === 'accent'
       ? 'accent'
       : 'neutral'
-    if (treatment === 'outline') {
-      options.variant = 'tertiary'
-    }
     const size = staticValue(findAttribute(attributes, 'size'))
     if (size && !['s', 'm', 'l', 'xl'].includes(size)) {
       warnings.push(

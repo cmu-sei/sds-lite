@@ -5,13 +5,13 @@ const cases = [
     name: 'button',
     defaultTone: 'accent',
     markup:
-      '<button type="button" data-tone-target data-sds-variant="primary" {{tone}}>Button</button>',
+      '<button type="button" data-tone-target data-sds-variant="filled" {{tone}}>Button</button>',
   },
   {
     name: 'compact-button',
     defaultTone: 'accent',
     markup:
-      '<button type="button" data-tone-target data-sds-density="compact" data-sds-variant="primary" {{tone}}>Button</button>',
+      '<button type="button" data-tone-target data-sds-density="compact" data-sds-variant="filled" {{tone}}>Button</button>',
   },
   {
     name: 'link',

@@ -19,7 +19,7 @@ Native buttons inside an SDS root are styled automatically. Use
 
 | Option | Values | Default |
 |---|---|---|
-| `data-sds-variant` | `primary`, `secondary`, `tertiary`, `ghost` | `primary` |
+| `data-sds-variant` | `filled`, `tonal`, `outlined`, `text` | `filled` |
 | `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Accent action |
 | `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
 | `data-sds-density` | `compact` | Comfortable |
@@ -40,8 +40,8 @@ Use one primary action per local decision:
 ```html
 <div class="sds-action-group">
   <button type="submit">Save</button>
-  <button type="button" data-sds-variant="ghost">Cancel</button>
-  <button type="button" data-sds-variant="tertiary">Preview</button>
+  <button type="button" data-sds-variant="text">Cancel</button>
+  <button type="button" data-sds-variant="outlined">Preview</button>
 </div>
 ```
 
@@ -91,7 +91,7 @@ must remain in the reading order, application code must suppress its action.
 ```html
 <div class="sds-action-group" aria-label="Project actions">
   <button type="button">Save</button>
-  <button type="button" data-sds-variant="ghost">Cancel</button>
+  <button type="button" data-sds-variant="text">Cancel</button>
 </div>
 ```
 

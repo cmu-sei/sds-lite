@@ -92,7 +92,7 @@ Common elements need no SDS classes:
       </div>
       <div class="sds-action-group">
         <button type="submit">Save</button>
-        <button type="button" data-sds-variant="ghost">Cancel</button>
+        <button type="button" data-sds-variant="text">Cancel</button>
       </div>
     </form>
   </article>
@@ -122,7 +122,7 @@ SDS Lite can supply classes, IDs, relationships, and initial state:
 
 ```html
 <sds-dropdown>
-  <button data-sds-variant="ghost">Actions</button>
+  <button data-sds-variant="text">Actions</button>
   <menu>
     <li><button type="button">Rename</button></li>
     <li><button type="button" data-sds-tone="danger">Delete</button></li>

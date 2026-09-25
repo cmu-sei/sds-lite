@@ -5,7 +5,7 @@ test('compact primary buttons retain on-accent text', async ({ page }) => {
   await page.locator('[data-sds-root]').evaluate((root) => {
     root.insertAdjacentHTML(
       'afterbegin',
-      '<a class="sds-button" href="#getting-started" data-sds-density="compact" data-sds-variant="primary" data-sds-tone="accent">Get started</a>',
+      '<a class="sds-button" href="#getting-started" data-sds-density="compact" data-sds-variant="filled" data-sds-tone="accent">Get started</a>',
     )
   })
 
@@ -31,40 +31,69 @@ test('catalog shows every compact button variant across tones', async ({
       await buttons.evaluateAll((elements) =>
         elements.map((element) => element.dataset.sdsVariant),
       ),
-    ).toEqual(['primary', 'secondary', 'tertiary', 'ghost'])
+    ).toEqual(['filled', 'tonal', 'outlined', 'text'])
   }
 })
 
-test('compact secondary borders match SEI action-btn tones in light and dark modes', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
+test('compact button content remains centered', async ({ page }) => {
   await page.goto('/')
-  const palette = {
-    neutral: ['gray-600', 'gray-400'],
-    accent: ['blue-600', 'blue-400'],
-    danger: ['red-600', 'red-400'],
+
+  const buttons = page.locator(
+    'article[aria-labelledby="compact-button-tones-heading"] button[data-sds-density="compact"]',
+  )
+
+  for (const button of await buttons.all()) {
+    await expect(button).toHaveCSS('justify-content', 'center')
+    await expect(button).toHaveCSS('text-align', 'center')
+  }
+})
+
+test('compact button sizes use a consistent height scale', async ({ page }) => {
+  await page.goto('/')
+
+  await page.locator('[data-sds-root]').evaluate((root) => {
+    root.insertAdjacentHTML(
+      'afterbegin',
+      `<div style="position: fixed; visibility: hidden">
+        <button data-test-compact-size="xs" data-sds-size="xs" data-sds-density="compact">xs</button>
+        <button data-test-compact-size="sm" data-sds-size="sm" data-sds-density="compact">sm</button>
+        <button data-test-compact-size="md" data-sds-size="md" data-sds-density="compact">md</button>
+        <button data-test-compact-size="lg" data-sds-size="lg" data-sds-density="compact">lg</button>
+        <button data-test-compact-size="xl" data-sds-size="xl" data-sds-density="compact">xl</button>
+      </div>`,
+    )
+  })
+
+  const expectedHeights = {
+    xs: '24px',
+    sm: '28px',
+    md: '32px',
+    lg: '36px',
+    xl: '40px',
   }
 
-  for (const [scheme, index] of [['light', 0], ['dark', 1]]) {
+  for (const [size, height] of Object.entries(expectedHeights)) {
+    const button = page.locator(`[data-test-compact-size="${size}"]`)
+    await expect(button).toHaveCSS('block-size', height)
+  }
+})
+
+test('compact tonal buttons stay borderless in light and dark modes', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  for (const scheme of ['light', 'dark']) {
     await page.locator('[data-sds-root]').evaluate((root, value) => {
       root.setAttribute('data-sds-color-scheme', value)
     }, scheme)
-    for (const [tone, colors] of Object.entries(palette)) {
-      const expected = await page.evaluate((color) => {
-        const probe = document.createElement('div')
-        probe.style.borderColor = `color-mix(in srgb, var(--sds-${color}) 20%, transparent)`
-        document.querySelector('[data-sds-root]').append(probe)
-        const result = getComputedStyle(probe).borderColor
-        probe.remove()
-        return result
-      }, colors[index])
+    for (const tone of ['neutral', 'accent', 'danger']) {
       const button = page.locator(
-        `article[aria-labelledby="compact-button-tones-heading"] [data-sds-tone="${tone}"] [data-sds-variant="secondary"]`,
+        `article[aria-labelledby="compact-button-tones-heading"] [data-sds-tone="${tone}"] [data-sds-variant="tonal"]`,
       )
-      await expect(button).toHaveCSS('border-color', expected)
+      await expect(button).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
       await button.hover()
-      await expect(button).toHaveCSS('border-color', expected)
+      await expect(button).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
       await page.mouse.down()
-      await expect(button).toHaveCSS('border-color', expected)
+      await expect(button).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
       await page.mouse.up()
       await button.evaluate((element) => element.setAttribute('aria-disabled', 'true'))
       const disabled = await page.evaluate(() => {
@@ -75,7 +104,7 @@ test('compact secondary borders match SEI action-btn tones in light and dark mod
         probe.remove()
         return result
       })
-      await expect(button).toHaveCSS('border-color', disabled)
+      await expect(button).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
       await button.evaluate((element) => element.removeAttribute('aria-disabled'))
     }
   }
@@ -89,11 +118,11 @@ test('button density and omitted tones preserve tone colors', async ({
 
   const properties = ['color', 'backgroundColor', 'borderColor']
   const tones = ['neutral', 'accent', 'info', 'success', 'warning', 'danger']
-  const variants = ['primary', 'secondary', 'tertiary', 'ghost']
+  const variants = ['filled', 'tonal', 'outlined', 'text']
 
   for (const tone of tones) {
     for (const variant of variants) {
-      const comparedProperties = variant === 'secondary'
+      const comparedProperties = variant === 'tonal'
         ? ['color', 'backgroundColor']
         : properties
       const regularScope = page.locator(
@@ -103,7 +132,7 @@ test('button density and omitted tones preserve tone colors', async ({
         `article[aria-labelledby="compact-button-tones-heading"] [data-sds-tone="${tone}"]`,
       )
       const regular =
-        variant === 'primary'
+        variant === 'filled'
           ? regularScope.locator('button:not([data-sds-variant])')
           : regularScope.locator(`[data-sds-variant="${variant}"]`)
       const compact = compactScope.locator(
@@ -125,7 +154,7 @@ test('button density and omitted tones preserve tone colors', async ({
   }
 
   await page.locator('[data-sds-root]').evaluate((root) => {
-    const variants = ['primary', 'secondary', 'tertiary', 'ghost']
+    const variants = ['filled', 'tonal', 'outlined', 'text']
     const markup = variants
       .flatMap((variant) =>
         ['', 'compact'].flatMap((density) =>

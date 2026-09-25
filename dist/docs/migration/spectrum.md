@@ -12,11 +12,11 @@ npx sds-lite-migrate --from spectrum src/editor.html
 
 | Spectrum | SDS Lite |
 |---|---|
-| `variant="accent"` | `data-sds-variant="primary"`, `data-sds-tone="accent"` |
-| `variant="primary"` | `data-sds-variant="primary"`, `data-sds-tone="neutral"` |
-| `variant="secondary"` | `data-sds-variant="secondary"`, `data-sds-tone="neutral"` |
-| `variant="negative"` | `data-sds-variant="primary"`, `data-sds-tone="danger"` |
-| `treatment="outline"` | `data-sds-variant="tertiary"` |
+| `variant="accent"` | `data-sds-variant="filled"`, `data-sds-tone="accent"` |
+| `variant="primary"` | `data-sds-variant="filled"`, `data-sds-tone="neutral"` |
+| `variant="secondary"` | `data-sds-variant="tonal"`, `data-sds-tone="neutral"` |
+| `variant="negative"` | `data-sds-variant="filled"`, `data-sds-tone="danger"` |
+| `treatment="outline"` | `data-sds-variant="outlined"` |
 | `size="s\|m\|l\|xl"` | `data-sds-size="sm\|md\|lg\|xl"` |
 | `pending` | `aria-busy="true"` and `disabled` |
 | `icon-only label="Help"` | `data-sds-shape="icon" aria-label="Help"` |
@@ -32,7 +32,7 @@ Spectrum documents native anchors as the preferred replacement for deprecated
 <a
   class="sds-button"
   href="/reports"
-  data-sds-variant="primary"
+  data-sds-variant="filled"
   data-sds-tone="accent"
 >
   Reports

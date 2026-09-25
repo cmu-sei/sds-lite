@@ -26,7 +26,7 @@ autofill, keyboard behavior, and form submission.
 
   <div class="sds-action-group">
     <button type="submit">Save project</button>
-    <button type="button" data-sds-variant="ghost">Cancel</button>
+    <button type="button" data-sds-variant="text">Cancel</button>
   </div>
 </form>
 ```

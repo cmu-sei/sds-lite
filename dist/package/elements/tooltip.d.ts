@@ -1,4 +1,5 @@
 import type { SdsPlacement } from '../generated/interface.js';
+type SdsTooltipSize = 'sm' | 'md' | 'lg' | 'xl' | 'auto';
 declare const HTMLElementBase: typeof HTMLElement;
 export declare class SdsTooltipElement extends HTMLElementBase {
     static observedAttributes: string[];
@@ -10,6 +11,8 @@ export declare class SdsTooltipElement extends HTMLElementBase {
     set placement(value: SdsPlacement);
     get offset(): number;
     set offset(value: number);
+    get size(): SdsTooltipSize;
+    set size(value: SdsTooltipSize);
     connectedCallback(): void;
     disconnectedCallback(): void;
     attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void;

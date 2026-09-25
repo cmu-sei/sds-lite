@@ -1,56 +1,19 @@
 @layer sds.components {
   :where(sds-tabs) {
     --sds-tab-accent: var(
-      --sds-tone-text,
-      var(--sds-color-accent-text)
+      --sds-tone-strong,
+      var(--sds-color-accent-strong)
     );
-    --sds-tab-active-background: light-dark(
-      var(--sds-blue-700),
-      var(--sds-blue-200)
+    --sds-tab-active-background: var(
+      --sds-tone-strong,
+      var(--sds-color-accent-strong)
     );
-    --sds-tab-active-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-tab-active-text: var(
+      --sds-tone-on-strong,
+      var(--sds-color-accent-on-strong)
+    );
 
     display: block;
-  }
-
-  :where(sds-tabs[tone="neutral"]) {
-    --sds-tab-active-background: light-dark(
-      var(--sds-gray-900),
-      var(--sds-gray-200)
-    );
-  }
-
-  :where(sds-tabs[tone="accent"]) {
-    --sds-tab-active-background: light-dark(
-      var(--sds-blue-700),
-      var(--sds-blue-200)
-    );
-  }
-
-  :where(sds-tabs[tone="info"]) {
-    --sds-tab-active-background: light-dark(
-      var(--sds-teal-700),
-      var(--sds-teal-200)
-    );
-  }
-
-  :where(sds-tabs[tone="success"]) {
-    --sds-tab-active-background: light-dark(
-      var(--sds-green-700),
-      var(--sds-green-200)
-    );
-  }
-
-  :where(sds-tabs[tone="warning"]) {
-    --sds-tab-active-background: var(--sds-orange-200);
-    --sds-tab-active-text: var(--sds-black);
-  }
-
-  :where(sds-tabs[tone="danger"]) {
-    --sds-tab-active-background: light-dark(
-      var(--sds-red-700),
-      var(--sds-red-200)
-    );
   }
 
   :where(.sds-tab-list) {

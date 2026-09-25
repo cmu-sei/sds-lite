@@ -46,7 +46,7 @@ test('migrates legacy SDS buttons and safe form components', () => {
   assert.equal(result.warnings.length, 0)
   assert.match(
     result.code,
-    /<button class="sds-button" data-sds-variant="ghost" data-sds-tone="danger" data-sds-size="sm" data-sds-block type="button">/,
+    /<button class="sds-button" data-sds-variant="text" data-sds-tone="danger" data-sds-size="sm" data-sds-block type="button">/,
   )
   assert.match(
     result.code,
@@ -69,11 +69,11 @@ test('migrates Bootstrap buttons, links, inputs, textareas, and selects', () => 
   assert.equal(result.warnings.length, 0)
   assert.match(
     result.code,
-    /<button class="tracking sds-button" type="submit" data-sds-variant="primary" data-sds-tone="danger" data-sds-size="sm">/,
+    /<button class="tracking sds-button" type="submit" data-sds-variant="filled" data-sds-tone="danger" data-sds-size="sm">/,
   )
   assert.match(
     result.code,
-    /<a class="sds-button" href="\/projects" data-sds-variant="tertiary" data-sds-tone="accent">/,
+    /<a class="sds-button" href="\/projects" data-sds-variant="outlined" data-sds-tone="accent">/,
   )
   assert.match(
     result.code,
@@ -97,11 +97,11 @@ test('migrates USWDS buttons and native form controls', () => {
   assert.equal(result.warnings.length, 0)
   assert.match(
     result.code,
-    /data-sds-variant="primary" data-sds-tone="warning" data-sds-size="lg"/,
+    /data-sds-variant="filled" data-sds-tone="warning" data-sds-size="lg"/,
   )
   assert.match(
     result.code,
-    /<a class="sds-button" href="\/help" data-sds-variant="tertiary" data-sds-tone="accent">/,
+    /<a class="sds-button" href="\/help" data-sds-variant="outlined" data-sds-tone="accent">/,
   )
   assert.match(result.code, /<input class="sds-input" name="query">/)
   assert.match(result.code, /<textarea class="sds-input">/)
@@ -118,11 +118,11 @@ test('migrates Material Web buttons and only structurally safe text fields', () 
   assert.equal(result.warnings.length, 0)
   assert.match(
     result.code,
-    /<button type="submit" class="sds-button" data-sds-variant="primary" data-sds-tone="accent">Save<\/button>/,
+    /<button type="submit" class="sds-button" data-sds-variant="filled" data-sds-tone="accent">Save<\/button>/,
   )
   assert.match(
     result.code,
-    /<a href="\/back" class="sds-button" data-sds-variant="tertiary" data-sds-tone="accent">Back<\/a>/,
+    /<a href="\/back" class="sds-button" data-sds-variant="outlined" data-sds-tone="accent">Back<\/a>/,
   )
   assert.match(
     result.code,
@@ -139,7 +139,7 @@ test('migrates Web Awesome semantic buttons and safe inputs', () => {
   assert.equal(result.warnings.length, 0)
   assert.match(
     result.code,
-    /<a href="\/done" class="sds-button" data-sds-variant="tertiary" data-sds-tone="success">Done<\/a>/,
+    /<a href="\/done" class="sds-button" data-sds-variant="outlined" data-sds-tone="success">Done<\/a>/,
   )
   assert.match(
     result.code,
@@ -161,15 +161,15 @@ test('migrates Spectrum buttons, link semantics, pending state, and safe text fi
   assert.equal(result.warnings.length, 0)
   assert.match(
     result.code,
-    /data-sds-variant="tertiary" data-sds-tone="danger"/,
+    /data-sds-variant="outlined" data-sds-tone="danger"/,
   )
   assert.match(
     result.code,
-    /<a href="\/reports" class="sds-button" data-sds-variant="primary" data-sds-tone="accent">Reports<\/a>/,
+    /<a href="\/reports" class="sds-button" data-sds-variant="filled" data-sds-tone="accent">Reports<\/a>/,
   )
   assert.match(
     result.code,
-    /<button aria-busy="true" disabled class="sds-button" data-sds-variant="primary" data-sds-tone="neutral" type="button">Save<\/button>/,
+    /<button aria-busy="true" disabled class="sds-button" data-sds-variant="filled" data-sds-tone="neutral" type="button">Save<\/button>/,
   )
   assert.match(
     result.code,
@@ -203,7 +203,7 @@ test('supports static JSX attributes without rewriting event expressions', () =>
   assert.equal(result.warnings.length, 0)
   assert.equal(
     result.code,
-    '<button className="sds-button" onClick={save} data-sds-variant="primary" data-sds-tone="accent">Save</button>',
+    '<button className="sds-button" onClick={save} data-sds-variant="filled" data-sds-tone="accent">Save</button>',
   )
 })
 
@@ -250,7 +250,7 @@ test('dry-run previews changes without modifying files and accepts multiple path
 
   assert.equal(result.status, 0, result.stderr)
   assert.match(result.stdout, /SDS Lite migration preview from bootstrap/)
-  assert.match(result.stdout, /data-sds-variant="primary"/)
+  assert.match(result.stdout, /data-sds-variant="filled"/)
   assert.match(result.stdout, /class="sds-input"/)
   assert.match(result.stdout, /Would update 2 of 2 file\(s\)/)
   assert.equal(await readFile(first, 'utf8'), firstSource)
@@ -271,7 +271,7 @@ test('--write updates files in place', async () => {
   assert.match(result.stdout, /Updated 1 of 1 file\(s\)/)
   assert.equal(
     await readFile(file, 'utf8'),
-    '<a class="sds-button" href="/home" data-sds-variant="ghost" data-sds-tone="accent">Home</a>\n',
+    '<a class="sds-button" href="/home" data-sds-variant="text" data-sds-tone="accent">Home</a>\n',
   )
 })
 

@@ -12,13 +12,13 @@ npx sds-lite-migrate --from uswds src/application.html
 
 | USWDS | SDS Lite |
 |---|---|
-| `usa-button` | `sds-button`, `data-sds-variant="primary"`, `data-sds-tone="accent"` |
-| `usa-button--secondary` | `data-sds-variant="secondary"` |
+| `usa-button` | `sds-button`, `data-sds-variant="filled"`, `data-sds-tone="accent"` |
+| `usa-button--secondary` | `data-sds-variant="tonal"` |
 | `usa-button--accent-cool` | `data-sds-tone="info"` |
 | `usa-button--accent-warm` | `data-sds-tone="warning"` |
 | `usa-button--base` | `data-sds-tone="neutral"` |
-| `usa-button--outline` | `data-sds-variant="tertiary"` |
-| `usa-button--unstyled` | `data-sds-variant="ghost"` |
+| `usa-button--outline` | `data-sds-variant="outlined"` |
+| `usa-button--unstyled` | `data-sds-variant="text"` |
 | `usa-button--big` | `data-sds-size="lg"` |
 
 Native elements are retained:
@@ -31,7 +31,7 @@ Native elements are retained:
 <a
   class="sds-button"
   href="/help"
-  data-sds-variant="tertiary"
+  data-sds-variant="outlined"
   data-sds-tone="accent"
 >
   Help

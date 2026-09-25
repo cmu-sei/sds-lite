@@ -1,45 +1,37 @@
 import { expect, test } from '@playwright/test'
 
-test('secondary buttons retain a neutral border across tones', async ({
+test('tonal buttons use the selected tone surface', async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
 
-  const secondaryButtons = page.locator(
-    '#actions article[aria-labelledby="button-variants-heading"] [data-sds-tone] [data-sds-variant="secondary"]',
+  const tonalButtons = page.locator(
+    '#actions article[aria-labelledby="button-variants-heading"] [data-sds-tone] [data-sds-variant="tonal"]',
   )
-  const expectedBorder = await page.evaluate(() => {
-    const probe = document.createElement('div')
-    probe.style.border = '1px solid var(--sds-color-border-strong)'
-    document.querySelector('[data-sds-root]')?.append(probe)
-    const borderColor = getComputedStyle(probe).borderColor
-    probe.remove()
-    return borderColor
-  })
 
-  await expect(secondaryButtons).toHaveCount(6)
-  for (const button of await secondaryButtons.all()) {
-    await expect(button).toHaveCSS('border-color', expectedBorder)
+  await expect(tonalButtons).toHaveCount(6)
+  for (const button of await tonalButtons.all()) {
+    await expect(button).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
   }
 
-  const accentSecondary = secondaryButtons.nth(1)
-  await accentSecondary.hover()
-  await expect(accentSecondary).toHaveCSS('border-color', expectedBorder)
+  const accentTonal = tonalButtons.nth(1)
+  await accentTonal.hover()
+  await expect(accentTonal).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
 })
 
-test('tertiary button borders match their text color across tones', async ({
+test('outlined button borders match their text color across tones', async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
 
-  const tertiaryButtons = page.locator(
-    '#actions article[aria-labelledby="button-variants-heading"] [data-sds-tone] [data-sds-variant="tertiary"]',
+  const outlinedButtons = page.locator(
+    '#actions article[aria-labelledby="button-variants-heading"] [data-sds-tone] [data-sds-variant="outlined"]',
   )
 
-  await expect(tertiaryButtons).toHaveCount(6)
-  for (const button of await tertiaryButtons.all()) {
+  await expect(outlinedButtons).toHaveCount(6)
+  for (const button of await outlinedButtons.all()) {
     const colors = await button.evaluate((element) => {
       const style = getComputedStyle(element)
       return {
@@ -62,16 +54,19 @@ test('button tones match the SEI Design System color matrix', async ({
       base: 'rgb(48, 49, 50)',
       hover: 'rgb(68, 69, 71)',
       ghostHover: 'rgb(225, 226, 227)',
+      tonalSurface: 'rgb(225, 226, 227)',
     },
     accent: {
       base: 'rgb(2, 102, 161)',
       hover: 'rgb(0, 124, 186)',
       ghostHover: 'rgb(240, 241, 241)',
+      tonalSurface: 'rgb(238, 249, 253)',
     },
     danger: {
       base: 'rgb(196, 18, 48)',
       hover: 'rgb(224, 42, 58)',
       ghostHover: 'rgb(240, 241, 241)',
+      tonalSurface: 'rgb(255, 245, 245)',
     },
   }
 
@@ -80,19 +75,19 @@ test('button tones match the SEI Design System color matrix', async ({
       `#actions article[aria-labelledby="button-variants-heading"] [data-sds-tone="${tone}"]`,
     )
     const primary = scope.locator('button:not([data-sds-variant])')
-    const secondary = scope.locator('[data-sds-variant="secondary"]')
-    const tertiary = scope.locator('[data-sds-variant="tertiary"]')
-    const ghost = scope.locator('[data-sds-variant="ghost"]')
+    const tonal = scope.locator('[data-sds-variant="tonal"]')
+    const outlined = scope.locator('[data-sds-variant="outlined"]')
+    const text = scope.locator('[data-sds-variant="text"]')
 
     await expect(primary).toHaveCSS('color', 'rgb(255, 255, 255)')
     await expect(primary).toHaveCSS('background-color', colors.base)
     await expect(primary).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
-    await expect(secondary).toHaveCSS('color', colors.base)
-    await expect(secondary).toHaveCSS('background-color', 'rgb(255, 255, 255)')
-    await expect(secondary).toHaveCSS('border-color', 'rgb(116, 117, 120)')
-    await expect(tertiary).toHaveCSS('color', colors.base)
-    await expect(tertiary).toHaveCSS('border-color', colors.base)
-    await expect(ghost).toHaveCSS('color', colors.base)
+    await expect(tonal).toHaveCSS('color', colors.base)
+    await expect(tonal).toHaveCSS('background-color', colors.tonalSurface)
+    await expect(tonal).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
+    await expect(outlined).toHaveCSS('color', colors.base)
+    await expect(outlined).toHaveCSS('border-color', colors.base)
+    await expect(text).toHaveCSS('color', colors.base)
 
     await primary.hover()
     await expect(primary).toHaveCSS('background-color', colors.hover)
@@ -100,26 +95,26 @@ test('button tones match the SEI Design System color matrix', async ({
     await page.mouse.down()
     await expect(primary).toHaveCSS('background-color', colors.base)
     await page.mouse.up()
-    await secondary.hover()
-    await expect(secondary).toHaveCSS('color', colors.base)
-    await expect(secondary).toHaveCSS('background-color', 'rgb(240, 241, 241)')
-    await expect(secondary).toHaveCSS('border-color', 'rgb(116, 117, 120)')
+    await tonal.hover()
+    await expect(tonal).toHaveCSS('color', colors.base)
+    await expect(tonal).not.toHaveCSS('background-color', colors.tonalSurface)
+    await expect(tonal).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
     await page.mouse.down()
-    await expect(secondary).toHaveCSS('background-color', 'rgb(225, 226, 227)')
+    await expect(tonal).not.toHaveCSS('background-color', colors.tonalSurface)
     await page.mouse.up()
-    await tertiary.hover()
-    await expect(tertiary).toHaveCSS('color', 'rgb(255, 255, 255)')
-    await expect(tertiary).toHaveCSS('background-color', colors.hover)
-    await expect(tertiary).toHaveCSS('border-color', colors.hover)
+    await outlined.hover()
+    await expect(outlined).toHaveCSS('color', 'rgb(255, 255, 255)')
+    await expect(outlined).toHaveCSS('background-color', colors.hover)
+    await expect(outlined).toHaveCSS('border-color', colors.hover)
     await page.mouse.down()
-    await expect(tertiary).toHaveCSS('background-color', colors.base)
-    await expect(tertiary).toHaveCSS('border-color', colors.base)
+    await expect(outlined).toHaveCSS('background-color', colors.base)
+    await expect(outlined).toHaveCSS('border-color', colors.base)
     await page.mouse.up()
-    await ghost.hover()
-    await expect(ghost).toHaveCSS('color', colors.base)
-    await expect(ghost).toHaveCSS('background-color', colors.ghostHover)
+    await text.hover()
+    await expect(text).toHaveCSS('color', colors.base)
+    await expect(text).toHaveCSS('background-color', colors.ghostHover)
     await page.mouse.down()
-    await expect(ghost).toHaveCSS('background-color', 'rgb(225, 226, 227)')
+    await expect(text).toHaveCSS('background-color', 'rgb(225, 226, 227)')
     await page.mouse.up()
   }
 })
@@ -154,18 +149,21 @@ test('button tones match the SEI Design System dark color matrix', async ({
       state: 'rgb(166, 167, 170)',
       text: 'rgb(166, 167, 170)',
       textHover: 'rgb(188, 190, 192)',
+      tonalSurface: 'rgb(48, 49, 50)',
     },
     accent: {
       fill: 'rgb(0, 155, 217)',
       state: 'rgb(46, 177, 230)',
       text: 'rgb(46, 177, 230)',
       textHover: 'rgb(116, 203, 238)',
+      tonalSurface: 'rgb(2, 27, 58)',
     },
     danger: {
       fill: 'rgb(239, 58, 71)',
       state: 'rgb(242, 106, 113)',
       text: 'rgb(242, 106, 113)',
       textHover: 'rgb(249, 161, 164)',
+      tonalSurface: 'rgb(49, 5, 12)',
     },
   }
 
@@ -174,44 +172,44 @@ test('button tones match the SEI Design System dark color matrix', async ({
       `#actions article[aria-labelledby="button-variants-heading"] [data-sds-tone="${tone}"]`,
     )
     const primary = scope.locator('button:not([data-sds-variant])')
-    const secondary = scope.locator('[data-sds-variant="secondary"]')
-    const tertiary = scope.locator('[data-sds-variant="tertiary"]')
-    const ghost = scope.locator('[data-sds-variant="ghost"]')
+    const tonal = scope.locator('[data-sds-variant="tonal"]')
+    const outlined = scope.locator('[data-sds-variant="outlined"]')
+    const text = scope.locator('[data-sds-variant="text"]')
 
     await expect(primary).toHaveCSS('color', 'rgb(0, 0, 0)')
     await expect(primary).toHaveCSS('background-color', colors.fill)
     await expect(primary).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
-    await expect(secondary).toHaveCSS('color', colors.text)
-    await expect(secondary).toHaveCSS('background-color', 'rgb(27, 28, 29)')
-    await expect(secondary).toHaveCSS('border-color', 'rgb(116, 117, 120)')
-    await expect(tertiary).toHaveCSS('color', colors.text)
-    await expect(tertiary).toHaveCSS('border-color', colors.text)
-    await expect(ghost).toHaveCSS('color', colors.text)
+    await expect(tonal).toHaveCSS('color', colors.text)
+    await expect(tonal).toHaveCSS('background-color', colors.tonalSurface)
+    await expect(tonal).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
+    await expect(outlined).toHaveCSS('color', colors.text)
+    await expect(outlined).toHaveCSS('border-color', colors.text)
+    await expect(text).toHaveCSS('color', colors.text)
 
     await primary.hover()
     await expect(primary).toHaveCSS('background-color', colors.state)
     await page.mouse.down()
     await expect(primary).toHaveCSS('background-color', colors.fill)
     await page.mouse.up()
-    await secondary.hover()
-    await expect(secondary).toHaveCSS('color', colors.textHover)
-    await expect(secondary).toHaveCSS('background-color', 'rgb(38, 39, 40)')
+    await tonal.hover()
+    await expect(tonal).toHaveCSS('color', colors.textHover)
+    await expect(tonal).not.toHaveCSS('background-color', colors.tonalSurface)
     await page.mouse.down()
-    await expect(secondary).toHaveCSS('color', colors.text)
-    await expect(secondary).toHaveCSS('background-color', 'rgb(27, 28, 29)')
+    await expect(tonal).toHaveCSS('color', colors.text)
+    await expect(tonal).not.toHaveCSS('background-color', colors.tonalSurface)
     await page.mouse.up()
-    await tertiary.hover()
-    await expect(tertiary).toHaveCSS('color', 'rgb(0, 0, 0)')
-    await expect(tertiary).toHaveCSS('background-color', colors.state)
+    await outlined.hover()
+    await expect(outlined).toHaveCSS('color', 'rgb(0, 0, 0)')
+    await expect(outlined).toHaveCSS('background-color', colors.state)
     await page.mouse.down()
-    await expect(tertiary).toHaveCSS('background-color', colors.fill)
-    await expect(tertiary).toHaveCSS('border-color', colors.fill)
+    await expect(outlined).toHaveCSS('background-color', colors.fill)
+    await expect(outlined).toHaveCSS('border-color', colors.fill)
     await page.mouse.up()
-    await ghost.hover()
-    await expect(ghost).toHaveCSS('color', colors.textHover)
-    await expect(ghost).toHaveCSS('background-color', translucent.hover)
+    await text.hover()
+    await expect(text).toHaveCSS('color', colors.textHover)
+    await expect(text).toHaveCSS('background-color', translucent.hover)
     await page.mouse.down()
-    await expect(ghost).toHaveCSS('background-color', translucent.active)
+    await expect(text).toHaveCSS('background-color', translucent.active)
     await page.mouse.up()
   }
 })

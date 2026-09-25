@@ -396,6 +396,14 @@
               "default": "block-start"
             },
             {
+              "name": "size",
+              "type": {
+                "text": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"auto\""
+              },
+              "description": "Tooltip width.",
+              "default": "sm"
+            },
+            {
               "name": "offset",
               "type": {
                 "text": "number"
@@ -412,6 +420,14 @@
                 "text": "SdsPlacement"
               },
               "description": "Reflects the placement attribute."
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "SdsTooltipSize"
+              },
+              "description": "Reflects the size attribute."
             },
             {
               "kind": "field",

@@ -20,10 +20,10 @@ uses tone and variant for the same two decisions.
 | `variant="success"` | `data-sds-tone="success"` |
 | `variant="warning"` | `data-sds-tone="warning"` |
 | `variant="danger"` | `data-sds-tone="danger"` |
-| `appearance="accent"` or `"filled"` | `data-sds-variant="primary"` |
-| `appearance="filled-outlined"` | `data-sds-variant="secondary"` |
-| `appearance="outlined"` | `data-sds-variant="tertiary"` |
-| `appearance="plain"` | `data-sds-variant="ghost"` |
+| `appearance="accent"` or `"filled"` | `data-sds-variant="filled"` |
+| `appearance="filled-outlined"` | `data-sds-variant="tonal"` |
+| `appearance="outlined"` | `data-sds-variant="outlined"` |
+| `appearance="plain"` | `data-sds-variant="text"` |
 | `size="small\|medium\|large"` | `data-sds-size="sm\|md\|lg"` |
 | `loading` | `aria-busy="true"` and `disabled` |
 

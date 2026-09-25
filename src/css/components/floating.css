@@ -112,6 +112,26 @@
     line-height: 1rem;
   }
 
+  :where(sds-tooltip[size="sm"] .sds-tooltip-content) {
+    inline-size: min(8rem, calc(100vw - 1rem));
+  }
+
+  :where(sds-tooltip[size="md"] .sds-tooltip-content) {
+    inline-size: min(12rem, calc(100vw - 1rem));
+  }
+
+  :where(sds-tooltip[size="lg"] .sds-tooltip-content) {
+    inline-size: min(14rem, calc(100vw - 1rem));
+  }
+
+  :where(sds-tooltip[size="xl"] .sds-tooltip-content) {
+    inline-size: min(18rem, calc(100vw - 1rem));
+  }
+
+  :where(sds-tooltip[size="auto"] .sds-tooltip-content) {
+    inline-size: max-content;
+  }
+
   :where(.sds-popover-content, .sds-tooltip-content)::before {
     position: absolute;
     inline-size: var(--sds-floating-arrow-size);

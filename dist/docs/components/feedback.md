@@ -15,14 +15,21 @@ Choose feedback by purpose:
 
 ```html
 <span class="sds-badge" data-sds-tone="success">Complete</span>
+<a class="sds-badge" data-sds-size="sm" data-sds-tone="accent" href="/projects/atlas">
+  Project Atlas
+</a>
 ```
 
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-tone` | All semantic tones | `neutral` |
 | `data-sds-variant` | `light`, `light-border`, `dark` | Solid tone |
+| `data-sds-size` | `sm`, `md` | `md` |
 
-Badges are short, noninteractive labels.
+Badges are short labels. Use an anchor with `.sds-badge` when the badge itself
+navigates to a related resource; linked badges receive tone-aware hover styling.
+Use `data-sds-size="sm"` when a badge sits inline with body text or other
+compact content.
 
 ## Tag
 

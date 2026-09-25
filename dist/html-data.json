@@ -926,7 +926,7 @@
           "name": "dark"
         },
         {
-          "name": "ghost"
+          "name": "filled"
         },
         {
           "name": "inline"
@@ -941,7 +941,7 @@
           "name": "outline"
         },
         {
-          "name": "primary"
+          "name": "outlined"
         },
         {
           "name": "secondary"
@@ -957,6 +957,12 @@
         },
         {
           "name": "tertiary"
+        },
+        {
+          "name": "text"
+        },
+        {
+          "name": "tonal"
         }
       ]
     },
@@ -1280,6 +1286,27 @@
             },
             {
               "name": "inline-end-end"
+            }
+          ]
+        },
+        {
+          "name": "size",
+          "description": "Tooltip width. Default: sm.",
+          "values": [
+            {
+              "name": "sm"
+            },
+            {
+              "name": "md"
+            },
+            {
+              "name": "lg"
+            },
+            {
+              "name": "xl"
+            },
+            {
+              "name": "auto"
             }
           ]
         },

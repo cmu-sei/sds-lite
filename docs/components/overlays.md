@@ -27,9 +27,9 @@ Tooltips open immediately on pointer hover or keyboard focus. Pointer leave,
 focus loss, or Escape closes them. SDS Lite adds the ID, role, class, manual
 Popover mode, and `aria-describedby`.
 
-Tooltips support `placement` and `offset`. The default offset is 6
-CSS pixels. Keep content noninteractive; use a popover for controls or long
-text.
+Tooltips support `size`, `placement`, and `offset`. Sizes are `sm`, `md`, `lg`,
+`xl`, and `auto`; the default is `sm`. The default offset is 6 CSS pixels.
+Keep content noninteractive; use a popover for controls or long text.
 
 ## Popover
 
@@ -95,7 +95,7 @@ Tooltips, popovers, and dropdowns:
   <footer class="sds-dialog-footer">
     <button
       type="button"
-      data-sds-variant="ghost"
+      data-sds-variant="text"
       command="close"
       data-sds-return-value="cancel"
     >

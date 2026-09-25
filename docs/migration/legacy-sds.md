@@ -14,10 +14,10 @@ npx sds-lite-migrate --from legacy-sds src/ProjectForm.vue
 
 | Legacy SDS | SDS Lite |
 |---|---|
-| `kind="primary"` | `data-sds-variant="primary"` |
-| `kind="secondary"` | `data-sds-variant="secondary"` |
-| `kind="tertiary"` | `data-sds-variant="tertiary"` |
-| `kind="ghost"` | `data-sds-variant="ghost"` |
+| `kind="primary"` | `data-sds-variant="filled"` |
+| `kind="secondary"` | `data-sds-variant="tonal"` |
+| `kind="tertiary"` | `data-sds-variant="outlined"` |
+| `kind="ghost"` | `data-sds-variant="text"` |
 | `variant="blue"` | `data-sds-tone="accent"` |
 | `variant="gray"` or `"white"` | `data-sds-tone="neutral"` |
 | `variant="red"` | `data-sds-tone="danger"` |
@@ -38,7 +38,7 @@ For example:
 <button
   class="sds-button"
   type="button"
-  data-sds-variant="ghost"
+  data-sds-variant="text"
   data-sds-tone="danger"
   data-sds-size="sm"
 >

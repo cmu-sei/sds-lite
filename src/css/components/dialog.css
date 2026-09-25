@@ -82,7 +82,7 @@
   )
       > :is(button, .sds-button):is(
         :not([data-sds-variant]),
-        [data-sds-variant="primary"]
+        [data-sds-variant="filled"]
       )
   {
     order: 1;

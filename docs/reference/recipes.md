@@ -35,7 +35,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `primary`, `secondary`, `tertiary`, `ghost` (default: `primary`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (default: `comfortable`)<br>`data-sds-shape`: `icon` (default: `text`)<br>`data-sds-avatar` (default: `false`)<br>`data-sds-block` (default: `false`) | Action styling for native buttons and links. |
+| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `filled`, `tonal`, `outlined`, `text` (default: `filled`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (default: `comfortable`)<br>`data-sds-shape`: `icon` (default: `text`)<br>`data-sds-avatar` (default: `false`)<br>`data-sds-block` (default: `false`) | Action styling for native buttons and links. |
 | link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (default: `primary`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `inherited`) | Link styling with semantic tone and emphasis. |
 | field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-field > small, .sds-field > label small`) (default: `muted help; inherited label color`) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
@@ -50,7 +50,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (default: `solid`) | Compact status or category. |
+| badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (default: `solid`)<br>`data-sds-size`: `sm`, `md` (default: `md`) | Compact status or category. |
 | tag | `.sds-tag`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md` (default: `sm`)<br>`data-sds-tone`: `danger` (on `button.sds-tag`) (default: `neutral`) | Static or interactive category with an optional counter. |
 | tag-action | `.sds-tag-action` |  | `data-sds-tone`: `danger` (default: `accent`) | Independent action inside a tag. |
 | callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (default: `subtle`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (default: `false`)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (default: `false`) | Contextual message in page content. |
@@ -231,11 +231,13 @@ Enhances a direct child trigger and short description with accessible tooltip be
 | Attribute | Values or type | Default | Purpose |
 |---|---|---|---|
 | `placement` | `block-start`, `block-start-start`, `block-start-end`, `block-end`, `block-end-start`, `block-end-end`, `inline-start`, `inline-start-start`, `inline-start-end`, `inline-end`, `inline-end-start`, `inline-end-end` | block-start | Preferred logical floating placement. |
+| `size` | `sm`, `md`, `lg`, `xl`, `auto` | sm | Tooltip width. |
 | `offset` | `number` | 6 | Nonnegative offset in CSS pixels. |
 
 | Property or method | Type | Purpose |
 |---|---|---|
 | `placement` | `SdsPlacement` | Reflects the placement attribute. |
+| `size` | `SdsTooltipSize` | Reflects the size attribute. |
 | `offset` | `number` | Reflects the offset attribute. |
 
 ### `<sds-toast>`

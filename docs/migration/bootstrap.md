@@ -16,14 +16,14 @@ buttons and navigation stays links.
 
 | Bootstrap | SDS Lite |
 |---|---|
-| `btn btn-primary` | `sds-button`, `data-sds-variant="primary"`, `data-sds-tone="accent"` |
-| `btn btn-secondary` | `data-sds-variant="secondary"`, `data-sds-tone="neutral"` |
+| `btn btn-primary` | `sds-button`, `data-sds-variant="filled"`, `data-sds-tone="accent"` |
+| `btn btn-secondary` | `data-sds-variant="tonal"`, `data-sds-tone="neutral"` |
 | `btn btn-success` | `data-sds-tone="success"` |
 | `btn btn-danger` | `data-sds-tone="danger"` |
 | `btn btn-warning` | `data-sds-tone="warning"` |
 | `btn btn-info` | `data-sds-tone="info"` |
-| `btn btn-outline-*` | `data-sds-variant="tertiary"` plus a matching semantic tone |
-| `btn btn-link` | `data-sds-variant="ghost"` |
+| `btn btn-outline-*` | `data-sds-variant="outlined"` plus a matching semantic tone |
+| `btn btn-link` | `data-sds-variant="text"` |
 | `btn-sm`, `btn-lg` | `data-sds-size="sm"`, `"lg"` |
 
 ```html
@@ -34,7 +34,7 @@ buttons and navigation stays links.
 <a
   class="sds-button"
   href="/projects"
-  data-sds-variant="tertiary"
+  data-sds-variant="outlined"
   data-sds-tone="accent"
 >
   Projects

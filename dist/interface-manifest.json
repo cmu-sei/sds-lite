@@ -161,7 +161,7 @@
       "elements": ["button", "a"],
       "description": "Action styling for native buttons and links.",
       "options": {
-        "data-sds-variant": ["primary", "secondary", "tertiary", "ghost"],
+        "data-sds-variant": ["filled", "tonal", "outlined", "text"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
         "data-sds-size": ["xs", "sm", "md", "lg", "xl"],
         "data-sds-density": ["compact"],
@@ -170,7 +170,7 @@
         "data-sds-block": []
       },
       "defaults": {
-        "data-sds-variant": "primary",
+        "data-sds-variant": "filled",
         "data-sds-tone": "accent",
         "data-sds-size": "md",
         "data-sds-density": "comfortable",
@@ -297,11 +297,13 @@
       "description": "Compact status or category.",
       "options": {
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
-        "data-sds-variant": ["light", "light-border", "dark"]
+        "data-sds-variant": ["light", "light-border", "dark"],
+        "data-sds-size": ["sm", "md"]
       },
       "defaults": {
         "data-sds-tone": "neutral",
-        "data-sds-variant": "solid"
+        "data-sds-variant": "solid",
+        "data-sds-size": "md"
       }
     },
     {
@@ -861,10 +863,12 @@
       ],
       "attributes": [
         {"name": "placement", "family": "placement", "default": "block-start"},
+        {"name": "size", "values": ["sm", "md", "lg", "xl", "auto"], "default": "sm", "description": "Tooltip width."},
         {"name": "offset", "type": "number", "default": "6", "description": "Nonnegative offset in CSS pixels."}
       ],
       "members": [
         {"name": "placement", "kind": "field", "type": "SdsPlacement", "description": "Reflects the placement attribute."},
+        {"name": "size", "kind": "field", "type": "SdsTooltipSize", "description": "Reflects the size attribute."},
         {"name": "offset", "kind": "field", "type": "number", "description": "Reflects the offset attribute."}
       ]
     },

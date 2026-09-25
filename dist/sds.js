@@ -961,7 +961,11 @@ function pe() {
 //#endregion
 //#region src/elements/tooltip.ts
 var me = typeof HTMLElement > "u" ? class {} : HTMLElement, he = class extends me {
-	static observedAttributes = ["placement", "offset"];
+	static observedAttributes = [
+		"placement",
+		"offset",
+		"size"
+	];
 	content = null;
 	positioner = null;
 	hoverController = null;
@@ -977,6 +981,12 @@ var me = typeof HTMLElement > "u" ? class {} : HTMLElement, he = class extends m
 	}
 	set offset(e) {
 		x(this, "offset", e);
+	}
+	get size() {
+		return this.getAttribute("size") ?? "sm";
+	}
+	set size(e) {
+		y(this, "size", e);
 	}
 	connectedCallback() {
 		this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;

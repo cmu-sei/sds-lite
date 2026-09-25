@@ -371,7 +371,7 @@ import '@cmu-sei/sds-lite/brand.css'
       </footer>
       <aside class="sds-app-action-bar" aria-label="Pending changes">
         <span>You have unsaved changes.</span>
-        <button type="button" data-sds-variant="ghost">Discard</button>
+        <button type="button" data-sds-variant="text">Discard</button>
         <button type="button">Save</button>
       </aside>
     </div>

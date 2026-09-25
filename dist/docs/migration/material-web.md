@@ -12,11 +12,11 @@ npx sds-lite-migrate --from material src/settings.html
 
 | Material Web | SDS Lite |
 |---|---|
-| `<md-filled-button>` | native button/link, `data-sds-variant="primary"` |
-| `<md-filled-tonal-button>` | `data-sds-variant="secondary"` |
-| `<md-elevated-button>` | `data-sds-variant="secondary"` |
-| `<md-outlined-button>` | `data-sds-variant="tertiary"` |
-| `<md-text-button>` | `data-sds-variant="ghost"` |
+| `<md-filled-button>` | native button/link, `data-sds-variant="filled"` |
+| `<md-filled-tonal-button>` | `data-sds-variant="tonal"` |
+| `<md-elevated-button>` | `data-sds-variant="tonal"` |
+| `<md-outlined-button>` | `data-sds-variant="outlined"` |
+| `<md-text-button>` | `data-sds-variant="text"` |
 
 All automated button mappings use `data-sds-tone="accent"`. A static `href`
 produces an `<a class="sds-button">`; otherwise the result is a native
@@ -30,7 +30,7 @@ produces an `<a class="sds-button">`; otherwise the result is a native
 <a
   class="sds-button"
   href="/account"
-  data-sds-variant="tertiary"
+  data-sds-variant="outlined"
   data-sds-tone="accent"
 >
   Account

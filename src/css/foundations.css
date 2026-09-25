@@ -72,6 +72,12 @@
     box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
   }
 
+  :where([data-sds-root] fieldset) {
+    min-inline-size: 0;
+    border: 1px solid var(--sds-color-border-default);
+    border-radius: var(--sds-radius-container);
+  }
+
   :where([data-sds-root]) ::selection {
     background: color-mix(
       in srgb,

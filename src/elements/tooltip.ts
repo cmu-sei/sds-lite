@@ -13,13 +13,15 @@ import {
 } from './internals.js'
 import type { SdsPlacement } from '../generated/interface.js'
 
+type SdsTooltipSize = 'sm' | 'md' | 'lg' | 'xl' | 'auto'
+
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'
     ? (class {} as typeof HTMLElement)
     : HTMLElement
 
 export class SdsTooltipElement extends HTMLElementBase {
-  static observedAttributes = ['placement', 'offset']
+  static observedAttributes = ['placement', 'offset', 'size']
 
   private content: HTMLElement | null = null
   private positioner: FloatingPositioner | null = null
@@ -40,6 +42,14 @@ export class SdsTooltipElement extends HTMLElementBase {
 
   set offset(value: number) {
     reflectNumberAttribute(this, 'offset', value)
+  }
+
+  get size(): SdsTooltipSize {
+    return (this.getAttribute('size') ?? 'sm') as SdsTooltipSize
+  }
+
+  set size(value: SdsTooltipSize) {
+    reflectStringAttribute(this, 'size', value)
   }
 
   connectedCallback(): void {
