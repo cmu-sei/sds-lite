@@ -15,7 +15,7 @@
     justify-items: center;
     padding: var(--sds-space-xl);
     border-radius: var(--sds-radius-control);
-    background: light-dark(var(--sds-gray-25), var(--sds-gray-900));
+    background: var(--sds-color-surface-subtle);
     text-align: center;
     transition: background var(--sds-duration-normal)
       var(--sds-easing-standard);

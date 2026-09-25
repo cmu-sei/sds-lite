@@ -10,7 +10,7 @@
     border: 1px solid var(--sds-color-border-default);
     border-radius: var(--sds-radius-container);
     color: light-dark(var(--sds-gray-900), var(--sds-gray-25));
-    background: light-dark(var(--sds-white), var(--sds-gray-900));
+    background: var(--sds-color-surface-raised);
     box-shadow: var(--sds-shadow-xl);
     opacity: 0;
     transform: scale(0.9);

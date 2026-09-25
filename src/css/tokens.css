@@ -77,7 +77,7 @@
     --sds-orange-900: #281004;
     --sds-orange-950: #140802;
 
-    --sds-space-0: 0;
+    --sds-space-0: 0px;
     --sds-space-2xs: 0.125rem;
     --sds-space-xs: 0.25rem;
     --sds-space-sm: 0.5rem;
@@ -87,6 +87,7 @@
     --sds-space-2xl: 2rem;
     --sds-space-3xl: 3rem;
     --sds-space-4xl: 4rem;
+    --sds-space-button-gap: 0.375rem;
 
     --sds-radius-sm: 0.25rem;
     --sds-radius-md: 0.375rem;
@@ -104,6 +105,9 @@
       0 20px 25px -5px rgb(0 0 0 / 10%),
       0 8px 10px -6px rgb(0 0 0 / 10%);
     --sds-shadow-overlay: 0 16px 32px rgb(0 0 0 / 24%);
+    --sds-color-overlay: rgb(0 0 0 / 50%);
+    --sds-color-overlay-strong: rgb(0 0 0 / 40%);
+    --sds-color-shadow-subtle: rgb(0 0 0 / 5%);
 
     --sds-duration-fast: 75ms;
     --sds-duration-medium: 200ms;
@@ -129,34 +133,42 @@
       var(--sds-gray-600),
       var(--sds-gray-400)
     );
+    --sds-color-text-label: light-dark(
+      var(--sds-gray-600),
+      var(--sds-gray-500)
+    );
     --sds-color-text-disabled: light-dark(
       var(--sds-gray-400),
       var(--sds-gray-600)
     );
     --sds-color-action-text: light-dark(var(--sds-white), var(--sds-black));
-    --sds-color-surface-default: light-dark(
-      var(--sds-white),
-      var(--sds-gray-900)
-    );
-    --sds-color-surface-subtle: light-dark(
+    --sds-color-background: light-dark(
       var(--sds-gray-25),
       var(--sds-black)
     );
+    --sds-color-surface-default: light-dark(
+      var(--sds-white),
+      var(--sds-gray-950)
+    );
+    --sds-color-surface-subtle: light-dark(
+      var(--sds-gray-25),
+      var(--sds-gray-900)
+    );
     --sds-color-surface-raised: light-dark(
       var(--sds-white),
-      var(--sds-gray-900)
+      var(--sds-gray-850)
     );
     --sds-color-border-default: light-dark(
       var(--sds-gray-100),
-      var(--sds-gray-800)
+      var(--sds-gray-900)
     );
     --sds-color-border-control: light-dark(
-      var(--sds-gray-500),
-      var(--sds-gray-400)
+      var(--sds-gray-200),
+      var(--sds-gray-800)
     );
     --sds-color-border-strong: light-dark(
-      var(--sds-gray-500),
-      var(--sds-gray-400)
+      var(--sds-gray-300),
+      var(--sds-gray-700)
     );
     --sds-color-focus-ring: light-dark(
       var(--sds-blue-300),

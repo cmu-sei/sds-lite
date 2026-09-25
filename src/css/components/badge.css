@@ -1,9 +1,10 @@
 @layer sds.components {
   :where(.sds-badge) {
-    --sds-badge-medium-border: var(
-      --sds-badge-medium,
-      var(--sds-gray-500)
+    --sds-badge-medium: light-dark(
+      var(--sds-gray-500),
+      var(--sds-gray-400)
     );
+    --sds-badge-medium-border: var(--sds-badge-medium);
     --sds-badge-light-background: light-dark(
       var(--sds-gray-100),
       var(--sds-gray-900)
@@ -14,6 +15,7 @@
     );
     --sds-badge-dark-background: var(--sds-gray-700);
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-gray-50));
+    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
 
     display: inline-flex;
     max-inline-size: 100%;
@@ -48,10 +50,13 @@
   }
 
   :where(.sds-badge[data-sds-tone="neutral"]) {
-    --sds-badge-medium: var(--sds-gray-500);
-    --sds-badge-medium-text: var(--sds-white);
+    --sds-badge-medium: light-dark(
+      var(--sds-gray-500),
+      var(--sds-gray-400)
+    );
+    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
     --sds-badge-medium-hover: var(--sds-gray-400);
-    --sds-badge-medium-border: var(--sds-gray-500);
+    --sds-badge-medium-border: var(--sds-badge-medium);
   }
 
   :where(.sds-badge[data-sds-tone="accent"]) {
@@ -69,7 +74,7 @@
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-blue-50));
     --sds-badge-medium: var(--sds-blue-500);
-    --sds-badge-medium-text: var(--sds-white);
+    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
     --sds-badge-medium-hover: var(--sds-blue-400);
   }
 
@@ -88,7 +93,7 @@
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-teal-50));
     --sds-badge-medium: var(--sds-teal-500);
-    --sds-badge-medium-text: var(--sds-white);
+    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
     --sds-badge-medium-hover: var(--sds-teal-400);
   }
 
@@ -107,7 +112,7 @@
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-green-50));
     --sds-badge-medium: var(--sds-green-500);
-    --sds-badge-medium-text: var(--sds-white);
+    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
     --sds-badge-medium-hover: var(--sds-green-400);
   }
 
@@ -126,10 +131,7 @@
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-orange-50));
     --sds-badge-medium: var(--sds-orange-200);
-    --sds-badge-medium-text: light-dark(
-      var(--sds-orange-800),
-      var(--sds-black)
-    );
+    --sds-badge-medium-text: light-dark(var(--sds-orange-800), var(--sds-black));
     --sds-badge-medium-hover: var(--sds-orange-100);
   }
 
@@ -148,7 +150,7 @@
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-red-100));
     --sds-badge-medium: var(--sds-red-500);
-    --sds-badge-medium-text: var(--sds-white);
+    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
     --sds-badge-medium-hover: var(--sds-red-400);
   }
 

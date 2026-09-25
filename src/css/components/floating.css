@@ -52,7 +52,7 @@
     border: 1px solid var(--sds-color-border-default);
     border-radius: var(--sds-radius-md);
     color: var(--sds-color-text-default);
-    background: light-dark(var(--sds-white), var(--sds-gray-950));
+    background: var(--sds-color-surface-raised);
     box-shadow:
       0 4px 6px -1px rgb(0 0 0 / 10%),
       0 2px 4px -2px rgb(0 0 0 / 10%);
@@ -102,9 +102,9 @@
 
     max-inline-size: min(20rem, calc(100vw - 1rem));
     padding: var(--sds-space-xs) var(--sds-space-sm);
-    border: 0;
+    border: 1px solid var(--sds-floating-arrow-border);
     border-radius: var(--sds-radius-sm);
-    color: var(--sds-white);
+    color: var(--sds-gray-50);
     background: var(--sds-black);
     box-shadow: var(--sds-shadow-raised);
     font-size: 0.75rem;

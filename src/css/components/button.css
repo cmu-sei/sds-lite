@@ -133,7 +133,7 @@
     --sds-button-color: var(--sds-button-on-accent);
 
     display: inline-flex;
-    gap: 0.375rem;
+    gap: var(--sds-space-button-gap);
     align-items: center;
     justify-content: center;
     padding: var(--sds-space-sm) var(--sds-space-2xl);

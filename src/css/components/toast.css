@@ -13,10 +13,10 @@
       light-dark(transparent, var(--sds-gray-700));
     border-radius: var(--sds-radius-control);
     color: var(--sds-color-text-default);
-    background: light-dark(var(--sds-white), var(--sds-gray-850));
+    background: var(--sds-color-surface-raised);
     box-shadow:
       var(--sds-shadow-lg),
-      0 0 0 1px rgb(0 0 0 / 5%);
+      0 0 0 1px var(--sds-color-shadow-subtle);
     visibility: hidden;
     opacity: 0;
     pointer-events: auto;
@@ -78,6 +78,7 @@
 
   :where(sds-toast > [data-sds-toast-close]) {
     grid-area: close;
+    color: var(--sds-color-text-muted);
   }
 
   @starting-style {

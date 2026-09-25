@@ -4,7 +4,7 @@
     min-block-size: 100dvh;
     flex-direction: column;
     color: var(--sds-color-text-default);
-    background: var(--sds-color-surface-subtle);
+    background: var(--sds-color-background);
   }
 
   :where(
@@ -21,7 +21,7 @@
     flex: 0 0 auto;
     border-block-end: 1px solid
       light-dark(var(--sds-gray-100), var(--sds-gray-800));
-    background: light-dark(var(--sds-white), var(--sds-gray-950));
+    background: var(--sds-color-surface-default);
   }
 
   :where(.sds-app-header) {
@@ -86,7 +86,7 @@
     flex-direction: column;
     overflow: auto;
     overscroll-behavior: contain;
-    background: var(--sds-color-surface-subtle);
+    background: var(--sds-color-background);
   }
 
   :where(.sds-app-main) {
@@ -164,6 +164,23 @@
   }
 
   :where(.sds-app-action-bar :is(button, .sds-button)) {
+    --sds-button-tone-color: var(--sds-white);
+    --sds-button-tone-color-hover: var(--sds-white);
+    --sds-button-ghost-hover-background: color-mix(
+      in srgb,
+      var(--sds-white) 16%,
+      transparent
+    );
+    --sds-button-ghost-active: color-mix(
+      in srgb,
+      var(--sds-white) 24%,
+      transparent
+    );
+    --sds-tone-surface: color-mix(
+      in srgb,
+      var(--sds-black) 24%,
+      transparent
+    );
     --sds-tone-strong: var(--sds-white);
     --sds-tone-strong-hover: var(--sds-gray-100);
     --sds-tone-on-strong: var(--sds-blue-700);
@@ -196,7 +213,7 @@
     --sds-radius-container: 0;
 
     justify-content: space-between;
-    background: var(--sds-color-surface-default);
+    background: var(--sds-color-default);
   }
 
   :where(.sds-brochure-container) {
@@ -295,7 +312,7 @@
 
   :where(.sds-brochure-footer-links) {
     padding-block: var(--sds-space-2xl);
-    background: light-dark(var(--sds-gray-25), var(--sds-gray-950));
+    background: var(--sds-color-surface-default);
   }
 
   :where(.sds-brochure-footer-actions) {

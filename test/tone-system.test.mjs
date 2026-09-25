@@ -17,30 +17,6 @@ const componentStyles = (
 
 const tones = ['neutral', 'accent', 'info', 'success', 'warning', 'danger']
 
-function luminance(hex) {
-  const channels = hex
-    .slice(1)
-    .match(/.{2}/g)
-    .map((channel) => Number.parseInt(channel, 16) / 255)
-    .map((channel) =>
-      channel <= 0.04045
-        ? channel / 12.92
-        : ((channel + 0.055) / 1.055) ** 2.4,
-    )
-  return (
-    channels[0] * 0.2126 +
-    channels[1] * 0.7152 +
-    channels[2] * 0.0722
-  )
-}
-
-function contrast(first, second) {
-  const [lighter, darker] = [luminance(first), luminance(second)].sort(
-    (a, b) => b - a,
-  )
-  return (lighter + 0.05) / (darker + 0.05)
-}
-
 function color(name) {
   const match = tokens.match(
     new RegExp(`--${name}:\\s*(#[0-9a-f]{3}(?:[0-9a-f]{3})?)`, 'i'),
@@ -151,19 +127,9 @@ test('focus indicators use the SEI reference colors', () => {
   assert.deepEqual(lightDark('sds-color-focus-ring'), ['#2eb1e6', '#034f8d'])
 })
 
-test('control boundaries meet non-text contrast', () => {
-  const border = lightDark('sds-color-form-border')
-  const surfaces = [
-    lightDark('sds-color-surface-default'),
-    lightDark('sds-color-surface-subtle'),
-  ]
-
-  for (const [scheme, index] of [['light', 0], ['dark', 1]]) {
-    for (const surface of surfaces) {
-      assert.ok(
-        contrast(border[index], surface[index]) >= 3,
-        `${scheme} form border must have at least 3:1 contrast`,
-      )
-    }
-  }
+test('form borders follow the semantic control-border token', () => {
+  assert.deepEqual(
+    lightDark('sds-color-form-border'),
+    lightDark('sds-color-border-control'),
+  )
 })

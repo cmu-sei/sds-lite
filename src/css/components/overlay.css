@@ -1,6 +1,6 @@
 @layer sds.components {
   :where(.sds-dialog, .sds-panel)::backdrop {
-    background: rgb(0 0 0 / 50%);
+    background: var(--sds-color-overlay);
     opacity: 0;
     transition:
       opacity var(--sds-duration-fast) var(--sds-easing-standard),

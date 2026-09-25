@@ -3,12 +3,12 @@
     padding: var(--sds-space-2xl);
     border: 1px solid var(--sds-color-border-default);
     border-radius: var(--sds-radius-container);
-    background: var(--sds-color-surface-raised);
+    background: var(--sds-color-surface-default);
     box-shadow: var(--sds-shadow-raised);
   }
 
   :where(.sds-card-label) {
-    color: var(--sds-color-text-muted);
+    color: var(--sds-color-text-label);
     font-size: 0.875rem;
     font-weight: 600;
   }

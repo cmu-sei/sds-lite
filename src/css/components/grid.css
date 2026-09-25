@@ -133,7 +133,7 @@
   }
 
   :where(.sds-grid[data-sds-gap="none"]) {
-    --sds-grid-gap: 0px;
+    --sds-grid-gap: var(--sds-space-0);
   }
 
   :where(.sds-grid[data-sds-gap="xs"]) {

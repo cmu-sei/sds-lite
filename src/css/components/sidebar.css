@@ -25,7 +25,7 @@
     border: 0;
     border-inline-end: 1px solid var(--sds-color-border-default);
     color: var(--sds-color-text-default);
-    background: light-dark(var(--sds-white), var(--sds-gray-950));
+    background: var(--sds-color-surface-default);
   }
 
   :where(.sds-sidebar > header, .sds-sidebar > footer) {
@@ -124,7 +124,7 @@
   ) {
     border-inline-start-color: var(--sds-color-brand);
     color: var(--sds-color-text-default);
-    background: var(--sds-color-surface-subtle);
+    background: var(--sds-color-surface-default);
     font-weight: 600;
   }
 
@@ -237,7 +237,7 @@
     }
 
     :where(.sds-sidebar[popover]:popover-open)::backdrop {
-      background: rgb(0 0 0 / 40%);
+      background: var(--sds-color-overlay-strong);
     }
 
     :where(.sds-sidebar-close) {

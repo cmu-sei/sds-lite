@@ -64,6 +64,30 @@ test('badges use the supported tone palette', async ({ page }) => {
   }
 })
 
+test('dark medium badges use the reference contrast colors', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('[data-sds-root]').evaluate((root) => {
+    root.setAttribute('data-sds-color-scheme', 'dark')
+  })
+
+  const mediumColors = {
+    Neutral: 'rgb(136, 137, 141)',
+    Accent: 'rgb(0, 124, 186)',
+    Info: 'rgb(0, 130, 133)',
+    Success: 'rgb(0, 135, 64)',
+    Warning: 'rgb(253, 181, 21)',
+    Danger: 'rgb(224, 42, 58)',
+  }
+
+  for (const [tone, background] of Object.entries(mediumColors)) {
+    const badge = page
+      .locator(`[role="group"][aria-label="${tone} badge variants"]`)
+      .locator('.sds-badge:not([data-sds-variant])')
+    await expect(badge).toHaveCSS('background-color', background)
+    await expect(badge).toHaveCSS('color', 'rgb(0, 0, 0)')
+  }
+})
+
 test('small badges fit inline content more tightly', async ({ page }) => {
   await page.goto('/')
 

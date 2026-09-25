@@ -49,6 +49,7 @@ const cases = [
   {
     name: 'avatar',
     defaultTone: 'neutral',
+    properties: ['color', 'backgroundColor'],
     markup:
       '<span class="sds-avatar" data-tone-target {{tone}}>AM</span>',
   },

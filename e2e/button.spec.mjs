@@ -20,6 +20,46 @@ test('tonal buttons use the selected tone surface', async ({
   await expect(accentTonal).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
 })
 
+test('action-bar buttons remain readable on the action surface', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.getByText('Application shell preview', { exact: true }).click()
+
+  const discard = page
+    .locator('.sds-app-action-bar')
+    .first()
+    .getByRole('button', { name: 'Discard' })
+  await page.locator('.sds-app-action-bar').first().evaluate((bar) => {
+    bar.insertAdjacentHTML(
+      'beforeend',
+      '<button type="button" data-sds-variant="tonal">Tonal</button><button type="button" data-sds-variant="text">Text</button>',
+    )
+  })
+  const actionBar = page.locator('.sds-app-action-bar').first()
+  const tonal = actionBar.getByRole('button', { name: 'Tonal' })
+  const text = actionBar.getByRole('button', { name: 'Text' })
+
+  for (const scheme of ['light', 'dark']) {
+    await page.mouse.move(0, 0)
+    await page.locator('[data-sds-root]').evaluate((root, scheme) => {
+      root.setAttribute('data-sds-color-scheme', scheme)
+    }, scheme)
+
+    await expect(discard).toHaveCSS('color', 'rgb(255, 255, 255)')
+    await expect(discard).toHaveCSS('border-top-color', 'rgb(255, 255, 255)')
+    await expect(discard).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(tonal).toHaveCSS('color', 'rgb(255, 255, 255)')
+    await expect(tonal).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(tonal).not.toHaveCSS('background-color', 'rgb(255, 255, 255)')
+    await expect(text).toHaveCSS('color', 'rgb(255, 255, 255)')
+    await expect(text).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await text.hover()
+    await expect(text).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(text).not.toHaveCSS('background-color', 'rgb(255, 255, 255)')
+  }
+})
+
 test('outlined button borders match their text color across tones', async ({
   page,
 }) => {

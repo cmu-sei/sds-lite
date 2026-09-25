@@ -101,6 +101,7 @@ interface and precedence rules.
 General roles:
 
 ```text
+--sds-color-background
 --sds-color-text-default
 --sds-color-text-muted
 --sds-color-text-disabled

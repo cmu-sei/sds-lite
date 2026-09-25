@@ -17,7 +17,7 @@
     border-radius: var(--sds-radius-container) 0 0
       var(--sds-radius-container);
     color: light-dark(var(--sds-gray-900), var(--sds-gray-25));
-    background: light-dark(var(--sds-white), var(--sds-gray-900));
+    background: var(--sds-color-surface-raised);
     box-shadow: var(--sds-shadow-xl);
     transform: translateX(100%);
     will-change: transform;

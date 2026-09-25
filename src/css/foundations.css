@@ -10,7 +10,7 @@
   :where([data-sds-root]) {
     min-block-size: 100%;
     color: var(--sds-color-text-default);
-    background: var(--sds-color-surface-subtle);
+    background: var(--sds-color-background);
     font-family: var(--sds-font-body);
     font-size: 1rem;
     line-height: 1.5;
