@@ -52,6 +52,11 @@ function color(name) {
 }
 
 function lightDark(name) {
+  const definition = tokens.match(
+    new RegExp(`--${name}:\\s*var\\(--([a-z0-9-]+)\\)`),
+  )
+  if (definition) return lightDark(definition[1])
+
   const match = tokens.match(
     new RegExp(
       `--${name}:\\s*light-dark\\(\\s*var\\(--([a-z0-9-]+)\\),\\s*var\\(--([a-z0-9-]+)\\)`,

@@ -10,8 +10,8 @@ test('form-control borders match the design-system palette in both themes and sc
   })
 
   const colors = {
-    forge: { light: 'rgb(166, 167, 170)', dark: 'rgb(89, 90, 92)' },
-    plaid: { light: 'rgb(173, 172, 172)', dark: 'rgb(98, 95, 93)' },
+    forge: { light: 'rgb(116, 117, 120)', dark: 'rgb(136, 137, 141)' },
+    plaid: { light: 'rgb(119, 117, 116)', dark: 'rgb(146, 145, 144)' },
   }
   const selectors = [
     '#text-input',

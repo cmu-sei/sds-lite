@@ -15,7 +15,7 @@ async function markdownFiles(directory) {
   return files.flat()
 }
 
-test('every example Cancel button uses the ghost variant', async () => {
+test('every example Cancel button uses the text variant', async () => {
   let exampleCount = 0
   for (const file of ['index.html', ...(await markdownFiles('docs'))]) {
     const source = await readFile(file, 'utf8')
@@ -27,8 +27,8 @@ test('every example Cancel button uses the ghost variant', async () => {
       exampleCount += 1
       assert.match(
         button,
-        /data-sds-variant="ghost"/,
-        `${file} contains a non-ghost Cancel button`,
+        /data-sds-variant="text"/,
+        `${file} contains a non-text Cancel button`,
       )
     }
   }

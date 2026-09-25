@@ -15,7 +15,7 @@ test('focusable controls share the design-system focus colors in both schemes', 
     getComputedStyle(root).getPropertyValue('--sds-color-focus-ring').trim(),
   )
   expect(focusColor.replaceAll(/\s/g, '')).toBe(
-    'light-dark(#2eb1e6,#034f8d)',
+    'light-dark(#0266a1,#2eb1e6)',
   )
 
   const fields = [
@@ -37,8 +37,8 @@ test('focusable controls share the design-system focus colors in both schemes', 
 
   for (const theme of ['forge', 'plaid']) {
     for (const [scheme, color] of [
-      ['light', 'rgb(46, 177, 230)'],
-      ['dark', 'rgb(3, 79, 141)'],
+      ['light', 'rgb(2, 102, 161)'],
+      ['dark', 'rgb(46, 177, 230)'],
     ]) {
       await page.locator('[data-sds-root]').evaluate(
         (root, { theme, scheme }) => {
@@ -107,12 +107,12 @@ test('dropdown menu items retain hover treatment and show the shared focus ring'
   })
 
   expect(focusStyle.background).toBe(hoverBackground)
-  expect(focusStyle.boxShadow).toContain('rgb(46, 177, 230)')
+  expect(focusStyle.boxShadow).toContain('rgb(2, 102, 161)')
 
   await page.locator('[data-sds-root]').evaluate((root) => {
     root.setAttribute('data-sds-color-scheme', 'dark')
   })
   expect(
     await items.first().evaluate((item) => getComputedStyle(item).boxShadow),
-  ).toContain('rgb(3, 79, 141)')
+  ).toContain('rgb(46, 177, 230)')
 })

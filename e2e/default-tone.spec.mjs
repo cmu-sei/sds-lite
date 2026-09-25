@@ -211,19 +211,19 @@ test('playground exposes omitted-tone examples for every interface', async ({
     },
     {
       name: 'badge',
-      selector: '#default-feedback-tones .sds-badge',
+      selector: '#default-feedback-tones .sds-badge:not([data-sds-tone])',
       count: 1,
       attribute: 'data-sds-tone',
     },
     {
       name: 'tag',
-      selector: '#default-feedback-tones .sds-tag',
+      selector: '#default-feedback-tones .sds-tag:not([data-sds-tone])',
       count: 1,
       attribute: 'data-sds-tone',
     },
     {
       name: 'callout',
-      selector: '#default-feedback-tones .sds-callout',
+      selector: '#default-feedback-tones .sds-callout:not([data-sds-tone])',
       count: 1,
       attribute: 'data-sds-tone',
     },

@@ -51,10 +51,7 @@
     --sds-badge-medium: var(--sds-gray-500);
     --sds-badge-medium-text: var(--sds-white);
     --sds-badge-medium-hover: var(--sds-gray-400);
-    --sds-badge-medium-border: light-dark(
-      var(--sds-gray-500),
-      var(--sds-blue-400)
-    );
+    --sds-badge-medium-border: var(--sds-gray-500);
   }
 
   :where(.sds-badge[data-sds-tone="accent"]) {
