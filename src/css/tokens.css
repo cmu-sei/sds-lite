@@ -16,6 +16,18 @@
     --sds-gray-850: #262728;
     --sds-gray-900: #1b1c1d;
     --sds-gray-950: #0e0e0f;
+    --sds-purple-25: #f8ecf4;
+    --sds-purple-50: #f2dae9;
+    --sds-purple-100: #ebc7de;
+    --sds-purple-200: #dea6ca;
+    --sds-purple-300: #d07db3;
+    --sds-purple-400: #c864a5;
+    --sds-purple-500: #ba4b93;
+    --sds-purple-600: #992e74;
+    --sds-purple-700: #800054;
+    --sds-purple-800: #60003f;
+    --sds-purple-900: #3f0029;
+    --sds-purple-950: #200015;
     --sds-blue-25: #eef9fd;
     --sds-blue-50: #dcf2fb;
     --sds-blue-100: #b9e5f7;
@@ -28,18 +40,6 @@
     --sds-blue-800: #043673;
     --sds-blue-900: #021b3a;
     --sds-blue-950: #010e1d;
-    --sds-teal-25: #e0f7f7;
-    --sds-teal-50: #c0eeee;
-    --sds-teal-100: #a1e6e6;
-    --sds-teal-200: #5dc7c5;
-    --sds-teal-300: #26a6a4;
-    --sds-teal-400: #008f91;
-    --sds-teal-500: #008285;
-    --sds-teal-600: #006b6d;
-    --sds-teal-700: #005052;
-    --sds-teal-800: #003637;
-    --sds-teal-900: #001b1b;
-    --sds-teal-950: #000e0e;
     --sds-red-25: #fff5f5;
     --sds-red-50: #ffebeb;
     --sds-red-100: #ffd7d7;
@@ -254,48 +254,48 @@
       var(--sds-black)
     );
     --sds-color-accent-surface: light-dark(
-      var(--sds-blue-25),
-      var(--sds-blue-900)
+      var(--sds-purple-25),
+      var(--sds-purple-900)
     );
     --sds-color-accent-border: light-dark(
-      var(--sds-blue-600),
-      var(--sds-blue-300)
+      var(--sds-purple-600),
+      var(--sds-purple-300)
     );
     --sds-color-accent-text: light-dark(
-      var(--sds-blue-700),
-      var(--sds-blue-300)
+      var(--sds-purple-700),
+      var(--sds-purple-300)
     );
     --sds-color-accent-strong: light-dark(
-      var(--sds-blue-600),
-      var(--sds-blue-400)
+      var(--sds-purple-600),
+      var(--sds-purple-400)
     );
     --sds-color-accent-strong-hover: light-dark(
-      var(--sds-blue-500),
-      var(--sds-blue-300)
+      var(--sds-purple-500),
+      var(--sds-purple-300)
     );
     --sds-color-accent-on-strong: light-dark(
       var(--sds-white),
       var(--sds-black)
     );
     --sds-color-info-surface: light-dark(
-      var(--sds-teal-25),
-      var(--sds-teal-900)
+      var(--sds-blue-25),
+      var(--sds-blue-900)
     );
     --sds-color-info-border: light-dark(
-      var(--sds-teal-600),
-      var(--sds-teal-300)
+      var(--sds-blue-600),
+      var(--sds-blue-300)
     );
     --sds-color-info-text: light-dark(
-      var(--sds-teal-700),
-      var(--sds-teal-300)
+      var(--sds-blue-700),
+      var(--sds-blue-300)
     );
     --sds-color-info-strong: light-dark(
-      var(--sds-teal-600),
-      var(--sds-teal-400)
+      var(--sds-blue-600),
+      var(--sds-blue-400)
     );
     --sds-color-info-strong-hover: light-dark(
-      var(--sds-teal-500),
-      var(--sds-teal-300)
+      var(--sds-blue-500),
+      var(--sds-blue-300)
     );
     --sds-color-info-on-strong: light-dark(
       var(--sds-white),

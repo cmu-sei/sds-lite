@@ -18,7 +18,7 @@ npx sds-lite-migrate --from legacy-sds src/ProjectForm.vue
 | `kind="secondary"` | `data-sds-variant="tonal"` |
 | `kind="tertiary"` | `data-sds-variant="outlined"` |
 | `kind="ghost"` | `data-sds-variant="text"` |
-| `variant="blue"` | `data-sds-tone="accent"` |
+| `variant="blue"` | `data-sds-tone="info"` |
 | `variant="gray"` or `"white"` | `data-sds-tone="neutral"` |
 | `variant="red"` | `data-sds-tone="danger"` |
 | `size="xs\|sm\|md\|lg"` | `data-sds-size="xs\|sm\|md\|lg"` |

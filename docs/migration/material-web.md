@@ -18,7 +18,7 @@ npx sds-lite-migrate --from material src/settings.html
 | `<md-outlined-button>` | `data-sds-variant="outlined"` |
 | `<md-text-button>` | `data-sds-variant="text"` |
 
-All automated button mappings use `data-sds-tone="accent"`. A static `href`
+All automated button mappings use `data-sds-tone="info"`. A static `href`
 produces an `<a class="sds-button">`; otherwise the result is a native
 `<button type="button">`. Existing `type="submit"` is retained.
 
@@ -31,7 +31,7 @@ produces an `<a class="sds-button">`; otherwise the result is a native
   class="sds-button"
   href="/account"
   data-sds-variant="outlined"
-  data-sds-tone="accent"
+  data-sds-tone="info"
 >
   Account
 </a>

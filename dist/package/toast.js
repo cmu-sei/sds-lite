@@ -14,7 +14,7 @@ var a = 5e3, o = 250, s = typeof HTMLElement > "u" ? class {} : HTMLElement, c =
 		i(this, "open", e);
 	}
 	get tone() {
-		return this.getAttribute("tone") ?? "accent";
+		return this.getAttribute("tone") ?? "info";
 	}
 	set tone(e) {
 		t(this, "tone", e);
@@ -100,7 +100,7 @@ function f(e, t = {}) {
 	}
 	r.localName === "div" && !r.hasAttribute("role") && r.setAttribute("role", "region"), !r.hasAttribute("aria-label") && !r.hasAttribute("aria-labelledby") && r.setAttribute("aria-label", "Notifications");
 	let i = document.createElement("sds-toast");
-	i.tone = t.tone ?? "accent", i.setAttribute("role", t.urgent ? "alert" : "status"), i.setAttribute("aria-atomic", "true"), t.duration !== void 0 && (i.duration = t.duration), i.persistent = t.persistent ?? !1;
+	i.tone = t.tone ?? "info", i.setAttribute("role", t.urgent ? "alert" : "status"), i.setAttribute("aria-atomic", "true"), t.duration !== void 0 && (i.duration = t.duration), i.persistent = t.persistent ?? !1;
 	let a = document.createElement("strong");
 	a.textContent = t.title ?? "Notification";
 	let s = document.createElement("span");

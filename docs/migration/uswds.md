@@ -12,7 +12,7 @@ npx sds-lite-migrate --from uswds src/application.html
 
 | USWDS | SDS Lite |
 |---|---|
-| `usa-button` | `sds-button`, `data-sds-variant="filled"`, `data-sds-tone="accent"` |
+| `usa-button` | `sds-button`, `data-sds-variant="filled"`, `data-sds-tone="info"` |
 | `usa-button--secondary` | `data-sds-variant="tonal"` |
 | `usa-button--accent-cool` | `data-sds-tone="info"` |
 | `usa-button--accent-warm` | `data-sds-tone="warning"` |
@@ -32,7 +32,7 @@ Native elements are retained:
   class="sds-button"
   href="/help"
   data-sds-variant="outlined"
-  data-sds-tone="accent"
+  data-sds-tone="info"
 >
   Help
 </a>

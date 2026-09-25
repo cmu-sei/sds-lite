@@ -108,7 +108,7 @@
   "optionFamilies": {
     "tone": {
       "nativeName": "data-sds-tone",
-      "description": "Semantic color intent.",
+      "description": "Semantic color intent; info is blue and accent is purple.",
       "values": ["neutral", "accent", "info", "success", "warning", "danger"]
     },
     "size": {
@@ -171,7 +171,7 @@
       },
       "defaults": {
         "data-sds-variant": "filled",
-        "data-sds-tone": "accent",
+        "data-sds-tone": "info",
         "data-sds-size": "md",
         "data-sds-density": "comfortable",
         "data-sds-shape": "text",
@@ -192,7 +192,7 @@
       },
       "defaults": {
         "data-sds-variant": "primary",
-        "data-sds-tone": "accent",
+        "data-sds-tone": "info",
         "data-sds-size": "inherited"
       }
     },
@@ -260,7 +260,7 @@
       },
       "defaults": {
         "data-sds-size": "md",
-        "data-sds-tone": "accent"
+        "data-sds-tone": "info"
       }
     },
     {
@@ -332,7 +332,7 @@
         "data-sds-tone": ["danger"]
       },
       "defaults": {
-        "data-sds-tone": "accent"
+        "data-sds-tone": "info"
       }
     },
     {
@@ -837,7 +837,7 @@
         {"name": "activation", "values": ["automatic", "manual"], "default": "automatic", "description": "Whether focus automatically selects a tab."},
         {"name": "orientation", "family": "orientation", "default": "horizontal"},
         {"name": "size", "values": ["md", "lg"], "default": "md", "description": "Visual scale."},
-        {"name": "tone", "family": "tone", "default": "accent"},
+        {"name": "tone", "family": "tone", "default": "info"},
         {"name": "variant", "values": ["folder", "block", "underline"], "default": "folder", "description": "Visual treatment."}
       ],
       "members": [
@@ -883,7 +883,7 @@
       ],
       "attributes": [
         {"name": "open", "type": "boolean", "default": "false", "description": "Whether the toast is visible."},
-        {"name": "tone", "family": "tone", "default": "accent"},
+        {"name": "tone", "family": "tone", "default": "info"},
         {"name": "duration", "type": "number", "default": "5000", "description": "Positive duration in milliseconds."},
         {"name": "persistent", "type": "boolean", "default": "false", "description": "Disables automatic dismissal."}
       ],

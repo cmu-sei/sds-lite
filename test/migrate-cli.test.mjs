@@ -73,7 +73,7 @@ test('migrates Bootstrap buttons, links, inputs, textareas, and selects', () => 
   )
   assert.match(
     result.code,
-    /<a class="sds-button" href="\/projects" data-sds-variant="outlined" data-sds-tone="accent">/,
+    /<a class="sds-button" href="\/projects" data-sds-variant="outlined" data-sds-tone="info">/,
   )
   assert.match(
     result.code,
@@ -101,7 +101,7 @@ test('migrates USWDS buttons and native form controls', () => {
   )
   assert.match(
     result.code,
-    /<a class="sds-button" href="\/help" data-sds-variant="outlined" data-sds-tone="accent">/,
+    /<a class="sds-button" href="\/help" data-sds-variant="outlined" data-sds-tone="info">/,
   )
   assert.match(result.code, /<input class="sds-input" name="query">/)
   assert.match(result.code, /<textarea class="sds-input">/)
@@ -118,11 +118,11 @@ test('migrates Material Web buttons and only structurally safe text fields', () 
   assert.equal(result.warnings.length, 0)
   assert.match(
     result.code,
-    /<button type="submit" class="sds-button" data-sds-variant="filled" data-sds-tone="accent">Save<\/button>/,
+    /<button type="submit" class="sds-button" data-sds-variant="filled" data-sds-tone="info">Save<\/button>/,
   )
   assert.match(
     result.code,
-    /<a href="\/back" class="sds-button" data-sds-variant="outlined" data-sds-tone="accent">Back<\/a>/,
+    /<a href="\/back" class="sds-button" data-sds-variant="outlined" data-sds-tone="info">Back<\/a>/,
   )
   assert.match(
     result.code,
@@ -203,7 +203,7 @@ test('supports static JSX attributes without rewriting event expressions', () =>
   assert.equal(result.warnings.length, 0)
   assert.equal(
     result.code,
-    '<button className="sds-button" onClick={save} data-sds-variant="filled" data-sds-tone="accent">Save</button>',
+    '<button className="sds-button" onClick={save} data-sds-variant="filled" data-sds-tone="info">Save</button>',
   )
 })
 
@@ -271,7 +271,7 @@ test('--write updates files in place', async () => {
   assert.match(result.stdout, /Updated 1 of 1 file\(s\)/)
   assert.equal(
     await readFile(file, 'utf8'),
-    '<a class="sds-button" href="/home" data-sds-variant="text" data-sds-tone="accent">Home</a>\n',
+    '<a class="sds-button" href="/home" data-sds-variant="text" data-sds-tone="info">Home</a>\n',
   )
 })
 

@@ -2,15 +2,15 @@
   :where(sds-tabs) {
     --sds-tab-accent: var(
       --sds-tone-strong,
-      var(--sds-color-accent-strong)
+      var(--sds-color-info-strong)
     );
     --sds-tab-active-background: var(
       --sds-tone-strong,
-      var(--sds-color-accent-strong)
+      var(--sds-color-info-strong)
     );
     --sds-tab-active-text: var(
       --sds-tone-on-strong,
-      var(--sds-color-accent-on-strong)
+      var(--sds-color-info-on-strong)
     );
 
     display: block;

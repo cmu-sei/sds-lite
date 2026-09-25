@@ -152,6 +152,7 @@ Every semantic tone has the same six roles:
 
 Replace `{tone}` with `neutral`, `accent`, `info`, `success`, `warning`, or
 `danger`.
+`accent` uses the purple palette; `info` uses the blue palette.
 
 ## Primitive colors
 
@@ -163,8 +164,8 @@ available for defining a semantic assignment:
 --sds-black
 
 --sds-gray-{25,50,100,200,300,400,500,600,700,750,800,850,900,950}
+--sds-purple-{25,50,100,200,300,400,500,600,700,800,900,950}
 --sds-blue-{25,50,100,200,300,400,500,600,700,800,900,950}
---sds-teal-{25,50,100,200,300,400,500,600,700,800,900,950}
 --sds-red-{25,50,100,200,300,400,500,600,700,800,900,950}
 --sds-green-{25,50,100,200,300,400,500,600,700,800,900,950}
 --sds-orange-{25,50,100,200,300,400,500,600,700,800,900,950}

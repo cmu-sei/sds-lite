@@ -98,7 +98,7 @@
             <a class="sds-button" data-sds-density="compact" data-sds-variant="text" href="./docs/README.md">
               Documentation
             </a>
-            <a class="sds-button" href="#getting-started" data-sds-density="compact" data-sds-variant="filled" data-sds-tone="accent">Get started</a>
+            <a class="sds-button" href="#getting-started" data-sds-density="compact" data-sds-variant="filled">Get started</a>
           </div>
         </header>
 
@@ -390,7 +390,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <button type="button" aria-busy="true">Saving</button>
                   <a class="sds-button" href="#actions">Link button</a>
                   <button type="button" data-sds-variant="tonal">
-                    <span class="sds-avatar" data-sds-avatar data-sds-size="xs" data-sds-tone="accent" aria-hidden="true">AM</span>
+                    <span class="sds-avatar" data-sds-avatar data-sds-size="xs" data-sds-tone="info" aria-hidden="true">AM</span>
                     Alex Morgan
                   </button>
                   <button type="button" data-sds-shape="icon" aria-label="Add item">+</button>
@@ -513,7 +513,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <article id="default-form-tones" class="sds-card sds-stack">
               <div>
                 <h3>Default tone states</h3>
-                <p>Fields default to neutral; switches default to accent.</p>
+                <p>Fields default to neutral; switches default to info.</p>
               </div>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-field">
@@ -523,7 +523,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </div>
                 <label class="sds-switch">
                   <input type="checkbox" role="switch" checked />
-                  Default switch · accent
+                  Default switch · info
                 </label>
               </div>
             </article>
@@ -850,12 +850,12 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <article id="default-feedback-tones" class="sds-card sds-stack">
               <div>
                 <h3>Default tone states</h3>
-                <p>Badges, tags, and callouts default to neutral; toasts default to accent.</p>
+                <p>Badges, tags, and callouts default to neutral; toasts default to info.</p>
               </div>
               <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="lg">
                 <span class="sds-badge">Default badge · neutral</span>
                 <span class="sds-tag">Default tag · neutral</span>
-                <button type="button" data-sds-toast-open="toast-default">Show default toast · accent</button>
+                <button type="button" data-sds-toast-open="toast-default">Show default toast · info</button>
               </div>
               <p>
                 Inline status:
@@ -2187,11 +2187,11 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
               <sds-tabs id="default-tabs" class="sds-card">
-                <div class="sds-tab-list" role="tablist" aria-label="Default accent tabs">
-                  <button type="button" id="default-tab-1" class="sds-tab" role="tab" aria-controls="default-panel-1" aria-selected="true" tabindex="0">Default · accent</button>
+                <div class="sds-tab-list" role="tablist" aria-label="Default info tabs">
+                  <button type="button" id="default-tab-1" class="sds-tab" role="tab" aria-controls="default-panel-1" aria-selected="true" tabindex="0">Default · info</button>
                   <button type="button" id="default-tab-2" class="sds-tab" role="tab" aria-controls="default-panel-2" aria-selected="false" tabindex="-1">Second</button>
                 </div>
-                <section id="default-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="default-tab-1">Default accent tab content</section>
+                <section id="default-panel-1" class="sds-tab-panel" role="tabpanel" aria-labelledby="default-tab-1">Default info tab content</section>
                 <section id="default-panel-2" class="sds-tab-panel" role="tabpanel" aria-labelledby="default-tab-2" hidden>Second tab content</section>
               </sds-tabs>
               <sds-tabs class="sds-card" tone="neutral" activation="automatic" orientation="horizontal" size="md">
@@ -2785,7 +2785,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <section class="sds-toaster" aria-label="Notifications">
       <sds-toast id="toast-default" duration="3000" role="status" aria-atomic="true">
-        <strong>Default accent toast</strong>
+        <strong>Default info toast</strong>
         <span>This toast omits the tone attribute.</span>
         <button type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Close notification">&times;</button>
       </sds-toast>

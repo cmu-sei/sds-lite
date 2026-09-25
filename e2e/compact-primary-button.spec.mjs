@@ -158,7 +158,7 @@ test('button density and omitted tones preserve tone colors', async ({
     const markup = variants
       .flatMap((variant) =>
         ['', 'compact'].flatMap((density) =>
-          ['', 'accent'].map(
+          ['', 'info'].map(
             (tone) =>
               `<button type="button" data-test-default-tone="${tone || 'omitted'}" data-sds-variant="${variant}"${density ? ` data-sds-density="${density}"` : ''}${tone ? ` data-sds-tone="${tone}"` : ''}>Button</button>`,
           ),
@@ -178,7 +178,7 @@ test('button density and omitted tones preserve tone colors', async ({
         `${selector}[data-test-default-tone="omitted"]`,
       )
       const explicit = page.locator(
-        `${selector}[data-test-default-tone="accent"]`,
+        `${selector}[data-test-default-tone="info"]`,
       )
       const [omittedColors, explicitColors] = await Promise.all([
         omitted.evaluate((element, names) => {

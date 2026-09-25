@@ -569,7 +569,7 @@
     },
     {
       "name": "data-sds-tone",
-      "description": "Semantic color intent.",
+      "description": "Semantic color intent; info is blue and accent is purple.",
       "values": [
         {
           "name": "neutral"
@@ -1204,7 +1204,7 @@
         },
         {
           "name": "tone",
-          "description": "Semantic color intent. Default: accent.",
+          "description": "Semantic color intent; info is blue and accent is purple. Default: info.",
           "values": [
             {
               "name": "neutral"
@@ -1326,7 +1326,7 @@
         },
         {
           "name": "tone",
-          "description": "Semantic color intent. Default: accent.",
+          "description": "Semantic color intent; info is blue and accent is purple. Default: info.",
           "values": [
             {
               "name": "neutral"

@@ -68,15 +68,15 @@ test('the selected folder tab covers the divider without vertical scrolling', as
     const underline = page.locator(
       'sds-tabs[variant="underline"][tone="info"] .sds-tab[aria-selected="true"]',
     )
-    await expect(underline).toHaveCSS('color', 'rgb(0, 107, 109)')
+    await expect(underline).toHaveCSS('color', 'rgb(2, 102, 161)')
     await expect(underline).toHaveCSS(
       'border-block-end-color',
-      'rgb(0, 107, 109)',
+      'rgb(2, 102, 161)',
     )
 
     const block = page.locator(
       'sds-tabs[variant="block"][tone="accent"] .sds-tab[aria-selected="true"]',
     )
     await expect(block).toHaveCSS('color', 'rgb(255, 255, 255)')
-    await expect(block).toHaveCSS('background-color', 'rgb(2, 102, 161)')
+    await expect(block).toHaveCSS('background-color', 'rgb(153, 46, 116)')
   })

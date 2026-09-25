@@ -3,24 +3,24 @@ import { expect, test } from '@playwright/test'
 const cases = [
   {
     name: 'button',
-    defaultTone: 'accent',
+    defaultTone: 'info',
     markup:
       '<button type="button" data-tone-target data-sds-variant="filled" {{tone}}>Button</button>',
   },
   {
     name: 'compact-button',
-    defaultTone: 'accent',
+    defaultTone: 'info',
     markup:
       '<button type="button" data-tone-target data-sds-density="compact" data-sds-variant="filled" {{tone}}>Button</button>',
   },
   {
     name: 'link',
-    defaultTone: 'accent',
+    defaultTone: 'info',
     markup: '<a class="sds-link" data-tone-target href="#" {{tone}}>Link</a>',
   },
   {
     name: 'switch',
-    defaultTone: 'accent',
+    defaultTone: 'info',
     markup:
       '<label class="sds-switch" {{tone}}><input data-tone-target type="checkbox" role="switch" checked>Switch</label>',
   },
@@ -73,7 +73,7 @@ const cases = [
   },
   {
     name: 'tabs',
-    defaultTone: 'accent',
+    defaultTone: 'info',
     attribute: 'tone',
     properties: ['color', 'backgroundColor', 'borderBlockEndColor'],
     markup:
@@ -81,7 +81,7 @@ const cases = [
   },
   {
     name: 'toast',
-    defaultTone: 'accent',
+    defaultTone: 'info',
     attribute: 'tone',
     pseudo: '::before',
     markup:

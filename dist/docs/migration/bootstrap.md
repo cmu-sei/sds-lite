@@ -16,7 +16,7 @@ buttons and navigation stays links.
 
 | Bootstrap | SDS Lite |
 |---|---|
-| `btn btn-primary` | `sds-button`, `data-sds-variant="filled"`, `data-sds-tone="accent"` |
+| `btn btn-primary` | `sds-button`, `data-sds-variant="filled"`, `data-sds-tone="info"` |
 | `btn btn-secondary` | `data-sds-variant="tonal"`, `data-sds-tone="neutral"` |
 | `btn btn-success` | `data-sds-tone="success"` |
 | `btn btn-danger` | `data-sds-tone="danger"` |
@@ -35,7 +35,7 @@ buttons and navigation stays links.
   class="sds-button"
   href="/projects"
   data-sds-variant="outlined"
-  data-sds-tone="accent"
+  data-sds-tone="info"
 >
   Projects
 </a>

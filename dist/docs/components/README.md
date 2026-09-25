@@ -44,9 +44,11 @@ supports every tier. Controls intentionally stop at their useful interaction
 sizes, while content and layout recipes may provide larger tiers such as
 `xl` or `2xl`.
 
-Use `accent` for emphasized brand actions. Button variants describe treatment:
-`filled`, `tonal`, `outlined`, and `text`. They combine with semantic tones to
-create the desired action hierarchy. `primary` is not a semantic tone; it is
+`info` uses the blue palette; `accent` uses the purple palette. Buttons, links,
+switches, tabs, and toasts default to `info`; choose `accent` when a purple
+action is intended. Button variants describe treatment: `filled`, `tonal`,
+`outlined`, and `text`. They combine with semantic tones to create the desired
+action hierarchy. `primary` is not a semantic tone; it is
 reserved for action hierarchy in other recipe APIs.
 
 ## Native state first

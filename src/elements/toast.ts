@@ -40,7 +40,7 @@ export class SdsToastElement extends HTMLElementBase {
   }
 
   get tone(): SdsTone {
-    return (this.getAttribute('tone') ?? 'accent') as SdsTone
+    return (this.getAttribute('tone') ?? 'info') as SdsTone
   }
 
   set tone(value: SdsTone) {
@@ -258,7 +258,7 @@ export function notify(
   }
 
   const toast = document.createElement('sds-toast')
-  toast.tone = options.tone ?? 'accent'
+  toast.tone = options.tone ?? 'info'
   toast.setAttribute('role', options.urgent ? 'alert' : 'status')
   toast.setAttribute('aria-atomic', 'true')
   if (options.duration !== undefined) {

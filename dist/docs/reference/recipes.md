@@ -35,14 +35,14 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `filled`, `tonal`, `outlined`, `text` (default: `filled`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (default: `comfortable`)<br>`data-sds-shape`: `icon` (default: `text`)<br>`data-sds-avatar` (default: `false`)<br>`data-sds-block` (default: `false`) | Action styling for native buttons and links. |
-| link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (default: `primary`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `inherited`) | Link styling with semantic tone and emphasis. |
+| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `filled`, `tonal`, `outlined`, `text` (default: `filled`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (default: `comfortable`)<br>`data-sds-shape`: `icon` (default: `text`)<br>`data-sds-avatar` (default: `false`)<br>`data-sds-block` (default: `false`) | Action styling for native buttons and links. |
+| link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (default: `primary`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `inherited`) | Link styling with semantic tone and emphasis. |
 | field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-field > small, .sds-field > label small`) (default: `muted help; inherited label color`) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
 | form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit hooks for native form controls. |
 | combobox-parts | `.sds-combobox-list` |  |  | Suggestion list for a native text input. |
 | choice | `.sds-choice` | `<label>` |  | Checkbox or radio with label text. |
-| switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `accent`) | Native checkbox with switch appearance. |
+| switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`) | Native checkbox with switch appearance. |
 | file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-file-upload, .sds-file-input, [data-sds-root] input[type="file"]`) (default: `md`) | Native file input and composed upload surface. |
 | action-group | `.sds-action-group` |  |  | Responsive layout for related actions. |
 
@@ -52,7 +52,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 |---|---|---|---|---|
 | badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (default: `solid`)<br>`data-sds-size`: `sm`, `md` (default: `md`) | Compact status or category. |
 | tag | `.sds-tag`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md` (default: `sm`)<br>`data-sds-tone`: `danger` (on `button.sds-tag`) (default: `neutral`) | Static or interactive category with an optional counter. |
-| tag-action | `.sds-tag-action` |  | `data-sds-tone`: `danger` (default: `accent`) | Independent action inside a tag. |
+| tag-action | `.sds-tag-action` |  | `data-sds-tone`: `danger` (default: `info`) | Independent action inside a tag. |
 | callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (default: `subtle`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (default: `false`)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (default: `false`) | Contextual message in page content. |
 | toast-region | `.sds-toaster` |  | `data-sds-toast-open`: id (on `[data-sds-toast-open]`) (default: `no target`)<br>`data-sds-toast-close` (on `sds-toast [data-sds-toast-close]`) (default: `false`) | Fixed notification region. |
 | spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Animated loading indicator. |
@@ -203,7 +203,7 @@ Coordinates a tab list and one panel per tab.
 | `activation` | `automatic`, `manual` | automatic | Whether focus automatically selects a tab. |
 | `orientation` | `horizontal`, `vertical` | horizontal | Layout or interaction orientation. |
 | `size` | `md`, `lg` | md | Visual scale. |
-| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | accent | Semantic color intent. |
+| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | info | Semantic color intent; info is blue and accent is purple. |
 | `variant` | `folder`, `block`, `underline` | folder | Visual treatment. |
 
 | Property or method | Type | Purpose |
@@ -252,7 +252,7 @@ A timed or persistent notification.
 | Attribute | Values or type | Default | Purpose |
 |---|---|---|---|
 | `open` | `boolean` | false | Whether the toast is visible. |
-| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | accent | Semantic color intent. |
+| `tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | info | Semantic color intent; info is blue and accent is purple. |
 | `duration` | `number` | 5000 | Positive duration in milliseconds. |
 | `persistent` | `boolean` | false | Disables automatic dismissal. |
 

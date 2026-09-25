@@ -20,7 +20,7 @@ Native buttons inside an SDS root are styled automatically. Use
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-variant` | `filled`, `tonal`, `outlined`, `text` | `filled` |
-| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Accent action |
+| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Blue info action |
 | `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
 | `data-sds-density` | `compact` | Comfortable |
 | `data-sds-shape` | `icon` | Text button |

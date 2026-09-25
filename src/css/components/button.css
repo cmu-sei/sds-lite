@@ -16,23 +16,23 @@
 
   :where([data-sds-tone="accent"]) {
     --sds-button-tone-color: light-dark(
+      var(--sds-purple-600),
+      var(--sds-purple-300)
+    );
+    --sds-button-tone-color-hover: light-dark(
+      var(--sds-purple-600),
+      var(--sds-purple-200)
+    );
+  }
+
+  :where([data-sds-tone="info"]) {
+    --sds-button-tone-color: light-dark(
       var(--sds-blue-600),
       var(--sds-blue-300)
     );
     --sds-button-tone-color-hover: light-dark(
       var(--sds-blue-600),
       var(--sds-blue-200)
-    );
-  }
-
-  :where([data-sds-tone="info"]) {
-    --sds-button-tone-color: light-dark(
-      var(--sds-teal-600),
-      var(--sds-teal-300)
-    );
-    --sds-button-tone-color-hover: light-dark(
-      var(--sds-teal-600),
-      var(--sds-teal-200)
     );
   }
 
@@ -105,17 +105,17 @@
     );
     --sds-button-tonal-background: var(
       --sds-tone-surface,
-      var(--sds-color-accent-surface)
+      var(--sds-color-info-surface)
     );
     --sds-button-tonal-hover: color-mix(
       in srgb,
       var(--sds-tone-strong, var(--sds-color-action-primary)) 12%,
-      var(--sds-tone-surface, var(--sds-color-accent-surface))
+      var(--sds-tone-surface, var(--sds-color-info-surface))
     );
     --sds-button-tonal-active: color-mix(
       in srgb,
       var(--sds-tone-strong, var(--sds-color-action-primary-active)) 20%,
-      var(--sds-tone-surface, var(--sds-color-accent-surface))
+      var(--sds-tone-surface, var(--sds-color-info-surface))
     );
     --sds-button-ghost-hover-background: var(
       --sds-button-ghost-hover,

@@ -8,16 +8,16 @@ const tones = {
     mediumBorder: 'rgb(116, 117, 120)',
   },
   accent: {
+    medium: 'rgb(186, 75, 147)',
+    light: 'rgb(248, 236, 244)',
+    text: 'rgb(128, 0, 84)',
+    mediumBorder: 'rgb(186, 75, 147)',
+  },
+  info: {
     medium: 'rgb(0, 124, 186)',
     light: 'rgb(238, 249, 253)',
     text: 'rgb(3, 79, 141)',
     mediumBorder: 'rgb(0, 124, 186)',
-  },
-  info: {
-    medium: 'rgb(0, 130, 133)',
-    light: 'rgb(224, 247, 247)',
-    text: 'rgb(0, 80, 82)',
-    mediumBorder: 'rgb(0, 130, 133)',
   },
   success: {
     medium: 'rgb(0, 135, 64)',
@@ -72,8 +72,8 @@ test('dark medium badges use the reference contrast colors', async ({ page }) =>
 
   const mediumColors = {
     Neutral: 'rgb(136, 137, 141)',
-    Accent: 'rgb(0, 124, 186)',
-    Info: 'rgb(0, 130, 133)',
+    Accent: 'rgb(186, 75, 147)',
+    Info: 'rgb(0, 124, 186)',
     Success: 'rgb(0, 135, 64)',
     Warning: 'rgb(253, 181, 21)',
     Danger: 'rgb(224, 42, 58)',

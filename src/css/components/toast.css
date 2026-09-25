@@ -45,8 +45,8 @@
     block-size: 1.5rem;
     place-items: center;
     border-radius: var(--sds-radius-full);
-    color: var(--sds-tone-on-strong, var(--sds-color-accent-on-strong));
-    background: var(--sds-tone-strong, var(--sds-color-accent-strong));
+    color: var(--sds-tone-on-strong, var(--sds-color-info-on-strong));
+    background: var(--sds-tone-strong, var(--sds-color-info-strong));
     font-size: 0.875rem;
     font-weight: 700;
     content: "i";

@@ -61,6 +61,25 @@
 
   :where(.sds-badge[data-sds-tone="accent"]) {
     --sds-badge-light-background: light-dark(
+      var(--sds-purple-25),
+      var(--sds-purple-900)
+    );
+    --sds-badge-light-text: light-dark(
+      var(--sds-purple-700),
+      var(--sds-purple-300)
+    );
+    --sds-badge-dark-background: light-dark(
+      var(--sds-purple-700),
+      var(--sds-purple-800)
+    );
+    --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-purple-50));
+    --sds-badge-medium: var(--sds-purple-500);
+    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-badge-medium-hover: var(--sds-purple-400);
+  }
+
+  :where(.sds-badge[data-sds-tone="info"]) {
+    --sds-badge-light-background: light-dark(
       var(--sds-blue-25),
       var(--sds-blue-900)
     );
@@ -76,25 +95,6 @@
     --sds-badge-medium: var(--sds-blue-500);
     --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
     --sds-badge-medium-hover: var(--sds-blue-400);
-  }
-
-  :where(.sds-badge[data-sds-tone="info"]) {
-    --sds-badge-light-background: light-dark(
-      var(--sds-teal-25),
-      var(--sds-teal-900)
-    );
-    --sds-badge-light-text: light-dark(
-      var(--sds-teal-700),
-      var(--sds-teal-300)
-    );
-    --sds-badge-dark-background: light-dark(
-      var(--sds-teal-700),
-      var(--sds-teal-800)
-    );
-    --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-teal-50));
-    --sds-badge-medium: var(--sds-teal-500);
-    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
-    --sds-badge-medium-hover: var(--sds-teal-400);
   }
 
   :where(.sds-badge[data-sds-tone="success"]) {

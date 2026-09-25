@@ -97,6 +97,12 @@ test('button tones match the SEI Design System color matrix', async ({
       tonalSurface: 'rgb(225, 226, 227)',
     },
     accent: {
+      base: 'rgb(153, 46, 116)',
+      hover: 'rgb(186, 75, 147)',
+      ghostHover: 'rgb(240, 241, 241)',
+      tonalSurface: 'rgb(248, 236, 244)',
+    },
+    info: {
       base: 'rgb(2, 102, 161)',
       hover: 'rgb(0, 124, 186)',
       ghostHover: 'rgb(240, 241, 241)',
@@ -192,6 +198,13 @@ test('button tones match the SEI Design System dark color matrix', async ({
       tonalSurface: 'rgb(48, 49, 50)',
     },
     accent: {
+      fill: 'rgb(200, 100, 165)',
+      state: 'rgb(208, 125, 179)',
+      text: 'rgb(208, 125, 179)',
+      textHover: 'rgb(222, 166, 202)',
+      tonalSurface: 'rgb(63, 0, 41)',
+    },
+    info: {
       fill: 'rgb(0, 155, 217)',
       state: 'rgb(46, 177, 230)',
       text: 'rgb(46, 177, 230)',

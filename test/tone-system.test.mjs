@@ -9,7 +9,7 @@ const interfaceTypes = await readFile('src/generated/interface.ts', 'utf8')
 const demo = await readFile('index.html', 'utf8')
 const componentStyles = (
   await Promise.all(
-    ['badge', 'datapoint', 'prose', 'tabs'].map((component) =>
+    ['badge', 'datapoint', 'prose', 'tabs', 'tag'].map((component) =>
       readFile(`src/css/components/${component}.css`, 'utf8'),
     ),
   )
@@ -84,32 +84,42 @@ test('the public tone vocabulary distinguishes accent from primary hierarchy', (
   )
 })
 
-test('accent is blue and info uses the upstream teal palette', () => {
+test('info is blue and accent uses the upstream purple palette', () => {
   assert.match(
     tokens,
-    /--sds-color-accent-surface:\s*light-dark\(\s*var\(--sds-blue-25\),\s*var\(--sds-blue-900\)/,
+    /--sds-purple-25:\s*#f8ecf4/,
   )
   assert.match(
     tokens,
-    /--sds-color-accent-strong:\s*light-dark\(\s*var\(--sds-blue-600\),\s*var\(--sds-blue-400\)/,
-  )
-  assert.match(tokens, /--sds-teal-25:\s*#e0f7f7/)
-  assert.match(tokens, /--sds-teal-900:\s*#001b1b/)
-  assert.match(
-    tokens,
-    /--sds-color-info-surface:\s*light-dark\(\s*var\(--sds-teal-25\),\s*var\(--sds-teal-900\)/,
+    /--sds-purple-950:\s*#200015/,
   )
   assert.match(
     tokens,
-    /--sds-color-info-strong:\s*light-dark\(\s*var\(--sds-teal-600\),\s*var\(--sds-teal-400\)/,
+    /--sds-color-accent-surface:\s*light-dark\(\s*var\(--sds-purple-25\),\s*var\(--sds-purple-900\)/,
+  )
+  assert.match(
+    tokens,
+    /--sds-color-accent-strong:\s*light-dark\(\s*var\(--sds-purple-600\),\s*var\(--sds-purple-400\)/,
+  )
+  assert.match(
+    tokens,
+    /--sds-color-info-surface:\s*light-dark\(\s*var\(--sds-blue-25\),\s*var\(--sds-blue-900\)/,
+  )
+  assert.match(
+    tokens,
+    /--sds-color-info-strong:\s*light-dark\(\s*var\(--sds-blue-600\),\s*var\(--sds-blue-400\)/,
   )
   assert.match(
     componentStyles,
-    /data-sds-tone="accent"[\s\S]*?var\(--sds-blue-700\)/,
+    /data-sds-tone="accent"[\s\S]*?var\(--sds-purple-700\)/,
   )
   assert.match(
     componentStyles,
-    /data-sds-tone="info"[\s\S]*?var\(--sds-teal-700\)/,
+    /data-sds-tone="info"[\s\S]*?var\(--sds-blue-700\)/,
+  )
+  assert.match(
+    componentStyles,
+    /\.sds-tag-action[\s\S]*?--sds-tag-action-color:\s*var\(--sds-color-info-strong\)/,
   )
 })
 

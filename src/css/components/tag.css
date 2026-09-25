@@ -157,17 +157,11 @@
   }
 
   :where(.sds-tag-action) {
-    --sds-tag-action-color: light-dark(
-      var(--sds-blue-600),
-      var(--sds-blue-300)
-    );
-    --sds-tag-action-hover: light-dark(
-      var(--sds-blue-50),
-      var(--sds-blue-900)
-    );
+    --sds-tag-action-color: var(--sds-color-info-strong);
+    --sds-tag-action-hover: var(--sds-color-info-surface);
     --sds-tag-action-active: light-dark(
-      var(--sds-blue-100),
-      var(--sds-blue-800)
+      color-mix(in srgb, var(--sds-color-info-strong) 18%, transparent),
+      color-mix(in srgb, var(--sds-color-info-strong) 18%, transparent)
     );
 
     position: relative;

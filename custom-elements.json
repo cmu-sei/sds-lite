@@ -303,8 +303,8 @@
               "type": {
                 "text": "\"neutral\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\""
               },
-              "description": "Semantic color intent.",
-              "default": "accent"
+              "description": "Semantic color intent; info is blue and accent is purple.",
+              "default": "info"
             },
             {
               "name": "variant",
@@ -464,8 +464,8 @@
               "type": {
                 "text": "\"neutral\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\""
               },
-              "description": "Semantic color intent.",
-              "default": "accent"
+              "description": "Semantic color intent; info is blue and accent is purple.",
+              "default": "info"
             },
             {
               "name": "duration",

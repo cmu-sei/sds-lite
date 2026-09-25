@@ -4,7 +4,7 @@
     [data-sds-root] a[href]:not([class*="sds-"], [data-sds-unstyled])
   ) {
     display: inline-block;
-    color: var(--sds-color-accent-text);
+    color: var(--sds-color-info-text);
     overflow-wrap: break-word;
     text-decoration: none;
     text-underline-offset: 0.15em;

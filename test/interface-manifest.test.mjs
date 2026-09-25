@@ -119,7 +119,7 @@ test('recipe omission defaults use audited implementation values', () => {
     ['link:data-sds-size', 'inherited'],
     ['field:data-sds-tone', 'muted help; inherited label color'],
     ['tag:data-sds-tone', 'neutral'],
-    ['tag-action:data-sds-tone', 'accent'],
+    ['tag-action:data-sds-tone', 'info'],
     ['badge:data-sds-variant', 'solid'],
     ['callout:data-sds-variant', 'subtle'],
     ['toast-region:data-sds-toast-open', 'no target'],

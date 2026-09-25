@@ -515,7 +515,7 @@ function mapBootstrapClasses(tagName, attributes, line, warnings) {
       return null
     }
 
-    const options = { variant: 'filled', tone: 'accent' }
+    const options = { variant: 'filled', tone: 'info' }
     const variant = variants[0]
     if (variant === 'btn-secondary') {
       options.variant = 'tonal'
@@ -563,7 +563,7 @@ function mapBootstrapClasses(tagName, attributes, line, warnings) {
 function bootstrapTone(value) {
   return (
     {
-      primary: 'accent',
+      primary: 'info',
       secondary: 'neutral',
       success: 'success',
       danger: 'danger',
@@ -571,7 +571,7 @@ function bootstrapTone(value) {
       info: 'info',
       light: 'neutral',
       dark: 'neutral',
-    }[value] ?? 'accent'
+    }[value] ?? 'info'
   )
 }
 
@@ -616,7 +616,7 @@ function mapUswdsClasses(tagName, attributes, line, warnings) {
       return null
     }
 
-    const options = { variant: 'filled', tone: 'accent' }
+    const options = { variant: 'filled', tone: 'info' }
     if (classes.has('usa-button--secondary')) options.variant = 'tonal'
     if (classes.has('usa-button--outline')) options.variant = 'outlined'
     if (classes.has('usa-button--unstyled')) options.variant = 'text'
@@ -722,7 +722,7 @@ function mapLegacyClasses(tagName, attributes, line, warnings) {
         ? 'danger'
         : classes.has('btn-gray') || classes.has('btn-white')
           ? 'neutral'
-          : 'accent',
+          : 'info',
       size: sizes[0],
       block: classes.has('btn-block'),
     }
@@ -829,7 +829,7 @@ function transformComponentButton(
         ? 'danger'
         : color === 'gray' || color === 'white'
           ? 'neutral'
-          : 'accent'
+          : 'info'
     options.size = staticValue(findAttribute(attributes, 'size'))
     options.block = isTruthyAttribute(findAttribute(attributes, 'block')) === true
     if (
@@ -871,7 +871,7 @@ function transformComponentButton(
         'md-outlined-button': 'outlined',
         'md-text-button': 'text',
       }[lowerName] ?? 'filled'
-    options.tone = 'accent'
+    options.tone = 'info'
     if (isTruthyAttribute(findAttribute(attributes, 'soft-disabled'))) {
       warnings.push(
         warning(

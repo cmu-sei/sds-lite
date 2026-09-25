@@ -229,7 +229,7 @@ test('enhanced controls default buttons without overriding explicit types', asyn
   const tabs = document.querySelectorAll('sds-tabs [role="tab"]')
   assert.equal(tabs[0]?.getAttribute('type'), 'button')
   assert.equal(tabs[1]?.getAttribute('type'), 'submit')
-  assert.equal(document.querySelector('sds-tabs')?.tone, 'accent')
+  assert.equal(document.querySelector('sds-tabs')?.tone, 'info')
 })
 
 test('floating element options reflect through host properties', () => {
