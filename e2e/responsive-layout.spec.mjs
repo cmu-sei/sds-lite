@@ -63,6 +63,23 @@ test('Overview actions stack on mobile and share a row on desktop', async ({ pag
   expect(desktopGeometry[0].width).toBeLessThan(await group.evaluate((element) => element.getBoundingClientRect().width))
 })
 
+test('page header action links share the available width on narrow screens', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  const actions = page.locator(
+    '.sds-page-header > .sds-action-group > .sds-button',
+  )
+  await expect(actions).toHaveCount(2)
+
+  const widths = await actions.evaluateAll((elements) =>
+    elements.map((element) => element.getBoundingClientRect().width),
+  )
+  expect(Math.abs(widths[0] - widths[1])).toBeLessThan(1)
+})
+
 test('grid columns respond to their available width', async ({ page }) => {
   await page.goto('/')
 

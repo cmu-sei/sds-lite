@@ -11,7 +11,9 @@
       inline-size: 100%;
     }
 
-    :where(.sds-page-header .sds-action-group > button) {
+    :where(
+      .sds-page-header .sds-action-group > :is(button, .sds-button)
+    ) {
       flex: 1;
     }
   }
