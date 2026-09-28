@@ -98,6 +98,51 @@ colorSchemeSelect?.addEventListener('change', () => {
   root?.setAttribute('data-sds-color-scheme', colorSchemeSelect.value)
 })
 
+const sectionNavigation = document.querySelector<HTMLElement>(
+  '.sds-sidebar > nav',
+)
+const sectionScroller = document.querySelector<HTMLElement>('.sds-app-body')
+const sectionLinks = Array.from(
+  sectionNavigation?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]') ?? [],
+).flatMap((link) => {
+  const section = document.getElementById(link.hash.slice(1))
+  return section ? [{ link, section }] : []
+})
+
+if (sectionNavigation && sectionScroller && sectionLinks.length > 0) {
+  const setCurrentSection = (current: HTMLElement) => {
+    for (const { link, section } of sectionLinks) {
+      if (section === current) link.setAttribute('aria-current', 'location')
+      else link.removeAttribute('aria-current')
+    }
+  }
+  const initialSection =
+    sectionLinks.find(({ link }) => link.hash === window.location.hash)?.section ??
+    sectionLinks[0].section
+  const visibleSections = new Set<HTMLElement>()
+
+  setCurrentSection(initialSection)
+
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!(entry.target instanceof HTMLElement)) continue
+        if (entry.isIntersecting) visibleSections.add(entry.target)
+        else visibleSections.delete(entry.target)
+      }
+
+      const current = [...visibleSections].sort(
+        (first, second) =>
+          first.getBoundingClientRect().top - second.getBoundingClientRect().top,
+      )[0]
+      if (current) setCurrentSection(current)
+    },
+    { root: sectionScroller, rootMargin: '-12% 0px -75% 0px' },
+  )
+
+  for (const { section } of sectionLinks) sectionObserver.observe(section)
+}
+
 const copyStatus = document.querySelector<HTMLElement>('#copy-status')
 
 for (const button of document.querySelectorAll<HTMLButtonElement>(

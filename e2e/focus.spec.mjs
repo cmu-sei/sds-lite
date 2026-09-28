@@ -19,7 +19,7 @@ test('focusable controls share the design-system focus colors in both schemes', 
   )
 
   const fields = [
-    '#actions button[type="button"]',
+    '#default-action-tones button[type="button"]',
     '.sds-link',
     '.sds-disclosure > summary',
     '#text-input',

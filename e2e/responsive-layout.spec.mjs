@@ -15,6 +15,54 @@ const flexStackWidths = {
   xl: 1024,
 }
 
+test('sidebar marks the section currently visible in its scroll container', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const currentLink = page.locator(
+    '.sds-sidebar > nav a[aria-current="location"]',
+  )
+  await expect(currentLink).toHaveAttribute('href', '#overview')
+
+  await page.locator('.sds-sidebar > nav a[href="#actions"]').click()
+  await expect(currentLink).toHaveAttribute('href', '#actions')
+
+  await page.locator('.sds-sidebar > nav a[href="#forms"]').click()
+  await expect(currentLink).toHaveAttribute('href', '#forms')
+})
+
+test('Overview actions stack on mobile and share a row on desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  const group = page.locator('#overview .sds-overview-actions')
+  const actions = group.locator(':scope > a')
+  await expect(actions).toHaveCount(2)
+  await expect(group).toHaveCSS('align-items', 'stretch')
+  const geometry = await actions.evaluateAll((links) =>
+    links.map((link) => {
+      const rect = link.getBoundingClientRect()
+      return { width: rect.width, center: rect.left + rect.width / 2, top: rect.top }
+    }),
+  )
+
+  expect(geometry[0].top).toBeLessThan(geometry[1].top)
+  expect(Math.abs(geometry[0].width - geometry[1].width)).toBeLessThan(1)
+  expect(Math.abs(geometry[0].center - geometry[1].center)).toBeLessThan(1)
+
+  await page.setViewportSize({ width: 1280, height: 900 })
+  const desktopGeometry = await actions.evaluateAll((links) =>
+    links.map((link) => {
+      const rect = link.getBoundingClientRect()
+      return { width: rect.width, top: rect.top }
+    }),
+  )
+
+  expect(Math.abs(desktopGeometry[0].top - desktopGeometry[1].top)).toBeLessThan(1)
+  expect(desktopGeometry[0].width).toBeLessThan(await group.evaluate((element) => element.getBoundingClientRect().width))
+})
+
 test('grid columns respond to their available width', async ({ page }) => {
   await page.goto('/')
 
@@ -172,16 +220,16 @@ test('component and layout size presets map to their documented dimensions', asy
       spinnerSm: style('.sds-spinner[data-sds-size="sm"]').width,
       spinnerXl: style('.sds-spinner[data-sds-size="xl"]').width,
       tableLgBodyPadding: style(
-        '.sds-table[data-sds-size="lg"] tbody td',
+        '#content .sds-table[data-sds-size="lg"] tbody td',
       ).paddingTop,
       tableLgHeadPadding: style(
-        '.sds-table[data-sds-size="lg"] thead th',
+        '#content .sds-table[data-sds-size="lg"] thead th',
       ).paddingTop,
       tableSmBodyPadding: style(
-        '.sds-table[data-sds-size="sm"] tbody td',
+        '#content .sds-table[data-sds-size="sm"] tbody td',
       ).paddingTop,
       tableSmHeadPadding: style(
-        '.sds-table[data-sds-size="sm"] thead th',
+        '#content .sds-table[data-sds-size="sm"] thead th',
       ).paddingTop,
     }
   })
@@ -365,22 +413,22 @@ test('the application breakpoint does not make narrower viewports gain columns',
 test('the playground keeps deliberate page, section, and card rhythm', async ({
   page,
 }) => {
-  for (const [width, cardPadding] of [
-    [1440, '32px'],
-    [390, '24px'],
-  ]) {
+  for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
 
     await expect(page.locator('main#top > .sds-page')).toHaveCSS('gap', '64px')
     await expect(page.locator('#actions')).toHaveCSS('gap', '32px')
-    await expect(page.locator('#getting-started'))
-      .toHaveCSS('padding', cardPadding)
+    await expect(page.locator('#getting-started')).toHaveCSS('padding', '0px')
+    await expect(page.locator('#getting-started > details')).not.toHaveAttribute(
+      'open',
+    )
   }
 })
 
 test('badges keep their intrinsic height inside grids', async ({ page }) => {
   await page.goto('/')
+  await page.locator('#getting-started > details > summary').click()
 
   const badges = page.locator('#getting-started .sds-badge')
   await expect(badges).toHaveCount(2)
@@ -397,9 +445,10 @@ test('catalog compositions group related options and reflow before crowding', as
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
+  await page.locator('#getting-started > details > summary').click()
 
   const desktopSetupCards = await page
-    .locator('#getting-started > .sds-grid > article')
+    .locator('#getting-started > details > .sds-grid > article')
     .evaluateAll((cards) =>
       cards.map((card) => card.getBoundingClientRect().height),
     )
@@ -436,7 +485,7 @@ test('catalog compositions group related options and reflow before crowding', as
 
   await page.setViewportSize({ width: 800, height: 900 })
   const setupCards = await page
-    .locator('#getting-started > .sds-grid > article')
+    .locator('#getting-started > details > .sds-grid > article')
     .evaluateAll((cards) =>
       cards.map((card) => {
         const { x, y, height } = card.getBoundingClientRect()

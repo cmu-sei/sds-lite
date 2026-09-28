@@ -117,6 +117,7 @@
 
   :where(
     .sds-sidebar > nav [aria-current="page"],
+    .sds-sidebar > nav [aria-current="location"],
     .sds-sidebar
       > nav
       details:not([open]):has([aria-current="page"])

@@ -56,3 +56,35 @@ test('native recipes render and preserve platform behavior', async ({ page }) =>
     pagination.locator('a[aria-label="Previous page"]'),
   ).not.toHaveAttribute('href')
 })
+
+test('API disclosures copy their example markup and announce success', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: async (value) => {
+          window.copiedMarkup = value
+        },
+      },
+    })
+  })
+
+  const disclosure = page.locator('#actions > details.sds-card.sds-disclosure')
+  await disclosure.locator('summary').click()
+  const copyButton = disclosure.locator(
+    '[data-copy-target="copy-button-markup"]',
+  )
+  await expect(copyButton).toHaveAccessibleName('Copy button markup')
+  await copyButton.click()
+
+  await expect(copyButton).toHaveText('Copied')
+  await expect(page.locator('#copy-status')).toHaveText(
+    'Example copied to clipboard.',
+  )
+  expect(await page.evaluate(() => window.copiedMarkup)).toContain(
+    '<button data-sds-variant="tonal" data-sds-tone="danger">',
+  )
+})

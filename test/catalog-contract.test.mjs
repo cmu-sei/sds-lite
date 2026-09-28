@@ -96,6 +96,7 @@ test('catalog sections follow a coherent task progression', () => {
       (section) => section.id,
     ),
     [
+      'overview',
       'getting-started',
       'actions',
       'forms',
@@ -110,9 +111,21 @@ test('catalog sections follow a coherent task progression', () => {
   )
 })
 
-test('component sections prioritize live examples over reference syntax', () => {
+test('component disclosures group API options beside copyable examples', () => {
+  const summaries = new Map([
+    ['actions', 'Button API and example'],
+    ['forms', 'Forms API and example'],
+    ['feedback', 'Feedback API and example'],
+    ['content', 'Content API and example'],
+    ['composition', 'Layout API and examples'],
+    ['prose', 'Prose API and example'],
+    ['navigation', 'Tabs API and example'],
+    ['structure', 'Overlays API and example'],
+    ['loading', 'Loading API and example'],
+  ])
+
   for (const section of document.querySelectorAll(
-    'main#top > .sds-page > section[id]:not(#getting-started)',
+    'main#top > .sds-page > section[id]:not(#overview):not(#getting-started)',
   )) {
     const reference = section.querySelector(
       ':scope > details.sds-card.sds-disclosure',
@@ -121,8 +134,17 @@ test('component sections prioritize live examples over reference syntax', () => 
     assert.equal(reference.hasAttribute('open'), false)
     assert.equal(
       reference.querySelector(':scope > summary')?.textContent,
-      'API reference and copy-ready markup',
+      summaries.get(section.id),
     )
+    assert.ok(reference.querySelector(':scope > .sds-grid'))
+    assert.equal(reference.querySelectorAll('details').length, 0)
+
+    for (const example of reference.querySelectorAll('pre[id]')) {
+      assert.ok(
+        reference.querySelector(`[data-copy-target="${example.id}"]`),
+        `${section.id} example ${example.id} has no copy action`,
+      )
+    }
   }
 })
 
