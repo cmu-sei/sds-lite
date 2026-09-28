@@ -467,7 +467,7 @@ image URL.
       Project Atlas
     </a>
     <div class="sds-action-group" aria-label="User actions">
-      <button type="button" data-sds-density="compact">Alex Morgan</button>
+      <button type="button" data-sds-density="compact" data-sds-variant="text">Alex Morgan</button>
     </div>
   </header>
   <div class="sds-app-body">

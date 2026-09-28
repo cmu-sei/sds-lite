@@ -26,8 +26,6 @@ export type {
   SdsGap,
   SdsOrientation,
   SdsPlacement,
-  SdsRecipeAttribute,
-  SdsRecipeClass,
   SdsSize,
   SdsTabsActivation,
   SdsTabsSize,

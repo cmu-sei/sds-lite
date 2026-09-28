@@ -13,6 +13,55 @@ test('compact primary buttons retain on-accent text', async ({ page }) => {
   await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)')
 })
 
+test('density and shape preserve the omitted filled variant', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.locator('[data-sds-root]').evaluate((root) => {
+    root.insertAdjacentHTML(
+      'afterbegin',
+      `<div style="position: fixed; z-index: 10000; inset: 0 auto auto 0">
+        <button data-test-button="regular">Regular</button>
+        <button data-test-button="compact" data-sds-density="compact">Compact</button>
+        <button data-test-button="icon" data-sds-shape="icon" aria-label="Add">+</button>
+      </div>`,
+    )
+  })
+
+  const button = (name) => page.locator(`[data-test-button="${name}"]`)
+  const colors = (name) => button(name).evaluate((element) => {
+      const style = getComputedStyle(element)
+      return [style.color, style.backgroundColor, style.borderColor]
+    })
+  const settle = (name) => button(name).evaluate((element) =>
+    Promise.all(element.getAnimations().map((animation) => animation.finished)),
+  )
+
+  const defaultColors = await colors('regular')
+  await expect.poll(() => colors('compact')).toEqual(defaultColors)
+  await expect.poll(() => colors('icon')).toEqual(defaultColors)
+
+  const regular = page.locator('[data-test-button="regular"]')
+  await regular.hover()
+  await settle('regular')
+  const hoverColors = await colors('regular')
+  await page.locator('[data-test-button="compact"]').hover()
+  await settle('compact')
+  expect(await colors('compact')).toEqual(hoverColors)
+  await page.locator('[data-test-button="icon"]').hover()
+  await settle('icon')
+  expect(await colors('icon')).toEqual(hoverColors)
+
+  await page.locator('[data-test-button]').evaluateAll(async (buttons) => {
+    for (const button of buttons) button.setAttribute('aria-disabled', 'true')
+    await Promise.all(buttons.flatMap((button) =>
+      button.getAnimations().map((animation) => animation.finished),
+    ))
+  })
+  const disabledColors = await colors('regular')
+  expect(await colors('compact')).toEqual(disabledColors)
+  expect(await colors('icon')).toEqual(disabledColors)
+})
+
 test('catalog shows every compact button variant across tones', async ({
   page,
 }) => {

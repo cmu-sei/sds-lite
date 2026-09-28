@@ -7,6 +7,7 @@ import test from 'node:test'
 const manifest = JSON.parse(
   await readFile('interface-manifest.json', 'utf8'),
 )
+const htmlData = JSON.parse(await readFile('html-data.json', 'utf8'))
 
 async function filesUnder(directory, extension) {
   const entries = await readdir(directory, { withFileTypes: true })
@@ -166,6 +167,13 @@ test('manifest names and generated targets are unique', () => {
   const tags = manifest.customElements.map((element) => element.tagName)
   assert.equal(new Set(classes).size, classes.length)
   assert.equal(new Set(tags).size, tags.length)
+})
+
+test('HTML editor metadata only exposes truly global attributes globally', () => {
+  assert.deepEqual(
+    htmlData.globalAttributes.map((attribute) => attribute.name),
+    manifest.globalAttributes.map((attribute) => attribute.name),
+  )
 })
 
 test('CSS recipe attributes are namespaced and declared', async () => {

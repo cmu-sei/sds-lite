@@ -153,10 +153,6 @@
       box-shadow var(--sds-duration-fast) var(--sds-easing-standard);
 
     &[data-sds-density="compact"] {
-      --sds-button-background: transparent;
-      --sds-button-border: transparent;
-      --sds-button-color: var(--sds-button-rest-color);
-
       min-block-size: 2rem;
       padding: 0 var(--sds-space-sm);
       border-width: 1px;
@@ -164,13 +160,6 @@
     }
 
     &[data-sds-shape="icon"] {
-      --sds-button-background: transparent;
-      --sds-button-border: transparent;
-      --sds-button-color: var(
-        --sds-tone-text,
-        var(--sds-color-text-muted)
-      );
-
       inline-size: 2rem;
       block-size: 2rem;
       justify-content: center;
@@ -306,16 +295,9 @@
     }
 
     &:is(:disabled, [aria-disabled="true"], [aria-busy="true"]):not(
-        [data-sds-density="compact"],
-        [data-sds-shape="icon"],
         [data-sds-variant="tonal"],
         [data-sds-variant="outlined"],
         [data-sds-variant="text"]
-      ),
-    &[data-sds-variant="filled"]:is(
-        :disabled,
-        [aria-disabled="true"],
-        [aria-busy="true"]
       ) {
       --sds-button-background: var(--sds-gray-500);
       --sds-button-border: var(--sds-gray-500);
@@ -363,18 +345,6 @@
         --sds-button-border: transparent;
         --sds-button-color: var(--sds-button-hover-color);
       }
-
-      &:is([data-sds-density="compact"], [data-sds-shape="icon"]):not(
-          [data-sds-variant],
-          :disabled
-        ):hover {
-        --sds-button-background: var(--sds-color-interactive-subtle-hover);
-        --sds-button-border: transparent;
-        --sds-button-color: var(
-          --sds-tone-text,
-          var(--sds-color-text-default)
-        );
-      }
     }
 
     &:not(:disabled, [aria-disabled="true"]):active {
@@ -382,16 +352,10 @@
     }
 
     &:not(
-        [data-sds-density="compact"],
-        [data-sds-shape="icon"],
         [data-sds-variant="tonal"],
         [data-sds-variant="outlined"],
         [data-sds-variant="text"]
-      ):not(:disabled, [aria-disabled="true"]):active,
-    &[data-sds-variant="filled"]:not(
-        :disabled,
-        [aria-disabled="true"]
-      ):active {
+      ):not(:disabled, [aria-disabled="true"]):active {
       --sds-button-background: var(--sds-button-accent);
       --sds-button-border: transparent;
     }

@@ -19,8 +19,6 @@ The root also exports these types:
 - `SdsOrientation`
 - `SdsPlacement`
 - `SdsPopoverElement`
-- `SdsRecipeAttribute`
-- `SdsRecipeClass`
 - `SdsSize`
 - `SdsTabsActivation`
 - `SdsTabsElement`

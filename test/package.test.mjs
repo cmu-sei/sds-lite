@@ -56,6 +56,7 @@ test('browser-only helpers fail clearly when called during SSR', async () => {
 test('declarations use publishable JavaScript specifiers', async () => {
   const declarations = await readFile('dist/package/sds.d.ts', 'utf8')
   assert.doesNotMatch(declarations, /from ['"].+\.ts['"]/)
+  assert.doesNotMatch(declarations, /SdsRecipe(?:Attribute|Class)/)
   assert.equal(
     await readFile('dist/package/auto.d.ts', 'utf8'),
     "export { notify } from './sds.js';\n",

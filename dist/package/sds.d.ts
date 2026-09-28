@@ -4,5 +4,5 @@ export type { SdsDropdownElement } from './elements/dropdown.js';
 export type { SdsPopoverElement } from './elements/popover.js';
 export type { SdsTabsChangeDetail, SdsTabsElement, } from './elements/tabs.js';
 export type { SdsTooltipElement } from './elements/tooltip.js';
-export type { SdsGap, SdsOrientation, SdsPlacement, SdsRecipeAttribute, SdsRecipeClass, SdsSize, SdsTabsActivation, SdsTabsSize, SdsTabsVariant, SdsToggleDetail, SdsTone, SdsWidth, } from './generated/interface.js';
+export type { SdsGap, SdsOrientation, SdsPlacement, SdsSize, SdsTabsActivation, SdsTabsSize, SdsTabsVariant, SdsToggleDetail, SdsTone, SdsWidth, } from './generated/interface.js';
 export declare function setupSds(): void;

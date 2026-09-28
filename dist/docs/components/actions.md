@@ -61,10 +61,13 @@ Every icon-only control needs an accessible name:
 </button>
 ```
 
-Use `data-sds-density="compact"` for toolbar and menu-like actions:
+Use `data-sds-density="compact"` to reduce button height independently of its
+variant. Toolbar and menu-like actions commonly combine it with `text`:
 
 ```html
-<button type="button" data-sds-density="compact">Edit</button>
+<button type="button" data-sds-density="compact" data-sds-variant="text">
+  Edit
+</button>
 ```
 
 Compact secondary buttons use a translucent (20%) tone-colored border,
