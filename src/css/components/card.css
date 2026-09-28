@@ -1,6 +1,10 @@
 @layer sds.components {
   :where(.sds-card) {
-    padding: var(--sds-space-2xl);
+    padding: clamp(
+      var(--sds-space-xl),
+      calc(1.25rem + 1vw),
+      var(--sds-space-2xl)
+    );
     border: 1px solid var(--sds-color-border-default);
     border-radius: var(--sds-radius-container);
     background: var(--sds-color-surface-default);
@@ -11,11 +15,5 @@
     color: var(--sds-color-text-label);
     font-size: 0.875rem;
     font-weight: 600;
-  }
-
-  @media (max-width: 40rem) {
-    :where(.sds-card) {
-      padding: var(--sds-space-xl);
-    }
   }
 }

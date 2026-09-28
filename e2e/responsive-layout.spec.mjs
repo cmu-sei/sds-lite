@@ -426,6 +426,28 @@ test('the playground keeps deliberate page, section, and card rhythm', async ({
   }
 })
 
+test('card and toaster spacing scales fluidly between responsive bounds', async ({
+  page,
+}) => {
+  const spacingAt = async (width) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+
+    return page.evaluate(() => {
+      const card = document.querySelector('.sds-card')
+      const toaster = document.querySelector('.sds-toaster')
+      return {
+        card: getComputedStyle(card).paddingTop,
+        toaster: getComputedStyle(toaster).paddingTop,
+      }
+    })
+  }
+
+  expect(await spacingAt(390)).toEqual({ card: '24px', toaster: '16px' })
+  expect(await spacingAt(800)).toEqual({ card: '28px', toaster: '20px' })
+  expect(await spacingAt(1440)).toEqual({ card: '32px', toaster: '24px' })
+})
+
 test('badges keep their intrinsic height inside grids', async ({ page }) => {
   await page.goto('/')
   await page.locator('#getting-started > details > summary').click()

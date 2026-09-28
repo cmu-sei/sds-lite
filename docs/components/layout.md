@@ -2,6 +2,72 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Layout
 
+## Responsive composition
+
+SDS Lite favors layouts that respond to their own available space instead of
+viewport-specific utility variants. Start with the smallest interface that
+describes the content:
+
+| Need | Use |
+|---|---|
+| Cards or fields that should add columns when space permits | `.sds-grid` |
+| A row that should stack when its container becomes narrow | `.sds-flex[data-sds-stack-at]` |
+| Content that is always vertical | `.sds-stack` |
+| Fluid gap or padding between supported bounds | Authored CSS with `clamp()` and SDS spacing tokens |
+| An unusual structural threshold | A small authored container query |
+
+Grid and flex respond to the space available to the layout, so the same markup
+works in a page, sidebar, dialog, or embedded region. Use media queries for
+viewport-owned behavior such as application navigation, not as the default way
+to compose local content.
+
+### Fluid spacing
+
+Use a documented option when one token value is enough. When spacing should
+grow gradually, override the standard CSS property with bounded token values:
+
+```css
+.project-grid {
+  gap: clamp(
+    var(--sds-space-md),
+    2vw,
+    var(--sds-space-xl)
+  );
+}
+```
+
+Unlayered application CSS overrides SDS Lite's layered defaults without
+specificity escalation. `clamp()` is best for scalar values such as `gap` and
+`padding`; use grid, flex, or a container query for structural changes.
+
+### Custom thresholds
+
+The built-in flex thresholds cover most compositions. When content has a
+specific minimum width that does not match them, keep that decision local:
+
+```html
+<div class="sds-flex report-actions">
+  <button type="button">Export report</button>
+  <button type="button">Create report</button>
+</div>
+```
+
+```css
+.report-actions {
+  container-type: inline-size;
+  flex-wrap: wrap;
+}
+
+@container (max-width: 36rem) {
+  .report-actions > * {
+    flex-basis: 100%;
+  }
+}
+```
+
+Prefer this local escape hatch over adding application-specific responsive
+attributes to SDS Lite.
+
 ## Grid
 
 `.sds-grid` creates responsive equal-width columns:

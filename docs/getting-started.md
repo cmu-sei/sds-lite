@@ -103,6 +103,25 @@ SDS Lite automatically styles the native heading, text, button, and input.
 Classes describe larger recipes such as a page, card, form field, or action
 group. Attributes such as `data-sds-variant` change a documented option.
 
+For a responsive collection, let the available space determine the column
+count. This grid uses up to three columns and collapses before a card becomes
+narrower than `18rem`:
+
+```html
+<section
+  class="sds-grid"
+  data-sds-columns="3"
+  data-sds-min-column-width="lg"
+>
+  <article class="sds-card">First project</article>
+  <article class="sds-card">Second project</article>
+  <article class="sds-card">Third project</article>
+</section>
+```
+
+See [Responsive composition](./components/layout.md#responsive-composition) for
+container-aware flex layouts, fluid spacing, and custom thresholds.
+
 ## 4. Add accessible behavior
 
 Custom elements enhance ordinary light-DOM markup. For a client-rendered page,

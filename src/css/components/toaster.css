@@ -7,13 +7,11 @@
     gap: var(--sds-space-lg);
     align-content: start;
     justify-items: end;
-    padding: var(--sds-space-lg);
+    padding: clamp(
+      var(--sds-space-lg),
+      calc(0.75rem + 1vw),
+      var(--sds-space-xl)
+    );
     pointer-events: none;
-  }
-
-  @media (min-width: 40rem) {
-    :where(.sds-toaster, sds-toaster) {
-      padding: var(--sds-space-xl);
-    }
   }
 }
