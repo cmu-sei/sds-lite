@@ -157,3 +157,25 @@ test('checked switch thumbs meet non-text contrast for every tone', async ({
     }
   }
 })
+
+test('warning switch uses a neutral thumb while off and a tone-aware thumb while on', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.locator('[data-sds-root]').evaluate((root) => {
+    root.insertAdjacentHTML(
+      'afterbegin',
+      '<label class="sds-switch" data-sds-tone="warning"><input id="warning-switch" type="checkbox" role="switch">Warning</label>',
+    )
+  })
+
+  const input = page.locator('#warning-switch')
+  const thumbColor = () =>
+    input.evaluate((element) =>
+      getComputedStyle(element).backgroundImage.match(/rgba?\([^)]+\)/)?.[0],
+    )
+
+  expect(await thumbColor()).toBe('rgb(255, 255, 255)')
+  await input.check()
+  expect(await thumbColor()).toBe('rgb(0, 0, 0)')
+})

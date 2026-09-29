@@ -18,7 +18,7 @@
     background-color: light-dark(var(--sds-gray-500), var(--sds-gray-600));
     background-image: radial-gradient(
       circle,
-      var(--sds-tone-on-strong, var(--sds-color-action-text)) 0 45%,
+      var(--sds-switch-thumb-color, var(--sds-color-action-text)) 0 45%,
       transparent 48%
     );
     background-position: left center;
@@ -33,6 +33,11 @@
   }
 
   :where(.sds-switch > input[type="checkbox"][role="switch"]:checked) {
+    --sds-switch-thumb-color: var(
+      --sds-tone-on-strong,
+      var(--sds-color-action-text)
+    );
+
     background-color: var(
       --sds-tone-strong,
       var(--sds-color-action-primary)
