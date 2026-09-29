@@ -5,8 +5,8 @@ import { createInterface } from 'node:readline/promises'
 import { pathToFileURL } from 'node:url'
 
 import {
-  assertVersionAdvances,
   parseReleaseVersion,
+  validatePreparedVersion,
 } from './release-version.mjs'
 
 const versionedDocumentation = [
@@ -91,7 +91,10 @@ export async function prepareRelease() {
       )
     ).trim()
     const parsed = parseReleaseVersion(version)
-    assertVersionAdvances(packageJson.version, version)
+    const tags = run('git', ['tag', '--list', 'v*'], { capture: true })
+      .split('\n')
+      .filter(Boolean)
+    validatePreparedVersion(packageJson.version, version, tags)
 
     const releaseType = parsed.prerelease ? 'beta' : 'stable'
     const proceed = await prompt.question(
@@ -103,12 +106,14 @@ export async function prepareRelease() {
       packageJson.version,
       version,
     )
-    run(npm, [
-      'version',
-      version,
-      '--no-git-tag-version',
-      '--ignore-scripts',
-    ])
+    if (version !== packageJson.version) {
+      run(npm, [
+        'version',
+        version,
+        '--no-git-tag-version',
+        '--ignore-scripts',
+      ])
+    }
     await writeDocumentation()
     run(npm, ['test'])
     run(npm, ['run', 'check:package'])

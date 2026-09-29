@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { access } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import test from 'node:test'
 
 const generatedRootArtifacts = [
@@ -24,4 +24,11 @@ test('generated artifacts stay out of the repository root', async () => {
   for (const path of generatedRootArtifacts) {
     await assert.rejects(access(path), undefined, path)
   }
+})
+
+test('npm installs dependencies from the public registry', async () => {
+  assert.equal(
+    await readFile('.npmrc', 'utf8'),
+    'registry=https://registry.npmjs.org/\n',
+  )
 })

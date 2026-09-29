@@ -60,8 +60,10 @@ Use Semantic Versioning:
   `1.3.0-beta.2`. Alpha, release-candidate, commit-hash, build-metadata, and
   workflow-generated versions are not accepted.
 - Release `1.3.0` after its beta series; never reuse a published beta version.
-- Every version must be greater than the version currently in `package.json`
-  and every previous valid `v*` release tag.
+- Every version after the inaugural release must be greater than the version
+   currently in `package.json` and every previous valid `v*` release tag. The
+   inaugural release may use the already committed package version when no
+   valid release tags exist.
 
 ## Prepare the release pull request
 
@@ -84,8 +86,9 @@ The script asks these exact questions:
 After confirmation, it:
 
 1. Validates the version using strict Semantic Versioning.
-2. Runs standard npm versioning:
-   `npm version <version> --no-git-tag-version --ignore-scripts`.
+2. Runs standard npm versioning when the version changes:
+   `npm version <version> --no-git-tag-version --ignore-scripts`. The inaugural
+   release keeps the already committed version.
 3. Updates version-pinned jsDelivr documentation.
 4. Builds and runs all tests.
 5. dry-runs the package and enforces the limit of 100 files and 750,000

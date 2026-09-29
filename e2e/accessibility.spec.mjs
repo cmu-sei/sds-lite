@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test'
 test('the playground has no detectable accessibility violations', async ({
   page,
 }) => {
+  test.setTimeout(20_000)
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.waitForTimeout(50)

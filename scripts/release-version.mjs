@@ -49,6 +49,25 @@ export function assertVersionAdvances(currentVersion, nextVersion) {
   }
 }
 
+export function validatePreparedVersion(currentVersion, nextVersion, tags) {
+  const previousVersions = tags.flatMap((tag) => {
+    if (!tag.startsWith('v')) return []
+    try {
+      return [parseReleaseVersion(tag.slice(1)).version]
+    } catch {
+      return []
+    }
+  })
+
+  if (nextVersion === currentVersion && previousVersions.length === 0) {
+    return
+  }
+  assertVersionAdvances(currentVersion, nextVersion)
+
+  const latestVersion = previousVersions.sort(compareReleaseVersions).at(-1)
+  if (latestVersion) assertVersionAdvances(latestVersion, nextVersion)
+}
+
 export function validateRelease({
   packageName,
   version,

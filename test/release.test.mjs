@@ -5,6 +5,7 @@ import {
   assertVersionAdvances,
   compareReleaseVersions,
   parseReleaseVersion,
+  validatePreparedVersion,
   validateRelease,
 } from '../scripts/release-version.mjs'
 import {
@@ -57,6 +58,24 @@ test('release versions advance monotonically', () => {
   assert.throws(
     () => assertVersionAdvances('1.2.3', '1.2.2'),
     /must be greater/,
+  )
+})
+
+test('the inaugural release may use the already committed version', () => {
+  assert.doesNotThrow(() => validatePreparedVersion('0.1.0', '0.1.0', []))
+  assert.doesNotThrow(() =>
+    validatePreparedVersion('0.1.0', '0.1.0', ['not-a-release']),
+  )
+  assert.throws(
+    () => validatePreparedVersion('0.1.0', '0.1.0', ['v0.0.1']),
+    /must be greater/,
+  )
+  assert.throws(
+    () => validatePreparedVersion('1.0.0', '1.1.0', ['v2.0.0']),
+    /must be greater/,
+  )
+  assert.doesNotThrow(() =>
+    validatePreparedVersion('0.1.0', '0.2.0', ['v0.1.0']),
   )
 })
 
