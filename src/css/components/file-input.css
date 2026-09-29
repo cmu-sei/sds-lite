@@ -3,8 +3,7 @@
     position: relative;
     inline-size: 100%;
     padding: var(--sds-space-md);
-    border: 1px dashed
-      light-dark(var(--sds-gray-200), var(--sds-gray-700));
+    border: 1px dashed var(--sds-color-form-border);
     border-radius: var(--sds-radius-container);
     background: var(--sds-color-surface-default);
   }
@@ -132,6 +131,7 @@
   }
 
   :where(.sds-file-upload:has(input[type="file"]:focus-visible)) {
+    border-color: var(--sds-color-focus-border);
     box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
   }
 

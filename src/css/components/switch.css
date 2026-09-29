@@ -18,7 +18,7 @@
     background-color: light-dark(var(--sds-gray-500), var(--sds-gray-600));
     background-image: radial-gradient(
       circle,
-      light-dark(var(--sds-white), var(--sds-gray-100)) 0 45%,
+      var(--sds-tone-on-strong, var(--sds-color-action-text)) 0 45%,
       transparent 48%
     );
     background-position: left center;

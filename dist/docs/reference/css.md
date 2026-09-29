@@ -109,6 +109,7 @@ General roles:
 
 --sds-color-border-default
 --sds-color-border-strong
+--sds-color-focus-border
 --sds-color-focus-ring
 --sds-color-brand
 

@@ -105,3 +105,10 @@
     }
   }
 }
+
+@layer sds.components {
+  :where([data-sds-root])
+    :is(button, input, select, textarea):focus-visible {
+    border-color: var(--sds-color-focus-border);
+  }
+}

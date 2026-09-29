@@ -135,8 +135,9 @@ test('focus indicators remain visible in normal and forced-color modes', () => {
 
 test('focus indicators use the SEI reference colors', () => {
   assert.deepEqual(lightDark('sds-color-focus-ring'), ['#2eb1e6', '#034f8d'])
+  assert.deepEqual(lightDark('sds-color-focus-border'), ['#444547', '#a6a7aa'])
 })
 
 test('form borders use the reference colors', () => {
-  assert.deepEqual(lightDark('sds-color-form-border'), ['#bcbec0', '#303132'])
+  assert.deepEqual(lightDark('sds-color-form-border'), ['#88898d', '#747578'])
 })
