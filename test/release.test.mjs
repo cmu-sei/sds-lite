@@ -6,6 +6,7 @@ import {
   assertVersionAdvances,
   compareReleaseVersions,
   parseReleaseVersion,
+  resolveRequestedVersion,
   validatePreparedVersion,
   validateRelease,
 } from '../scripts/release-version.mjs'
@@ -74,6 +75,9 @@ test('release versions advance monotonically', () => {
 test('the inaugural release may use the already committed version', () => {
   assert.doesNotThrow(() => validatePreparedVersion('0.1.0', '0.1.0', []))
   assert.doesNotThrow(() =>
+    validatePreparedVersion('0.1.0', '0.1.0-beta.1', []),
+  )
+  assert.doesNotThrow(() =>
     validatePreparedVersion('0.1.0', '0.1.0', ['not-a-release']),
   )
   assert.throws(
@@ -86,6 +90,46 @@ test('the inaugural release may use the already committed version', () => {
   )
   assert.doesNotThrow(() =>
     validatePreparedVersion('0.1.0', '0.2.0', ['v0.1.0']),
+  )
+})
+
+test('release channels resolve stable versions and beta sequence numbers', () => {
+  assert.equal(
+    resolveRequestedVersion({
+      baseVersion: '1.3.0',
+      channel: 'stable',
+      currentVersion: '1.2.0',
+      tags: ['v1.2.0'],
+    }),
+    '1.3.0',
+  )
+  assert.equal(
+    resolveRequestedVersion({
+      baseVersion: '1.3.0',
+      channel: 'beta',
+      currentVersion: '1.2.0',
+      tags: ['v1.2.0'],
+    }),
+    '1.3.0-beta.1',
+  )
+  assert.equal(
+    resolveRequestedVersion({
+      baseVersion: '1.3.0',
+      channel: 'beta',
+      currentVersion: '1.3.0-beta.2',
+      tags: ['not-a-release', 'v1.3.0-beta.1', 'v1.3.0-beta.2'],
+    }),
+    '1.3.0-beta.3',
+  )
+  assert.throws(
+    () =>
+      resolveRequestedVersion({
+        baseVersion: '1.3.0-beta.1',
+        channel: 'beta',
+        currentVersion: '1.2.0',
+        tags: [],
+      }),
+    /must not include/,
   )
 })
 
@@ -238,7 +282,10 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   )
 
   assert.match(prepare, /workflow_dispatch:/)
+  assert.match(prepare, /type: choice/)
+  assert.match(prepare, /- beta/)
   assert.match(prepare, /actions: write/)
+  assert.match(prepare, /node scripts\/resolve-release-version\.mjs/)
   assert.match(prepare, /release:prepare -- --version "\$VERSION" --yes/)
   assert.match(prepare, /gh release create "\$TAG"/)
   assert.match(prepare, /OPTIONS=\(--draft --generate-notes/)

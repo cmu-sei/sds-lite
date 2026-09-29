@@ -3,8 +3,16 @@ name: Prepare Release
 on:
   workflow_dispatch:
     inputs:
+      channel:
+        description: Release channel
+        required: true
+        default: stable
+        type: choice
+        options:
+          - stable
+          - beta
       version:
-        description: Exact version, such as 1.2.0 or 1.2.0-beta.1
+        description: Base version without a prerelease suffix, such as 1.2.0
         required: true
         type: string
 
@@ -58,10 +66,14 @@ jobs:
 
       - name: Validate the requested release
         env:
-          VERSION: ${{ inputs.version }}
+          BASE_VERSION: ${{ inputs.version }}
+          RELEASE_CHANNEL: ${{ inputs.channel }}
         run: |
-          node --input-type=module -e "import { parseReleaseVersion } from './scripts/release-version.mjs'; parseReleaseVersion(process.env.VERSION)"
+          VERSION="$(node scripts/resolve-release-version.mjs)"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "TAG=v$VERSION" >> "$GITHUB_ENV"
           echo "branch=release/v$VERSION" >> "$GITHUB_ENV"
+          echo "Preparing $RELEASE_CHANNEL release v$VERSION" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Ensure only one release is in progress
         env:
@@ -75,15 +87,11 @@ jobs:
           fi
 
       - name: Prepare and test the release
-        env:
-          VERSION: ${{ inputs.version }}
         run: |
           git switch -C "$branch"
           npm run release:prepare -- --version "$VERSION" --yes
 
       - name: Commit and push the release branch
-        env:
-          VERSION: ${{ inputs.version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -99,8 +107,6 @@ jobs:
         id: draft-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: v${{ inputs.version }}
-          VERSION: ${{ inputs.version }}
         run: |
           RELEASE_DATA="$(gh release view "$TAG" --json isDraft,url 2>/dev/null || true)"
           if [[ -n "$RELEASE_DATA" ]]; then
@@ -123,7 +129,6 @@ jobs:
         env:
           DRAFT_RELEASE_URL: ${{ steps.draft-release.outputs.url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ inputs.version }}
         run: |
           BODY="$RUNNER_TEMP/release-pr.md"
           cat > "$BODY" <<EOF

@@ -49,6 +49,40 @@ export function assertVersionAdvances(currentVersion, nextVersion) {
   }
 }
 
+export function resolveRequestedVersion({
+  baseVersion,
+  channel,
+  currentVersion,
+  tags,
+}) {
+  const base = parseReleaseVersion(baseVersion)
+  if (base.prerelease) {
+    throw new Error(`Base version ${baseVersion} must not include -beta.N`)
+  }
+  if (channel === 'stable') return base.version
+  if (channel !== 'beta') {
+    throw new Error(`Release channel ${channel} must be stable or beta`)
+  }
+
+  const versions = [currentVersion, ...tags.map((tag) => tag.slice(1))]
+    .flatMap((version) => {
+      try {
+        return [parseReleaseVersion(version)]
+      } catch {
+        return []
+      }
+    })
+    .filter(
+      (version) =>
+        version.prerelease &&
+        version.major === base.major &&
+        version.minor === base.minor &&
+        version.patch === base.patch,
+    )
+  const latestBeta = Math.max(0, ...versions.map((version) => version.beta))
+  return `${base.version}-beta.${latestBeta + 1}`
+}
+
 export function validatePreparedVersion(currentVersion, nextVersion, tags) {
   const previousVersions = tags.flatMap((tag) => {
     if (!tag.startsWith('v')) return []
@@ -59,8 +93,19 @@ export function validatePreparedVersion(currentVersion, nextVersion, tags) {
     }
   })
 
-  if (nextVersion === currentVersion && previousVersions.length === 0) {
-    return
+  if (previousVersions.length === 0) {
+    if (nextVersion === currentVersion) return
+    const current = parseReleaseVersion(currentVersion)
+    const next = parseReleaseVersion(nextVersion)
+    if (
+      !current.prerelease &&
+      next.prerelease &&
+      current.major === next.major &&
+      current.minor === next.minor &&
+      current.patch === next.patch
+    ) {
+      return
+    }
   }
   assertVersionAdvances(currentVersion, nextVersion)
 

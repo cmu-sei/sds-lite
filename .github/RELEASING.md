@@ -1,10 +1,10 @@
 # Releasing SDS Lite
 
-Run the **Prepare Release** workflow, enter the exact version, review its pull
-request and draft GitHub release, and merge the pull request. After protected
-environment approval, automation publishes the reviewed GitHub release and the
-exact package artifact that passed the release build. Do not create release
-tags or publish releases manually.
+Run the **Prepare Release** workflow, choose the release channel, enter the base
+version, review its pull request and draft GitHub release, and merge the pull
+request. After protected environment approval, automation publishes the
+reviewed GitHub release and the exact package artifact that passed the release
+build. Do not create release tags or publish releases manually.
 
 Stable and beta releases use the same build, test, package, and publication
 steps:
@@ -12,7 +12,7 @@ steps:
 | GitHub release | Package version | npm tag |
 | --- | --- | --- |
 | Stable | `1.2.0` | `latest` |
-| Prerelease | `1.2.0-beta.1` | `beta` |
+| Beta (GitHub prerelease) | `1.2.0-beta.1` | `beta` |
 
 Versioned browser files are served from the immutable release tag through
 jsDelivr. The npm package is published to GitHub Packages.
@@ -26,17 +26,19 @@ jsDelivr. The npm package is published to GitHub Packages.
 3. Create a `github-packages-production` environment. Add required reviewers
    and any production deployment protections.
 4. Create a `github-packages-beta` environment. Add protections appropriate
-   for prereleases.
+   for beta releases.
 5. After the first publication, configure the package's visibility and
    repository access in the organization package settings.
 6. Add a repository ruleset for tags matching `v*`. Prevent released tags from
    being updated or deleted because npm versions are immutable and jsDelivr
    caches versioned files permanently.
 7. Create the release-note labels used by `.github/release.yml`: `breaking`,
-   `enhancement`, `bug`, `documentation`, and `internal`. The preparation
-   workflow creates and applies the `release` label.
-8. Require CI and at least one approving review before merging to `main`.
-   Do not allow the release pull request to bypass these requirements.
+   `enhancement`, `bug`, `documentation`, and `internal`; these labels are not
+   created by automation. The preparation workflow creates and applies only
+   the `release` label.
+8. Configure branch protection for `main` to require CI and at least one
+   approving review. Do not allow the release pull request to bypass these
+   requirements; the release workflows do not enforce merge policy.
 
 No long-lived npm token is required. Publication uses the workflow's
 short-lived `GITHUB_TOKEN`.
@@ -61,21 +63,25 @@ Use Semantic Versioning:
 - Increment **major** for an incompatible public API or required migration.
 - Increment **minor** for backward-compatible functionality.
 - Increment **patch** for backward-compatible fixes.
-- Use only explicit beta prerelease versions: `1.3.0-beta.1`, then
-  `1.3.0-beta.2`. Alpha, release-candidate, commit-hash, build-metadata, and
-  workflow-generated versions are not accepted.
+- Use only beta prerelease versions. The workflow generates their sequence:
+   `1.3.0-beta.1`, then `1.3.0-beta.2`. Alpha, release-candidate, commit-hash,
+   and build-metadata versions are not accepted.
 - Release `1.3.0` after its beta series; never reuse a published beta version.
 - Every version after the inaugural release must be greater than the version
-   currently in `package.json` and every previous valid `v*` release tag. The
-   inaugural release may use the already committed package version when no
-   valid release tags exist.
+   currently in `package.json` and every previous valid `v*` release tag. When
+   no valid release tags exist, the inaugural release may use the already
+   committed package version or its generated `-beta.1` version.
 
 ## Prepare the release pull request
 
 1. Open **Actions > Prepare Release > Run workflow**.
-2. Select `main` and enter the exact version, such as `1.2.0` or
-   `1.2.0-beta.1`.
+2. Select `main`, choose `stable` or `beta`, and enter only the base version,
+   such as `1.2.0`.
 3. Run the workflow.
+
+For a beta, the workflow derives the next sequence number from release history:
+the first beta for `1.2.0` becomes `1.2.0-beta.1`, followed by
+`1.2.0-beta.2`. Do not enter a `-beta.N` suffix yourself.
 
 The workflow validates strict Semantic Versioning and release order, updates
 the package version and version-pinned documentation, regenerates `dist/`, runs
@@ -84,16 +90,20 @@ all tests, enforces package content and size limits, and runs
 draft GitHub release with generated notes, opens the release pull request, and
 dispatches CI for the generated branch.
 
-Rerunning the same version refreshes the release branch from current `main`
-without erasing edits already made to the pull request or draft release.
+Rerunning the same base version and channel refreshes the release branch from
+current `main` without erasing edits already made to the pull request or draft
+release.
 
-Review the generated pull request. It should contain only:
+Review the generated pull request. Any changes should be limited to:
 
-- The version updates in `package.json` and `package-lock.json`.
-- Version-pinned documentation updates.
-- The complete regenerated `dist/` directory, including `dist/package/`.
-- `.github/release-state.json`, which binds publication to the selected version.
-- An exact, approved copy of every required legal file.
+- Version updates in `package.json` and `package-lock.json`, when needed.
+- Version-pinned documentation updates, when references change.
+- Regenerated `dist/` output, when the clean build changes it.
+- `.github/release-state.json`, which records the prepared version and must
+   match `package.json` before publication.
+
+The preparation workflow does not modify legal files. Any legal-file change in
+the generated pull request is unexpected and requires separate approval.
 
 The release PR must also record manual accessibility results for keyboard,
 200% and 400% zoom, reduced motion, forced colors where supported, and at
@@ -104,15 +114,17 @@ reviewed conformance assessment for the release.
 
 Complete every generated checklist item, replace the evidence placeholder with
 the manual results, review and edit the linked draft release notes, obtain
-approval, and merge normally. Incomplete checklists or evidence block
-publication.
+approval, and merge normally. Unchecked release items or an unchanged evidence
+placeholder block publication; reviewers are responsible for assessing whether
+the recorded evidence is complete.
 
 ## Publish the release
 
 After the release PR is merged:
 
 1. The Finalize Release workflow validates the merged branch, version marker,
-   completed checklist, evidence, release order, and beta/stable channel.
+   completed checklist, evidence-placeholder removal, release order, and
+   beta/stable channel.
 2. Its unprivileged job rebuilds, runs all tests, verifies committed `dist/`,
    checks package limits, and packs one artifact.
 3. An authorized reviewer approves the matching protected environment.
@@ -128,6 +140,7 @@ Publication stops if it finds:
 - A tag whose commit is not contained in `main`.
 - A committed `dist/` directory that differs from a clean build.
 - A package that exceeds its content or size budget.
+- A package version that exists while the GitHub release is still a draft.
 - An existing package whose checksum differs from the tested artifact.
 
 The tag and its CDN files become public when the protected job publishes the
@@ -136,7 +149,8 @@ after CI, manual evidence, and the draft notes have been reviewed. A bad public
 tag requires a new version.
 
 The unprivileged build job tests and packs the artifact once. The protected
-publication job receives only that tarball, checks the registry, performs an
+publication job checks out the merged commit for tag verification, downloads
+that tested tarball without rebuilding it, checks the registry, performs an
 `npm publish --dry-run`, and then publishes it under `beta` or `latest`.
 
 For example, release `v0.1.0` serves:
@@ -148,10 +162,13 @@ https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.css
 ## Recover from a failed release
 
 - If preparation fails, correct the reported problem and rerun the same
-   version. An existing generated pull request and draft release are reused.
+   base version and channel. An existing generated pull request and draft
+   release are reused.
 - If environment approval or a temporary service failure prevents
    publication, rerun the failed job. Publication retries verify the existing
    GitHub release and package checksum before doing any work again.
+- Release artifacts are retained for seven days. After that, rerun the build
+   job as well as the publication job to regenerate the tested artifact.
 - To abandon an unmerged release, close its pull request and delete its draft
    release and `release/v<version>` branch.
 - If the tagged source, version, package, or documentation is wrong, do not
