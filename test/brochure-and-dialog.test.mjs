@@ -45,6 +45,16 @@ test('brochure chrome includes the official header and legal footer content', ()
   assert.doesNotMatch(demo, /Subscribe to SEI updates/)
 })
 
+test('brochure uses the public application background', () => {
+  const brochureRule = applicationCss.match(
+    /:where\(\.sds-app\[data-sds-variant="brochure"\]\)\s*\{([^}]*)\}/s,
+  )
+
+  assert.ok(brochureRule)
+  assert.match(brochureRule[1], /background:\s*var\(--sds-color-background\)/)
+  assert.doesNotMatch(applicationCss, /--sds-color-default/)
+})
+
 test('modal and panel actions share one right-aligned layout', () => {
   assert.match(
     dialogCss,

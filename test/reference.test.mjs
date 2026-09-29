@@ -182,6 +182,26 @@ test('CSS reference lists every public foundation property', async () => {
   }
 })
 
+test('CSS interface omits unused and component-specific foundation properties', async () => {
+  const files = await sourceFiles('src/css', '.css')
+  const css = (
+    await Promise.all(files.map((file) => readFile(file, 'utf8')))
+  ).join('\n')
+  const cssReference = await readFile('docs/reference/css.md', 'utf8')
+
+  for (const property of [
+    '--sds-color-border-control',
+    '--sds-color-interactive-subtle-active',
+    '--sds-color-overlay-strong',
+    '--sds-color-shadow-subtle',
+    '--sds-color-text-label',
+    '--sds-space-button-gap',
+  ]) {
+    assert.equal(css.includes(property), false, property)
+    assert.equal(cssReference.includes(property), false, property)
+  }
+})
+
 test('public motion tokens use the documented three-tier scale', async () => {
   const tokens = await readFile('src/css/tokens.css', 'utf8')
   const cssReference = await readFile('docs/reference/css.md', 'utf8')

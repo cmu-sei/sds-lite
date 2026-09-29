@@ -38,7 +38,7 @@
   }
 
   :where(.sds-pagination li > :is(a, button)[aria-current="page"]) {
-    border-color: light-dark(var(--sds-blue-600), var(--sds-blue-400));
+    border-color: var(--sds-color-action-primary);
     color: var(--sds-color-text-muted);
     background: light-dark(var(--sds-blue-50), var(--sds-blue-900));
     box-shadow: inset 0 1px 2px

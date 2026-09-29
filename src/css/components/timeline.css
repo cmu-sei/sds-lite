@@ -1,9 +1,5 @@
 @layer sds.components {
   :where(.sds-timeline) {
-    --sds-timeline-line: light-dark(
-      var(--sds-gray-100),
-      var(--sds-gray-800)
-    );
     --sds-timeline-marker-gap: var(--sds-space-xs);
     --sds-timeline-marker-size: 0.5rem;
 
@@ -52,7 +48,7 @@
     margin-block:
       0
       calc(-1 * var(--sds-space-lg));
-    background: var(--sds-timeline-line);
+    background: var(--sds-color-neutral-border);
     content: "";
   }
 

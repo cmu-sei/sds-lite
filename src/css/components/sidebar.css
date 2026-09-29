@@ -36,8 +36,7 @@
   :where(.sds-sidebar > header) {
     display: grid;
     gap: var(--sds-space-md);
-    border-block-end: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-800));
+    border-block-end: 1px solid var(--sds-color-border-default);
   }
 
   :where(.sds-sidebar > header > :is(a, strong)) {
@@ -130,8 +129,7 @@
   }
 
   :where(.sds-sidebar > footer) {
-    border-block-start: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-800));
+    border-block-start: 1px solid var(--sds-color-border-default);
   }
 
   :where(.sds-sidebar-close) {
@@ -238,7 +236,7 @@
     }
 
     :where(.sds-sidebar[popover]:popover-open)::backdrop {
-      background: var(--sds-color-overlay-strong);
+      background: rgb(0 0 0 / 40%);
     }
 
     :where(.sds-sidebar-close) {

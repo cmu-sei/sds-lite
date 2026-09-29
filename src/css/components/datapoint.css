@@ -44,31 +44,19 @@
   }
 
   :where(.sds-datapoint[data-sds-tone="accent"]) {
-    --sds-datapoint-color: light-dark(
-      var(--sds-purple-600),
-      var(--sds-purple-400)
-    );
+    --sds-datapoint-color: var(--sds-color-accent-strong);
   }
 
   :where(.sds-datapoint[data-sds-tone="danger"]) {
-    --sds-datapoint-color: light-dark(
-      var(--sds-red-600),
-      var(--sds-red-400)
-    );
+    --sds-datapoint-color: var(--sds-color-danger-strong);
   }
 
   :where(.sds-datapoint[data-sds-tone="info"]) {
-    --sds-datapoint-color: light-dark(
-      var(--sds-blue-600),
-      var(--sds-blue-400)
-    );
+    --sds-datapoint-color: var(--sds-color-info-strong);
   }
 
   :where(.sds-datapoint[data-sds-tone="success"]) {
-    --sds-datapoint-color: light-dark(
-      var(--sds-green-600),
-      var(--sds-green-400)
-    );
+    --sds-datapoint-color: var(--sds-color-success-strong);
   }
 
   :where(.sds-datapoint[data-sds-tone="warning"]) {

@@ -4,18 +4,14 @@
       var(--sds-gray-500),
       var(--sds-gray-400)
     );
-    --sds-badge-medium-border: var(--sds-badge-medium);
     --sds-badge-light-background: light-dark(
       var(--sds-gray-100),
       var(--sds-gray-900)
     );
-    --sds-badge-light-text: light-dark(
-      var(--sds-gray-700),
-      var(--sds-gray-300)
-    );
+    --sds-badge-light-text: var(--sds-color-neutral-text);
     --sds-badge-dark-background: var(--sds-gray-700);
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-gray-50));
-    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-badge-medium-text: var(--sds-color-action-text);
 
     display: inline-flex;
     max-inline-size: 100%;
@@ -24,7 +20,7 @@
     justify-content: center;
     padding: var(--sds-space-xs) var(--sds-space-sm);
     overflow: hidden;
-    border: 1px solid var(--sds-badge-medium-border, var(--sds-gray-500));
+    border: 1px solid var(--sds-badge-medium, var(--sds-gray-500));
     border-radius: var(--sds-radius-control);
     color: var(
       --sds-badge-medium-text,
@@ -54,73 +50,51 @@
       var(--sds-gray-500),
       var(--sds-gray-400)
     );
-    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-badge-medium-text: var(--sds-color-action-text);
     --sds-badge-medium-hover: var(--sds-gray-400);
-    --sds-badge-medium-border: var(--sds-badge-medium);
   }
 
   :where(.sds-badge[data-sds-tone="accent"]) {
-    --sds-badge-light-background: light-dark(
-      var(--sds-purple-25),
-      var(--sds-purple-900)
-    );
-    --sds-badge-light-text: light-dark(
-      var(--sds-purple-700),
-      var(--sds-purple-300)
-    );
+    --sds-badge-light-background: var(--sds-color-accent-surface);
+    --sds-badge-light-text: var(--sds-color-accent-text);
     --sds-badge-dark-background: light-dark(
       var(--sds-purple-700),
       var(--sds-purple-800)
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-purple-50));
     --sds-badge-medium: var(--sds-purple-500);
-    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-badge-medium-text: var(--sds-color-action-text);
     --sds-badge-medium-hover: var(--sds-purple-400);
   }
 
   :where(.sds-badge[data-sds-tone="info"]) {
-    --sds-badge-light-background: light-dark(
-      var(--sds-blue-25),
-      var(--sds-blue-900)
-    );
-    --sds-badge-light-text: light-dark(
-      var(--sds-blue-700),
-      var(--sds-blue-300)
-    );
+    --sds-badge-light-background: var(--sds-color-info-surface);
+    --sds-badge-light-text: var(--sds-color-info-text);
     --sds-badge-dark-background: light-dark(
       var(--sds-blue-700),
       var(--sds-blue-800)
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-blue-50));
     --sds-badge-medium: var(--sds-blue-500);
-    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-badge-medium-text: var(--sds-color-action-text);
     --sds-badge-medium-hover: var(--sds-blue-400);
   }
 
   :where(.sds-badge[data-sds-tone="success"]) {
-    --sds-badge-light-background: light-dark(
-      var(--sds-green-25),
-      var(--sds-green-900)
-    );
-    --sds-badge-light-text: light-dark(
-      var(--sds-green-700),
-      var(--sds-green-300)
-    );
+    --sds-badge-light-background: var(--sds-color-success-surface);
+    --sds-badge-light-text: var(--sds-color-success-text);
     --sds-badge-dark-background: light-dark(
       var(--sds-green-700),
       var(--sds-green-800)
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-green-50));
     --sds-badge-medium: var(--sds-green-500);
-    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-badge-medium-text: var(--sds-color-action-text);
     --sds-badge-medium-hover: var(--sds-green-400);
   }
 
   :where(.sds-badge[data-sds-tone="warning"]) {
-    --sds-badge-light-background: light-dark(
-      var(--sds-orange-25),
-      var(--sds-orange-900)
-    );
+    --sds-badge-light-background: var(--sds-color-warning-surface);
     --sds-badge-light-text: light-dark(
       var(--sds-orange-900),
       var(--sds-orange-300)
@@ -136,21 +110,15 @@
   }
 
   :where(.sds-badge[data-sds-tone="danger"]) {
-    --sds-badge-light-background: light-dark(
-      var(--sds-red-25),
-      var(--sds-red-900)
-    );
-    --sds-badge-light-text: light-dark(
-      var(--sds-red-600),
-      var(--sds-red-300)
-    );
+    --sds-badge-light-background: var(--sds-color-danger-surface);
+    --sds-badge-light-text: var(--sds-color-danger-text);
     --sds-badge-dark-background: light-dark(
       var(--sds-red-700),
       var(--sds-red-800)
     );
     --sds-badge-dark-text: light-dark(var(--sds-white), var(--sds-red-100));
     --sds-badge-medium: var(--sds-red-500);
-    --sds-badge-medium-text: light-dark(var(--sds-white), var(--sds-black));
+    --sds-badge-medium-text: var(--sds-color-action-text);
     --sds-badge-medium-hover: var(--sds-red-400);
   }
 

@@ -98,7 +98,7 @@
   @media (min-width: 48rem) {
     :where(.sds-dialog) {
       max-block-size: calc(100dvh - 8rem);
-      margin-block-start: 4rem;
+      margin-block-start: var(--sds-space-4xl);
     }
   }
 

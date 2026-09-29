@@ -36,7 +36,6 @@ Unlayered application CSS overrides SDS Lite without specificity escalation.
 --sds-space-2xl
 --sds-space-3xl
 --sds-space-4xl
---sds-space-button-gap
 ```
 
 Use a spacing attribute when a token value is enough:
@@ -99,20 +98,16 @@ General roles:
 --sds-color-background
 --sds-color-text-default
 --sds-color-text-muted
---sds-color-text-label
 --sds-color-text-disabled
 --sds-color-action-text
 
 --sds-color-overlay
---sds-color-overlay-strong
---sds-color-shadow-subtle
 
 --sds-color-surface-default
 --sds-color-surface-subtle
 --sds-color-surface-raised
 
 --sds-color-border-default
---sds-color-border-control
 --sds-color-border-strong
 --sds-color-focus-ring
 --sds-color-brand
@@ -121,7 +116,6 @@ General roles:
 --sds-color-action-primary-hover
 --sds-color-action-primary-active
 --sds-color-interactive-subtle-hover
---sds-color-interactive-subtle-active
 
 --sds-color-form-border
 --sds-color-form-disabled-background
@@ -136,8 +130,8 @@ General roles:
 
 Focusable controls share `--sds-color-focus-ring` (blue 300 in light mode,
 blue 700 in dark mode).
-Form borders default to `--sds-color-border-control` through
-`--sds-color-form-border` (gray 300 in light mode, gray 600 in dark mode).
+Form borders use `--sds-color-form-border` (gray 200 in light mode, gray 800
+in dark mode).
 
 Every semantic tone has the same six roles:
 

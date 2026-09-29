@@ -6,7 +6,7 @@
   :where(.sds-table) {
     inline-size: 100%;
     overflow: clip;
-    border: 1px solid light-dark(var(--sds-gray-100), var(--sds-gray-900));
+    border: 1px solid var(--sds-color-border-default);
     border-spacing: 0;
     border-collapse: separate;
     border-radius: var(--sds-radius-container);
@@ -18,9 +18,8 @@
   :where(.sds-table caption) {
     inline-size: 100%;
     padding: var(--sds-space-lg);
-    border-block-end: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-900));
-    color: light-dark(var(--sds-gray-900), var(--sds-gray-100));
+    border-block-end: 1px solid var(--sds-color-border-default);
+    color: var(--sds-color-text-default);
     background: var(--sds-color-surface-default);
     font-size: 1.125rem;
     font-weight: 600;
@@ -30,8 +29,7 @@
 
   :where(.sds-table:has(caption)) {
     border: 0;
-    outline: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-900));
+    outline: 1px solid var(--sds-color-border-default);
   }
 
   :where(.sds-table:has(caption) caption) {
@@ -41,9 +39,8 @@
 
   :where(.sds-table th) {
     padding: var(--sds-space-sm);
-    border-block-end: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-900));
-    color: light-dark(var(--sds-gray-600), var(--sds-gray-400));
+    border-block-end: 1px solid var(--sds-color-border-default);
+    color: var(--sds-color-text-muted);
     background: var(--sds-color-surface-subtle);
     font-size: 0.875rem;
     font-weight: 600;
@@ -53,9 +50,8 @@
 
   :where(.sds-table td) {
     padding: var(--sds-space-sm);
-    border-block-end: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-900));
-    color: light-dark(var(--sds-gray-900), var(--sds-gray-100));
+    border-block-end: 1px solid var(--sds-color-border-default);
+    color: var(--sds-color-text-default);
     background: var(--sds-color-surface-default);
     vertical-align: top;
   }
@@ -74,8 +70,7 @@
 
   :where(.sds-table tfoot td) {
     padding-block: var(--sds-space-lg);
-    border-block-start: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-900));
+    border-block-start: 1px solid var(--sds-color-border-default);
     border-block-end: 0;
     background: var(--sds-color-surface-subtle);
   }
@@ -104,14 +99,12 @@
 
   :where(.sds-table [data-sds-sticky="start"]) {
     inset-inline-start: 0;
-    box-shadow: inset -1px 0
-      light-dark(var(--sds-gray-100), var(--sds-gray-900));
+    box-shadow: inset -1px 0 var(--sds-color-border-default);
   }
 
   :where(.sds-table [data-sds-sticky="end"]) {
     inset-inline-end: 0;
-    box-shadow: inset 1px 0
-      light-dark(var(--sds-gray-100), var(--sds-gray-900));
+    box-shadow: inset 1px 0 var(--sds-color-border-default);
   }
 
   @media (hover: hover) {

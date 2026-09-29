@@ -9,8 +9,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--sds-space-md) var(--sds-space-lg);
-    border-block-end: 1px solid
-      light-dark(var(--sds-gray-200), var(--sds-gray-800));
+    border-block-end: 1px solid var(--sds-color-border-default);
     background: var(--sds-color-surface-default);
   }
 

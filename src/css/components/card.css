@@ -12,7 +12,7 @@
   }
 
   :where(.sds-card-label) {
-    color: var(--sds-color-text-label);
+    color: light-dark(var(--sds-gray-600), var(--sds-gray-500));
     font-size: 0.875rem;
     font-weight: 600;
   }

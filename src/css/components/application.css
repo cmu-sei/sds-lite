@@ -19,8 +19,7 @@
   :where(.sds-app-header, .sds-app-mobile-header) {
     min-inline-size: 0;
     flex: 0 0 auto;
-    border-block-end: 1px solid
-      light-dark(var(--sds-gray-100), var(--sds-gray-800));
+    border-block-end: 1px solid var(--sds-color-border-default);
     background: var(--sds-color-surface-default);
   }
 
@@ -111,8 +110,7 @@
     gap: var(--sds-space-lg);
     align-items: center;
     padding-block-start: var(--sds-space-lg);
-    border-block-start: 1px solid
-      light-dark(var(--sds-gray-200), var(--sds-gray-800));
+    border-block-start: 1px solid var(--sds-color-border-default);
   }
 
   :where(.sds-app-footer-brand) {
@@ -217,7 +215,7 @@
     --sds-radius-container: 0;
 
     justify-content: space-between;
-    background: var(--sds-color-default);
+    background: var(--sds-color-background);
   }
 
   :where(.sds-brochure-container) {

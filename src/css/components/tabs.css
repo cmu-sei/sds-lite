@@ -4,10 +4,6 @@
       --sds-tone-strong,
       var(--sds-color-info-strong)
     );
-    --sds-tab-active-background: var(
-      --sds-tone-strong,
-      var(--sds-color-info-strong)
-    );
     --sds-tab-active-text: var(
       --sds-tone-on-strong,
       var(--sds-color-info-on-strong)
@@ -98,7 +94,7 @@
 
   :where(sds-tabs[variant="block"] .sds-tab[aria-selected="true"]) {
     color: var(--sds-tab-active-text);
-    background: var(--sds-tab-active-background);
+    background: var(--sds-tab-accent);
   }
 
   :where(sds-tabs[variant="underline"] .sds-tab) {

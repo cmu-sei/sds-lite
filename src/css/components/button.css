@@ -18,10 +18,7 @@
   }
 
   :where([data-sds-tone="accent"]) {
-    --sds-button-tone-color: light-dark(
-      var(--sds-purple-600),
-      var(--sds-purple-300)
-    );
+    --sds-button-tone-color: var(--sds-color-accent-border);
     --sds-button-tone-color-hover: light-dark(
       var(--sds-purple-600),
       var(--sds-purple-200)
@@ -29,10 +26,7 @@
   }
 
   :where([data-sds-tone="info"]) {
-    --sds-button-tone-color: light-dark(
-      var(--sds-blue-600),
-      var(--sds-blue-300)
-    );
+    --sds-button-tone-color: var(--sds-color-info-border);
     --sds-button-tone-color-hover: light-dark(
       var(--sds-blue-600),
       var(--sds-blue-200)
@@ -51,10 +45,7 @@
   }
 
   :where([data-sds-tone="warning"]) {
-    --sds-button-tone-color: light-dark(
-      var(--sds-orange-800),
-      var(--sds-orange-200)
-    );
+    --sds-button-tone-color: var(--sds-color-warning-text);
     --sds-button-tone-color-hover: light-dark(
       var(--sds-orange-800),
       var(--sds-orange-100)
@@ -62,10 +53,7 @@
   }
 
   :where([data-sds-tone="danger"]) {
-    --sds-button-tone-color: light-dark(
-      var(--sds-red-600),
-      var(--sds-red-300)
-    );
+    --sds-button-tone-color: var(--sds-color-danger-text);
     --sds-button-tone-color-hover: light-dark(
       var(--sds-red-600),
       var(--sds-red-200)
@@ -100,7 +88,7 @@
     );
     --sds-button-rest-color: var(
       --sds-button-tone-color,
-      light-dark(var(--sds-blue-600), var(--sds-blue-300))
+      var(--sds-color-info-border)
     );
     --sds-button-hover-color: var(
       --sds-button-tone-color-hover,
@@ -136,7 +124,7 @@
     --sds-button-color: var(--sds-button-on-accent);
 
     display: inline-flex;
-    gap: var(--sds-space-button-gap);
+    gap: 0.375rem;
     align-items: center;
     justify-content: center;
     padding: var(--sds-space-sm) var(--sds-space-2xl);

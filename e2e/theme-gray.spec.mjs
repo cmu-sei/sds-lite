@@ -137,3 +137,95 @@ test('surface tokens follow the layered light and dark surface model', async ({
     'rgb(14, 14, 15)',
   )
 })
+
+test('recipes consume semantic color overrides', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('[data-sds-root]').evaluate((root) => {
+    root.insertAdjacentHTML(
+      'afterbegin',
+      `<section data-test-semantic-overrides>
+        <header class="sds-page-header">Page</header>
+        <table class="sds-table">
+          <caption>Caption</caption>
+          <thead><tr><th>Heading</th></tr></thead>
+          <tbody><tr><td>Cell</td></tr></tbody>
+        </table>
+        <nav class="sds-pagination"><ul><li><a href="#" aria-current="page">1</a></li></ul></nav>
+        <span class="sds-skeleton"></span>
+        <ul class="sds-timeline"><li class="sds-timeline-item">First</li><li class="sds-timeline-item">Last</li></ul>
+        <span class="sds-badge" data-sds-tone="accent" data-sds-variant="light">Badge</span>
+        <div class="sds-datapoint" data-sds-tone="accent"><div><strong>42</strong></div></div>
+        <article class="sds-prose" data-sds-tone="accent"><a href="#">Link</a></article>
+        <button data-sds-tone="accent" data-sds-variant="outlined">Button</button>
+      </section>`,
+    )
+
+    const fixture = root.querySelector('[data-test-semantic-overrides]')
+    const overrides = {
+      '--sds-color-border-default': 'rgb(1 2 3)',
+      '--sds-color-text-default': 'rgb(4 5 6)',
+      '--sds-color-text-muted': 'rgb(7 8 9)',
+      '--sds-color-action-primary': 'rgb(10 11 12)',
+      '--sds-color-neutral-surface': 'rgb(13 14 15)',
+      '--sds-color-neutral-border': 'rgb(16 17 18)',
+      '--sds-color-accent-surface': 'rgb(19 20 21)',
+      '--sds-color-accent-text': 'rgb(22 23 24)',
+      '--sds-color-accent-strong': 'rgb(25 26 27)',
+      '--sds-color-accent-border': 'rgb(28 29 30)',
+    }
+    for (const [property, value] of Object.entries(overrides)) {
+      fixture.style.setProperty(property, value)
+    }
+  })
+
+  const fixture = page.locator('[data-test-semantic-overrides]')
+  await expect(fixture.locator('.sds-page-header')).toHaveCSS(
+    'border-bottom-color',
+    'rgb(1, 2, 3)',
+  )
+  await expect(fixture.locator('.sds-table')).toHaveCSS(
+    'outline-color',
+    'rgb(1, 2, 3)',
+  )
+  await expect(fixture.locator('.sds-table caption')).toHaveCSS(
+    'color',
+    'rgb(4, 5, 6)',
+  )
+  await expect(fixture.locator('.sds-table th')).toHaveCSS(
+    'color',
+    'rgb(7, 8, 9)',
+  )
+  await expect(fixture.locator('.sds-pagination [aria-current="page"]')).toHaveCSS(
+    'border-color',
+    'rgb(10, 11, 12)',
+  )
+  await expect(fixture.locator('.sds-skeleton')).toHaveCSS(
+    'background-color',
+    'rgb(13, 14, 15)',
+  )
+  expect(
+    await fixture.locator('.sds-timeline-item').first().evaluate((element) =>
+      getComputedStyle(element, '::after').backgroundColor,
+    ),
+  ).toBe('rgb(16, 17, 18)')
+  await expect(fixture.locator('.sds-badge')).toHaveCSS(
+    'background-color',
+    'rgb(19, 20, 21)',
+  )
+  await expect(fixture.locator('.sds-badge')).toHaveCSS(
+    'color',
+    'rgb(22, 23, 24)',
+  )
+  await expect(fixture.locator('.sds-datapoint strong')).toHaveCSS(
+    'color',
+    'rgb(25, 26, 27)',
+  )
+  await expect(fixture.locator('.sds-prose a')).toHaveCSS(
+    'color',
+    'rgb(25, 26, 27)',
+  )
+  await expect(fixture.locator('button')).toHaveCSS(
+    'border-color',
+    'rgb(28, 29, 30)',
+  )
+})

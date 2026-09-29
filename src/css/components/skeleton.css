@@ -5,7 +5,7 @@
     block-size: 100%;
     overflow: hidden;
     border-radius: var(--sds-radius-control);
-    background: light-dark(var(--sds-gray-100), var(--sds-gray-800));
+    background: var(--sds-color-neutral-surface);
     animation: sds-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 

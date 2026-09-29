@@ -44,8 +44,8 @@
   @media (hover: hover) {
     :where(a.sds-tag):hover,
     :where(.sds-tag:has(> .sds-tag-label:hover)) {
-      border-color: light-dark(var(--sds-gray-600), var(--sds-gray-400));
-      color: light-dark(var(--sds-gray-900), var(--sds-gray-100));
+      border-color: var(--sds-color-text-muted);
+      color: var(--sds-color-text-default);
       background: light-dark(var(--sds-gray-25), var(--sds-gray-850));
       box-shadow: var(--sds-shadow-sm);
     }
@@ -53,11 +53,11 @@
     :where(button.sds-tag):hover {
       border-color: var(
         --sds-tag-action-color,
-        light-dark(var(--sds-blue-600), var(--sds-blue-300))
+        var(--sds-color-info-border)
       );
       color: var(
         --sds-tag-action-color,
-        light-dark(var(--sds-blue-600), var(--sds-blue-300))
+        var(--sds-color-info-border)
       );
       background: var(
         --sds-tag-action-hover,
@@ -69,7 +69,7 @@
 
   :where(a.sds-tag):active,
   :where(.sds-tag:has(> .sds-tag-label:active)) {
-    border-color: light-dark(var(--sds-gray-900), var(--sds-gray-100));
+    border-color: var(--sds-color-text-default);
     color: light-dark(var(--sds-black), var(--sds-white));
     background: light-dark(var(--sds-gray-50), var(--sds-gray-800));
   }
@@ -83,11 +83,11 @@
   :where(button.sds-tag):active {
     border-color: var(
       --sds-tag-action-color,
-      light-dark(var(--sds-blue-600), var(--sds-blue-300))
+      var(--sds-color-info-border)
     );
     color: var(
       --sds-tag-action-color,
-      light-dark(var(--sds-blue-600), var(--sds-blue-300))
+      var(--sds-color-info-border)
     );
     background: var(
       --sds-tag-action-active,
@@ -100,10 +100,7 @@
   }
 
   :where(button.sds-tag[data-sds-tone="danger"]) {
-    --sds-tag-action-color: light-dark(
-      var(--sds-red-600),
-      var(--sds-red-300)
-    );
+    --sds-tag-action-color: var(--sds-color-danger-text);
     --sds-tag-action-hover: light-dark(
       var(--sds-red-50),
       var(--sds-red-900)
@@ -189,10 +186,7 @@
   }
 
   :where(.sds-tag-action[data-sds-tone="danger"]) {
-    --sds-tag-action-color: light-dark(
-      var(--sds-red-600),
-      var(--sds-red-300)
-    );
+    --sds-tag-action-color: var(--sds-color-danger-text);
     --sds-tag-action-hover: light-dark(
       var(--sds-red-50),
       var(--sds-red-900)

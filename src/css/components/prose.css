@@ -8,10 +8,7 @@
       currentColor,
       var(--sds-gray-400)
     );
-    --sds-prose-heading-link-hover: light-dark(
-      var(--sds-gray-600),
-      var(--sds-gray-400)
-    );
+    --sds-prose-heading-link-hover: var(--sds-color-text-muted);
     --sds-prose-quote-border: light-dark(
       var(--sds-gray-200),
       var(--sds-gray-700)
@@ -20,34 +17,16 @@
       var(--sds-gray-200),
       var(--sds-gray-700)
     );
-    --sds-prose-bullet: light-dark(
-      var(--sds-gray-600),
-      var(--sds-gray-400)
-    );
+    --sds-prose-bullet: var(--sds-color-text-muted);
     --sds-prose-code-surface: light-dark(
       var(--sds-gray-50),
       var(--sds-gray-900)
     );
-    --sds-prose-code-border: light-dark(
-      var(--sds-gray-200),
-      var(--sds-gray-800)
-    );
-    --sds-prose-caption: light-dark(
-      var(--sds-gray-600),
-      var(--sds-gray-400)
-    );
-    --sds-prose-rule: light-dark(
-      var(--sds-gray-200),
-      var(--sds-gray-800)
-    );
-    --sds-prose-table-border: light-dark(
-      var(--sds-gray-200),
-      var(--sds-gray-800)
-    );
-    --sds-prose-table-strong-border: light-dark(
-      var(--sds-gray-300),
-      var(--sds-gray-700)
-    );
+    --sds-prose-code-border: var(--sds-color-border-default);
+    --sds-prose-caption: var(--sds-color-text-muted);
+    --sds-prose-rule: var(--sds-color-border-default);
+    --sds-prose-table-border: var(--sds-color-border-default);
+    --sds-prose-table-strong-border: var(--sds-color-border-strong);
 
     max-inline-size: 95ch;
     color: light-dark(var(--sds-gray-900), var(--sds-white));
@@ -57,70 +36,31 @@
   }
 
   :where(.sds-prose[data-sds-tone="accent"]) {
-    --sds-prose-link: light-dark(var(--sds-purple-600), var(--sds-purple-400));
-    --sds-prose-link-hover: light-dark(
-      var(--sds-purple-500),
-      var(--sds-purple-300)
-    );
-    --sds-prose-heading-link-hover: light-dark(
-      var(--sds-purple-500),
-      var(--sds-purple-300)
-    );
-    --sds-prose-plaid-quote-border: light-dark(
-      var(--sds-purple-600),
-      var(--sds-purple-400)
-    );
+    --sds-prose-link: var(--sds-color-accent-strong);
+    --sds-prose-link-hover: var(--sds-color-accent-strong-hover);
+    --sds-prose-heading-link-hover: var(--sds-color-accent-strong-hover);
+    --sds-prose-plaid-quote-border: var(--sds-color-accent-strong);
   }
 
   :where(.sds-prose[data-sds-tone="danger"]) {
-    --sds-prose-link: light-dark(var(--sds-red-600), var(--sds-red-400));
-    --sds-prose-link-hover: light-dark(
-      var(--sds-red-500),
-      var(--sds-red-300)
-    );
-    --sds-prose-heading-link-hover: light-dark(
-      var(--sds-red-500),
-      var(--sds-red-300)
-    );
-    --sds-prose-plaid-quote-border: light-dark(
-      var(--sds-red-600),
-      var(--sds-red-400)
-    );
+    --sds-prose-link: var(--sds-color-danger-strong);
+    --sds-prose-link-hover: var(--sds-color-danger-strong-hover);
+    --sds-prose-heading-link-hover: var(--sds-color-danger-strong-hover);
+    --sds-prose-plaid-quote-border: var(--sds-color-danger-strong);
   }
 
   :where(.sds-prose[data-sds-tone="info"]) {
-    --sds-prose-link: light-dark(var(--sds-blue-600), var(--sds-blue-400));
-    --sds-prose-link-hover: light-dark(
-      var(--sds-blue-500),
-      var(--sds-blue-300)
-    );
-    --sds-prose-heading-link-hover: light-dark(
-      var(--sds-blue-500),
-      var(--sds-blue-300)
-    );
-    --sds-prose-plaid-quote-border: light-dark(
-      var(--sds-blue-600),
-      var(--sds-blue-400)
-    );
+    --sds-prose-link: var(--sds-color-info-strong);
+    --sds-prose-link-hover: var(--sds-color-info-strong-hover);
+    --sds-prose-heading-link-hover: var(--sds-color-info-strong-hover);
+    --sds-prose-plaid-quote-border: var(--sds-color-info-strong);
   }
 
   :where(.sds-prose[data-sds-tone="success"]) {
-    --sds-prose-link: light-dark(
-      var(--sds-green-600),
-      var(--sds-green-400)
-    );
-    --sds-prose-link-hover: light-dark(
-      var(--sds-green-500),
-      var(--sds-green-300)
-    );
-    --sds-prose-heading-link-hover: light-dark(
-      var(--sds-green-500),
-      var(--sds-green-300)
-    );
-    --sds-prose-plaid-quote-border: light-dark(
-      var(--sds-green-600),
-      var(--sds-green-400)
-    );
+    --sds-prose-link: var(--sds-color-success-strong);
+    --sds-prose-link-hover: var(--sds-color-success-strong-hover);
+    --sds-prose-heading-link-hover: var(--sds-color-success-strong-hover);
+    --sds-prose-plaid-quote-border: var(--sds-color-success-strong);
   }
 
   :where(.sds-prose[data-sds-tone="warning"]) {
@@ -139,22 +79,6 @@
     --sds-prose-plaid-quote-border: light-dark(
       var(--sds-orange-600),
       var(--sds-orange-400)
-    );
-  }
-
-  :where(.sds-prose[data-sds-tone="neutral"]) {
-    --sds-prose-link: light-dark(currentColor, var(--sds-white));
-    --sds-prose-link-hover: light-dark(
-      currentColor,
-      var(--sds-gray-400)
-    );
-    --sds-prose-heading-link-hover: light-dark(
-      var(--sds-gray-600),
-      var(--sds-gray-400)
-    );
-    --sds-prose-plaid-quote-border: light-dark(
-      var(--sds-gray-200),
-      var(--sds-gray-700)
     );
   }
 

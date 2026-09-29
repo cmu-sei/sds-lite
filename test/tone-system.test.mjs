@@ -137,9 +137,6 @@ test('focus indicators use the SEI reference colors', () => {
   assert.deepEqual(lightDark('sds-color-focus-ring'), ['#2eb1e6', '#034f8d'])
 })
 
-test('form borders follow the semantic control-border token', () => {
-  assert.deepEqual(
-    lightDark('sds-color-form-border'),
-    lightDark('sds-color-border-control'),
-  )
+test('form borders use the reference colors', () => {
+  assert.deepEqual(lightDark('sds-color-form-border'), ['#bcbec0', '#303132'])
 })
