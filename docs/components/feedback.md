@@ -132,7 +132,7 @@ notify('Your project was saved.', {
 |---|---|---|
 | `container` | An `HTMLElement` or toaster owner | First SDS root, then `body` |
 | `title` | String | `Notification` |
-| `tone` | All semantic tones | `accent` |
+| `tone` | All semantic tones | `info` |
 | `duration` | Positive milliseconds | `5000` |
 | `persistent` | Boolean | `false` |
 | `urgent` | Boolean; changes role to `alert` | `false` |
@@ -170,7 +170,7 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
 | Interface | Values | Default |
 |---|---|---|
 | `open` | Presence | Closed |
-| `tone` | All semantic tones | `accent` |
+| `tone` | All semantic tones | `info` |
 | `duration` | Positive milliseconds | `5000` |
 | `persistent` | Presence | Auto-dismiss |
 | `data-sds-toast-open="id"` | Target toast on any trigger | None |

@@ -74,11 +74,11 @@ Compact secondary buttons use a translucent (20%) tone-colored border,
 matching SEI action buttons; standard secondary buttons retain their solid
 neutral border. A disabled compact secondary uses a 10% neutral border.
 
-An `svg`, `img`, or descendant with `data-sds-avatar` is treated as leading media:
+Buttons can contain leading media without an additional SDS marker:
 
 ```html
 <button type="button" data-sds-density="compact">
-  <img data-sds-avatar src="/people/alex.jpg" alt="">
+  <img class="sds-avatar" data-sds-size="xs" src="/people/alex.jpg" alt="">
   Alex
 </button>
 ```

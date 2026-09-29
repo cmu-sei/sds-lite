@@ -15,7 +15,6 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | `data-sds-color-scheme` | `light`, `dark`, `system` | light | Selects a light, dark, or system color scheme. |
 | `data-sds-unstyled` | Presence |  | Opts a link out of automatic SDS Lite styling. |
 | `data-sds-column-span` | `full` |  | Lets a direct grid child span the full grid width. |
-| `data-sds-place-self` | `start`, `center`, `end`, `stretch` |  | Aligns a direct grid child within its grid area on both axes. |
 | `data-sds-padding` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding on every side. |
 | `data-sds-padding-block` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the block start and end. |
 | `data-sds-padding-inline` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the inline start and end. |
@@ -35,9 +34,9 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `filled`, `tonal`, `outlined`, `text` (default: `filled`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (default: `comfortable`)<br>`data-sds-shape`: `icon` (default: `text`)<br>`data-sds-avatar` (default: `false`)<br>`data-sds-block` (default: `false`) | Action styling for native buttons and links. |
-| link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (default: `primary`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `inherited`) | Link styling with semantic tone and emphasis. |
-| field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-field > small, .sds-field > label small`) (default: `muted help; inherited label color`) | Label, control, help, and validation layout. |
+| button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `filled`, `tonal`, `outlined`, `text` (default: `filled`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (when omitted: comfortable)<br>`data-sds-shape`: `icon` (when omitted: text)<br>`data-sds-block` (omitted by default) | Action styling for native buttons and links. |
+| link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (when omitted: primary)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (when omitted: inherited) | Link styling with semantic tone and emphasis. |
+| field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-field > small, .sds-field > label small`) (when omitted: muted help; inherited label color) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
 | form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit hooks for native form controls. |
 | combobox-parts | `.sds-combobox-list` |  |  | Suggestion list for a native text input. |
@@ -50,11 +49,11 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (default: `solid`)<br>`data-sds-size`: `sm`, `md` (default: `md`) | Compact status or category. |
-| tag | `.sds-tag`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md` (default: `sm`)<br>`data-sds-tone`: `danger` (on `button.sds-tag`) (default: `neutral`) | Static or interactive category with an optional counter. |
-| tag-action | `.sds-tag-action` |  | `data-sds-tone`: `danger` (default: `info`) | Independent action inside a tag. |
-| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (default: `subtle`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (default: `false`)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (default: `false`) | Contextual message in page content. |
-| toast-region | `.sds-toaster` |  | `data-sds-toast-open`: id (on `[data-sds-toast-open]`) (default: `no target`)<br>`data-sds-toast-close` (on `sds-toast [data-sds-toast-close]`) (default: `false`) | Fixed notification region. |
+| badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (when omitted: solid)<br>`data-sds-size`: `sm`, `md` (default: `md`) | Compact status or category. |
+| tag | `.sds-tag`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md` (default: `sm`)<br>`data-sds-tone`: `danger` (on `button.sds-tag`) (when omitted: neutral) | Static or interactive category with an optional counter. |
+| tag-action | `.sds-tag-action` |  | `data-sds-tone`: `danger` (when omitted: info) | Independent action inside a tag. |
+| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (when omitted: subtle)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (omitted by default)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (omitted by default) | Contextual message in page content. |
+| toast-region | `.sds-toaster` |  | `data-sds-toast-open`: id (on `[data-sds-toast-open]`) (when omitted: no target)<br>`data-sds-toast-close` (on `sds-toast [data-sds-toast-close]`) (omitted by default) | Fixed notification region. |
 | spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Animated loading indicator. |
 | skeleton | `.sds-skeleton` |  |  | Loading placeholder. |
 | empty-state | `.sds-empty-state` |  |  | Empty-result message. |
@@ -63,20 +62,20 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| avatar | `.sds-avatar`<br>`.sds-avatar-group` |  | `data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl`, `2xl` (on `.sds-avatar`) (default: `md`)<br>`data-sds-shape`: `circle`, `square`, `portrait` (on `.sds-avatar`) (default: `circle`)<br>`data-sds-variant`: `subtle`, `solid`, `outline` (on `.sds-avatar`) (default: `subtle`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-avatar`) (default: `neutral`)<br>`data-sds-density`: `condensed` (on `.sds-avatar-group`) (default: `comfortable`) | Person image or initials and overlapping groups. |
+| avatar | `.sds-avatar`<br>`.sds-avatar-group` |  | `data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl`, `2xl` (on `.sds-avatar`) (default: `md`)<br>`data-sds-shape`: `circle`, `square`, `portrait` (on `.sds-avatar`) (default: `circle`)<br>`data-sds-variant`: `subtle`, `solid`, `outline` (on `.sds-avatar`) (default: `subtle`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-avatar`) (default: `neutral`)<br>`data-sds-density`: `condensed` (on `.sds-avatar-group`) (when omitted: comfortable) | Person image or initials and overlapping groups. |
 | card | `.sds-card`<br>`.sds-card-label` |  |  | Raised content container and muted label. |
 | datapoint | `.sds-datapoint` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Label, value, and context. |
-| list | `.sds-list`<br>`.sds-list-item`<br>`.sds-list-marker` |  | `data-sds-divided` (on `.sds-list`) (default: `false`) | Structured content list. |
-| timeline | `.sds-timeline`<br>`.sds-timeline-item`<br>`.sds-timeline-marker` |  | `data-sds-orientation`: `horizontal`, `vertical` (on `.sds-timeline`) (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-timeline-item`) (default: `unaccented`) | Vertical or horizontal event sequence. |
-| table | `.sds-table`<br>`.sds-table-container` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-table`) (default: `md`)<br>`data-sds-standalone` (on `.sds-table`) (default: `false`)<br>`data-sds-row-highlight` (on `.sds-table`) (default: `false`)<br>`data-sds-sticky`: `start`, `end` (on `.sds-table th, .sds-table td`) (default: `none`) | Application data table and overflow container. |
+| list | `.sds-list`<br>`.sds-list-item`<br>`.sds-list-marker` |  | `data-sds-divided` (on `.sds-list`) (omitted by default) | Structured content list. |
+| timeline | `.sds-timeline`<br>`.sds-timeline-item`<br>`.sds-timeline-marker` |  | `data-sds-orientation`: `horizontal`, `vertical` (on `.sds-timeline`) (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-timeline-item`) (when omitted: unaccented) | Vertical or horizontal event sequence.<br>Requires: Add tabindex="0" to a horizontal timeline so keyboard users can reach horizontally overflowed content. |
+| table | `.sds-table`<br>`.sds-table-container` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-table`) (default: `md`)<br>`data-sds-standalone` (on `.sds-table`) (omitted by default)<br>`data-sds-row-highlight` (on `.sds-table`) (omitted by default)<br>`data-sds-sticky`: `start`, `end` (on `.sds-table th, .sds-table td`) (when omitted: none) | Application data table and overflow container. |
 
 ## Layout
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6` (default: `automatic`)<br>`data-sds-min-column-width`: `sm`, `md`, `lg`, `xl`, `2xl` (default: `md`)<br>`data-sds-orientation`: `horizontal`, `vertical` (default: `horizontal`)<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`)<br>`data-sds-place-items`: `start`, `center`, `end`, `stretch` (default: `stretch`) | Responsive equal-width grid. |
-| flex | `.sds-flex` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `horizontal`)<br>`data-sds-wrap` (default: `false`)<br>`data-sds-align`: `start`, `center`, `end`, `stretch` (default: `stretch`)<br>`data-sds-justify`: `start`, `center`, `end`, `between` (default: `start`)<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`)<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl` (default: `none`)<br>`data-sds-grow` (on `.sds-flex > *`) (default: `false`)<br>`data-sds-no-shrink` (on `.sds-flex > *`) (default: `false`) | Configurable flex layout. |
-| stack | `.sds-stack` |  | `data-sds-align`: `start`, `center`, `end`, `stretch` (default: `stretch`)<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`) | Intrinsic vertical layout for content with consistent spacing. |
+| grid | `.sds-grid` |  | `data-sds-columns`: `1`, `2`, `3`, `4`, `5`, `6` (when omitted: automatic)<br>`data-sds-min-column-width`: `sm`, `md`, `lg`, `xl`, `2xl` (default: `md`)<br>`data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`) | Responsive equal-width column layout. |
+| cluster | `.sds-cluster` |  | `data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`)<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl` (when omitted: none) | Wrapping flex row for related content. |
+| stack | `.sds-stack` |  | `data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`) | Vertical content flow with consistent spacing. |
 | page | `.sds-page`<br>`.sds-page-header`<br>`.sds-section-header`<br>`.sds-eyebrow` |  |  | Page content, headers, and section context. |
 | sidebar | `.sds-sidebar`<br>`.sds-sidebar-close`<br>`.sds-sidebar-layout` |  |  | Persistent or mobile navigation layout. |
 
@@ -84,12 +83,12 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| dialog | `.sds-dialog`<br>`.sds-dialog-header`<br>`.sds-dialog-footer` | `<dialog>` | `data-sds-width`: `sm`, `md`, `lg`, `xl`, `2xl` (on `.sds-dialog`) (default: `md`)<br>`data-sds-return-value`: string (on `[command="close"], [command="request-close"]`) (default: `empty string`) | Native dialog surface and action layout. |
-| panel | `.sds-panel` | `<dialog>` | `data-sds-side`: `left`, `right`, `bottom` (on `.sds-panel`) (default: `right`)<br>`data-sds-width`: `sm`, `md`, `lg`, `xl` (on `.sds-panel`) (default: `md`)<br>`data-sds-return-value`: string (on `[command="close"], [command="request-close"]`) (default: `empty string`) | Edge-attached native dialog. |
+| dialog | `.sds-dialog`<br>`.sds-dialog-header`<br>`.sds-dialog-footer` | `<dialog>` | `data-sds-width`: `sm`, `md`, `lg`, `xl`, `2xl` (on `.sds-dialog`) (default: `md`)<br>`data-sds-return-value`: string (on `[command="close"], [command="request-close"]`) (when omitted: empty string) | Native dialog surface and action layout. |
+| panel | `.sds-panel` | `<dialog>` | `data-sds-side`: `left`, `right`, `bottom` (on `.sds-panel`) (default: `right`)<br>`data-sds-width`: `sm`, `md`, `lg`, `xl` (on `.sds-panel`) (default: `md`)<br>`data-sds-return-value`: string (on `[command="close"], [command="request-close"]`) (when omitted: empty string) | Edge-attached native dialog. |
 | disclosure | `.sds-disclosure` | `<details>` |  | Native details disclosure. |
 | pagination | `.sds-pagination`<br>`.sds-pagination-status` | `<nav>` |  | Page navigation and result status. |
 | tabs-parts | `.sds-tab`<br>`.sds-tab-list`<br>`.sds-tab-panel` |  |  | Generated or server-rendered tab structure. |
-| dropdown-parts | `.sds-dropdown-menu`<br>`.sds-dropdown-divider`<br>`.sds-dropdown-label` |  | `data-sds-tone`: `danger` (on `.sds-dropdown-menu button, .sds-dropdown-menu a`) (default: `neutral`) | Dropdown menu surface, separator, and label. |
+| dropdown-parts | `.sds-dropdown-menu`<br>`.sds-dropdown-divider`<br>`.sds-dropdown-label` |  | `data-sds-tone`: `danger` (on `.sds-dropdown-menu button, .sds-dropdown-menu a`) (when omitted: neutral) | Dropdown menu surface, separator, and label. |
 | floating-parts | `.sds-popover-content`<br>`.sds-tooltip-content` |  |  | Popover and tooltip surfaces. |
 
 ## Prose

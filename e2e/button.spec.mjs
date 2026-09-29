@@ -1,5 +1,29 @@
 import { expect, test } from '@playwright/test'
 
+test('dismiss controls are quiet while ordinary icon actions remain filled', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const dismissControls = [
+    page.locator('[data-sds-callout-close]'),
+    page.locator('.sds-dialog-header [command="request-close"]').first(),
+    page.locator('.sds-panel > header [command="request-close"]').first(),
+    page.locator('[data-sds-toast-close]').first(),
+  ]
+
+  for (const control of dismissControls) {
+    await expect(control).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(control).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
+  }
+
+  const ordinaryIconAction = page.getByRole('button', { name: 'Add item' })
+  await expect(ordinaryIconAction).not.toHaveCSS(
+    'background-color',
+    'rgba(0, 0, 0, 0)',
+  )
+})
+
 test('tonal buttons use the selected tone surface', async ({
   page,
 }) => {

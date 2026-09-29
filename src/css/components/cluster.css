@@ -1,0 +1,77 @@
+@layer sds.utilities {
+  :where(.sds-cluster) {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sds-space-lg);
+  }
+
+  :where(
+    .sds-cluster:is(
+        [data-sds-stack-at="sm"],
+        [data-sds-stack-at="md"],
+        [data-sds-stack-at="lg"],
+        [data-sds-stack-at="xl"]
+      )
+  ) {
+    container-name: sds-cluster;
+    container-type: inline-size;
+  }
+
+  :where(.sds-cluster[data-sds-gap="none"]) {
+    gap: 0;
+  }
+
+  :where(.sds-cluster[data-sds-gap="xs"]) {
+    gap: var(--sds-space-xs);
+  }
+
+  :where(.sds-cluster[data-sds-gap="sm"]) {
+    gap: var(--sds-space-sm);
+  }
+
+  :where(.sds-cluster[data-sds-gap="md"]) {
+    gap: var(--sds-space-md);
+  }
+
+  :where(.sds-cluster[data-sds-gap="xl"]) {
+    gap: var(--sds-space-xl);
+  }
+
+  :where(.sds-cluster[data-sds-gap="2xl"]) {
+    gap: var(--sds-space-2xl);
+  }
+
+  :where(.sds-cluster[data-sds-gap="3xl"]) {
+    gap: var(--sds-space-3xl);
+  }
+
+  :where(.sds-cluster[data-sds-gap="4xl"]) {
+    gap: var(--sds-space-4xl);
+  }
+
+  @container sds-cluster (max-width: 30rem) {
+    :where(.sds-cluster[data-sds-stack-at="sm"] > *) {
+      flex-basis: 100%;
+    }
+  }
+
+  @container sds-cluster (max-width: 40rem) {
+    :where(.sds-cluster[data-sds-stack-at="md"] > *) {
+      flex-basis: 100%;
+    }
+  }
+
+  @container sds-cluster (max-width: 48rem) {
+    :where(.sds-cluster[data-sds-stack-at="lg"] > *) {
+      flex-basis: 100%;
+    }
+  }
+
+  @container sds-cluster (max-width: 64rem) {
+    :where(.sds-cluster[data-sds-stack-at="xl"] > *) {
+      flex-basis: 100%;
+    }
+  }
+}

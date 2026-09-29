@@ -25,6 +25,20 @@ function withDefault(description, defaultValue) {
     : `${description}${description ? ' ' : ''}Default: ${defaultValue}.`
 }
 
+function recipeDefault(recipe, name, values) {
+  if (!Object.hasOwn(recipe.defaults ?? {}, name)) return ''
+
+  const defaultValue = recipe.defaults[name]
+  if (typeof defaultValue === 'boolean') {
+    return defaultValue ? ' (present by default)' : ' (omitted by default)'
+  }
+
+  const displayValue = defaultValue === '' ? 'empty string' : String(defaultValue)
+  return values.includes(defaultValue)
+    ? ` (default: \`${displayValue}\`)`
+    : ` (when omitted: ${displayValue})`
+}
+
 function customElementsManifest() {
   return {
     schemaVersion: '1.0.0',
@@ -176,20 +190,18 @@ function generatedReference() {
         .map(([name, values]) => {
           const type = recipe.optionTypes?.[name]
           const target = recipe.optionTargets?.[name]
-          const defaultValue = recipe.defaults?.[name]
           return `${values.length
             ? `\`${name}\`: ${values.map((value) => `\`${value}\``).join(', ')}`
             : `\`${name}\`${type ? `: ${type}` : ''}`}${
             target ? ` (on \`${target}\`)` : ''
-          }${
-            Object.hasOwn(recipe.defaults ?? {}, name)
-              ? ` (default: \`${defaultValue === '' ? 'empty string' : String(defaultValue)}\`)`
-              : ''
-          }`
+          }${recipeDefault(recipe, name, values)}`
         })
         .join('<br>')
+      const requirements = recipe.requirements?.length
+        ? `<br>Requires: ${recipe.requirements.join(' ')}`
+        : ''
       lines.push(
-        `| ${recipe.name} | ${recipe.classes.map((name) => `\`.${name}\``).join('<br>')} | ${recipe.elements?.map((name) => `\`<${name}>\``).join('<br>') ?? ''} | ${options} | ${recipe.description} |`,
+        `| ${recipe.name} | ${recipe.classes.map((name) => `\`.${name}\``).join('<br>')} | ${recipe.elements?.map((name) => `\`<${name}>\``).join('<br>') ?? ''} | ${options} | ${recipe.description}${requirements} |`,
       )
     }
     lines.push('')

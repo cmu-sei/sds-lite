@@ -10,9 +10,9 @@ All distributed rules live in:
 @layer sds.tokens, sds.base, sds.components, sds.utilities;
 ```
 
-Recipe defaults live in `sds.components`. Composable layout and spacing
-utilities live in the later `sds.utilities` layer, so utilities can override
-recipe defaults while keeping zero-specificity selectors.
+Recipe defaults live in `sds.components`. Layout and spacing utilities live in
+the later `sds.utilities` layer, so composition can override recipe defaults
+while keeping zero-specificity selectors.
 
 Unlayered application CSS overrides SDS Lite without specificity escalation.
 
@@ -36,23 +36,19 @@ Unlayered application CSS overrides SDS Lite without specificity escalation.
 --sds-space-2xl
 --sds-space-3xl
 --sds-space-4xl
+--sds-space-button-gap
 ```
 
-Use the spacing utilities when a token value is enough:
+Use a spacing attribute when a token value is enough:
 
 ```html
-<div
-  data-sds-padding-inline="lg"
-  data-sds-margin-block-end="sm"
->
+<div data-sds-padding-inline="lg" data-sds-margin-block-end="sm">
   Content
 </div>
 ```
 
-The utility attributes cover all sides, the `block` and `inline` axes, and
-each logical `block-start`, `block-end`, `inline-start`, and `inline-end`
-side. See [Layout](../components/layout.md#spacing-utilities) for the complete
-interface and precedence rules.
+See [Layout](../components/layout.md#spacing-utilities) for the complete
+logical-property interface. Use authored CSS for values outside the token scale.
 
 ## Radius
 
@@ -104,8 +100,13 @@ General roles:
 --sds-color-background
 --sds-color-text-default
 --sds-color-text-muted
+--sds-color-text-label
 --sds-color-text-disabled
 --sds-color-action-text
+
+--sds-color-overlay
+--sds-color-overlay-strong
+--sds-color-shadow-subtle
 
 --sds-color-surface-default
 --sds-color-surface-subtle
@@ -173,8 +174,7 @@ available for defining a semantic assignment:
 
 ## Private properties
 
-Properties prefixed with `--sds-tone-*`, `--sds-avatar-*`, `--sds-button-*`,
-`--sds-prose-*`, `--sds-tab-*`, `--sds-timeline-*`,
-`--sds-datapoint-*`, `--sds-floating-*`, `--sds-grid-*`, or `--sds-tag-*`
-are implementation details. Use a semantic token or documented data attribute
-instead.
+Only the properties listed above, `--sds-sidebar-width`, and
+`--sds-list-marker-width` are public. Every other component-scoped
+`--sds-*` property is an implementation detail. Use a public semantic token or
+documented data attribute instead.

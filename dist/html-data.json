@@ -46,24 +46,6 @@
       ]
     },
     {
-      "name": "data-sds-place-self",
-      "description": "Aligns a direct grid child within its grid area on both axes.",
-      "values": [
-        {
-          "name": "start"
-        },
-        {
-          "name": "center"
-        },
-        {
-          "name": "end"
-        },
-        {
-          "name": "stretch"
-        }
-      ]
-    },
-    {
       "name": "data-sds-padding",
       "description": "Applies tokenized padding on every side.",
       "values": [

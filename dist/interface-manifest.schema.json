@@ -33,6 +33,10 @@
           "classes": {"type": "array", "items": {"type": "string"}},
           "elements": {"type": "array", "items": {"type": "string"}},
           "description": {"type": "string"},
+          "requirements": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
           "defaults": {
             "type": "object",
             "additionalProperties": {

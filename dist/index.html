@@ -8,8 +8,8 @@
       content="Interactive SDS Lite playground with copy-ready NPM and CDN examples for every component."
     />
     <title>SDS Lite Interactive Playground</title>
-    <script type="module" crossorigin src="./assets/index-Bxi74pvS.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CWTiIWiB.css">
+    <script type="module" crossorigin src="./assets/index-BOWCDKwE.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Ct0wErtH.css">
   </head>
   <body data-sds-root>
     <div class="sds-app">
@@ -71,7 +71,7 @@
           <footer>
             <small>Every example is ordinary, server-renderable HTML.</small>
             <a class="sds-link" href="./docs/README.md">Read the documentation</a>
-            <div class="sds-flex" data-sds-orientation="vertical" data-sds-gap="sm">
+            <div class="sds-stack" data-sds-gap="sm">
               <label class="sds-sr-only" for="theme">Theme</label>
               <select id="theme">
                 <option value="forge">Forge</option>
@@ -105,9 +105,9 @@
           </div>
         </header>
 
-        <div class="sds-page" data-sds-padding-block-start="2xl" data-sds-padding-block-end="4xl">
+        <div class="sds-page">
           <section id="overview" class="sds-grid" data-sds-columns="2" data-sds-min-column-width="lg" data-sds-gap="2xl" aria-labelledby="intro-title">
-            <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="sm">
+            <div class="sds-stack" data-sds-gap="sm">
               <p class="sds-eyebrow">Native first, production ready</p>
               <h2 id="intro-title">Build polished interfaces from HTML</h2>
               <p>
@@ -117,14 +117,14 @@
                 both themes and all color schemes.
               </p>
             </div>
-            <div class="sds-callout" data-sds-tone="info" data-sds-place-self="start">
+            <div class="sds-callout" data-sds-tone="info">
               <strong>This page is the example</strong>
               <span>
                 Inspect its source for a complete application shell, then use
                 the copy-ready recipes below for individual components.
               </span>
             </div>
-            <div class="sds-flex sds-overview-actions" data-sds-column-span="full" data-sds-stack-at="sm" data-sds-align="stretch" data-sds-gap="sm">
+            <div class="sds-cluster" data-sds-column-span="full" data-sds-stack-at="sm" data-sds-gap="sm">
               <a class="sds-button" href="#getting-started">Install SDS Lite</a>
               <a class="sds-button" data-sds-variant="text" href="./docs/components/README.md">
                 Browse component guides
@@ -144,7 +144,7 @@
               </div>
               <a class="sds-link" data-sds-variant="cta" href="./docs/getting-started.md">Read the quick start</a>
             </div>
-            <details class="sds-disclosure" data-sds-padding-inline="lg">
+            <details class="sds-disclosure">
               <summary>Installation options: NPM or CDN</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <article class="sds-card sds-stack" data-sds-gap="xl">
@@ -196,7 +196,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   </div>
                 </article>
               </div>
-              <div class="sds-callout" data-sds-margin-block-start="lg" data-sds-tone="success">
+              <div class="sds-callout" data-sds-tone="success">
                 <strong>Then write HTML</strong>
                 <span>
                   Add <code>data-sds-root</code> to a container. Native headings,
@@ -215,7 +215,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <p>Every button treatment is shown in every semantic tone.</p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Button API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -231,7 +231,6 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                         <tr><th scope="row"><code>data-sds-size</code></th><td>xs, sm, md (default), lg, xl</td></tr>
                         <tr><th scope="row"><code>data-sds-density</code></th><td>comfortable (default), compact</td></tr>
                         <tr><th scope="row"><code>data-sds-shape</code></th><td>text (default), icon</td></tr>
-                        <tr><th scope="row"><code>data-sds-avatar</code></th><td>Presence adds leading media</td></tr>
                         <tr><th scope="row"><code>data-sds-block</code></th><td>Presence makes the button full width</td></tr>
                       </tbody>
                     </table>
@@ -407,7 +406,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <button type="button" aria-busy="true">Saving</button>
                   <a class="sds-button" href="#actions">Link button</a>
                   <button type="button" data-sds-variant="tonal">
-                    <span class="sds-avatar" data-sds-avatar data-sds-size="xs" data-sds-tone="info" aria-hidden="true">AM</span>
+                    <span class="sds-avatar" data-sds-size="xs" data-sds-tone="info" aria-hidden="true">AM</span>
                     Alex Morgan
                   </button>
                   <button type="button" data-sds-shape="icon" aria-label="Add item">+</button>
@@ -459,7 +458,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
               <article class="sds-card sds-stack">
                 <h3>Link variants</h3>
-                <div class="sds-flex" data-sds-wrap data-sds-align="center">
+                <div class="sds-cluster" >
                   <a class="sds-link" href="#actions">Filled</a>
                   <a class="sds-link" data-sds-variant="secondary" href="#actions">Secondary</a>
                   <a class="sds-link" data-sds-variant="tertiary" href="#actions">Tertiary</a>
@@ -467,7 +466,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <a class="sds-link" data-sds-variant="cta" href="#actions">Call to action</a>
                   <a class="sds-link" aria-disabled="true">Disabled</a>
                 </div>
-                <div class="sds-flex" data-sds-wrap data-sds-align="center" role="group" aria-label="Link sizes">
+                <div class="sds-cluster" role="group" aria-label="Link sizes">
                   <a class="sds-link" data-sds-size="xs" href="#actions">Extra small</a>
                   <a class="sds-link" data-sds-size="sm" href="#actions">Small</a>
                   <a class="sds-link" data-sds-size="md" href="#actions">Medium</a>
@@ -478,7 +477,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
               <article class="sds-card sds-stack">
                 <h3>Link tones</h3>
-                <div class="sds-flex" data-sds-wrap data-sds-align="center">
+                <div class="sds-cluster" >
                   <a class="sds-link" data-sds-tone="neutral" href="#actions">Neutral</a>
                   <a class="sds-link" data-sds-tone="accent" href="#actions">Accent</a>
                   <a class="sds-link" data-sds-tone="info" href="#actions">Info</a>
@@ -501,7 +500,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Forms API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -626,13 +625,13 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </sds-combobox>
                 <small id="topic-help">Search and select several matches; remove a tag to make it available again.</small>
               </div>
-              <div id="topic-tags" class="sds-flex" data-sds-wrap data-sds-gap="sm"
+              <div id="topic-tags" class="sds-cluster" data-sds-gap="sm"
                 role="group" aria-label="Selected topics"></div>
               <p id="topic-status" class="sds-sr-only" role="status"></p>
             </article>
 
             <form class="sds-card sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
-              <div class="sds-grid" data-sds-column-span="full" data-sds-orientation="vertical" data-sds-gap="xs">
+              <div class="sds-stack" data-sds-column-span="full" data-sds-gap="xs">
                 <h3>Text and contact fields</h3>
                 <p>Common text inputs stay wide enough for readable labels, values, and guidance.</p>
               </div>
@@ -661,7 +660,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <label for="url-input">URL</label>
                 <input id="url-input" type="url" placeholder="https://example.com" />
               </div>
-              <div class="sds-grid" data-sds-column-span="full" data-sds-orientation="vertical" data-sds-gap="xs">
+              <div class="sds-stack" data-sds-column-span="full" data-sds-gap="xs">
                 <h3>Dates and values</h3>
                 <p>Native controls retain platform-specific input behavior.</p>
               </div>
@@ -689,7 +688,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <label for="week-input">Week</label>
                 <input id="week-input" type="week" value="2026-W38" />
               </div>
-              <div class="sds-grid" data-sds-column-span="full" data-sds-orientation="vertical" data-sds-gap="xs">
+              <div class="sds-stack" data-sds-column-span="full" data-sds-gap="xs">
                 <h3>Selection, files, and long-form input</h3>
                 <p>Use the control that matches the amount and type of information requested.</p>
               </div>
@@ -729,11 +728,11 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   </div>
                 </div>
               </div>
-              <div class="sds-grid" data-sds-column-span="full" data-sds-orientation="vertical" data-sds-gap="xs">
+              <div class="sds-stack" data-sds-column-span="full" data-sds-gap="xs">
                 <h3>States and validation</h3>
                 <p>Readonly, disabled, invalid, and valid states remain visually distinct.</p>
               </div>
-              <div class="sds-field">
+              <div class="sds-field" data-sds-orientation="vertical">
                 <label for="readonly-input">Readonly</label>
                 <input type="text" id="readonly-input" value="Cannot be edited" readonly />
               </div>
@@ -771,10 +770,10 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <input type="text" id="horizontal-input" placeholder="Label and control share a row" />
                 <small>Horizontal fields return to one column when space is constrained.</small>
               </div>
-              <div class="sds-grid" data-sds-column-span="full" data-sds-orientation="vertical" data-sds-gap="md">
+              <div class="sds-stack" data-sds-column-span="full" data-sds-gap="md">
                 <h3>Choices and switches</h3>
                 <div class="sds-grid" data-sds-columns="3" data-sds-min-column-width="lg" data-sds-gap="xl">
-                  <fieldset class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md" data-sds-padding="lg">
+                  <fieldset class="sds-stack" data-sds-gap="md">
                     <legend>Checkboxes</legend>
                     <label class="sds-choice">
                       <input type="checkbox" checked />
@@ -789,7 +788,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       Disabled
                     </label>
                   </fieldset>
-                  <fieldset class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md" data-sds-padding="lg">
+                  <fieldset class="sds-stack" data-sds-gap="md">
                     <legend>Radio buttons</legend>
                     <label class="sds-choice">
                       <input type="radio" name="radio-example" checked />
@@ -804,7 +803,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       Disabled
                     </label>
                   </fieldset>
-                  <fieldset class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md" data-sds-padding="lg">
+                  <fieldset class="sds-stack" data-sds-gap="md">
                     <legend>Switch sizes, states, and tones</legend>
                     <label class="sds-switch" data-sds-size="lg" data-sds-tone="neutral">
                       <input type="checkbox" role="switch" name="privacy" checked />
@@ -850,7 +849,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Feedback API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -882,7 +881,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <h3>Default tone states</h3>
                 <p>Badges, tags, and callouts default to neutral; toasts default to info.</p>
               </div>
-              <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="lg">
+              <div class="sds-cluster" data-sds-gap="lg">
                 <span class="sds-badge">Default badge · neutral</span>
                 <span class="sds-tag">Default tag · neutral</span>
                 <button type="button" data-sds-toast-open="toast-default">Show default toast · info</button>
@@ -926,42 +925,42 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <article class="sds-card sds-stack">
               <h3>Badges</h3>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
-                <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-padding="xl" role="group" aria-label="Neutral badge variants">
+                <div class="sds-card sds-cluster" data-sds-gap="sm" role="group" aria-label="Neutral badge variants">
                   <strong>Neutral</strong>
                   <span class="sds-badge" data-sds-tone="neutral" data-sds-variant="light">Light</span>
                   <span class="sds-badge" data-sds-tone="neutral" data-sds-variant="light-border">Light border</span>
                   <span class="sds-badge" data-sds-tone="neutral">Medium</span>
                   <span class="sds-badge" data-sds-tone="neutral" data-sds-variant="dark">Dark</span>
                 </div>
-                <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-padding="xl" role="group" aria-label="Accent badge variants">
+                <div class="sds-card sds-cluster" data-sds-gap="sm" role="group" aria-label="Accent badge variants">
                   <strong>Accent</strong>
                   <span class="sds-badge" data-sds-tone="accent" data-sds-variant="light">Light</span>
                   <span class="sds-badge" data-sds-tone="accent" data-sds-variant="light-border">Light border</span>
                   <span class="sds-badge" data-sds-tone="accent">Medium</span>
                   <span class="sds-badge" data-sds-tone="accent" data-sds-variant="dark">Dark</span>
                 </div>
-                <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-padding="xl" role="group" aria-label="Info badge variants">
+                <div class="sds-card sds-cluster" data-sds-gap="sm" role="group" aria-label="Info badge variants">
                   <strong>Info</strong>
                   <span class="sds-badge" data-sds-tone="info" data-sds-variant="light">Light</span>
                   <span class="sds-badge" data-sds-tone="info" data-sds-variant="light-border">Light border</span>
                   <span class="sds-badge" data-sds-tone="info">Medium</span>
                   <span class="sds-badge" data-sds-tone="info" data-sds-variant="dark">Dark</span>
                 </div>
-                <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-padding="xl" role="group" aria-label="Success badge variants">
+                <div class="sds-card sds-cluster" data-sds-gap="sm" role="group" aria-label="Success badge variants">
                   <strong>Success</strong>
                   <span class="sds-badge" data-sds-tone="success" data-sds-variant="light">Light</span>
                   <span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Light border</span>
                   <span class="sds-badge" data-sds-tone="success">Medium</span>
                   <span class="sds-badge" data-sds-tone="success" data-sds-variant="dark">Dark</span>
                 </div>
-                <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-padding="xl" role="group" aria-label="Warning badge variants">
+                <div class="sds-card sds-cluster" data-sds-gap="sm" role="group" aria-label="Warning badge variants">
                   <strong>Warning</strong>
                   <span class="sds-badge" data-sds-tone="warning" data-sds-variant="light">Light</span>
                   <span class="sds-badge" data-sds-tone="warning" data-sds-variant="light-border">Light border</span>
                   <span class="sds-badge" data-sds-tone="warning">Medium</span>
                   <span class="sds-badge" data-sds-tone="warning" data-sds-variant="dark">Dark</span>
                 </div>
-                <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-padding="xl" role="group" aria-label="Danger badge variants">
+                <div class="sds-card sds-cluster" data-sds-gap="sm" role="group" aria-label="Danger badge variants">
                   <strong>Danger</strong>
                   <span class="sds-badge" data-sds-tone="danger" data-sds-variant="light">Light</span>
                   <span class="sds-badge" data-sds-tone="danger" data-sds-variant="light-border">Light border</span>
@@ -969,7 +968,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <span class="sds-badge" data-sds-tone="danger" data-sds-variant="dark">Dark</span>
                 </div>
               </div>
-              <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-padding="xl">
+              <div class="sds-card sds-cluster" data-sds-gap="sm">
                 <strong>Linked badges</strong>
                 <a class="sds-badge" data-sds-size="sm" data-sds-tone="accent" data-sds-variant="light" href="#actions">Light</a>
                 <a class="sds-badge" data-sds-size="sm" data-sds-tone="success" data-sds-variant="light-border" href="#actions">Light border</a>
@@ -979,42 +978,42 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <div class="sds-stack" data-sds-gap="sm">
                 <h4>Small badges</h4>
                 <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="sm">
-                  <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="xs" data-sds-padding="lg" role="group" aria-label="Small neutral badge variants">
+                  <div class="sds-card sds-cluster" data-sds-gap="xs" role="group" aria-label="Small neutral badge variants">
                     <strong>Neutral</strong>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="neutral" data-sds-variant="light">Light</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="neutral" data-sds-variant="light-border">Light border</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="neutral">Medium</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="neutral" data-sds-variant="dark">Dark</span>
                   </div>
-                  <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="xs" data-sds-padding="lg" role="group" aria-label="Small accent badge variants">
+                  <div class="sds-card sds-cluster" data-sds-gap="xs" role="group" aria-label="Small accent badge variants">
                     <strong>Accent</strong>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="accent" data-sds-variant="light">Light</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="accent" data-sds-variant="light-border">Light border</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="accent">Medium</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="accent" data-sds-variant="dark">Dark</span>
                   </div>
-                  <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="xs" data-sds-padding="lg" role="group" aria-label="Small info badge variants">
+                  <div class="sds-card sds-cluster" data-sds-gap="xs" role="group" aria-label="Small info badge variants">
                     <strong>Info</strong>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="info" data-sds-variant="light">Light</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="info" data-sds-variant="light-border">Light border</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="info">Medium</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="info" data-sds-variant="dark">Dark</span>
                   </div>
-                  <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="xs" data-sds-padding="lg" role="group" aria-label="Small success badge variants">
+                  <div class="sds-card sds-cluster" data-sds-gap="xs" role="group" aria-label="Small success badge variants">
                     <strong>Success</strong>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="success" data-sds-variant="light">Light</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="success" data-sds-variant="light-border">Light border</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="success">Medium</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="success" data-sds-variant="dark">Dark</span>
                   </div>
-                  <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="xs" data-sds-padding="lg" role="group" aria-label="Small warning badge variants">
+                  <div class="sds-card sds-cluster" data-sds-gap="xs" role="group" aria-label="Small warning badge variants">
                     <strong>Warning</strong>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="warning" data-sds-variant="light">Light</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="warning" data-sds-variant="light-border">Light border</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="warning">Medium</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="warning" data-sds-variant="dark">Dark</span>
                   </div>
-                  <div class="sds-card sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="xs" data-sds-padding="lg" role="group" aria-label="Small danger badge variants">
+                  <div class="sds-card sds-cluster" data-sds-gap="xs" role="group" aria-label="Small danger badge variants">
                     <strong>Danger</strong>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="danger" data-sds-variant="light">Light</span>
                     <span class="sds-badge" data-sds-size="sm" data-sds-tone="danger" data-sds-variant="light-border">Light border</span>
@@ -1047,7 +1046,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <button class="sds-tag" type="button">Filter by active</button>
                   <button class="sds-tag" type="button" disabled>Disabled</button>
                 </div>
-                <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" aria-label="Tag tones">
+                <div class="sds-cluster" data-sds-gap="sm" aria-label="Tag tones">
                   <span class="sds-tag" data-sds-tone="neutral">Neutral</span>
                   <span class="sds-tag" data-sds-tone="accent">Accent</span>
                   <span class="sds-tag" data-sds-tone="info">Info</span>
@@ -1080,7 +1079,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <p>Each semantic tone keeps its subtle, outline, and bold treatments together.</p>
               </div>
               <div class="sds-grid" data-sds-columns="3" data-sds-min-column-width="lg" data-sds-gap="xl">
-                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-padding="xl" data-sds-tone="neutral" aria-labelledby="neutral-callouts-heading">
+                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-tone="neutral" aria-labelledby="neutral-callouts-heading">
                   <h4 id="neutral-callouts-heading">Neutral</h4>
                   <div class="sds-callout" data-sds-tone="neutral">
                     <strong>Subtle</strong><span>General supporting information.</span>
@@ -1092,7 +1091,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <strong>Bold</strong><span>General supporting information.</span>
                   </div>
                 </section>
-                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-padding="xl" data-sds-tone="accent" aria-labelledby="accent-callouts-heading">
+                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-tone="accent" aria-labelledby="accent-callouts-heading">
                   <h4 id="accent-callouts-heading">Accent</h4>
                   <div class="sds-callout" data-sds-tone="accent">
                     <strong>Subtle</strong><span>Highlighted supporting information.</span>
@@ -1104,7 +1103,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <strong>Bold</strong><span>Highlighted supporting information.</span>
                   </div>
                 </section>
-                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-padding="xl" data-sds-tone="info" aria-labelledby="info-callouts-heading">
+                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-tone="info" aria-labelledby="info-callouts-heading">
                   <h4 id="info-callouts-heading">Info</h4>
                   <div class="sds-callout" data-sds-tone="info">
                     <strong>Subtle</strong><span>Something useful to know.</span>
@@ -1116,7 +1115,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <strong>Bold</strong><span>Something useful to know.</span>
                   </div>
                 </section>
-                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-padding="xl" data-sds-tone="success" aria-labelledby="success-callouts-heading">
+                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-tone="success" aria-labelledby="success-callouts-heading">
                   <h4 id="success-callouts-heading">Success</h4>
                   <div class="sds-callout" data-sds-tone="success">
                     <strong>Subtle</strong><span>The operation completed.</span>
@@ -1128,7 +1127,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <strong>Bold</strong><span>The operation completed.</span>
                   </div>
                 </section>
-                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-padding="xl" data-sds-tone="warning" aria-labelledby="warning-callouts-heading">
+                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-tone="warning" aria-labelledby="warning-callouts-heading">
                   <h4 id="warning-callouts-heading">Warning</h4>
                   <div class="sds-callout" data-sds-tone="warning">
                     <strong>Subtle</strong><span>Review this before continuing.</span>
@@ -1140,7 +1139,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <strong>Bold</strong><span>Review this before continuing.</span>
                   </div>
                 </section>
-                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-padding="xl" data-sds-tone="danger" aria-labelledby="danger-callouts-heading">
+                <section class="sds-card sds-stack" data-sds-gap="sm" data-sds-tone="danger" aria-labelledby="danger-callouts-heading">
                   <h4 id="danger-callouts-heading">Danger</h4>
                   <div class="sds-callout" data-sds-tone="danger">
                     <strong>Subtle</strong><span>The operation could not finish.</span>
@@ -1184,7 +1183,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <p>Present people, metrics, structured records, and zero-data states with a consistent visual rhythm.</p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Content API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -1218,7 +1217,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <h3>Default tone states</h3>
                 <p>Avatars and datapoints use neutral styling when no tone is specified.</p>
               </div>
-              <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="2xl">
+              <div class="sds-cluster" data-sds-gap="2xl">
                 <div class="sds-stack" data-sds-gap="xs">
                   <strong>Avatar · neutral</strong>
                   <span class="sds-avatar" role="img" aria-label="Default neutral avatar">DF</span>
@@ -1232,7 +1231,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
             <article class="sds-card sds-stack">
               <h3>Avatars and avatar groups</h3>
-              <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="lg">
+              <div class="sds-cluster" data-sds-gap="lg">
                 <span class="sds-avatar" role="img" data-sds-size="xs" data-sds-shape="circle" data-sds-variant="subtle" aria-label="Alex Morgan">AM</span>
                 <span class="sds-avatar" role="img" data-sds-size="sm" data-sds-tone="info" aria-label="Sam Rivera">SR</span>
                 <span class="sds-avatar" role="img" data-sds-tone="success" data-sds-variant="solid" aria-label="Jordan Lee">JL</span>
@@ -1297,40 +1296,40 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <h3>Datapoints</h3>
                 <p>Tones communicate meaning; sizes control emphasis independently.</p>
               </div>
-              <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md">
+              <div class="sds-stack" data-sds-gap="md">
                 <h4>Tones</h4>
                 <div class="sds-grid" data-sds-columns="4" data-sds-min-column-width="md" data-sds-gap="xl">
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-tone="neutral">
                       <span>Neutral</span>
                       <div><strong>9</strong><span>drafts</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-tone="accent">
                       <span>Accent</span>
                       <div><strong>16</strong><span>programs</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-tone="info">
                       <span>Information</span>
                       <div><strong>24</strong><span>updates</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-tone="success">
                       <span>Success</span>
                       <div><strong>12</strong><span>on track</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-tone="warning">
                       <span>Warning</span>
                       <div><strong>37</strong><span>need review</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-tone="danger">
                       <span>Danger</span>
                       <div><strong>3</strong><span>blocked</span></div>
@@ -1338,28 +1337,28 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   </div>
                 </div>
               </div>
-              <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md">
+              <div class="sds-stack" data-sds-gap="md">
                 <h4>Sizes</h4>
                 <div class="sds-grid" data-sds-columns="3" data-sds-min-column-width="md" data-sds-gap="xl">
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-size="sm">
                       <span>Small</span>
                       <div><strong>9</strong><span>drafts</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint">
                       <span>Medium</span>
                       <div><strong>82</strong><span>total</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-size="lg">
                       <span>Large</span>
                       <div><strong>104</strong><span>resolved</span></div>
                     </div>
                   </div>
-                  <div class="sds-card" data-sds-padding="xl">
+                  <div class="sds-card">
                     <div class="sds-datapoint" data-sds-size="xl">
                       <span>Extra large</span>
                       <div><strong>1.2K</strong><span>total</span></div>
@@ -1443,22 +1442,22 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Layout API and examples</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
                   <h3>Page layout</h3>
                   <ul>
                     <li><code>.sds-sidebar-layout</code> with <code>.sds-sidebar</code></li>
-                    <li><code>.sds-grid</code>: columns, minimum column width, orientation, item placement</li>
-                    <li><code>.sds-flex[data-sds-stack-at]</code></li>
-                    <li><code>data-sds-place-self</code></li>
+                    <li><code>.sds-grid</code>: maximum columns and minimum column width</li>
+                    <li><code>.sds-cluster[data-sds-stack-at]</code></li>
+                    <li><code>.sds-stack</code>: vertical flow</li>
                   </ul>
                   <h3>Spacing and lists</h3>
                   <ul>
                     <li><code>data-sds-padding*</code>, <code>data-sds-margin*</code></li>
                     <li><code>.sds-list[data-sds-divided]</code>, <code>.sds-list-marker</code></li>
-                    <li>Horizontal timelines use <code>data-sds-orientation="horizontal"</code> and <code>aria-current="step"</code></li>
+                    <li>Horizontal timelines use <code>data-sds-orientation="horizontal"</code> and <code>tabindex="0"</code>; <code>aria-current="step"</code> marks the current event</li>
                   </ul>
                 </div>
                 <div>
@@ -1486,76 +1485,53 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             </details>
 
             <article class="sds-card sds-stack">
-              <h3>Easy grid, flex, and spacing</h3>
+              <h3>Grid, Cluster, and Stack</h3>
               <div class="sds-grid" data-sds-columns="3" data-sds-min-column-width="lg">
-                <div class="sds-card" data-sds-padding="sm">
-                  <span class="sds-card-label">Small padding</span>
-                  Same spacing on every side
+                <div class="sds-card">
+                  <span class="sds-card-label">Grid</span>
+                  Adds columns when its content has room
                 </div>
-                <div
-                  class="sds-card"
-                  data-sds-padding-block="xl"
-                  data-sds-padding-inline="sm"
-                >
-                  <span class="sds-card-label">Different axes</span>
-                  Extra-large block and small inline padding
+                <div class="sds-card">
+                  <span class="sds-card-label">Cluster</span>
+                  Wraps related content horizontally
                 </div>
-                <div
-                  class="sds-card"
-                  data-sds-padding="lg"
-                  data-sds-margin-block-start="md"
-                >
-                  <span class="sds-card-label">One-sided margin</span>
-                  Medium space before this card
+                <div class="sds-card">
+                  <span class="sds-card-label">Stack</span>
+                  Maintains a consistent vertical rhythm
                 </div>
               </div>
-              <div class="sds-flex" data-sds-stack-at="md" data-sds-align="center" data-sds-justify="between">
-                <strong data-sds-grow>Flexible content</strong>
-                <button type="button" data-sds-no-shrink>Action</button>
+              <div class="sds-stack" data-sds-gap="md">
+                <div>
+                  <h4>Cluster</h4>
+                  <p>Related items stay in a row and wrap naturally when they run out of room.</p>
+                </div>
+                <div id="cluster-example" class="sds-cluster" data-sds-gap="sm" aria-label="Project filters">
+                  <button type="button" data-sds-variant="tonal">All projects</button>
+                  <button type="button" data-sds-variant="text">Research</button>
+                  <button type="button" data-sds-variant="text">Engineering</button>
+                  <button type="button" data-sds-variant="text">Operations</button>
+                </div>
+                <div id="cluster-stack-example" class="sds-cluster" data-sds-stack-at="md" data-sds-gap="sm">
+                  <button type="button">Create project</button>
+                  <button type="button" data-sds-variant="outlined">Import project</button>
+                </div>
+                <pre id="copy-cluster-markup" tabindex="0"><code>&lt;div class="sds-cluster" data-sds-gap="sm"&gt;
+  &lt;button type="button"&gt;All projects&lt;/button&gt;
+  &lt;button type="button"&gt;Research&lt;/button&gt;
+  &lt;button type="button"&gt;Engineering&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                <button type="button" data-copy-target="copy-cluster-markup">Copy Cluster markup</button>
               </div>
-              <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md">
+              <div class="sds-stack" data-sds-gap="md">
                 <h4>Large composition gaps</h4>
                 <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="md" data-sds-gap="4xl">
-                  <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="3xl">
+                  <div class="sds-cluster" data-sds-gap="3xl">
                     <span class="sds-badge">3XL</span>
                     <span>Page regions</span>
                   </div>
-                  <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="4xl">
+                  <div class="sds-cluster" data-sds-gap="4xl">
                     <span class="sds-badge" data-sds-tone="accent">4XL</span>
                     <span>Hero composition</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article class="sds-card sds-stack" data-sds-gap="3xl">
-              <div>
-                <h3>Grid item placement</h3>
-                <p>Place all items with the grid, then override an individual child only when needed.</p>
-              </div>
-              <div class="sds-grid" data-sds-columns="4" data-sds-min-column-width="md" data-sds-gap="xl">
-                <div class="sds-card sds-stack" data-sds-gap="md" data-sds-padding="xl">
-                  <strong>Start</strong>
-                  <div class="sds-grid" data-sds-place-items="start">
-                    <span class="sds-badge" data-sds-place-self="start">Start</span>
-                  </div>
-                </div>
-                <div class="sds-card sds-stack" data-sds-gap="md" data-sds-padding="xl">
-                  <strong>Center</strong>
-                  <div class="sds-grid" data-sds-place-items="center">
-                    <span class="sds-badge" data-sds-tone="accent" data-sds-place-self="center">Center</span>
-                  </div>
-                </div>
-                <div class="sds-card sds-stack" data-sds-gap="md" data-sds-padding="xl">
-                  <strong>End</strong>
-                  <div class="sds-grid" data-sds-place-items="end">
-                    <span class="sds-badge" data-sds-tone="info" data-sds-place-self="end">End</span>
-                  </div>
-                </div>
-                <div class="sds-card sds-stack" data-sds-gap="md" data-sds-padding="xl">
-                  <strong>Stretch</strong>
-                  <div class="sds-grid" data-sds-place-items="stretch">
-                    <span class="sds-badge" data-sds-tone="success" data-sds-place-self="stretch">Stretch</span>
                   </div>
                 </div>
               </div>
@@ -1572,7 +1548,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <div class="sds-callout" data-sds-tone="info"><strong>Three</strong><span>Extra-large gap</span></div>
                 <div class="sds-callout" data-sds-tone="success"><strong>Four</strong><span>Intrinsic collapse</span></div>
               </div>
-              <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="xs">
+              <div class="sds-stack" data-sds-gap="xs">
                 <span class="sds-card-label">Five-column compact grid</span>
                 <div class="sds-grid" data-sds-columns="5" data-sds-min-column-width="sm" data-sds-gap="sm">
                   <span class="sds-badge" data-sds-tone="neutral">Plan</span>
@@ -1582,7 +1558,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <span class="sds-badge" data-sds-tone="warning">Release</span>
                 </div>
               </div>
-              <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="xs">
+              <div class="sds-stack" data-sds-gap="xs">
                 <span class="sds-card-label">Six-column status rail with no gap</span>
                 <div class="sds-grid" data-sds-columns="6" data-sds-min-column-width="sm" data-sds-gap="none">
                   <span class="sds-badge" data-sds-tone="neutral">1</span>
@@ -1603,24 +1579,24 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <span>Large vertical rhythm separates substantial regions without custom CSS.</span>
                 </div>
               </div>
-              <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="xl">
+              <div class="sds-stack" data-sds-gap="xl">
                 <div class="sds-card sds-stack" data-sds-gap="md">
-                  <span class="sds-card-label">Stack at small · start aligned · no gap</span>
-                  <div class="sds-flex" data-sds-stack-at="sm" data-sds-align="start" data-sds-justify="start" data-sds-gap="none">
-                    <strong data-sds-grow>Stays inline above 30rem</strong>
-                    <button type="button" data-sds-no-shrink>Small action</button>
+                  <span class="sds-card-label">Stack at small · no gap</span>
+                  <div class="sds-cluster" data-sds-stack-at="sm" data-sds-gap="none">
+                    <strong>Stays inline above 30rem</strong>
+                    <button type="button">Small action</button>
                   </div>
                 </div>
                 <div class="sds-card sds-stack" data-sds-gap="md">
-                  <span class="sds-card-label">Stack at large · end aligned · XL gap</span>
-                  <div class="sds-flex" data-sds-stack-at="lg" data-sds-align="end" data-sds-justify="center" data-sds-gap="xl">
+                  <span class="sds-card-label">Stack at large · XL gap</span>
+                  <div class="sds-cluster" data-sds-stack-at="lg" data-sds-gap="xl">
                     <span>Stacks below 48rem of container space</span>
                     <button type="button" data-sds-variant="tonal">Large action</button>
                   </div>
                 </div>
                 <div class="sds-card sds-stack" data-sds-gap="md">
-                  <span class="sds-card-label">Stack at extra large · stretch aligned · 2XL gap</span>
-                  <div class="sds-flex" data-sds-stack-at="xl" data-sds-align="stretch" data-sds-justify="end" data-sds-gap="2xl">
+                  <span class="sds-card-label">Stack at extra large · 2XL gap</span>
+                  <div class="sds-cluster" data-sds-stack-at="xl" data-sds-gap="2xl">
                     <span>Stacks below 64rem of container space</span>
                     <button type="button">Extra-large action</button>
                   </div>
@@ -1635,7 +1611,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
               <details class="sds-disclosure">
                 <summary>Application shell preview</summary>
-              <div class="sds-app" data-sds-variant="application" data-sds-margin-block-start="lg">
+              <div class="sds-app" data-sds-variant="application">
                 <header class="sds-app-mobile-header">
                   <button type="button"
                     data-sds-shape="icon"
@@ -1712,10 +1688,10 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       </div>
                     </footer>
                     <aside
-                      class="sds-app-action-bar sds-flex"
+                      class="sds-app-action-bar"
                       aria-label="Preview actions"
                     >
-                      <strong data-sds-grow>Unsaved changes</strong>
+                      <strong>Unsaved changes</strong>
                       <button type="button" data-sds-variant="outlined">Discard</button>
                       <button type="button">Save</button>
                     </aside>
@@ -1726,7 +1702,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
               <details class="sds-disclosure">
                 <summary>Simple application shell preview</summary>
-              <div class="sds-app" data-sds-variant="simple" data-sds-margin-block-start="lg">
+              <div class="sds-app" data-sds-variant="simple">
                 <header class="sds-app-header">
                   <a class="sds-app-brand" href="#composition">
                     <span class="sds-app-brand-prefix">SEI</span>
@@ -1763,10 +1739,10 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     </div>
                   </footer>
                   <aside
-                    class="sds-app-action-bar sds-flex"
+                    class="sds-app-action-bar"
                     aria-label="Preview actions"
                   >
-                    <strong data-sds-grow>Unsaved changes</strong>
+                    <strong>Unsaved changes</strong>
                     <button type="button" data-sds-variant="outlined">Discard</button>
                     <button type="button">Save</button>
                   </aside>
@@ -1776,7 +1752,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
               <details class="sds-disclosure">
                 <summary>Brochure site shell preview</summary>
-              <div id="brochure-preview-top" class="sds-app" data-sds-variant="brochure" data-sds-margin-block-start="lg">
+              <div id="brochure-preview-top" class="sds-app" data-sds-variant="brochure">
                 <div>
                   <header class="sds-brochure-header">
                     <div class="sds-brochure-masthead">
@@ -1917,7 +1893,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   </nav>
                   <footer><small>Updated a moment ago</small></footer>
                 </aside>
-                <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="sm" data-sds-padding="xl">
+                <div class="sds-stack" data-sds-gap="sm">
                   <p class="sds-eyebrow">Reviews</p>
                   <h3>Open reviews</h3>
                   <p>
@@ -1986,7 +1962,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
               <article class="sds-card sds-stack">
                 <h3>Timeline tones and current step</h3>
-                <ol class="sds-timeline">
+                <ol class="sds-timeline" data-sds-orientation="vertical">
                   <li class="sds-timeline-item" data-sds-tone="neutral">
                     <h3>Created</h3>
                     <p>The project record was created.</p>
@@ -2051,7 +2027,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Prose API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -2178,7 +2154,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <article id="default-prose-tones" class="sds-card sds-stack">
                 <h3>Prose tones</h3>
                 <p>Prose defaults to neutral when <code>data-sds-tone</code> is omitted.</p>
-                <div class="sds-flex" data-sds-wrap data-sds-align="center">
+                <div class="sds-cluster" >
                   <div class="sds-prose"><a href="#prose">Default · neutral</a></div>
                   <div class="sds-prose" data-sds-tone="neutral"><a href="#prose">Neutral</a></div>
                   <div class="sds-prose" data-sds-tone="accent"><a href="#prose">Accent</a></div>
@@ -2202,7 +2178,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Tabs API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -2395,7 +2371,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Overlays API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -2429,7 +2405,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </details>
 
-            <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="xl">
+            <div class="sds-stack" data-sds-gap="xl">
               <article class="sds-card sds-stack">
                 <h3>Dropdowns</h3>
                 <div class="sds-action-group">
@@ -2522,7 +2498,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <span id="after-help" class="sds-tooltip-content" role="tooltip" popover="manual">Placed after the trigger.</span>
                   </sds-tooltip>
 
-                  <div class="sds-flex" data-sds-wrap data-sds-align="center" data-sds-gap="sm" data-sds-width="full">
+                  <div class="sds-cluster" data-sds-gap="sm" data-sds-width="full">
                     <strong>Tooltip sizes</strong>
                     <sds-tooltip size="sm">
                       <button type="button" data-sds-variant="text" aria-describedby="tooltip-size-sm">Small</button>
@@ -2641,7 +2617,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <p>Communicate short waits and preserve page structure while content is loading.</p>
               </div>
             </div>
-            <details class="sds-card sds-disclosure" data-sds-padding="lg">
+            <details class="sds-card sds-disclosure">
               <summary>Loading API and example</summary>
               <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
                 <div class="sds-prose">
@@ -2668,8 +2644,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <article id="default-spinner-tones" class="sds-card sds-stack">
                 <h3>Spinner tones and sizes</h3>
                 <h4>Tones</h4>
-                <div class="sds-flex" data-sds-wrap data-sds-align="center">
-                  <span class="sds-flex" data-sds-align="center" data-sds-gap="sm">
+                <div class="sds-cluster" >
+                  <span class="sds-cluster" data-sds-gap="sm">
                     <span class="sds-spinner" role="status" aria-label="Loading with the default neutral tone"></span>
                     <span>Default · neutral</span>
                   </span>
@@ -2681,7 +2657,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <span class="sds-spinner" data-sds-tone="danger" role="status" aria-label="Loading danger"></span>
                 </div>
                 <h4>Sizes</h4>
-                <div class="sds-flex" data-sds-wrap data-sds-align="center">
+                <div class="sds-cluster" >
                   <span class="sds-spinner" data-sds-size="sm" data-sds-tone="neutral" role="status" aria-label="Loading small"></span>
                   <span class="sds-spinner" data-sds-tone="neutral" role="status" aria-label="Loading medium"></span>
                   <span class="sds-spinner" data-sds-size="lg" data-sds-tone="neutral" role="status" aria-label="Loading large"></span>
@@ -2690,7 +2666,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </article>
               <article class="sds-card sds-stack">
                 <h3>Skeleton</h3>
-                <div class="sds-grid" data-sds-orientation="vertical" data-sds-gap="md" role="status" aria-label="Loading content">
+                <div class="sds-stack" data-sds-gap="md" role="status" aria-label="Loading content">
                   <div class="sds-skeleton" aria-hidden="true"></div>
                   <div class="sds-skeleton" aria-hidden="true"></div>
                   <div class="sds-skeleton" aria-hidden="true"></div>

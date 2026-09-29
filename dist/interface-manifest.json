@@ -30,11 +30,6 @@
       "values": ["full"]
     },
     {
-      "name": "data-sds-place-self",
-      "description": "Aligns a direct grid child within its grid area on both axes.",
-      "values": ["start", "center", "end", "stretch"]
-    },
-    {
       "name": "data-sds-padding",
       "description": "Applies tokenized padding on every side.",
       "family": "space"
@@ -166,7 +161,6 @@
         "data-sds-size": ["xs", "sm", "md", "lg", "xl"],
         "data-sds-density": ["compact"],
         "data-sds-shape": ["icon"],
-        "data-sds-avatar": [],
         "data-sds-block": []
       },
       "defaults": {
@@ -175,7 +169,6 @@
         "data-sds-size": "md",
         "data-sds-density": "comfortable",
         "data-sds-shape": "text",
-        "data-sds-avatar": false,
         "data-sds-block": false
       }
     },
@@ -475,6 +468,9 @@
       "category": "Content and data",
       "classes": ["sds-timeline", "sds-timeline-item", "sds-timeline-marker"],
       "description": "Vertical or horizontal event sequence.",
+      "requirements": [
+        "Add tabindex=\"0\" to a horizontal timeline so keyboard users can reach horizontally overflowed content."
+      ],
       "options": {
         "data-sds-orientation": ["horizontal", "vertical"],
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"]
@@ -516,63 +512,41 @@
       "name": "grid",
       "category": "Layout",
       "classes": ["sds-grid"],
-      "description": "Responsive equal-width grid.",
+      "description": "Responsive equal-width column layout.",
       "options": {
         "data-sds-columns": ["1", "2", "3", "4", "5", "6"],
         "data-sds-min-column-width": ["sm", "md", "lg", "xl", "2xl"],
-        "data-sds-orientation": ["horizontal", "vertical"],
-        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
-        "data-sds-place-items": ["start", "center", "end", "stretch"]
+        "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"]
       },
       "defaults": {
         "data-sds-columns": "automatic",
         "data-sds-min-column-width": "md",
-        "data-sds-orientation": "horizontal",
-        "data-sds-gap": "lg",
-        "data-sds-place-items": "stretch"
+        "data-sds-gap": "lg"
       }
     },
     {
-      "name": "flex",
+      "name": "cluster",
       "category": "Layout",
-      "classes": ["sds-flex"],
-      "description": "Configurable flex layout.",
+      "classes": ["sds-cluster"],
+      "description": "Wrapping flex row for related content.",
       "options": {
-        "data-sds-orientation": ["horizontal", "vertical"],
-        "data-sds-wrap": [],
-        "data-sds-align": ["start", "center", "end", "stretch"],
-        "data-sds-justify": ["start", "center", "end", "between"],
         "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
-        "data-sds-stack-at": ["sm", "md", "lg", "xl"],
-        "data-sds-grow": [],
-        "data-sds-no-shrink": []
-      },
-      "optionTargets": {
-        "data-sds-grow": ".sds-flex > *",
-        "data-sds-no-shrink": ".sds-flex > *"
+        "data-sds-stack-at": ["sm", "md", "lg", "xl"]
       },
       "defaults": {
-        "data-sds-orientation": "horizontal",
-        "data-sds-wrap": false,
-        "data-sds-align": "stretch",
-        "data-sds-justify": "start",
         "data-sds-gap": "lg",
-        "data-sds-stack-at": "none",
-        "data-sds-grow": false,
-        "data-sds-no-shrink": false
+        "data-sds-stack-at": "none"
       }
     },
     {
       "name": "stack",
       "category": "Layout",
       "classes": ["sds-stack"],
-      "description": "Intrinsic vertical layout for content with consistent spacing.",
+      "description": "Vertical content flow with consistent spacing.",
       "options": {
-        "data-sds-align": ["start", "center", "end", "stretch"],
         "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"]
       },
       "defaults": {
-        "data-sds-align": "stretch",
         "data-sds-gap": "lg"
       }
     },

@@ -23,7 +23,6 @@ classes, options, custom-element attributes, properties, methods, and events.
 | `data-sds-width` | Recipe or overlay width |
 | `data-sds-orientation` | `horizontal`, `vertical` |
 | `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |
-| `data-sds-place-self` | `start`, `center`, `end`, `stretch` on a direct grid child |
 
 Spacing utilities accept `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`,
 `3xl`, or `4xl`:
@@ -38,14 +37,12 @@ Spacing utilities accept `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`,
 | `data-sds-padding-inline-start` | `data-sds-margin-inline-start` | Inline start |
 | `data-sds-padding-inline-end` | `data-sds-margin-inline-end` | Inline end |
 
-Other documented recipe options include `data-sds-align`,
-`data-sds-avatar`, `data-sds-block`, `data-sds-callout-close`, `data-sds-columns`,
-`data-sds-column-span`, `data-sds-density`, `data-sds-divided`, `data-sds-grow`, `data-sds-inset`,
-`data-sds-justify`, `data-sds-min-column-width`, `data-sds-no-shrink`,
-`data-sds-place-items`, `data-sds-return-value`, `data-sds-stack-at`,
+Other documented recipe options include `data-sds-block`,
+`data-sds-callout-close`, `data-sds-columns`, `data-sds-column-span`,
+`data-sds-density`, `data-sds-divided`, `data-sds-inset`,
+`data-sds-min-column-width`, `data-sds-return-value`, `data-sds-stack-at`,
 `data-sds-row-highlight`, `data-sds-shape`, `data-sds-side`, `data-sds-standalone`,
-`data-sds-sticky`, `data-sds-toast-close`, `data-sds-toast-open`, and
-`data-sds-wrap`.
+`data-sds-sticky`, `data-sds-toast-close`, and `data-sds-toast-open`.
 
 Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 `popover`, `closedby`, `command`, `commandfor`, and ARIA attributes.
@@ -101,7 +98,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-list-marker` | Marker column |
 | `.sds-table` | Application data table |
 | `.sds-table-container` | Horizontally scrollable table wrapper |
-| `.sds-timeline` | Event sequence |
+| `.sds-timeline` | Vertical or horizontal event sequence |
 | `.sds-timeline-item` | Timeline event |
 | `.sds-timeline-marker` | Custom event marker |
 
@@ -109,15 +106,15 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 
 | Class | Purpose |
 |---|---|
-| `.sds-flex` | Configurable flex layout |
-| `.sds-grid` | Responsive equal-width grid |
+| `.sds-cluster` | Wrapping flex row for related content |
+| `.sds-grid` | Responsive equal-width column layout |
 | `.sds-page` | Centered page content |
 | `.sds-page-header` | Sticky page title and actions |
 | `.sds-section-header` | Section title, description, and actions |
 | `.sds-sidebar` | Persistent or mobile navigation |
 | `.sds-sidebar-close` | Mobile-sidebar close control |
 | `.sds-sidebar-layout` | Contained sidebar and content |
-| `.sds-stack` | Intrinsic vertical content layout |
+| `.sds-stack` | Vertical content flow with consistent spacing |
 
 ### Navigation and overlays
 

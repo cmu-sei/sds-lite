@@ -163,6 +163,10 @@
     background: light-dark(var(--sds-blue-500), var(--sds-blue-700));
   }
 
+  :where(.sds-app-action-bar > :first-child) {
+    margin-inline-end: auto;
+  }
+
   :where(.sds-app-action-bar :is(button, .sds-button)) {
     --sds-button-tone-color: var(--sds-white);
     --sds-button-tone-color-hover: var(--sds-white);

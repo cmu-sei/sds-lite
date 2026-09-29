@@ -23,6 +23,15 @@ const reference = (
   await Promise.all(documentationFiles.map((file) => readFile(file, 'utf8')))
 ).join('\n')
 const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
+const interfaceManifest = JSON.parse(
+  await readFile('interface-manifest.json', 'utf8'),
+)
+
+function markdownSection(source, heading) {
+  const start = source.indexOf(`## ${heading}`)
+  const end = source.indexOf('\n## ', start + 1)
+  return source.slice(start, end === -1 ? undefined : end)
+}
 
 test('CDN documentation uses the versioned GitHub repository location', async () => {
   const cdnGuide = await readFile('docs/installation/cdn.md', 'utf8')
@@ -143,6 +152,62 @@ test('documentation lists every public data attribute', async () => {
   for (const attribute of attributes) {
     assert.match(reference, new RegExp(`\\b${attribute}\\b`), attribute)
   }
+})
+
+test('CSS reference lists every public foundation property', async () => {
+  const tokens = await readFile('src/css/tokens.css', 'utf8')
+  const cssReference = await readFile('docs/reference/css.md', 'utf8')
+  const foundation = tokens.slice(
+    0,
+    tokens.indexOf(
+      ':where(:root, [data-sds-root]) {\n    color-scheme:',
+    ),
+  )
+  const properties = matches(foundation, /(--sds-[a-z0-9-]+)\s*:/g)
+
+  for (const property of properties) {
+    const primitiveFamily = /^--sds-(gray|purple|blue|red|green|orange)-\d+$/.test(
+      property,
+    )
+    const semanticToneFamily =
+      /^--sds-color-(neutral|accent|info|success|warning|danger)-(surface|border|text|strong|strong-hover|on-strong)$/.test(
+        property,
+      )
+    assert.ok(
+      cssReference.includes(property) ||
+        (primitiveFamily && cssReference.includes('--sds-gray-{25')) ||
+        (semanticToneFamily && cssReference.includes('--sds-color-{tone}-')),
+      property,
+    )
+  }
+})
+
+test('component guide tone defaults agree with the public interface', async () => {
+  const forms = await readFile('docs/components/forms.md', 'utf8')
+  const navigation = await readFile('docs/components/navigation.md', 'utf8')
+  const feedback = await readFile('docs/components/feedback.md', 'utf8')
+  const switchTone = interfaceManifest.recipes
+    .find((recipe) => recipe.name === 'switch')
+    .defaults['data-sds-tone']
+  const tabsTone = interfaceManifest.customElements
+    .find((element) => element.tagName === 'sds-tabs')
+    .attributes.find((attribute) => attribute.name === 'tone').default
+  const toastTone = interfaceManifest.customElements
+    .find((element) => element.tagName === 'sds-toast')
+    .attributes.find((attribute) => attribute.name === 'tone').default
+
+  assert.match(
+    markdownSection(forms, 'Switch'),
+    new RegExp('data-sds-tone[^\\n]+\\| `' + switchTone + '` \\|'),
+  )
+  assert.match(
+    markdownSection(navigation, 'Tabs'),
+    new RegExp('\\| `tone` \\|[^\\n]+\\| `' + tabsTone + '` \\|'),
+  )
+  assert.match(
+    markdownSection(feedback, 'Toast'),
+    new RegExp('\\| `tone` \\|[^\\n]+\\| `' + toastTone + '` \\|'),
+  )
 })
 
 test('documentation lists every package entry', async () => {

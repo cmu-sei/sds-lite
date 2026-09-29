@@ -120,7 +120,7 @@ narrower than `18rem`:
 ```
 
 See [Responsive composition](./components/layout.md#responsive-composition) for
-container-aware flex layouts, fluid spacing, and custom thresholds.
+container-aware Cluster layouts, fluid spacing, and custom thresholds.
 
 ## 4. Add accessible behavior
 

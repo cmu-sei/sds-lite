@@ -366,7 +366,7 @@ remain intact.
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-size` on label | `sm`, `md`, `lg` | `md` |
-| `data-sds-tone` on label | Any semantic tone | Accent |
+| `data-sds-tone` on label | Any semantic tone | `info` |
 | `checked` on input | Native checked state | Unchecked |
 | `disabled` on input | Native disabled state | Enabled |
 | `aria-invalid="true"` on input | Invalid semantics and appearance | Valid or unknown |

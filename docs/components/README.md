@@ -11,7 +11,7 @@ that expresses the interaction, then copy the smallest documented structure.
 | Data entry | [Forms](./forms.md) | Form, field, input, select, combobox, textarea, checkbox, radio, switch, file input |
 | Status and notifications | [Feedback](./feedback.md) | Badge, tag, callout, toast |
 | Structured information | [Data display](./data-display.md) | Avatar, card, datapoint, list, timeline, table |
-| Page composition | [Layout](./layout.md) | Grid, flex, page, section, sidebar, application shells |
+| Page composition | [Layout](./layout.md) | Grid, Cluster, Stack, page, sidebar, application shells |
 | Selection and menus | [Navigation](./navigation.md) | Tabs, pagination, dropdown, disclosure |
 | Floating and modal content | [Overlays](./overlays.md) | Tooltip, popover, dialog, panel |
 | Waiting and no-results states | [Loading](./loading.md) | Spinner, skeleton, empty state |

@@ -128,7 +128,7 @@ test('recipe omission defaults use audited implementation values', () => {
     ['timeline:data-sds-tone', 'unaccented'],
     ['table:data-sds-sticky', 'none'],
     ['grid:data-sds-columns', 'automatic'],
-    ['flex:data-sds-stack-at', 'none'],
+    ['cluster:data-sds-stack-at', 'none'],
     ['dialog:data-sds-return-value', ''],
     ['panel:data-sds-return-value', ''],
     ['dropdown-parts:data-sds-tone', 'neutral'],
@@ -193,6 +193,22 @@ test('CSS recipe attributes are namespaced and declared', async () => {
   }
 })
 
+test('every declared recipe option has an implementation reference', async () => {
+  const files = [
+    ...(await filesUnder('src', '.css')),
+    ...(await filesUnder('src/elements', '.ts')),
+  ]
+  const source = (
+    await Promise.all(files.map((file) => readFile(file, 'utf8')))
+  ).join('\n')
+
+  for (const recipe of manifest.recipes) {
+    for (const option of Object.keys(recipe.options)) {
+      assert.ok(source.includes(option), `${recipe.name}:${option}`)
+    }
+  }
+})
+
 test('manifest values and targets reflect implemented recipe behavior', async () => {
   const css = (
     await Promise.all(
@@ -235,9 +251,11 @@ test('manifest values and targets reflect implemented recipe behavior', async ()
     manifest.recipes.find((recipe) => recipe.name === 'timeline').optionTargets['data-sds-tone'],
     '.sds-timeline-item',
   )
-  for (const attribute of ['data-sds-column-span', 'data-sds-place-self']) {
-    assert.ok(globalAttributes.has(attribute))
-  }
+  assert.match(
+    manifest.recipes.find((recipe) => recipe.name === 'timeline').requirements.join(' '),
+    /tabindex="0"/,
+  )
+  assert.ok(globalAttributes.has('data-sds-column-span'))
 })
 
 test('value-bearing controls and reflected element interfaces are explicit', async () => {
@@ -281,6 +299,48 @@ test('value-bearing controls and reflected element interfaces are explicit', asy
         `${element.tagName} event ${event.name} must have a DOM event type`,
       )
     }
+  }
+})
+
+test('custom-element host attributes and reflected properties are all declared', async () => {
+  for (const element of manifest.customElements) {
+    const source = await readFile(
+      `src/elements/${element.tagName.slice(4)}.ts`,
+      'utf8',
+    )
+    const declaredAttributes = new Set(
+      element.attributes.map((attribute) => attribute.name),
+    )
+    const implementedAttributes = new Set([
+      ...Array.from(
+        source.matchAll(/this\.(?:getAttribute|hasAttribute)\('([a-z][a-z0-9-]+)'\)/g),
+        (match) => match[1],
+      ),
+      ...Array.from(
+        source.matchAll(/readNumberAttribute\(this, '([a-z][a-z0-9-]+)'/g),
+        (match) => match[1],
+      ),
+    ].filter((name) => name !== 'role' && !name.startsWith('aria-')))
+    assert.deepEqual(
+      [...implementedAttributes].sort(),
+      [...declaredAttributes].sort(),
+      element.tagName,
+    )
+
+    const declaredProperties = new Set(
+      element.members
+        .filter((member) => member.kind === 'field')
+        .map((member) => member.name),
+    )
+    const implementedProperties = captures(
+      source,
+      /^  get ([A-Za-z][A-Za-z0-9]*)\(\):/gm,
+    )
+    assert.deepEqual(
+      [...implementedProperties].sort(),
+      [...declaredProperties].sort(),
+      element.tagName,
+    )
   }
 })
 

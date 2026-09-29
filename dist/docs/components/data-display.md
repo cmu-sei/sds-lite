@@ -187,8 +187,15 @@ item. Set a consistent marker column when needed:
 ```
 
 Each item accepts any semantic tone. Mark the current event with
-`aria-current="step"`. Add `data-sds-orientation="horizontal"` and `tabindex="0"` to the timeline for
-a horizontally scrolling sequence. The tab stop lets keyboard users reach
+`aria-current="step"`.
+
+| Option | Target | Values | Default |
+|---|---|---|---|
+| `data-sds-orientation` | `.sds-timeline` | `horizontal`, `vertical` | `vertical` |
+| `data-sds-tone` | `.sds-timeline-item` | All semantic tones | Unaccented |
+
+For a horizontal sequence, set `data-sds-orientation="horizontal"` and
+`tabindex="0"` on `.sds-timeline`. The tab stop lets keyboard users reach
 content that overflows the viewport.
 
 Replace a generated dot with a direct marker:

@@ -12,7 +12,7 @@
 | `@cmu-sei/sds-lite/vue` | Generated Vue custom-element types |
 | `@cmu-sei/sds-lite/html-data.json` | Editor HTML custom data |
 | `@cmu-sei/sds-lite/interface-manifest.json` | Machine-readable recipe interface |
-| `@cmu-sei/sds-lite/sds.css` | Core, layouts, prose, tokens, and utilities |
+| `@cmu-sei/sds-lite/sds.css` | Core, layout primitives, prose, tokens, and spacing utilities |
 | `@cmu-sei/sds-lite/brand.css` | SEI application and brochure shells |
 
 Recommended:

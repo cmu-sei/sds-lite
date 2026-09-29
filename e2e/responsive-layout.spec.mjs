@@ -8,7 +8,7 @@ const gridColumnWidths = {
   '2xl': 512,
 }
 
-const flexStackWidths = {
+const clusterStackWidths = {
   sm: 480,
   md: 640,
   lg: 768,
@@ -36,10 +36,9 @@ test('Overview actions stack on mobile and share a row on desktop', async ({ pag
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
 
-  const group = page.locator('#overview .sds-overview-actions')
+  const group = page.locator('#overview > .sds-cluster')
   const actions = group.locator(':scope > a')
   await expect(actions).toHaveCount(2)
-  await expect(group).toHaveCSS('align-items', 'stretch')
   const geometry = await actions.evaluateAll((links) =>
     links.map((link) => {
       const rect = link.getBoundingClientRect()
@@ -162,40 +161,6 @@ test('column count caps a grid while the minimum controls collapse', async ({
   })
   await expect.poll(columnCount).toBe(3)
 
-  await grid.evaluate((element) => {
-    element.dataset.sdsOrientation = 'vertical'
-  })
-  await expect.poll(columnCount).toBe(1)
-})
-
-test('grid placement aligns items and supports direct-child overrides', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  const results = await page.evaluate(() => {
-    const grid = document.createElement('div')
-    const item = document.createElement('span')
-    grid.className = 'sds-grid'
-    grid.append(item)
-    document.querySelector('[data-sds-root]')?.append(grid)
-
-    return ['start', 'center', 'end', 'stretch'].map((value) => {
-      grid.dataset.sdsPlaceItems = value
-      item.dataset.sdsPlaceSelf = value
-      return {
-        items: getComputedStyle(grid).placeItems,
-        self: getComputedStyle(item).placeSelf,
-      }
-    })
-  })
-
-  expect(results).toEqual(
-    ['start', 'center', 'end', 'stretch'].map((value) => ({
-      items: value,
-      self: value,
-    })),
-  )
 })
 
 test('component and layout size presets map to their documented dimensions', async ({
@@ -223,8 +188,8 @@ test('component and layout size presets map to their documented dimensions', asy
       fileSurfaceLgPadding: style(
         '.sds-file-upload[data-sds-size="lg"] .sds-file-upload-surface',
       ).paddingTop,
-      flex3xlGap: style('.sds-flex[data-sds-gap="3xl"]').gap,
-      flex4xlGap: style('.sds-flex[data-sds-gap="4xl"]').gap,
+      cluster3xlGap: style('.sds-cluster[data-sds-gap="3xl"]').gap,
+      cluster4xlGap: style('.sds-cluster[data-sds-gap="4xl"]').gap,
       grid4xlGap: style('.sds-grid[data-sds-gap="4xl"]').gap,
       linkMd: style(
         '[role="group"][aria-label="Link sizes"] [data-sds-size="md"]',
@@ -258,8 +223,8 @@ test('component and layout size presets map to their documented dimensions', asy
     datapointXl: '64px',
     fileActionLg: '16px',
     fileSurfaceLgPadding: '32px',
-    flex3xlGap: '48px',
-    flex4xlGap: '64px',
+    cluster3xlGap: '48px',
+    cluster4xlGap: '64px',
     grid4xlGap: '64px',
     linkMd: '16px',
     proseLg: '18px',
@@ -274,40 +239,151 @@ test('component and layout size presets map to their documented dimensions', asy
   })
 })
 
-test('flex children stack based on container width', async ({ page }) => {
+test('cluster children stack based on container width', async ({ page }) => {
   await page.goto('/')
 
   await page.evaluate(() => {
-    const flex = document.createElement('div')
-    flex.id = 'responsive-flex'
-    flex.className = 'sds-flex'
-    flex.dataset.sdsStackAt = 'md'
-    flex.style.width = '41rem'
-    flex.append(
+    const cluster = document.createElement('div')
+    cluster.id = 'responsive-cluster'
+    cluster.className = 'sds-cluster'
+    cluster.dataset.sdsStackAt = 'md'
+    cluster.style.width = '41rem'
+    cluster.append(
       Object.assign(document.createElement('div'), { textContent: 'First' }),
       Object.assign(document.createElement('div'), { textContent: 'Second' }),
     )
-    document.querySelector('[data-sds-root]')?.append(flex)
+    document.querySelector('[data-sds-root]')?.append(cluster)
   })
 
-  const flex = page.locator('#responsive-flex')
+  const cluster = page.locator('#responsive-cluster')
   const childrenShareRow = () =>
-    flex.locator(':scope > div').evaluateAll(
+    cluster.locator(':scope > div').evaluateAll(
       ([first, second]) => first.offsetTop === second.offsetTop,
     )
 
   await expect.poll(childrenShareRow).toBe(true)
 
-  await flex.evaluate((element) => {
+  await cluster.evaluate((element) => {
     element.style.width = '39rem'
   })
   await expect.poll(childrenShareRow).toBe(false)
+})
 
-  await flex.evaluate((element) => {
-    element.dataset.sdsOrientation = 'vertical'
+test('layout primitives shrink within their parent and preserve their axes', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  await page.evaluate(() => {
+    const parent = document.createElement('div')
+    parent.id = 'constrained-layout-parent'
+    parent.style.display = 'flex'
+    parent.style.width = '240px'
+
+    for (const name of ['grid', 'cluster', 'stack']) {
+      const layout = document.createElement('div')
+      layout.id = `constrained-${name}`
+      layout.className = `sds-${name}`
+      layout.dataset.sdsGap = 'lg'
+      layout.style.flex = '1 1 auto'
+      layout.append(
+        Object.assign(document.createElement('div'), {
+          textContent: 'Unbreakable-content-that-must-not-size-the-layout',
+        }),
+        document.createElement('div'),
+      )
+      parent.append(layout)
+    }
+
+    document.querySelector('[data-sds-root]')?.append(parent)
   })
-  await expect(flex).toHaveCSS('flex-direction', 'column')
-  await expect(flex).toHaveCSS('flex-wrap', 'nowrap')
+
+  const parent = page.locator('#constrained-layout-parent')
+  const grid = page.locator('#constrained-grid')
+  const cluster = page.locator('#constrained-cluster')
+  const stack = page.locator('#constrained-stack')
+
+  for (const layout of [grid, cluster, stack]) {
+    await expect(layout).toHaveCSS('min-inline-size', '0px')
+    await expect(layout).toHaveCSS('gap', '16px')
+    expect(await layout.evaluate((element) => element.offsetWidth)).toBeLessThan(
+      await parent.evaluate((element) => element.offsetWidth),
+    )
+  }
+
+  await expect(grid).toHaveCSS('display', 'grid')
+  await expect(cluster).toHaveCSS('display', 'flex')
+  await expect(cluster).toHaveCSS('flex-direction', 'row')
+  await expect(cluster).toHaveCSS('flex-wrap', 'wrap')
+  await expect(stack).toHaveCSS('display', 'flex')
+  await expect(stack).toHaveCSS('flex-direction', 'column')
+})
+
+test('the playground demonstrates wrapping and responsive clusters', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/#composition')
+
+  const wrappingExample = page.locator('#cluster-example')
+  await expect(wrappingExample).toHaveCSS('display', 'flex')
+  await expect(wrappingExample).toHaveCSS('flex-wrap', 'wrap')
+  await expect(wrappingExample).toHaveCSS('gap', '8px')
+
+  const actions = page.locator('#cluster-stack-example > button')
+  const shareRow = () =>
+    actions.evaluateAll(
+      ([first, second]) => first.offsetTop === second.offsetTop,
+    )
+
+  await expect.poll(shareRow).toBe(true)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect.poll(shareRow).toBe(false)
+})
+
+test('timelines support vertical and keyboard-reachable horizontal layouts', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/#content')
+
+  const vertical = page.locator(
+    '.sds-timeline[data-sds-orientation="vertical"]',
+  )
+  const verticalItems = vertical.locator(':scope > .sds-timeline-item')
+  const verticalPositions = await verticalItems.evaluateAll((items) =>
+    items.slice(0, 2).map((item) => ({
+      left: item.getBoundingClientRect().left,
+      top: item.getBoundingClientRect().top,
+    })),
+  )
+  expect(verticalPositions[1].top).toBeGreaterThan(verticalPositions[0].top)
+  expect(verticalPositions[1].left).toBe(verticalPositions[0].left)
+
+  const horizontal = page.getByRole('list', { name: 'Release progress' })
+  const horizontalItems = horizontal.locator(':scope > .sds-timeline-item')
+  await expect(horizontal).toHaveAttribute('data-sds-orientation', 'horizontal')
+  await expect(horizontal).toHaveAttribute('tabindex', '0')
+  await expect(horizontal).toHaveCSS('grid-auto-flow', 'column')
+  await expect(horizontal).toHaveCSS('overflow-x', 'auto')
+
+  const horizontalLayout = await horizontal.evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  }))
+  expect(horizontalLayout.scrollWidth).toBeGreaterThan(horizontalLayout.clientWidth)
+
+  const horizontalPositions = await horizontalItems.evaluateAll((items) =>
+    items.slice(0, 2).map((item) => ({
+      left: item.getBoundingClientRect().left,
+      top: item.getBoundingClientRect().top,
+    })),
+  )
+  expect(horizontalPositions[1].left).toBeGreaterThan(horizontalPositions[0].left)
+  expect(horizontalPositions[1].top).toBe(horizontalPositions[0].top)
+
+  await horizontal.focus()
+  await expect(horizontal).toBeFocused()
 })
 
 test('responsive size names map to every documented threshold', async ({
@@ -316,11 +392,11 @@ test('responsive size names map to every documented threshold', async ({
   await page.goto('/')
 
   const results = await page.evaluate(
-    async ({ gridColumnWidths, flexStackWidths }) => {
+    async ({ gridColumnWidths, clusterStackWidths }) => {
       const root = document.querySelector('[data-sds-root]')
       const nextLayout = () =>
         new Promise((resolve) => requestAnimationFrame(() => resolve()))
-      const actual = { grid: {}, gridCaps: {}, flex: {} }
+      const actual = { grid: {}, gridCaps: {}, cluster: {} }
 
       const grid = document.createElement('div')
       grid.className = 'sds-grid'
@@ -346,21 +422,21 @@ test('responsive size names map to every documented threshold', async ({
           getComputedStyle(grid).gridTemplateColumns.split(' ').length
       }
 
-      const flex = document.createElement('div')
-      flex.className = 'sds-flex'
-      flex.append(document.createElement('div'), document.createElement('div'))
-      root?.append(flex)
+      const cluster = document.createElement('div')
+      cluster.className = 'sds-cluster'
+      cluster.append(document.createElement('div'), document.createElement('div'))
+      root?.append(cluster)
 
-      for (const [size, threshold] of Object.entries(flexStackWidths)) {
-        flex.dataset.sdsStackAt = size
-        flex.style.width = `${threshold + 16}px`
+      for (const [size, threshold] of Object.entries(clusterStackWidths)) {
+        cluster.dataset.sdsStackAt = size
+        cluster.style.width = `${threshold + 16}px`
         await nextLayout()
-        const [first, second] = flex.children
+        const [first, second] = cluster.children
         const above = first.offsetTop === second.offsetTop
 
-        flex.style.width = `${threshold - 16}px`
+        cluster.style.width = `${threshold - 16}px`
         await nextLayout()
-        actual.flex[size] = {
+        actual.cluster[size] = {
           above,
           below: first.offsetTop !== second.offsetTop,
         }
@@ -368,13 +444,13 @@ test('responsive size names map to every documented threshold', async ({
 
       return actual
     },
-    { gridColumnWidths, flexStackWidths },
+    { gridColumnWidths, clusterStackWidths },
   )
 
   expect(results).toEqual({
     grid: { sm: 5, md: 4, lg: 3, xl: 2, '2xl': 1 },
     gridCaps: { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 },
-    flex: {
+    cluster: {
       sm: { above: true, below: true },
       md: { above: true, below: true },
       lg: { above: true, below: true },
@@ -484,7 +560,10 @@ test('catalog compositions group related options and reflow before crowding', as
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
-  await page.locator('#getting-started > details > summary').click()
+  await page.evaluate(() => document.fonts.ready)
+  const setupDisclosure = page.locator('#getting-started > details')
+  await setupDisclosure.locator(':scope > summary').click()
+  await expect(setupDisclosure).toHaveAttribute('open', '')
 
   const desktopSetupCards = await page
     .locator('#getting-started > details > .sds-grid > article')
@@ -520,7 +599,7 @@ test('catalog compositions group related options and reflow before crowding', as
 
   await expect(
     page.locator('#actions > details.sds-card').first(),
-  ).toHaveCSS('padding-top', '16px')
+  ).toHaveCSS('padding-top', '32px')
 
   await page.setViewportSize({ width: 800, height: 900 })
   const setupCards = await page

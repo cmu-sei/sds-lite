@@ -60,8 +60,8 @@ Then scope SDS Lite to your application:
 </div>
 ```
 
-`sds.css` includes foundations, common recipes, layout recipes, prose, tokens,
-and utilities. `/auto` sets up comboboxes, dialogs, panels, dropdowns, popovers, tabs,
+`sds.css` includes foundations, common recipes, layout primitives, prose, tokens,
+and spacing utilities. `/auto` sets up comboboxes, dialogs, panels, dropdowns, popovers, tabs,
 tooltips, toasts, and mobile sidebars. It also exports `notify()` for
 application notifications.
 

@@ -11,15 +11,25 @@ describes the content:
 | Need | Use |
 |---|---|
 | Cards or fields that should add columns when space permits | `.sds-grid` |
-| A row that should stack when its container becomes narrow | `.sds-flex[data-sds-stack-at]` |
+| Related items that should wrap or stack when narrow | `.sds-cluster[data-sds-stack-at]` |
 | Content that is always vertical | `.sds-stack` |
 | Fluid gap or padding between supported bounds | Authored CSS with `clamp()` and SDS spacing tokens |
 | An unusual structural threshold | A small authored container query |
 
-Grid and flex respond to the space available to the layout, so the same markup
+Grid and Cluster respond to the space available to the layout, so the same markup
 works in a page, sidebar, dialog, or embedded region. Use media queries for
 viewport-owned behavior such as application navigation, not as the default way
 to compose local content.
+
+### Primitive names
+
+Grid, Cluster, and Stack name compositional patterns, not raw CSS display
+values. Grid creates responsive equal-width columns. Cluster is a wrapping
+flex row for related items. Stack creates a vertical content flow. Cluster and
+Stack use Flexbox internally, but intentionally do not expose the full Flexbox
+interface; Grid likewise does not mirror the full CSS Grid interface. Use
+authored CSS when direct control over alignment, distribution, tracks, growth,
+or shrinking is part of the application design.
 
 ### Fluid spacing
 
@@ -38,25 +48,22 @@ grow gradually, override the standard CSS property with bounded token values:
 
 Unlayered application CSS overrides SDS Lite's layered defaults without
 specificity escalation. `clamp()` is best for scalar values such as `gap` and
-`padding`; use grid, flex, or a container query for structural changes.
+`padding`; use Grid, Cluster, or a container query for structural changes.
 
 ### Custom thresholds
 
-The built-in flex thresholds cover most compositions. When content has a
+The built-in Cluster thresholds cover most compositions. When content has a
 specific minimum width that does not match them, keep that decision local:
 
 ```html
-<div class="sds-flex report-actions">
+<div class="sds-cluster report-actions">
   <button type="button">Export report</button>
   <button type="button">Create report</button>
 </div>
 ```
 
 ```css
-.report-actions {
-  container-type: inline-size;
-  flex-wrap: wrap;
-}
+.report-actions { container-type: inline-size; }
 
 @container (max-width: 36rem) {
   .report-actions > * {
@@ -70,7 +77,8 @@ attributes to SDS Lite.
 
 ## Grid
 
-`.sds-grid` creates responsive equal-width columns:
+`.sds-grid` creates responsive equal-width columns and can shrink safely when
+nested in a flex or grid parent:
 
 ```html
 <div class="sds-grid">
@@ -84,11 +92,8 @@ attributes to SDS Lite.
 |---|---|---|
 | `data-sds-columns` | `1`, `2`, `3`, `4`, `5`, `6` | Automatic fit |
 | `data-sds-min-column-width` | `sm`, `md`, `lg`, `xl`, `2xl` | `md` |
-| `data-sds-orientation` | `horizontal`, `vertical` | `horizontal` |
 | `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | `lg` |
-| `data-sds-place-items` | `start`, `center`, `end`, `stretch` | `stretch` |
 | `data-sds-column-span` on a direct child | `full` | One column |
-| `data-sds-place-self` on a direct child | `start`, `center`, `end`, `stretch` | Inherits the grid |
 
 The automatic grid chooses its column count from the space available to the
 grid, rather than the viewport. Use `data-sds-min-column-width` to describe
@@ -117,57 +122,37 @@ how much room each column's content needs:
 By itself, `data-sds-columns` creates an exact column count. When combined
 with `data-sds-min-column-width`, it becomes the maximum column count: the
 example above uses up to three columns and collapses to two or one when each
-column would otherwise become narrower than `18rem`. Vertical orientation
-creates one column, takes precedence over both, and keeps its rows packed at
-their intrinsic height instead of stretching them to fill a taller container.
+column would otherwise become narrower than `18rem`.
 
 Use `data-sds-column-span="full"` when one direct child, such as a file upload
 or summary, should occupy every available grid column.
 
-Use `data-sds-place-items` to align every item within its grid area on both
-axes. Add `data-sds-place-self` to a direct child when one item needs different
-alignment:
+For item alignment, custom tracks, or other application-specific grid behavior,
+use authored CSS. SDS Lite intentionally does not mirror the full CSS Grid
+interface through attributes.
 
-```html
-<div class="sds-grid" data-sds-place-items="center">
-  <span class="sds-badge">Centered</span>
-  <span class="sds-badge" data-sds-place-self="end">End aligned</span>
-</div>
-```
-
-Both attributes intentionally accept a single logical value. For independent
-axis control or track distribution, use authored layout CSS rather than
-expanding the utility interface with the full CSS Box Alignment grammar.
-
-## Flex
+## Cluster
 
 ```html
 <div
-  class="sds-flex"
+  class="sds-cluster"
   data-sds-stack-at="md"
-  data-sds-align="center"
-  data-sds-justify="between"
   data-sds-gap="sm"
 >
-  <div data-sds-grow>Uses remaining space</div>
-  <button type="button" data-sds-no-shrink>Action</button>
+  <span class="sds-badge">Research</span>
+  <span class="sds-badge">Engineering</span>
+  <button type="button">Add team</button>
 </div>
 ```
 
 | Option | Values | Default |
 |---|---|---|
-| `data-sds-orientation` | `horizontal`, `vertical` | `horizontal` |
-| `data-sds-wrap` | Presence | No wrapping |
 | `data-sds-stack-at` | `sm`, `md`, `lg`, `xl` | No automatic stacking |
-| `data-sds-align` | `start`, `center`, `end`, `stretch` | `stretch` |
-| `data-sds-justify` | `start`, `center`, `end`, `between` | `start` |
 | `data-sds-gap` | `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` | `lg` |
-| `data-sds-grow` on a direct child | Presence | Content-sized |
-| `data-sds-no-shrink` on a direct child | Presence | May shrink |
 
-`data-sds-stack-at` keeps direct children in a row while they have enough
-space and gives each child a full row when the flex container reaches the
-selected width:
+Cluster is a wrapping flex row. It arranges related items horizontally, centers
+them on the cross axis, and wraps when necessary. `data-sds-stack-at` gives
+each direct child a full row when the cluster reaches the selected width:
 
 | Value | Stack at or below |
 |---|---:|
@@ -178,10 +163,8 @@ selected width:
 
 ```html
 <header
-  class="sds-flex"
+  class="sds-cluster"
   data-sds-stack-at="md"
-  data-sds-align="center"
-  data-sds-justify="between"
 >
   <div>
     <h1>Projects</h1>
@@ -194,15 +177,15 @@ selected width:
 </header>
 ```
 
-The threshold uses the flex container's own available width, so the same
+The threshold uses the cluster's own available width, so the same
 markup works in a full page, sidebar, dialog, or embedded region. It does not
-depend on the viewport. Explicit vertical orientation remains vertical at
-every width.
+depend on the viewport. Use authored CSS when an application needs different
+alignment or distribution.
 
 ## Stack
 
-Use `.sds-stack` for intrinsic vertical content instead of configuring a grid
-or flex layout:
+Use `.sds-stack` for vertical content flow instead of configuring a Grid or
+Cluster:
 
 ```html
 <article class="sds-card sds-stack" data-sds-gap="xl">
@@ -213,12 +196,10 @@ or flex layout:
 ```
 
 `data-sds-gap` accepts the shared gap scale and defaults to `lg`.
-`data-sds-align` accepts `start`, `center`, `end`, or `stretch`, and defaults
-to `stretch`.
 
 ## Spacing utilities
 
-Add tokenized margin or padding to any element without writing CSS:
+Add tokenized margin or padding without a build step or application stylesheet:
 
 ```html
 <section
@@ -235,39 +216,19 @@ Every spacing attribute accepts:
 none | 2xs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl
 ```
 
-`none` removes the selected spacing. The other values use the corresponding
-[`--sds-space-*` token](../reference/css.md#spacing).
-
 | Padding | Margin | Sides |
 |---|---|---|
 | `data-sds-padding` | `data-sds-margin` | Every side |
-| `data-sds-padding-block` | `data-sds-margin-block` | Block start and end |
-| `data-sds-padding-inline` | `data-sds-margin-inline` | Inline start and end |
-| `data-sds-padding-block-start` | `data-sds-margin-block-start` | Usually top |
-| `data-sds-padding-block-end` | `data-sds-margin-block-end` | Usually bottom |
-| `data-sds-padding-inline-start` | `data-sds-margin-inline-start` | Usually left |
-| `data-sds-padding-inline-end` | `data-sds-margin-inline-end` | Usually right |
+| `data-sds-padding-block` | `data-sds-margin-block` | Block axis |
+| `data-sds-padding-inline` | `data-sds-margin-inline` | Inline axis |
+| `data-sds-padding-block-start` | `data-sds-margin-block-start` | Block start |
+| `data-sds-padding-block-end` | `data-sds-margin-block-end` | Block end |
+| `data-sds-padding-inline-start` | `data-sds-margin-inline-start` | Inline start |
+| `data-sds-padding-inline-end` | `data-sds-margin-inline-end` | Inline end |
 
-Logical directions adapt automatically to the page's writing direction. In a
-right-to-left language, for example, `inline-start` is the right side.
-
-Combine attributes from broadest to most specific:
-
-```html
-<div
-  data-sds-padding="lg"
-  data-sds-padding-block="sm"
-  data-sds-padding-block-start="none"
->
-  No padding at the top, small padding at the bottom, and large padding
-  at the sides.
-</div>
-```
-
-One-sided attributes override axis attributes, and axis attributes override
-the all-sides attribute. Spacing utilities also override spacing supplied by
-an SDS recipe, while unlayered application CSS can override the utility as
-usual. For unusual values, use standard CSS with an SDS token:
+The explicit logical names remain understandable without remembering shorthand
+and adapt to the document's writing direction. For unusual values, use
+standard CSS with an SDS token:
 
 ```html
 <div style="margin-block-start: calc(var(--sds-space-lg) * 1.5)">

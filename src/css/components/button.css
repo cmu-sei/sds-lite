@@ -387,4 +387,57 @@
       --sds-button-color: var(--sds-button-hover-color);
     }
   }
+
+  :where(
+    .sds-callout [data-sds-callout-close],
+    .sds-dialog-header
+      > :is([command="close"], [command="request-close"]),
+    .sds-panel
+      > header
+      > :is([command="close"], [command="request-close"]),
+    sds-toast [data-sds-toast-close]
+  ):not([data-sds-variant]) {
+    --sds-button-background: transparent;
+    --sds-button-border: transparent;
+    --sds-button-color: var(
+      --sds-tone-text,
+      var(--sds-color-text-muted)
+    );
+  }
+
+  @media (hover: hover) {
+    :where(
+      .sds-callout [data-sds-callout-close],
+      .sds-dialog-header
+        > :is([command="close"], [command="request-close"]),
+      .sds-panel
+        > header
+        > :is([command="close"], [command="request-close"]),
+      sds-toast [data-sds-toast-close]
+    ):not([data-sds-variant], :disabled, [aria-disabled="true"]):hover {
+      --sds-button-background: var(--sds-button-ghost-hover-background);
+      --sds-button-border: transparent;
+      --sds-button-color: var(
+        --sds-tone-text,
+        var(--sds-color-text-muted)
+      );
+    }
+  }
+
+  :where(
+    .sds-callout [data-sds-callout-close],
+    .sds-dialog-header
+      > :is([command="close"], [command="request-close"]),
+    .sds-panel
+      > header
+      > :is([command="close"], [command="request-close"]),
+    sds-toast [data-sds-toast-close]
+  ):not([data-sds-variant], :disabled, [aria-disabled="true"]):active {
+    --sds-button-background: var(--sds-button-ghost-active);
+    --sds-button-border: transparent;
+    --sds-button-color: var(
+      --sds-tone-text,
+      var(--sds-color-text-muted)
+    );
+  }
 }

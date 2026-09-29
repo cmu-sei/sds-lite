@@ -6,22 +6,6 @@
     gap: var(--sds-space-lg);
   }
 
-  :where(.sds-stack[data-sds-align="start"]) {
-    align-items: flex-start;
-  }
-
-  :where(.sds-stack[data-sds-align="center"]) {
-    align-items: center;
-  }
-
-  :where(.sds-stack[data-sds-align="end"]) {
-    align-items: flex-end;
-  }
-
-  :where(.sds-stack[data-sds-align="stretch"]) {
-    align-items: stretch;
-  }
-
   :where(.sds-stack[data-sds-gap="none"]) {
     gap: 0;
   }

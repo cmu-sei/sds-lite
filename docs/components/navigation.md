@@ -25,7 +25,7 @@ first enabled tab is used when it is omitted.
 |---|---|---|
 | `variant` | `folder`, `block`, `underline` | `folder` |
 | `size` | `md`, `lg` | `md` |
-| `tone` | All semantic tones | `accent` |
+| `tone` | All semantic tones | `info` |
 | `activation` | `automatic`, `manual` | `automatic` |
 | `orientation` | `horizontal`, `vertical` | `horizontal` |
 | `value` | Selected tab value | Selected tab's `value` or `id` |
