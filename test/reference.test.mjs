@@ -182,6 +182,29 @@ test('CSS reference lists every public foundation property', async () => {
   }
 })
 
+test('public motion tokens use the documented three-tier scale', async () => {
+  const tokens = await readFile('src/css/tokens.css', 'utf8')
+  const cssReference = await readFile('docs/reference/css.md', 'utf8')
+  const motionReference = markdownSection(cssReference, 'Motion')
+  const expectedProperties = new Set([
+    '--sds-duration-fast',
+    '--sds-duration-normal',
+    '--sds-duration-slow',
+    '--sds-easing-standard',
+    '--sds-easing-enter',
+    '--sds-easing-exit',
+  ])
+
+  assert.deepEqual(
+    matches(tokens, /(--sds-(?:duration|easing)-[a-z0-9-]+)\s*:/g),
+    expectedProperties,
+  )
+  assert.deepEqual(
+    matches(motionReference, /(--sds-(?:duration|easing)-[a-z0-9-]+)/g),
+    expectedProperties,
+  )
+})
+
 test('component guide tone defaults agree with the public interface', async () => {
   const forms = await readFile('docs/components/forms.md', 'utf8')
   const navigation = await readFile('docs/components/navigation.md', 'utf8')

@@ -27,8 +27,8 @@
     appearance: none;
     cursor: pointer;
     transition:
-      background-color var(--sds-duration-medium) var(--sds-easing-standard),
-      background-position var(--sds-duration-medium)
+      background-color var(--sds-duration-normal) var(--sds-easing-standard),
+      background-position var(--sds-duration-normal)
         var(--sds-easing-standard);
   }
 

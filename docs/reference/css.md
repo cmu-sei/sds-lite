@@ -76,7 +76,6 @@ logical-property interface. Use authored CSS for values outside the token scale.
 ```text
 --sds-duration-fast
 --sds-duration-normal
---sds-duration-medium
 --sds-duration-slow
 --sds-easing-standard
 --sds-easing-enter
