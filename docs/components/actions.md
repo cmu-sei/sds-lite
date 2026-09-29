@@ -19,8 +19,8 @@ Native buttons inside an SDS root are styled automatically. Use
 
 | Option | Values | Default |
 |---|---|---|
-| `data-sds-variant` | `filled`, `tonal`, `outlined`, `text` | `filled` |
-| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Blue info action |
+| `data-sds-variant` | `filled`, `tonal`, `outlined`, `text` | `filled`; icon buttons use `text` |
+| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Info; icon buttons use `neutral` |
 | `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
 | `data-sds-density` | `compact` | Comfortable |
 | `data-sds-shape` | `icon` | Text button |
@@ -58,6 +58,21 @@ Every icon-only control needs an accessible name:
 ```html
 <button type="button" data-sds-shape="icon" aria-label="Close">
   <span aria-hidden="true">&times;</span>
+</button>
+```
+
+Icon buttons are neutral text controls by default. Set `data-sds-variant` and
+`data-sds-tone` when an icon action needs stronger emphasis:
+
+```html
+<button
+  type="button"
+  data-sds-shape="icon"
+  data-sds-variant="filled"
+  data-sds-tone="danger"
+  aria-label="Delete"
+>
+  &times;
 </button>
 ```
 

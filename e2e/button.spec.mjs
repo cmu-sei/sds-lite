@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('dismiss controls are quiet while ordinary icon actions remain filled', async ({
+test('icon buttons are quiet by default and filled variants opt in', async ({
   page,
 }) => {
   await page.goto('/')
@@ -18,7 +18,19 @@ test('dismiss controls are quiet while ordinary icon actions remain filled', asy
   }
 
   const ordinaryIconAction = page.getByRole('button', { name: 'Add item' })
-  await expect(ordinaryIconAction).not.toHaveCSS(
+  await expect(ordinaryIconAction).toHaveCSS(
+    'background-color',
+    'rgba(0, 0, 0, 0)',
+  )
+  await expect(ordinaryIconAction).toHaveCSS(
+    'border-color',
+    'rgba(0, 0, 0, 0)',
+  )
+
+  const filledIconAction = page.locator(
+    '[data-sds-shape="icon"][data-sds-variant="filled"][aria-label="Delete"]',
+  )
+  await expect(filledIconAction).not.toHaveCSS(
     'background-color',
     'rgba(0, 0, 0, 0)',
   )

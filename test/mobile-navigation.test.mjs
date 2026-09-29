@@ -40,6 +40,19 @@ test('mobile menu triggers appear before the application brand', () => {
   )
 })
 
+test('mobile menu controls rely on icon-button defaults', () => {
+  for (const source of [catalogHtml, documentation]) {
+    const controls = source.match(
+      /<button\b(?=[^>]*\bdata-sds-shape="icon")(?=[^>]*\baria-label="(?:Open|Close) navigation")[^>]*>/gs,
+    )
+
+    assert.equal(controls?.length, 2)
+    for (const control of controls) {
+      assert.doesNotMatch(control, /data-sds-(?:tone|variant)=/)
+    }
+  }
+})
+
 test('mobile menu icons use centered, font-independent geometry', () => {
   const documentedMarkup = `${catalogHtml}\n${documentation}`
   const menuIcons = documentedMarkup.match(
