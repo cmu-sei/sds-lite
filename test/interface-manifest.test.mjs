@@ -114,6 +114,7 @@ test('tone-aware interfaces default to a semantic tone', () => {
 
 test('recipe omission defaults use audited implementation values', () => {
   const expected = new Map([
+    ['button:data-sds-variant', 'filled for text buttons; text for icon buttons'],
     ['button:data-sds-density', 'comfortable'],
     ['button:data-sds-shape', 'text'],
     ['link:data-sds-variant', 'primary'],

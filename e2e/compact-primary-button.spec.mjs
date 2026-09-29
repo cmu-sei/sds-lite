@@ -13,7 +13,9 @@ test('compact primary buttons retain on-accent text', async ({ page }) => {
   await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)')
 })
 
-test('density and shape preserve the omitted filled variant', async ({ page }) => {
+test('density and shape apply their documented omission defaults', async ({
+  page,
+}) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.locator('[data-sds-root]').evaluate((root) => {
@@ -23,6 +25,7 @@ test('density and shape preserve the omitted filled variant', async ({ page }) =
         <button data-test-button="regular">Regular</button>
         <button data-test-button="compact" data-sds-density="compact">Compact</button>
         <button data-test-button="icon" data-sds-shape="icon" aria-label="Add">+</button>
+        <button data-test-button="icon-text" data-sds-shape="icon" data-sds-variant="text" aria-label="Edit">+</button>
       </div>`,
     )
   })
@@ -38,7 +41,7 @@ test('density and shape preserve the omitted filled variant', async ({ page }) =
 
   const defaultColors = await colors('regular')
   await expect.poll(() => colors('compact')).toEqual(defaultColors)
-  await expect.poll(() => colors('icon')).toEqual(defaultColors)
+  await expect.poll(() => colors('icon')).toEqual(await colors('icon-text'))
 
   const regular = page.locator('[data-test-button="regular"]')
   await regular.hover()
@@ -49,7 +52,10 @@ test('density and shape preserve the omitted filled variant', async ({ page }) =
   expect(await colors('compact')).toEqual(hoverColors)
   await page.locator('[data-test-button="icon"]').hover()
   await settle('icon')
-  expect(await colors('icon')).toEqual(hoverColors)
+  const iconHoverColors = await colors('icon')
+  await page.locator('[data-test-button="icon-text"]').hover()
+  await settle('icon-text')
+  expect(await colors('icon-text')).toEqual(iconHoverColors)
 
   await page.locator('[data-test-button]').evaluateAll(async (buttons) => {
     for (const button of buttons) button.setAttribute('aria-disabled', 'true')
@@ -59,7 +65,7 @@ test('density and shape preserve the omitted filled variant', async ({ page }) =
   })
   const disabledColors = await colors('regular')
   expect(await colors('compact')).toEqual(disabledColors)
-  expect(await colors('icon')).toEqual(disabledColors)
+  expect(await colors('icon')).toEqual(await colors('icon-text'))
 })
 
 test('catalog shows every compact button variant across tones', async ({

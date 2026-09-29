@@ -164,7 +164,7 @@
         "data-sds-block": []
       },
       "defaults": {
-        "data-sds-variant": "filled",
+        "data-sds-variant": "filled for text buttons; text for icon buttons",
         "data-sds-tone": "info",
         "data-sds-size": "md",
         "data-sds-density": "comfortable",
