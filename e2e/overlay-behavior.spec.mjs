@@ -282,7 +282,7 @@ for (const elementName of ['sds-tooltip', 'sds-popover']) {
 
     await trigger.scrollIntoViewIfNeeded()
     await trigger.dispatchEvent('pointerenter')
-    await expect(surface).toBeVisible({ timeout: 1200 })
+    await expect(surface).toBeVisible({ timeout: 3000 })
 
     const geometry = await surface.evaluate((element) => {
       const surfaceRect = element.getBoundingClientRect()

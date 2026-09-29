@@ -1,19 +1,25 @@
-name: Release Package
+name: Finalize Release
 
 on:
-  release:
-    types: [published]
+  pull_request:
+    branches: [main]
+    types: [closed]
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-${{ github.event.release.tag_name }}
+  group: release-${{ github.event.pull_request.head.ref }}
   cancel-in-progress: false
 
 jobs:
   build:
     name: Build release artifact
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'release/v') &&
+      contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
@@ -22,17 +28,17 @@ jobs:
       version: ${{ steps.release.outputs.version }}
 
     steps:
-      - name: Check out the released source
+      - name: Check out the merged release
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
           fetch-depth: 0
           persist-credentials: false
 
       - name: Verify the release commit is on main
         run: |
           if ! git merge-base --is-ancestor HEAD refs/remotes/origin/main; then
-            echo "::error::Release tags must point to a commit on main"
+            echo "::error::The merged release commit must be on main"
             exit 1
           fi
 
@@ -45,12 +51,22 @@ jobs:
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
 
+      - name: Validate release pull request
+        env:
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+          RELEASE_PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/validate-release-pr.mjs
+
       - name: Validate release metadata
         id: release
-        env:
-          IS_PRERELEASE: ${{ github.event.release.prerelease }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: node scripts/validate-release.mjs
+        run: |
+          VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json')).version")"
+          if [[ "$VERSION" == *-beta.* ]]; then
+            IS_PRERELEASE=true
+          else
+            IS_PRERELEASE=false
+          fi
+          RELEASE_TAG="v$VERSION" IS_PRERELEASE="$IS_PRERELEASE" node scripts/validate-release.mjs
 
       - name: Install dependencies
         run: npm ci --ignore-scripts
@@ -58,14 +74,14 @@ jobs:
       - name: Install browser engines
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Preserve the tagged distribution
-        run: cp -R dist "$RUNNER_TEMP/tagged-dist"
+      - name: Preserve the committed distribution
+        run: cp -R dist "$RUNNER_TEMP/committed-dist"
 
       - name: Build and test
         run: npm test
 
-      - name: Verify the tagged distribution is current
-        run: diff --recursive --brief "$RUNNER_TEMP/tagged-dist" dist
+      - name: Verify the committed distribution is current
+        run: diff --recursive --brief "$RUNNER_TEMP/committed-dist" dist
 
       - name: Verify the package contents and size
         run: npm run check:package
@@ -82,20 +98,27 @@ jobs:
           retention-days: 7
 
   publish:
-    name: Publish to GitHub Packages
+    name: Publish release
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: ${{ needs.build.outputs.dist-tag == 'latest' && 'github-packages-production' || 'github-packages-beta' }}
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
+      - name: Check out the released commit
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 22.18.0
+          node-version-file: .nvmrc
           registry-url: https://npm.pkg.github.com
           scope: "@cmu-sei"
 
@@ -118,37 +141,92 @@ jobs:
           fi
           echo "tarball=${TARBALLS[0]}" >> "$GITHUB_OUTPUT"
 
-      - name: Verify the version is unpublished
+      - name: Inspect an existing GitHub release
+        id: github-release
+        env:
+          DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+          EXPECTED_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: v${{ needs.build.outputs.version }}
+        run: |
+          RELEASE_DATA="$(gh release view "$TAG" --json isDraft,isPrerelease)"
+          IS_DRAFT="$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")"
+          ACTUAL_PRERELEASE="$(node -e 'console.log(JSON.parse(process.argv[1]).isPrerelease)' "$RELEASE_DATA")"
+          EXPECTED_PRERELEASE=$([[ "$DIST_TAG" == beta ]] && echo true || echo false)
+          if [[ "$ACTUAL_PRERELEASE" != "$EXPECTED_PRERELEASE" ]]; then
+            echo "::error::$TAG has the wrong prerelease setting"
+            exit 1
+          fi
+          if [[ "$IS_DRAFT" == false ]]; then
+            TAG_COMMIT="$(git rev-list -n 1 "$TAG")"
+            if [[ "$TAG_COMMIT" != "$EXPECTED_COMMIT" ]]; then
+              echo "::error::$TAG points to $TAG_COMMIT instead of $EXPECTED_COMMIT"
+              exit 1
+            fi
+          fi
+          echo "draft=$IS_DRAFT" >> "$GITHUB_OUTPUT"
+
+      - name: Verify package publication state
+        id: registry
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGE_NAME: ${{ needs.build.outputs.package-name }}
+          RELEASE_IS_DRAFT: ${{ steps.github-release.outputs.draft }}
+          TARBALL: ${{ steps.artifact.outputs.tarball }}
           VERSION: ${{ needs.build.outputs.version }}
         run: |
           set +e
-          RESULT="$(npm view "$PACKAGE_NAME@$VERSION" version --json 2>&1)"
+          RESULT="$(npm view "$PACKAGE_NAME@$VERSION" dist.shasum --json 2>&1)"
           STATUS=$?
           set -e
           if [[ "$STATUS" -eq 0 ]]; then
-            echo "::error::$PACKAGE_NAME@$VERSION is already published"
-            exit 1
-          fi
-          if ! grep -q 'E404' <<< "$RESULT"; then
+            if [[ "$RELEASE_IS_DRAFT" == true ]]; then
+              echo "::error::$PACKAGE_NAME@$VERSION already exists while its GitHub release is still a draft"
+              exit 1
+            fi
+            REMOTE_SHASUM="$(node -e 'console.log(JSON.parse(process.argv[1]))' "$RESULT")"
+            LOCAL_SHASUM="$(shasum "$TARBALL" | cut -d ' ' -f 1)"
+            if [[ "$REMOTE_SHASUM" != "$LOCAL_SHASUM" ]]; then
+              echo "::error::Published package checksum does not match the tested artifact"
+              exit 1
+            fi
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          elif grep -q 'E404' <<< "$RESULT"; then
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          else
             echo "::error::Could not verify whether $PACKAGE_NAME@$VERSION exists"
             printf '%s\n' "$RESULT"
             exit 1
           fi
 
       - name: Dry-run publication
+        if: steps.registry.outputs.published == 'false'
         env:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
         run: npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts --dry-run
 
+      - name: Publish the reviewed GitHub release
+        if: steps.github-release.outputs.draft == 'true'
+        env:
+          DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+          EXPECTED_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: v${{ needs.build.outputs.version }}
+        run: |
+          gh release edit "$TAG" --target "$EXPECTED_COMMIT" --draft=false
+          git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
+          TAG_COMMIT="$(git rev-list -n 1 "$TAG")"
+          if [[ "$TAG_COMMIT" != "$EXPECTED_COMMIT" ]]; then
+            echo "::error::$TAG points to $TAG_COMMIT instead of $EXPECTED_COMMIT"
+            exit 1
+          fi
+
       - name: Publish to GitHub Packages
+        if: steps.registry.outputs.published == 'false'
         env:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
-        run: |
-          npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts
+        run: npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts
