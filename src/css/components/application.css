@@ -215,7 +215,7 @@
     --sds-radius-container: 0;
 
     justify-content: space-between;
-    background: var(--sds-color-background);
+    background: var(--sds-color-surface-default);
   }
 
   :where(.sds-brochure-container) {
@@ -244,7 +244,7 @@
   :where(.sds-cmu-wordmark) {
     display: block;
     inline-size: 100%;
-    aspect-ratio: 728.14 / 64.49;
+    block-size: var(--sds-space-xl);
     background-color: currentColor;
     -webkit-mask: url("../../assets/sei-wordmark.svg") left top / 117% auto
       no-repeat;
@@ -309,19 +309,27 @@
 
   :where(.sds-brochure-main) {
     flex: 1;
-    padding-block: var(--sds-space-lg) var(--sds-space-2xl);
+    padding-block: var(--sds-space-2xl);
   }
 
   :where(.sds-brochure-footer-links) {
-    padding-block: var(--sds-space-2xl);
-    background: var(--sds-color-surface-default);
+    padding-block: var(--sds-space-lg);
+    background: var(--sds-color-surface-subtle);
+  }
+
+  :where(.sds-brochure-footer-links .sds-link) {
+    color: var(--sds-color-text-default);
+  }
+
+  :where(.sds-brochure-footer-links .sds-link)::after {
+    color: var(--sds-color-brand);
   }
 
   :where(.sds-brochure-footer-actions) {
     display: flex;
     flex-direction: column;
     gap: var(--sds-space-lg) var(--sds-space-2xl);
-    margin: 0;
+    margin-block: 0;
     padding: 0;
     list-style: none;
   }

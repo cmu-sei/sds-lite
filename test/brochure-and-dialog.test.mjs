@@ -45,13 +45,63 @@ test('brochure chrome includes the official header and legal footer content', ()
   assert.doesNotMatch(demo, /Subscribe to SEI updates/)
 })
 
-test('brochure uses the public application background', () => {
+test('brochure uses the public site colors and spacing', () => {
   const brochureRule = applicationCss.match(
     /:where\(\.sds-app\[data-sds-variant="brochure"\]\)\s*\{([^}]*)\}/s,
   )
+  const wordmarkRule = applicationCss.match(
+    /:where\(\.sds-cmu-wordmark\)\s*\{([^}]*)\}/s,
+  )
+  const mainRule = applicationCss.match(
+    /:where\(\.sds-brochure-main\)\s*\{([^}]*)\}/s,
+  )
+  const footerLinksRule = applicationCss.match(
+    /:where\(\.sds-brochure-footer-links\)\s*\{([^}]*)\}/s,
+  )
+  const footerLinkRule = applicationCss.match(
+    /:where\(\.sds-brochure-footer-links \.sds-link\)\s*\{([^}]*)\}/s,
+  )
+  const footerLinkArrowRule = applicationCss.match(
+    /:where\(\.sds-brochure-footer-links \.sds-link\)::after\s*\{([^}]*)\}/s,
+  )
+  const footerActionsRule = applicationCss.match(
+    /:where\(\.sds-brochure-footer-actions\)\s*\{([^}]*)\}/s,
+  )
 
   assert.ok(brochureRule)
-  assert.match(brochureRule[1], /background:\s*var\(--sds-color-background\)/)
+  assert.ok(wordmarkRule)
+  assert.ok(mainRule)
+  assert.ok(footerLinksRule)
+  assert.ok(footerLinkRule)
+  assert.ok(footerLinkArrowRule)
+  assert.ok(footerActionsRule)
+  assert.match(
+    brochureRule[1],
+    /background:\s*var\(--sds-color-surface-default\)/,
+  )
+  assert.match(wordmarkRule[1], /block-size:\s*var\(--sds-space-xl\)/)
+  assert.match(
+    mainRule[1],
+    /padding-block:\s*var\(--sds-space-2xl\)/,
+  )
+  assert.match(
+    footerLinksRule[1],
+    /background:\s*var\(--sds-color-surface-subtle\)/,
+  )
+  assert.match(
+    footerLinksRule[1],
+    /padding-block:\s*var\(--sds-space-lg\)/,
+  )
+  assert.match(
+    footerLinkRule[1],
+    /color:\s*var\(--sds-color-text-default\)/,
+  )
+  assert.match(
+    footerLinkArrowRule[1],
+    /color:\s*var\(--sds-color-brand\)/,
+  )
+  assert.match(footerActionsRule[1], /margin-block:\s*0/)
+  assert.doesNotMatch(footerActionsRule[1], /margin:\s*0/)
   assert.doesNotMatch(applicationCss, /--sds-color-default/)
 })
 
