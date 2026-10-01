@@ -1,4 +1,8 @@
 declare const HTMLElementBase: typeof HTMLElement;
+export interface SdsComboboxSelectDetail {
+    option: HTMLLIElement;
+    value: string;
+}
 export declare class SdsComboboxElement extends HTMLElementBase {
     private input;
     private list;
@@ -38,9 +42,7 @@ declare global {
         'sds-combobox': SdsComboboxElement;
     }
     interface HTMLElementEventMap {
-        'sds-select': CustomEvent<{
-            option: HTMLLIElement;
-        }>;
+        'sds-select': CustomEvent<SdsComboboxSelectDetail>;
     }
 }
 export declare function registerSdsCombobox(): void;

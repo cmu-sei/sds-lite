@@ -120,6 +120,16 @@ Applications must still:
 - provide skip navigation for large page shells;
 - avoid shortcuts that conflict with browser or assistive-technology keys.
 
+Place a skip link before repeated page navigation in large shells:
+
+```html
+<a class="sds-skip-link" href="#main-content">Skip to main content</a>
+<main id="main-content">...</main>
+```
+
+The link becomes visible on focus. Point it to a stable, unique target at the
+start of the primary content.
+
 ## Notifications
 
 Use `role="status"` for ordinary updates. Use `role="alert"` only for urgent

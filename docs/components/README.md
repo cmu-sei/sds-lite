@@ -5,17 +5,35 @@
 SDS Lite components are semantic HTML recipes. Start with the native element
 that expresses the interaction, then copy the smallest documented structure.
 
+## Interface levels
+
+| Level | What to author | Examples |
+|---|---|---|
+| Native | A semantic HTML element; SDS Lite styles it inside an SDS root | Button, input, range, progress, meter |
+| CSS recipe | Semantic HTML plus an `sds-*` class that names a larger structure | Field, breadcrumb, card, pagination |
+| Enhanced element | An `sds-*` custom element around ordinary light-DOM markup | Combobox, tabs, dropdown, tooltip |
+
+Start at the first level and move down only when the interface needs more
+structure or behavior. Enhanced elements require automatic setup or an
+explicit `setupSds()` call; native elements and CSS recipes do not.
+
 | Need | Guide | Recipes |
 |---|---|---|
 | Actions and navigation links | [Actions](./actions.md) | Button, link, action group |
-| Data entry | [Forms](./forms.md) | Form, field, input, select, combobox, textarea, checkbox, radio, switch, file input |
+| Data entry | [Forms](./forms.md) | Form, field, input, select, range, input group, combobox, textarea, checkbox, radio, switch, file input |
 | Status and notifications | [Feedback](./feedback.md) | Badge, tag, callout, toast |
 | Structured information | [Data display](./data-display.md) | Avatar, card, datapoint, list, timeline, table |
-| Page composition | [Layout](./layout.md) | Grid, Cluster, Stack, page, sidebar, application shells |
-| Selection and menus | [Navigation](./navigation.md) | Tabs, pagination, dropdown, disclosure |
+| Page composition | [Layout](./layout.md) | Grid, Cluster, Stack, page, sidebar |
+| SEI-branded shells | [Layout](./layout.md#sei-application-shells) | Application, simple application, brochure |
+| Selection and menus | [Navigation](./navigation.md) | Breadcrumb, skip link, tabs, pagination, dropdown, disclosure |
 | Floating and modal content | [Overlays](./overlays.md) | Tooltip, popover, dialog, panel |
-| Waiting and no-results states | [Loading](./loading.md) | Spinner, skeleton, empty state |
+| Waiting and no-results states | [Loading](./loading.md) | Progress, meter, spinner, skeleton, empty state |
 | Long-form content | [Prose](./prose.md) | Article typography and embedded recipes |
+
+For patterns built from several existing recipes, use the
+[composition guide](../guides/composition-patterns.md). Accordion groups,
+error summaries, workflow steps, split actions, mode selection, and sortable
+tables do not require additional SDS Lite components.
 
 ## Shared option vocabulary
 

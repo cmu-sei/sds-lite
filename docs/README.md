@@ -16,6 +16,7 @@ without a framework or runtime dependency.
 | Use server rendering or hydration | [Server rendering](./guides/server-rendering.md) |
 | Change the theme or design tokens | [Theming and customization](./guides/theming.md) |
 | Review accessibility requirements | [Accessibility](./guides/accessibility.md) |
+| Compose common multi-recipe patterns | [Composition patterns](./guides/composition-patterns.md) |
 | Look up an export, event, class, or token | [API reference](./reference/README.md) |
 | Fix an integration problem | [Troubleshooting](./troubleshooting.md) |
 
@@ -82,6 +83,7 @@ interface to build an ordinary page.
 - [Framework integration](./guides/frameworks.md)
 - [Server rendering](./guides/server-rendering.md)
 - [Accessibility](./guides/accessibility.md)
+- [Composition patterns](./guides/composition-patterns.md)
 - [Theming and customization](./guides/theming.md)
 - [Browser support](./guides/browser-support.md)
 - [Troubleshooting](./troubleshooting.md)

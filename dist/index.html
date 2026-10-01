@@ -8,10 +8,11 @@
       content="Interactive SDS Lite playground with copy-ready NPM and CDN examples for every component."
     />
     <title>SDS Lite Interactive Playground</title>
-    <script type="module" crossorigin src="./assets/index-DRNb5Q12.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DeN0HVxZ.css">
+    <script type="module" crossorigin src="./assets/index-CEm8z-jx.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BbEK0Mn1.css">
   </head>
   <body data-sds-root>
+    <a class="sds-skip-link" data-sds-size="sm" href="#top">Skip to main content</a>
     <div class="sds-app">
       <header class="sds-app-mobile-header">
         <button type="button"
@@ -587,13 +588,13 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     aria-describedby="record-help" role="combobox" aria-autocomplete="list"
                     aria-controls="record-options" aria-expanded="false" />
                   <ul id="record-options" class="sds-combobox-list" role="listbox" popover="manual" hidden>
-                    <li id="record-atlas" role="option" aria-selected="false" data-label="Atlas" data-project-id="p-atlas">
+                    <li id="record-atlas" role="option" aria-selected="false" data-label="Atlas" data-sds-value="p-atlas">
                       <span class="sds-stack" data-sds-gap="none"><strong>Atlas</strong><small>Research · owner Avery</small></span>
                     </li>
-                    <li id="record-orion" role="option" aria-selected="false" data-label="Orion" data-project-id="p-orion">
+                    <li id="record-orion" role="option" aria-selected="false" data-label="Orion" data-sds-value="p-orion">
                       <span class="sds-stack" data-sds-gap="none"><strong>Orion</strong><small>Operations · owner Blair</small></span>
                     </li>
-                    <li id="record-vega" role="option" aria-selected="false" data-label="Vega" data-project-id="p-vega">
+                    <li id="record-vega" role="option" aria-selected="false" data-label="Vega" data-sds-value="p-vega">
                       <span class="sds-stack" data-sds-gap="none"><strong>Vega</strong><small>Engineering · owner Casey</small></span>
                     </li>
                   </ul>
@@ -667,6 +668,19 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <div class="sds-field">
                 <label for="number-input">Number</label>
                 <input id="number-input" type="number" value="12" />
+              </div>
+              <div class="sds-field">
+                <label for="budget-input">Budget in U.S. dollars</label>
+                <div class="sds-input-group" data-sds-size="md">
+                  <span class="sds-input-addon" aria-hidden="true">$</span>
+                  <input id="budget-input" type="number" value="1200" min="0" />
+                  <span class="sds-input-addon">USD</span>
+                </div>
+              </div>
+              <div class="sds-field">
+                <label for="range-input">Confidence</label>
+                <input id="range-input" type="range" value="70" data-sds-tone="info" data-sds-size="md" aria-describedby="range-value" />
+                <small id="range-value">70%</small>
               </div>
               <div class="sds-field">
                 <label for="date-input">Date</label>
@@ -2173,8 +2187,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <p class="sds-eyebrow">Navigation</p>
                 <h2 id="navigation-title">Tabs and pagination</h2>
                 <p>
-                  Tabs add keyboard behavior; pagination remains ordinary
-                  link navigation.
+                  Breadcrumbs and pagination remain ordinary link navigation;
+                  tabs add keyboard behavior where the platform needs help.
                 </p>
               </div>
             </div>
@@ -2214,6 +2228,17 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </div>
               </div>
             </details>
+
+            <article class="sds-card sds-stack">
+              <h3>Breadcrumb</h3>
+              <nav class="sds-breadcrumb" data-sds-size="md" aria-label="Breadcrumb">
+                <ol>
+                  <li><a href="#overview">Home</a></li>
+                  <li><a href="#content">Projects</a></li>
+                  <li><span aria-current="page">Atlas</span></li>
+                </ol>
+              </nav>
+            </article>
 
             <article class="sds-card sds-stack" data-sds-gap="2xl">
               <div>
@@ -2613,8 +2638,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Loading</p>
-                <h2 id="loading-title">Spinners and skeletons</h2>
-                <p>Communicate short waits and preserve page structure while content is loading.</p>
+                <h2 id="loading-title">Progress, spinners, and skeletons</h2>
+                <p>Communicate measurable work and short waits, or preserve page structure while content is loading.</p>
               </div>
             </div>
             <details class="sds-card sds-disclosure">
@@ -2630,6 +2655,11 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <ul>
                     <li><code>.sds-skeleton</code> reserves space while content loads</li>
                   </ul>
+                  <h3>Native progress</h3>
+                  <ul>
+                    <li><code>progress</code> reports task completion</li>
+                    <li><code>meter</code> reports a measurement within a known range</li>
+                  </ul>
                 </div>
                 <div>
                   <h3>Loading state</h3>
@@ -2640,6 +2670,16 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </div>
               </div>
             </details>
+            <article class="sds-card sds-grid" data-sds-columns="2" data-sds-min-column-width="lg">
+              <div class="sds-field">
+                <label for="catalog-progress">Upload progress</label>
+                <progress id="catalog-progress" value="68" max="100" data-sds-tone="info" data-sds-size="md">68%</progress>
+              </div>
+              <div class="sds-field">
+                <label for="catalog-meter">Storage used</label>
+                <meter id="catalog-meter" value="72" min="0" max="100" high="80" data-sds-size="md">72%</meter>
+              </div>
+            </article>
             <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
               <article id="default-spinner-tones" class="sds-card sds-stack">
                 <h3>Spinner tones and sizes</h3>

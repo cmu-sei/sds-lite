@@ -53,13 +53,32 @@ buttons and navigation stays links.
 Native `type`, `name`, `value`, `required`, `disabled`, and ARIA attributes
 are preserved.
 
+## Automated recipe crosswalk
+
+| Bootstrap | SDS Lite |
+|---|---|
+| `alert alert-{context}` | `sds-callout` with the matching semantic tone |
+| `badge bg-*` or `badge text-bg-*` | `sds-badge` with the matching semantic tone |
+| `spinner-border`, `spinner-grow` | `sds-spinner` |
+| `spinner-border-sm`, `spinner-grow-sm` | `data-sds-size="sm"` |
+| Spinner `text-{context}` | Matching `data-sds-tone` |
+| `table` | `sds-table` |
+| `table-hover` | `data-sds-row-highlight` |
+| `table-sm` | `data-sds-size="sm"` |
+
+Dismissible alerts and tables with unsupported visual modifiers remain
+unchanged with a warning because they require structural or design review.
+Alerts and badges with unknown context colors also remain unchanged rather
+than being assigned a guessed semantic tone.
+
 ## Manual work
 
 - Input groups, floating labels, checks/radios, switches, validation feedback,
   button groups, dropdown toggles, and JavaScript plugins require structural
   changes.
 - Bootstrap layout and utility classes are retained. Replace them separately;
-  the migrator cannot infer the intended SDS Lite layout.
+  the migrator cannot infer the intended SDS Lite layout. Recognized utility
+  families are included in the retained-marker report.
 - `data-bs-*` behavior, Sass variables, icons, and application scripts are not
   converted.
 - Dynamic `class`, `className`, or Vue `:class` values are left unchanged with

@@ -1,0 +1,42 @@
+@layer sds.components {
+  :where(.sds-breadcrumb > ol) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-sm);
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+    list-style: none;
+  }
+
+  :where(.sds-breadcrumb li) {
+    display: inline-flex;
+    gap: var(--sds-space-sm);
+    align-items: center;
+  }
+
+  :where(.sds-breadcrumb li + li)::before {
+    inline-size: 0.375rem;
+    block-size: 0.375rem;
+    border: solid currentColor;
+    border-width: 1px 1px 0 0;
+    color: var(--sds-color-border-strong);
+    content: "";
+    transform: rotate(45deg);
+  }
+
+  :where(.sds-breadcrumb [aria-current="page"]) {
+    color: var(--sds-color-text-default);
+    font-weight: 600;
+  }
+
+  :where(.sds-breadcrumb[data-sds-size="sm"] > ol) {
+    font-size: 0.75rem;
+  }
+
+  :where(.sds-breadcrumb[data-sds-size="lg"] > ol) {
+    font-size: 1rem;
+  }
+}

@@ -7,6 +7,8 @@
 @import './css/components/form.css';
 @import './css/components/field.css';
 @import './css/components/form-control.css';
+@import './css/components/input-group.css';
+@import './css/components/range.css';
 @import './css/components/combobox.css';
 @import './css/components/choice.css';
 @import './css/components/switch.css';
@@ -17,6 +19,7 @@
 @import './css/components/toaster.css';
 @import './css/components/toast.css';
 @import './css/components/spinner.css';
+@import './css/components/progress.css';
 @import './css/components/skeleton.css';
 @import './css/components/card.css';
 @import './css/components/list.css';
@@ -27,6 +30,8 @@
 @import './css/components/empty-state.css';
 @import './css/components/tabs.css';
 @import './css/components/pagination.css';
+@import './css/components/breadcrumb.css';
+@import './css/components/skip-link.css';
 @import './css/components/floating.css';
 @import './css/components/dropdown.css';
 @import './css/components/disclosure.css';

@@ -329,18 +329,21 @@ var w = typeof HTMLElement > "u" ? class {} : HTMLElement, ee = class extends w 
 			console.warn("<sds-combobox> option data-label must be nonempty.");
 			return;
 		}
-		let n = this.hasAttribute("keep-open");
-		n && (this.matchQuery ??= this.input.value), this.input.value = t?.trim() ?? e.textContent?.trim() ?? "", n ? this.setActive(null) : (this.suppressOpen = !0, this.close()), this.selecting = !0;
+		let n = t?.trim() ?? e.textContent?.trim() ?? "", r = e.getAttribute("data-sds-value") ?? n, i = this.hasAttribute("keep-open");
+		i && (this.matchQuery ??= this.input.value), this.input.value = n, i ? this.setActive(null) : (this.suppressOpen = !0, this.close()), this.selecting = !0;
 		try {
 			this.input.focus(), this.input.dispatchEvent(new Event("input", { bubbles: !0 })), this.input.dispatchEvent(new Event("change", { bubbles: !0 })), this.dispatchEvent(new CustomEvent("sds-select", {
 				bubbles: !0,
 				composed: !0,
-				detail: { option: e }
+				detail: {
+					option: e,
+					value: r
+				}
 			}));
 		} finally {
 			this.selecting = !1;
 		}
-		n && (this.refreshOptions(), this.updateMatches());
+		i && (this.refreshOptions(), this.updateMatches());
 	}
 	handleFocus = () => {
 		this.selecting || (this.suppressOpen = !1, this.matchQuery = null, this.refreshOptions(), this.updateMatches());

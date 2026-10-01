@@ -1,6 +1,6 @@
 import './style.css'
 import './brand.css'
-import { setupSds } from './sds.ts'
+import { setupSds, type SdsComboboxSelectDetail } from './sds.ts'
 
 setupSds()
 
@@ -34,8 +34,8 @@ recordInput?.addEventListener('input', () => {
   if (recordSelection) recordSelection.textContent = ''
 })
 recordPicker?.addEventListener('sds-select', (event) => {
-  const { option } = (event as CustomEvent<{ option: HTMLLIElement }>).detail
-  const record = records.get(option.dataset.projectId ?? '')
+  const { option, value } = (event as CustomEvent<SdsComboboxSelectDetail>).detail
+  const record = records.get(value)
   if (!record) {
     console.error('The selected project record is missing.', option)
     return

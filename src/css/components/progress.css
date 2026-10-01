@@ -1,0 +1,137 @@
+@layer sds.components {
+  :where([data-sds-root] :is(progress, meter)) {
+    display: block;
+    inline-size: 100%;
+    block-size: 0.75rem;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--sds-radius-full);
+    background: var(--sds-color-form-disabled-background);
+    accent-color: currentColor;
+  }
+
+  :where([data-sds-root] progress) {
+    color: var(--sds-tone-strong, var(--sds-color-info-strong));
+  }
+
+  :where([data-sds-root] progress:indeterminate) {
+    background-color: var(--sds-color-form-disabled-background);
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: -55% 0;
+    background-repeat: no-repeat;
+    background-size: 35% 100%;
+    animation: sds-progress-indeterminate 1.2s ease-in-out infinite;
+  }
+
+  :where([data-sds-root] :is(progress, meter)[data-sds-size="sm"]) {
+    block-size: 0.5rem;
+  }
+
+  :where([data-sds-root] :is(progress, meter)[data-sds-size="lg"]) {
+    block-size: 1rem;
+  }
+
+  :where([data-sds-root] :is(progress, meter)) {
+    appearance: none;
+  }
+
+  :where([data-sds-root] progress)::-webkit-progress-bar {
+    border-radius: inherit;
+    background: var(--sds-color-form-disabled-background);
+  }
+
+  :where([data-sds-root] progress:indeterminate)::-webkit-progress-bar {
+    background: transparent;
+  }
+
+  :where([data-sds-root] progress)::-webkit-progress-value {
+    border-radius: inherit;
+    background: currentColor;
+  }
+
+  :where([data-sds-root] progress)::-moz-progress-bar {
+    border-radius: inherit;
+    background: currentColor;
+  }
+
+  :where([data-sds-root] progress:indeterminate)::-moz-progress-bar {
+    background: transparent;
+  }
+
+  :where([data-sds-root] meter)::-webkit-meter-bar {
+    border: 0;
+    border-radius: inherit;
+    background: var(--sds-color-form-disabled-background);
+  }
+
+  :where([data-sds-root] meter)::-webkit-meter-optimum-value {
+    border-radius: inherit;
+    background: var(--sds-color-success-strong);
+  }
+
+  :where([data-sds-root] meter)::-webkit-meter-suboptimum-value {
+    border-radius: inherit;
+    background: var(--sds-color-warning-strong);
+  }
+
+  :where([data-sds-root] meter)::-webkit-meter-even-less-good-value {
+    border-radius: inherit;
+    background: var(--sds-color-danger-strong);
+  }
+
+  :where([data-sds-root] meter)::-moz-meter-bar {
+    border-radius: inherit;
+    background: var(--sds-color-success-strong);
+  }
+
+  :where([data-sds-root] meter:-moz-meter-sub-optimum)::-moz-meter-bar {
+    background: var(--sds-color-warning-strong);
+  }
+
+  :where([data-sds-root] meter:-moz-meter-sub-sub-optimum)::-moz-meter-bar {
+    background: var(--sds-color-danger-strong);
+  }
+
+  @keyframes sds-progress-indeterminate {
+    from {
+      background-position: -55% 0;
+    }
+
+    to {
+      background-position: 155% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :where([data-sds-root] progress:indeterminate) {
+      background-position: 50% 0;
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    :where([data-sds-root] :is(progress, meter)) {
+      color: Highlight;
+    }
+
+    :where([data-sds-root] progress:indeterminate) {
+      border: 1px solid ButtonText;
+      background-color: Canvas;
+      background-image: linear-gradient(
+        90deg,
+        Canvas 0 32.5%,
+        Highlight 32.5% 67.5%,
+        Canvas 67.5% 100%
+      );
+      background-position: 0 0;
+      background-size: 100% 100%;
+      animation: none;
+      forced-color-adjust: none;
+    }
+
+    :where([data-sds-root] progress:indeterminate)::-webkit-progress-bar,
+    :where([data-sds-root] progress:indeterminate)::-moz-progress-bar {
+      background: transparent;
+    }
+  }
+}

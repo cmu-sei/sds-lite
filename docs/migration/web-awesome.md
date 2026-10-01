@@ -40,7 +40,7 @@ button.
 <a
   class="sds-button"
   href="/done"
-  data-sds-variant="tertiary"
+  data-sds-variant="outlined"
   data-sds-tone="success"
 >
   Done

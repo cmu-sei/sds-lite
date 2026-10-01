@@ -561,18 +561,172 @@ function mapBootstrapClasses(tagName, attributes, line, warnings) {
 }
 
 function bootstrapTone(value) {
-  return (
-    {
-      primary: 'info',
-      secondary: 'neutral',
-      success: 'success',
-      danger: 'danger',
-      warning: 'warning',
-      info: 'info',
-      light: 'neutral',
-      dark: 'neutral',
-    }[value] ?? 'info'
+  return {
+    primary: 'info',
+    secondary: 'neutral',
+    success: 'success',
+    danger: 'danger',
+    warning: 'warning',
+    info: 'info',
+    light: 'neutral',
+    dark: 'neutral',
+  }[value]
+}
+
+function mapBootstrapRecipes(tagName, attributes, line, warnings) {
+  const classAttr = classAttribute(attributes)
+  if (!classAttr || classAttr.dynamic) return null
+  const classes = new Set(classAttr.value.split(/\s+/).filter(Boolean))
+
+  if (classes.has('alert')) {
+    const modifiers = [...classes].filter((name) => name.startsWith('alert-'))
+    const variants = modifiers.filter((name) => name !== 'alert-dismissible')
+    if (modifiers.includes('alert-dismissible') || variants.length > 1) {
+      warnings.push(
+        warning('left a Bootstrap alert with dismissal or conflicting variants unchanged', line),
+      )
+      return null
+    }
+    const tone = variants[0]
+      ? bootstrapTone(variants[0].slice('alert-'.length))
+      : undefined
+    if (variants[0] && !tone) {
+      warnings.push(
+        warning(`left a Bootstrap alert with an unsupported alert tone unchanged: ${variants[0]}`, line),
+      )
+      return null
+    }
+    replaceClasses(attributes, new Set(['alert', ...modifiers]), ['sds-callout'])
+    if (tone) setAttribute(attributes, 'data-sds-tone', tone)
+    return renderTag(tagName, attributes)
+  }
+
+  if (classes.has('badge')) {
+    const tones = [...classes].filter(
+      (name) => name.startsWith('bg-') || name.startsWith('text-bg-'),
+    )
+    if (tones.length > 1) {
+      warnings.push(
+        warning('left a Bootstrap badge with conflicting color classes unchanged', line),
+      )
+      return null
+    }
+    const tone = tones[0]
+      ? bootstrapTone(tones[0].replace(/^text-bg-|^bg-/, ''))
+      : undefined
+    if (tones[0] && !tone) {
+      warnings.push(
+        warning(`left a Bootstrap badge with an unsupported badge tone unchanged: ${tones[0]}`, line),
+      )
+      return null
+    }
+    replaceClasses(attributes, new Set(['badge', ...tones]), ['sds-badge'])
+    if (tone) setAttribute(attributes, 'data-sds-tone', tone)
+    return renderTag(tagName, attributes)
+  }
+
+  const spinner = ['spinner-border', 'spinner-grow'].find((name) =>
+    classes.has(name),
   )
+  if (spinner) {
+    const sizeClass = `${spinner}-sm`
+    const toneClasses = [...classes].filter((name) =>
+      /^text-(?:primary|secondary|success|danger|warning|info|light|dark)$/.test(
+        name,
+      ),
+    )
+    if (toneClasses.length > 1) {
+      warnings.push(
+        warning('left a Bootstrap spinner with conflicting text colors unchanged', line),
+      )
+      return null
+    }
+    replaceClasses(
+      attributes,
+      new Set([
+        spinner,
+        ...(classes.has(sizeClass) ? [sizeClass] : []),
+        ...toneClasses,
+      ]),
+      ['sds-spinner'],
+    )
+    if (classes.has(sizeClass)) setAttribute(attributes, 'data-sds-size', 'sm')
+    if (toneClasses[0]) {
+      setAttribute(
+        attributes,
+        'data-sds-tone',
+        bootstrapTone(toneClasses[0].slice('text-'.length)),
+      )
+    }
+    return renderTag(tagName, attributes)
+  }
+
+  if (tagName === 'table' && classes.has('table')) {
+    const modifiers = [...classes].filter((name) => name.startsWith('table-'))
+    const supported = new Set(['table-hover', 'table-sm'])
+    if (modifiers.some((name) => !supported.has(name))) {
+      warnings.push(
+        warning(`left a Bootstrap table with unsupported modifiers unchanged: ${modifiers.join(' ')}`, line),
+      )
+      return null
+    }
+    replaceClasses(attributes, new Set(['table', ...modifiers]), ['sds-table'])
+    if (classes.has('table-hover')) setAttribute(attributes, 'data-sds-row-highlight')
+    if (classes.has('table-sm')) setAttribute(attributes, 'data-sds-size', 'sm')
+    return renderTag(tagName, attributes)
+  }
+
+  return null
+}
+
+function mapUswdsRecipes(tagName, attributes, line, warnings) {
+  const classAttr = classAttribute(attributes)
+  if (!classAttr || classAttr.dynamic) return null
+  const classes = new Set(classAttr.value.split(/\s+/).filter(Boolean))
+
+  if (classes.has('usa-alert')) {
+    const modifiers = [...classes].filter((name) => name.startsWith('usa-alert--'))
+    const tones = modifiers.filter((name) => name !== 'usa-alert--slim')
+    const tone = {
+      'usa-alert--error': 'danger',
+      'usa-alert--info': 'info',
+      'usa-alert--success': 'success',
+      'usa-alert--warning': 'warning',
+    }[tones[0]]
+    if (tones.length > 1 || (tones[0] && !tone)) {
+      warnings.push(
+        warning(`left a USWDS alert with unsupported modifiers unchanged: ${modifiers.join(' ')}`, line),
+      )
+      return null
+    }
+    replaceClasses(attributes, new Set(['usa-alert', ...modifiers]), ['sds-callout'])
+    if (tone) setAttribute(attributes, 'data-sds-tone', tone)
+    if (modifiers.includes('usa-alert--slim')) setAttribute(attributes, 'data-sds-size', 'sm')
+    return renderTag(tagName, attributes)
+  }
+
+  if (classes.has('usa-tag')) {
+    replaceClasses(attributes, new Set(['usa-tag', 'usa-tag--big']), ['sds-tag'])
+    if (classes.has('usa-tag--big')) setAttribute(attributes, 'data-sds-size', 'md')
+    return renderTag(tagName, attributes)
+  }
+
+  if (tagName === 'table' && classes.has('usa-table')) {
+    const modifiers = [...classes].filter((name) => name.startsWith('usa-table--'))
+    if (modifiers.some((name) => name !== 'usa-table--compact')) {
+      warnings.push(
+        warning(`left a USWDS table with unsupported modifiers unchanged: ${modifiers.join(' ')}`, line),
+      )
+      return null
+    }
+    replaceClasses(attributes, new Set(['usa-table', ...modifiers]), ['sds-table'])
+    if (modifiers.includes('usa-table--compact')) {
+      setAttribute(attributes, 'data-sds-size', 'sm')
+    }
+    return renderTag(tagName, attributes)
+  }
+
+  return null
 }
 
 function mapUswdsClasses(tagName, attributes, line, warnings) {
@@ -745,6 +899,65 @@ function mapLegacyClasses(tagName, attributes, line, warnings) {
     return renderTag(tagName, attributes)
   }
   return null
+}
+
+function retainedSourceMarkup(sourceText, source) {
+  const found = new Map()
+  const componentTags = new Set([
+    ...(COMPONENT_BUTTONS[source] ?? []),
+    ...(COMPONENT_FIELDS[source]?.keys() ?? []),
+  ])
+  if (source === 'legacy-sds') {
+    componentTags.add('sdsselect')
+    componentTags.add('sds-select')
+  }
+  const prefixes = {
+    material: 'md-',
+    'web-awesome': 'wa-',
+    spectrum: 'sp-',
+  }
+  const bootstrapClass = /^(?:alert(?:-|$)|badge$|breadcrumb(?:-|$)|btn(?:-|$)|card(?:-|$)|col(?:-|$)|dropdown(?:-|$)|form-(?:control|select)(?:-|$)|input-group(?:-|$)|list-group(?:-|$)|modal(?:-|$)|nav(?:-|$)|navbar(?:-|$)|progress(?:-|$)|row$|spinner-(?:border|grow)(?:-|$)|table(?:-|$))/
+  const bootstrapUtilityClass = /^(?:align(?:-content|-items|-self)?|bg|border|bottom|d|end|flex|float|focus-ring|fs|fst|fw|g[xy]?|gap|h|hstack|invisible|justify-content|lh|link|m[bestrlxy]?|object-fit|opacity|order|overflow|p[bestrlxy]?|pe|position|ratio|rounded|shadow|start|stretched-link|text|top|translate|user-select|visible|visually-hidden|vh|vr|vstack|vw|w|z)(?:-|$)/
+
+  const record = (marker, line) => {
+    const current = found.get(marker)
+    if (current) current.count += 1
+    else found.set(marker, { count: 1, line, marker })
+  }
+
+  walkMarkup(sourceText, (tag) => {
+    const tagName = tag.name.toLowerCase()
+    const prefix = prefixes[source]
+    if (componentTags.has(tagName) || (prefix && tagName.startsWith(prefix))) {
+      record(`<${tagName}>`, tag.line)
+    }
+
+    const attributes = parseAttributes(tag.attributesSource)
+    const classAttr = classAttribute(attributes)
+    if (classAttr && !classAttr.dynamic) {
+      for (const className of classAttr.value.split(/\s+/).filter(Boolean)) {
+        if (
+          (source === 'bootstrap' &&
+            (bootstrapClass.test(className) ||
+              bootstrapUtilityClass.test(className))) ||
+          (source === 'uswds' && className.startsWith('usa-'))
+        ) {
+          record(`.${className}`, tag.line)
+        }
+      }
+    }
+    if (
+      source === 'bootstrap' &&
+      attributes.some((attribute) => normalizedName(attribute).startsWith('data-bs-'))
+    ) {
+      record('[data-bs-*]', tag.line)
+    }
+    return null
+  })
+
+  return [...found.values()].sort(
+    (first, second) => first.line - second.line || first.marker.localeCompare(second.marker),
+  )
 }
 
 function transformComponentButton(
@@ -1273,7 +1486,30 @@ export function transform(sourceText, options) {
       return null
     }
 
+    const sourceClass = classAttribute(attributes)
+    if (
+      sourceClass?.dynamic &&
+      ['bootstrap', 'uswds', 'legacy-sds'].includes(source)
+    ) {
+      warnings.push(
+        warning(
+          `left an element with a dynamic class unchanged; migrate ${source} classes manually`,
+          tag.line,
+        ),
+      )
+      return null
+    }
+
     if (source === 'bootstrap') {
+      const recipe = mapBootstrapRecipes(
+        lowerName,
+        attributes,
+        tag.line,
+        warnings,
+      )
+      if (recipe) {
+        return { raw: recipe.replace(/>$/, tag.selfClosing ? ' />' : '>') }
+      }
       const mapped = mapBootstrapClasses(
         lowerName,
         attributes,
@@ -1285,6 +1521,15 @@ export function transform(sourceText, options) {
         : null
     }
     if (source === 'uswds') {
+      const recipe = mapUswdsRecipes(
+        lowerName,
+        attributes,
+        tag.line,
+        warnings,
+      )
+      if (recipe) {
+        return { raw: recipe.replace(/>$/, tag.selfClosing ? ' />' : '>') }
+      }
       const mapped = mapUswdsClasses(
         lowerName,
         attributes,
@@ -1309,7 +1554,12 @@ export function transform(sourceText, options) {
     return null
   })
 
-  return { changed: code !== sourceText, code, warnings }
+  return {
+    changed: code !== sourceText,
+    code,
+    review: retainedSourceMarkup(code, source),
+    warnings,
+  }
 }
 
 async function validateFiles(files) {
@@ -1336,6 +1586,7 @@ export async function run(argv, io = {}) {
 
   await validateFiles(arguments_.files)
   let changedCount = 0
+  let reviewCount = 0
   let warningCount = 0
 
   for (const file of arguments_.files) {
@@ -1347,6 +1598,14 @@ export async function run(argv, io = {}) {
     warningCount += result.warnings.length
     for (const item of result.warnings) {
       stderr.write(`${file}:${item.line}: warning: ${item.message}\n`)
+    }
+    reviewCount += result.review.length
+    for (const item of result.review) {
+      stderr.write(
+        `${file}:${item.line}: review: retained ${item.marker}${
+          item.count > 1 ? ` (${item.count} occurrences)` : ''
+        }\n`,
+      )
     }
 
     if (!result.changed) {
@@ -1368,7 +1627,7 @@ export async function run(argv, io = {}) {
   }
 
   stdout.write(
-    `${arguments_.write ? 'Updated' : 'Would update'} ${changedCount} of ${arguments_.files.length} file(s); ${warningCount} warning(s).\n`,
+    `${arguments_.write ? 'Updated' : 'Would update'} ${changedCount} of ${arguments_.files.length} file(s); ${warningCount} warning(s); ${reviewCount} retained source marker(s) for review.\n`,
   )
   return 0
 }

@@ -117,6 +117,7 @@ test('recipe omission defaults use audited implementation values', () => {
     ['button:data-sds-variant', 'filled for text buttons; text for icon buttons'],
     ['button:data-sds-density', 'comfortable'],
     ['button:data-sds-shape', 'text'],
+    ['combobox-parts:data-sds-value', 'displayed value'],
     ['link:data-sds-variant', 'primary'],
     ['link:data-sds-size', 'inherited'],
     ['field:data-sds-tone', 'muted help; inherited label color'],
@@ -262,6 +263,14 @@ test('manifest values and targets reflect implemented recipe behavior', async ()
 test('value-bearing controls and reflected element interfaces are explicit', async () => {
   const byName = new Map(
     manifest.recipes.map((recipe) => [recipe.name, recipe]),
+  )
+  assert.equal(
+    byName.get('combobox-parts').optionTypes['data-sds-value'],
+    'string',
+  )
+  assert.equal(
+    byName.get('combobox-parts').optionTargets['data-sds-value'],
+    '.sds-combobox-list > li',
   )
   assert.equal(byName.get('toast-region').optionTypes['data-sds-toast-open'], 'id')
   for (const recipe of ['dialog', 'panel']) {

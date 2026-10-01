@@ -39,7 +39,9 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-field > small, .sds-field > label small`) (when omitted: muted help; inherited label color) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
 | form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit hooks for native form controls. |
-| combobox-parts | `.sds-combobox-list` |  |  | Suggestion list for a native text input. |
+| input-group | `.sds-input-group`<br>`.sds-input-addon` |  | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native form control with a visible prefix or suffix. |
+| range |  | `<input>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native range input styling. |
+| combobox-parts | `.sds-combobox-list` |  | `data-sds-value`: string (on `.sds-combobox-list > li`) (when omitted: displayed value) | Suggestion list for a native text input. |
 | choice | `.sds-choice` | `<label>` |  | Checkbox or radio with label text. |
 | switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`) | Native checkbox with switch appearance. |
 | file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-file-upload, .sds-file-input, [data-sds-root] input[type="file"]`) (default: `md`) | Native file input and composed upload surface. |
@@ -55,6 +57,8 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (when omitted: subtle)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (omitted by default)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (omitted by default) | Contextual message in page content. |
 | toast-region | `.sds-toaster` |  | `data-sds-toast-open`: id (on `[data-sds-toast-open]`) (when omitted: no target)<br>`data-sds-toast-close` (on `sds-toast [data-sds-toast-close]`) (omitted by default) | Fixed notification region. |
 | spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Animated loading indicator. |
+| progress |  | `<progress>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native task progress styling. |
+| meter |  | `<meter>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native scalar measurement with semantic threshold colors. |
 | skeleton | `.sds-skeleton` |  |  | Loading placeholder. |
 | empty-state | `.sds-empty-state` |  |  | Empty-result message. |
 
@@ -87,6 +91,8 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | panel | `.sds-panel` | `<dialog>` | `data-sds-side`: `left`, `right`, `bottom` (on `.sds-panel`) (default: `right`)<br>`data-sds-width`: `sm`, `md`, `lg`, `xl` (on `.sds-panel`) (default: `md`)<br>`data-sds-return-value`: string (on `[command="close"], [command="request-close"]`) (when omitted: empty string) | Edge-attached native dialog. |
 | disclosure | `.sds-disclosure` | `<details>` |  | Native details disclosure. |
 | pagination | `.sds-pagination`<br>`.sds-pagination-status` | `<nav>` |  | Page navigation and result status. |
+| breadcrumb | `.sds-breadcrumb` | `<nav>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Hierarchical page navigation. |
+| skip-link | `.sds-skip-link` | `<a>` | `data-sds-size`: `sm`, `md` (default: `sm`) | Keyboard-visible link that bypasses repeated content. |
 | tabs-parts | `.sds-tab`<br>`.sds-tab-list`<br>`.sds-tab-panel` |  |  | Generated or server-rendered tab structure. |
 | dropdown-parts | `.sds-dropdown-menu`<br>`.sds-dropdown-divider`<br>`.sds-dropdown-label` |  | `data-sds-tone`: `danger` (on `.sds-dropdown-menu button, .sds-dropdown-menu a`) (when omitted: neutral) | Dropdown menu surface, separator, and label. |
 | floating-parts | `.sds-popover-content`<br>`.sds-tooltip-content` |  |  | Popover and tooltip surfaces. |
@@ -112,7 +118,7 @@ Enhances a native text input and suggestion list with accessible combobox keyboa
 **Content model:**
 
 - One direct child labeled text or search input.
-- One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and application-owned data attributes for identity.
+- One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and data-sds-value for stable identity.
 - Optional direct child output for an accessible empty-result message; data-empty-message overrides the default text.
 
 | Attribute | Values or type | Default | Purpose |
@@ -125,7 +131,7 @@ Enhances a native text input and suggestion list with accessible combobox keyboa
 
 | Event | Detail | Purpose |
 |---|---|---|
-| `sds-select` | `CustomEvent<{ option: HTMLLIElement }>` | Dispatched when an option is selected; detail.option is the selected li. |
+| `sds-select` | `CustomEvent<SdsComboboxSelectDetail>` | Dispatched when an option is selected; detail.value is data-sds-value or the displayed value, and detail.option is the selected li. |
 
 ### `<sds-dropdown>`
 

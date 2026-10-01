@@ -64,6 +64,8 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-file-upload-surface` | Centered native file-input content |
 | `.sds-form` | Narrow vertical form |
 | `.sds-input` | Explicit text-control hook |
+| `.sds-input-addon` | Visible prefix or suffix beside a form control |
+| `.sds-input-group` | Shared border layout for a control and its add-ons |
 | `.sds-link` | Explicit link recipe |
 | `.sds-select` | Explicit select-control hook |
 | `.sds-switch` | Native checkbox with switch appearance |
@@ -72,6 +74,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 
 | Class | Purpose |
 |---|---|
+| `.sds-breadcrumb` | Hierarchical page navigation |
 | `.sds-badge` | Compact status or category |
 | `.sds-callout` | Contextual message |
 | `.sds-callout-timestamp` | Secondary callout timestamp |
@@ -131,6 +134,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-pagination` | Page navigation and controls |
 | `.sds-pagination-status` | Current result range |
 | `.sds-popover-content` | Interactive anchored content |
+| `.sds-skip-link` | Keyboard-visible bypass link |
 | `.sds-tab` | Tab button or route link |
 | `.sds-tab-list` | Tab-list row |
 | `.sds-tab-panel` | Tab-controlled content |

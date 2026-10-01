@@ -227,11 +227,49 @@
       }
     },
     {
+      "name": "input-group",
+      "category": "Actions and forms",
+      "classes": ["sds-input-group", "sds-input-addon"],
+      "description": "Native form control with a visible prefix or suffix.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-size": "md"
+      }
+    },
+    {
+      "name": "range",
+      "category": "Actions and forms",
+      "classes": [],
+      "elements": ["input"],
+      "description": "Native range input styling.",
+      "options": {
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
+        "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-tone": "info",
+        "data-sds-size": "md"
+      }
+    },
+    {
       "name": "combobox-parts",
       "category": "Actions and forms",
       "classes": ["sds-combobox-list"],
       "description": "Suggestion list for a native text input.",
-      "options": {}
+      "options": {
+        "data-sds-value": []
+      },
+      "optionTypes": {
+        "data-sds-value": "string"
+      },
+      "optionTargets": {
+        "data-sds-value": ".sds-combobox-list > li"
+      },
+      "defaults": {
+        "data-sds-value": "displayed value"
+      }
     },
     {
       "name": "choice",
@@ -384,6 +422,34 @@
       "defaults": {
         "data-sds-size": "md",
         "data-sds-tone": "neutral"
+      }
+    },
+    {
+      "name": "progress",
+      "category": "Feedback and loading",
+      "classes": [],
+      "elements": ["progress"],
+      "description": "Native task progress styling.",
+      "options": {
+        "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
+        "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-tone": "info",
+        "data-sds-size": "md"
+      }
+    },
+    {
+      "name": "meter",
+      "category": "Feedback and loading",
+      "classes": [],
+      "elements": ["meter"],
+      "description": "Native scalar measurement with semantic threshold colors.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-size": "md"
       }
     },
     {
@@ -628,6 +694,32 @@
       "options": {}
     },
     {
+      "name": "breadcrumb",
+      "category": "Navigation and overlays",
+      "classes": ["sds-breadcrumb"],
+      "elements": ["nav"],
+      "description": "Hierarchical page navigation.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-size": "md"
+      }
+    },
+    {
+      "name": "skip-link",
+      "category": "Navigation and overlays",
+      "classes": ["sds-skip-link"],
+      "elements": ["a"],
+      "description": "Keyboard-visible link that bypasses repeated content.",
+      "options": {
+        "data-sds-size": ["sm", "md"]
+      },
+      "defaults": {
+        "data-sds-size": "sm"
+      }
+    },
+    {
       "name": "tabs-parts",
       "category": "Navigation and overlays",
       "classes": ["sds-tab", "sds-tab-list", "sds-tab-panel"],
@@ -729,7 +821,7 @@
       "description": "Enhances a native text input and suggestion list with accessible combobox keyboard behavior.",
       "content": [
         "One direct child labeled text or search input.",
-        "One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and application-owned data attributes for identity.",
+        "One direct child ul with li options; author it hidden for server rendering. Rich li options may use a nonempty data-label for the input's selected text and data-sds-value for stable identity.",
         "Optional direct child output for an accessible empty-result message; data-empty-message overrides the default text."
       ],
       "attributes": [
@@ -738,7 +830,7 @@
       ],
       "members": [],
       "events": [
-        {"name": "sds-select", "type": "CustomEvent<{ option: HTMLLIElement }>", "description": "Dispatched when an option is selected; detail.option is the selected li."}
+        {"name": "sds-select", "type": "CustomEvent<SdsComboboxSelectDetail>", "description": "Dispatched when an option is selected; detail.value is data-sds-value or the displayed value, and detail.option is the selected li."}
       ]
     },
     {

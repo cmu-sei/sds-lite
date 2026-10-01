@@ -11,6 +11,11 @@ const HTMLElementBase: typeof HTMLElement =
     ? (class {} as typeof HTMLElement)
     : HTMLElement
 
+export interface SdsComboboxSelectDetail {
+  option: HTMLLIElement
+  value: string
+}
+
 export class SdsComboboxElement extends HTMLElementBase {
   private input: HTMLInputElement | null = null
   private list: HTMLUListElement | null = null
@@ -291,9 +296,11 @@ export class SdsComboboxElement extends HTMLElementBase {
       console.warn('<sds-combobox> option data-label must be nonempty.')
       return
     }
+    const displayValue = label?.trim() ?? option.textContent?.trim() ?? ''
+    const value = option.getAttribute('data-sds-value') ?? displayValue
     const keepOpen = this.hasAttribute('keep-open')
     if (keepOpen) this.matchQuery ??= this.input.value
-    this.input.value = label?.trim() ?? option.textContent?.trim() ?? ''
+    this.input.value = displayValue
     if (!keepOpen) {
       this.suppressOpen = true
       this.close()
@@ -305,10 +312,10 @@ export class SdsComboboxElement extends HTMLElementBase {
       this.input.focus()
       this.input.dispatchEvent(new Event('input', { bubbles: true }))
       this.input.dispatchEvent(new Event('change', { bubbles: true }))
-      this.dispatchEvent(new CustomEvent<{ option: HTMLLIElement }>('sds-select', {
+      this.dispatchEvent(new CustomEvent<SdsComboboxSelectDetail>('sds-select', {
         bubbles: true,
         composed: true,
-        detail: { option },
+        detail: { option, value },
       }))
     } finally {
       this.selecting = false
@@ -421,7 +428,7 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    'sds-select': CustomEvent<{ option: HTMLLIElement }>
+    'sds-select': CustomEvent<SdsComboboxSelectDetail>
   }
 }
 

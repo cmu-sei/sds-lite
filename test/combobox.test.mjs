@@ -71,6 +71,41 @@ test('a simple combobox is enhanced without replacing its native input', async (
   assert.equal(new FormData(document.querySelector('form')).get('team'), 'Engineering')
 })
 
+test('selection exposes a stable value and the original option', async () => {
+  document.body.innerHTML = `
+    <label for="record">Project</label>
+    <sds-combobox>
+      <input id="record" type="search">
+      <ul hidden>
+        <li data-label="Atlas" data-sds-value="p-atlas">Atlas project</li>
+        <li data-label="Vega">Vega project</li>
+      </ul>
+    </sds-combobox>
+  `
+  await browser.happyDOM.whenAsyncComplete()
+  const combobox = document.querySelector('sds-combobox')
+  const input = combobox.querySelector('input')
+  const [option, fallbackOption] = combobox.querySelectorAll('li')
+  let detail
+  combobox.addEventListener('sds-select', (event) => {
+    detail = event.detail
+  })
+
+  input.focus()
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+  option.click()
+
+  assert.equal(input.value, 'Atlas')
+  assert.equal(detail.value, 'p-atlas')
+  assert.equal(detail.option, option)
+
+  fallbackOption.click()
+
+  assert.equal(input.value, 'Vega')
+  assert.equal(detail.value, 'Vega')
+  assert.equal(detail.option, fallbackOption)
+})
+
 test('missing or invalid content is not enhanced', async () => {
   const warnings = []
   const originalWarn = console.warn

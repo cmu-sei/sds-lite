@@ -27,6 +27,36 @@ const interfaceManifest = JSON.parse(
   await readFile('interface-manifest.json', 'utf8'),
 )
 
+function allowedValues(definition) {
+  if (definition.family) {
+    return interfaceManifest.optionFamilies[definition.family]?.values ?? []
+  }
+  return definition.values ?? []
+}
+
+function htmlExamples(source) {
+  return Array.from(
+    source.matchAll(/```html\s*\n([\s\S]*?)```/g),
+    (match) => match[1],
+  )
+}
+
+function openingTags(source) {
+  return Array.from(source.matchAll(/<([a-z][\w-]*)\b([^>]*)>/gi), (match) => ({
+    attributes: match[2],
+    tagName: match[1].toLowerCase(),
+  }))
+}
+
+function staticAttributes(source) {
+  return new Map(
+    Array.from(
+      source.matchAll(/([:\w-]+)\s*=\s*["']([^"']*)["']/g),
+      (match) => [match[1].toLowerCase(), match[2]],
+    ),
+  )
+}
+
 function markdownSection(source, heading) {
   const start = source.indexOf(`## ${heading}`)
   const end = source.indexOf('\n## ', start + 1)
@@ -151,6 +181,63 @@ test('documentation lists every public data attribute', async () => {
 
   for (const attribute of attributes) {
     assert.match(reference, new RegExp(`\\b${attribute}\\b`), attribute)
+  }
+})
+
+test('HTML examples use option values supported by their recipe', async () => {
+  const globalOptions = new Map(
+    interfaceManifest.globalAttributes.map((attribute) => [
+      attribute.name,
+      allowedValues(attribute),
+    ]),
+  )
+  const classRecipes = new Map(
+    interfaceManifest.recipes.flatMap((recipe) =>
+      recipe.classes.map((className) => [className, recipe]),
+    ),
+  )
+  const elementRecipes = new Map()
+  for (const recipe of interfaceManifest.recipes) {
+    for (const element of recipe.elements ?? []) {
+      const recipes = elementRecipes.get(element) ?? []
+      recipes.push(recipe)
+      elementRecipes.set(element, recipes)
+    }
+  }
+
+  for (const file of documentationFiles) {
+    const source = await readFile(file, 'utf8')
+    for (const example of htmlExamples(source)) {
+      for (const tag of openingTags(example)) {
+        const attributes = staticAttributes(tag.attributes)
+        const classes = (attributes.get('class') ?? '').split(/\s+/)
+        const recipes = classes
+          .map((className) => classRecipes.get(className))
+          .filter(Boolean)
+        if (recipes.length === 0) {
+          recipes.push(...(elementRecipes.get(tag.tagName) ?? []))
+        }
+
+        for (const [name, value] of attributes) {
+          if (!name.startsWith('data-sds-')) continue
+          const candidateValues = globalOptions.has(name)
+            ? globalOptions.get(name)
+            : recipes.flatMap((recipe) =>
+                Object.hasOwn(recipe.options, name)
+                  ? allowedValues({
+                      family: recipe.optionFamilies?.[name],
+                      values: recipe.options[name],
+                    })
+                  : [],
+              )
+          if (candidateValues.length === 0) continue
+          assert.ok(
+            candidateValues.includes(value),
+            `${file} uses unsupported ${name}="${value}" on <${tag.tagName}>`,
+          )
+        }
+      }
+    }
   }
 })
 

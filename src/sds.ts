@@ -14,7 +14,10 @@ export {
   type SdsToastCloseReason,
   type SdsToastTone,
 } from './elements/toast.js'
-export type { SdsComboboxElement } from './elements/combobox.js'
+export type {
+  SdsComboboxElement,
+  SdsComboboxSelectDetail,
+} from './elements/combobox.js'
 export type { SdsDropdownElement } from './elements/dropdown.js'
 export type { SdsPopoverElement } from './elements/popover.js'
 export type {

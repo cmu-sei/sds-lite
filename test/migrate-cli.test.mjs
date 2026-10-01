@@ -86,6 +86,47 @@ test('migrates Bootstrap buttons, links, inputs, textareas, and selects', () => 
   )
 })
 
+test('migrates static Bootstrap feedback, loading, and table recipes', () => {
+  const source = `<div class="alert alert-warning">Review required</div>
+<span class="badge text-bg-success">Ready</span>
+<span class="spinner-border spinner-border-sm text-danger" role="status"></span>
+<table class="table table-hover table-sm"></table>`
+  const result = migrate('bootstrap', source)
+
+  assert.equal(result.warnings.length, 0)
+  assert.match(result.code, /class="sds-callout" data-sds-tone="warning"/)
+  assert.match(result.code, /class="sds-badge" data-sds-tone="success"/)
+  assert.match(result.code, /class="sds-spinner" role="status" data-sds-size="sm" data-sds-tone="danger"/)
+  assert.match(result.code, /class="sds-table" data-sds-row-highlight data-sds-size="sm"/)
+})
+
+test('leaves unsupported Bootstrap recipe tones unchanged with warnings', () => {
+  const source = `<div class="alert alert-brand">Brand notice</div>
+<span class="badge bg-brand">Brand</span>`
+  const result = migrate('bootstrap', source)
+
+  assert.equal(result.code, source)
+  assert.equal(result.warnings.length, 2)
+  assert.match(result.warnings[0].message, /unsupported alert tone/)
+  assert.match(result.warnings[1].message, /unsupported badge tone/)
+})
+
+test('reports dynamic source classes that cannot be inspected', () => {
+  const bootstrap = migrate(
+    'bootstrap',
+    `<div className={danger ? 'alert alert-danger' : 'alert alert-info'}>Status</div>`,
+  )
+  const uswds = migrate(
+    'uswds',
+    `<div className={warning ? 'usa-alert usa-alert--warning' : 'usa-alert usa-alert--info'}>Status</div>`,
+  )
+
+  assert.equal(bootstrap.changed, false)
+  assert.equal(uswds.changed, false)
+  assert.match(bootstrap.warnings[0].message, /dynamic class unchanged/)
+  assert.match(uswds.warnings[0].message, /dynamic class unchanged/)
+})
+
 test('migrates USWDS buttons and native form controls', () => {
   const source = `<button class="usa-button usa-button--accent-warm usa-button--big">Continue</button>
 <a class="usa-button usa-button--outline" href="/help">Help</a>
@@ -106,6 +147,18 @@ test('migrates USWDS buttons and native form controls', () => {
   assert.match(result.code, /<input class="sds-input" name="query">/)
   assert.match(result.code, /<textarea class="sds-input">/)
   assert.match(result.code, /<select class="sds-select">/)
+})
+
+test('migrates static USWDS feedback and table recipes', () => {
+  const source = `<div class="usa-alert usa-alert--warning usa-alert--slim">Review required</div>
+<span class="usa-tag usa-tag--big">Ready</span>
+<table class="usa-table usa-table--compact"></table>`
+  const result = migrate('uswds', source)
+
+  assert.equal(result.warnings.length, 0)
+  assert.match(result.code, /class="sds-callout" data-sds-tone="warning" data-sds-size="sm"/)
+  assert.match(result.code, /class="sds-tag" data-sds-size="md"/)
+  assert.match(result.code, /class="sds-table" data-sds-size="sm"/)
 })
 
 test('migrates Material Web buttons and only structurally safe text fields', () => {
@@ -193,6 +246,35 @@ test('leaves unsupported dynamic markup unchanged and reports a line warning', (
   const materialResult = migrate('material', material, 'button.jsx')
   assert.equal(materialResult.code, material)
   assert.match(materialResult.warnings[0].message, /prop is dynamic/)
+})
+
+test('reports retained source markup separately from transformation warnings', () => {
+  const bootstrap = migrate(
+    'bootstrap',
+    '<div class="card"><button data-bs-toggle="collapse">Open</button><div class="card">Body</div></div>',
+  )
+  assert.equal(bootstrap.warnings.length, 0)
+  assert.deepEqual(bootstrap.review, [
+    { count: 2, line: 1, marker: '.card' },
+    { count: 1, line: 1, marker: '[data-bs-*]' },
+  ])
+
+  const material = migrate('material', '<md-dialog>Content</md-dialog>')
+  assert.deepEqual(material.review, [
+    { count: 1, line: 1, marker: '<md-dialog>' },
+  ])
+})
+
+test('reports retained Bootstrap utility classes for manual review', () => {
+  const result = migrate(
+    'bootstrap',
+    '<div class="d-flex text-danger application-shell">Content</div>',
+  )
+
+  assert.deepEqual(result.review, [
+    { count: 1, line: 1, marker: '.d-flex' },
+    { count: 1, line: 1, marker: '.text-danger' },
+  ])
 })
 
 test('supports static JSX attributes without rewriting event expressions', () => {
@@ -284,7 +366,9 @@ test('CLI reports dynamic warnings without changing the unsupported file', async
 
   assert.equal(result.status, 0)
   assert.match(result.stderr, /dynamic class unchanged/)
+  assert.match(result.stderr, /review: retained \.btn/)
   assert.match(result.stdout, /no supported static changes/)
+  assert.match(result.stdout, /1 retained source marker\(s\) for review/)
   assert.equal(await readFile(file, 'utf8'), source)
 })
 

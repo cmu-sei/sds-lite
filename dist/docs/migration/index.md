@@ -28,7 +28,10 @@ npx sds-lite-migrate --from uswds src/form.html src/account.vue
 ```
 
 The preview prints the complete transformed contents of each changed file.
-Warnings go to standard error. Review both before writing:
+Warnings identify unsafe transformations that were skipped. Separate review
+items summarize recognized source-system classes, custom elements, and
+behavior attributes still present after conversion. Review all three before
+writing:
 
 ```sh
 npx sds-lite-migrate --from bootstrap --write src/page.html
@@ -39,8 +42,9 @@ Accepted source names are `legacy-sds`, `bootstrap`, `uswds`, `material`,
 and missing files are errors. Files are processed in the order provided.
 
 Run the command on version-controlled files and inspect the diff afterward.
-The tool intentionally leaves unsupported or dynamic source markup unchanged
-and emits a warning rather than guessing.
+The tool intentionally leaves unsupported or dynamic source markup unchanged.
+Use the retained-marker report as a manual migration checklist; repeated
+markers are grouped per file.
 
 ## Final SDS Lite conventions
 
@@ -49,7 +53,7 @@ Native elements and CSS recipes use namespaced data attributes:
 ```html
 <button
   type="button"
-  data-sds-variant="secondary"
+  data-sds-variant="tonal"
   data-sds-tone="danger"
   data-sds-size="sm"
 >

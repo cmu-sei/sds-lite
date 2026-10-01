@@ -2,6 +2,36 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Loading
 
+## Progress and measurement
+
+Use native `<progress>` for task completion. A progress element without a
+`value` communicates an indeterminate task:
+
+```html
+<div class="sds-field">
+  <label for="upload-progress">Uploading files</label>
+  <progress id="upload-progress" value="68" max="100">68%</progress>
+</div>
+```
+
+Use `<meter>` for a scalar measurement within a known range, not for task
+completion:
+
+```html
+<div class="sds-field">
+  <label for="storage">Storage used</label>
+  <meter id="storage" value="72" min="0" max="100" high="80">72%</meter>
+</div>
+```
+
+Keep the changing value available as text when users need the exact number.
+SDS Lite preserves the native value, range, optimum, and threshold semantics.
+
+`progress` accepts every semantic `data-sds-tone`; the default is `info`.
+Both elements accept `data-sds-size="sm|md|lg"`, with `md` as the default.
+Meter color follows its native optimum, suboptimum, and low-value thresholds,
+so it intentionally does not accept an authored tone.
+
 ## Spinner
 
 Use a spinner when an action or compact region is waiting:
@@ -66,6 +96,7 @@ variants.
 
 | Situation | Use |
 |---|---|
+| Task has measurable completion | Progress |
 | Short action in progress | Spinner in or near the action |
 | Page structure known, data pending | Skeleton |
 | Successful response with zero items | Empty state |

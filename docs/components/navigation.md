@@ -2,6 +2,38 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Navigation
 
+## Breadcrumb
+
+Use a labeled navigation landmark and an ordered list. Mark the current page
+with `aria-current="page"` and plain text when it should not link to itself.
+
+```html
+<nav class="sds-breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><span aria-current="page">Atlas</span></li>
+  </ol>
+</nav>
+```
+
+`data-sds-size` accepts `sm`, `md`, or `lg`; the default is `md`.
+
+## Skip link
+
+Place a skip link before repeated navigation and target the main content:
+
+```html
+<a class="sds-skip-link" href="#main-content">Skip to main content</a>
+<header>...</header>
+<main id="main-content">...</main>
+```
+
+The link remains offscreen until it receives keyboard focus. Its target must
+be unique and should identify the beginning of the page's primary content.
+`data-sds-size` accepts `sm` or `md` and defaults to `sm`. Its action color is
+fixed so the same keyboard affordance is recognizable on every page.
+
 ## Tabs
 
 For client-rendered markup, provide a named tab list and one panel per tab:

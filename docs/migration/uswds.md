@@ -49,6 +49,19 @@ Native elements are retained:
 The tool preserves native form attributes and does not rebuild surrounding
 field markup.
 
+## Automated recipe crosswalk
+
+| USWDS | SDS Lite |
+|---|---|
+| `usa-alert--info`, `--success`, `--warning`, `--error` | `sds-callout` with the matching semantic tone |
+| `usa-alert--slim` | `data-sds-size="sm"` |
+| `usa-tag` | `sds-tag` |
+| `usa-tag--big` | `data-sds-size="md"` |
+| `usa-table` | `sds-table` |
+| `usa-table--compact` | `data-sds-size="sm"` |
+
+Alerts or tables with unsupported modifiers remain unchanged with a warning.
+
 ## Manual work
 
 - Recreate `usa-form-group`, labels, hints, prefixes/suffixes, error messages,

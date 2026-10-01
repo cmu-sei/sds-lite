@@ -83,9 +83,9 @@ only its name in the input; otherwise SDS Lite uses the option's full
 The option remains accessible by its visible contents. Do not put links or
 buttons inside a listbox option.
 
-Keep record identity in application data. An application-owned ID on each
-`<li>` lets the `sds-select` event identify the original record without
-teaching SDS Lite a record schema:
+Keep record identity in application data. Put the submitted identity in
+`data-sds-value`; the `sds-select` event exposes it as `event.detail.value` while
+also returning the original option as `event.detail.option`:
 
 ```html
 <form id="project-form">
@@ -93,13 +93,13 @@ teaching SDS Lite a record schema:
   <sds-combobox id="record-picker">
     <input id="record-query" name="projectQuery" type="search" autocomplete="off">
     <ul hidden>
-      <li data-label="Atlas" data-project-id="p-atlas">
+      <li data-label="Atlas" data-sds-value="p-atlas">
         <span class="sds-stack" data-sds-gap="none">
           <strong>Atlas</strong>
           <small>Research · owner Avery</small>
         </span>
       </li>
-      <li data-label="Vega" data-project-id="p-vega">
+      <li data-label="Vega" data-sds-value="p-vega">
         <span class="sds-stack" data-sds-gap="none">
           <strong>Vega</strong>
           <small>Engineering · owner Casey</small>
@@ -129,7 +129,7 @@ query.addEventListener('input', () => {
   selected.textContent = ''
 })
 picker.addEventListener('sds-select', (event) => {
-  const record = records.get(event.detail.option.dataset.projectId)
+  const record = records.get(event.detail.value)
   if (!record) throw new Error('Selected project is missing from the catalog')
   id.value = record.id
   selected.textContent = `Selected project: ${record.name}`
@@ -155,8 +155,10 @@ query without selecting a record, invalidate the ID explicitly: assigning
 `input.value` does not emit `input`.
 The query input submits an empty `projectQuery` after selection; the separate
 hidden input submits `projectId`. Before JavaScript runs, the query still
-submits typed text. SDS Lite does **not** submit IDs, store objects, or validate
-that the selected ID still exists. Validate IDs on the server. Without
+submits typed text. When `data-sds-value` is omitted, `event.detail.value` is the
+displayed value from `data-label` or the option text. SDS Lite does **not**
+submit IDs, store objects, or validate that the selected ID still exists.
+Validate IDs on the server. Without
 JavaScript, the input remains usable for free text but the hidden ID stays
 empty; use a native `<select>` fallback when choosing a valid ID without
 JavaScript is required. Server templates should render the options and the
@@ -227,7 +229,8 @@ SDS Lite automatically styles:
 input[type=text], input[type=email], input[type=tel], input[type=url],
 input[type=password], input[type=number], input[type=search],
 input[type=date], input[type=datetime-local], input[type=time],
-input[type=month], input[type=week], input[type=file], select, textarea
+input[type=month], input[type=week], input[type=range], input[type=file],
+select, textarea
 ```
 
 `.sds-input` and `.sds-select` are explicit hooks when needed:
@@ -243,6 +246,49 @@ input[type=month], input[type=week], input[type=file], select, textarea
 | `disabled` | Native disabled state | Enabled |
 | `readonly` | Native input/textarea state | Editable |
 | `aria-invalid="true"` | Invalid semantics and appearance | Valid or unknown |
+
+## Input prefix and suffix
+
+Use `.sds-input-group` when a visible unit or symbol belongs next to a native
+control. Keep the accessible name on the control; hide a decorative symbol or
+include meaningful unit text in the label.
+
+```html
+<div class="sds-field">
+  <label for="budget">Budget in U.S. dollars</label>
+  <div class="sds-input-group">
+    <span class="sds-input-addon" aria-hidden="true">$</span>
+    <input id="budget" name="budget" type="number" min="0">
+    <span class="sds-input-addon">USD</span>
+  </div>
+</div>
+```
+
+SDS Lite supplies only the shared border and spacing. Native input state,
+validation, and form submission remain unchanged.
+
+`data-sds-size` on `.sds-input-group` accepts `sm`, `md`, or `lg` and sizes the
+control and add-ons together. The default is `md`.
+
+## Range
+
+Native range inputs are styled automatically and retain platform keyboard,
+pointer, and form behavior:
+
+```html
+<div class="sds-field">
+  <label for="confidence">Confidence: 70%</label>
+  <input id="confidence" name="confidence" type="range" value="70">
+</div>
+```
+
+Application code owns any live value shown in the label or help text. Use a
+number input when users must enter or verify an exact value.
+
+| Option | Values | Default |
+|---|---|---|
+| `data-sds-tone` | Any semantic tone | `info` |
+| `data-sds-size` | `sm`, `md`, `lg` | `md` |
 
 ## Help and validation
 
