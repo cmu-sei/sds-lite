@@ -54,7 +54,6 @@ jobs:
       - name: Validate release pull request
         env:
           RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
-          RELEASE_PR_BODY: ${{ github.event.pull_request.body }}
         run: node scripts/validate-release-pr.mjs
 
       - name: Validate release metadata
@@ -71,14 +70,11 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Install browser engines
-        run: npx playwright install --with-deps chromium firefox webkit
-
       - name: Preserve the committed distribution
         run: cp -R dist "$RUNNER_TEMP/committed-dist"
 
-      - name: Build and test
-        run: npm test
+      - name: Build and validate
+        run: npm run test:validation
 
       - name: Verify the committed distribution is current
         run: diff --recursive --brief "$RUNNER_TEMP/committed-dist" dist
@@ -97,9 +93,44 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  browser:
+    name: Browser (${{ matrix.project }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit]
+
+    steps:
+      - name: Check out the released commit
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Use the pinned npm version
+        run: npm install --global npm@11.6.4
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install browser engine
+        run: npx playwright install --with-deps ${{ matrix.project }}
+
+      - name: Test browser
+        run: npm run test:browser -- --project=${{ matrix.project }}
+
   publish:
     name: Publish release
-    needs: build
+    needs: [build, browser]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: ${{ needs.build.outputs.dist-tag == 'latest' && 'github-packages-production' || 'github-packages-beta' }}
@@ -139,7 +170,7 @@ jobs:
             echo "::error::Expected exactly one package tarball"
             exit 1
           fi
-          echo "tarball=${TARBALLS[0]}" >> "$GITHUB_OUTPUT"
+          echo "tarball=$PWD/${TARBALLS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Inspect an existing GitHub release
         id: github-release
@@ -230,3 +261,14 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
         run: npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts
+
+      - name: Delete the merged release branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$RELEASE_BRANCH"; then
+            echo "Deleted $RELEASE_BRANCH" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Could not delete $RELEASE_BRANCH; delete it manually if it still exists"
+          fi

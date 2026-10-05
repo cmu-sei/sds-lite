@@ -7,11 +7,10 @@ Safari and does not ship polyfills. Every pull request runs the browser suite
 against the Chromium, Firefox, and WebKit revisions pinned by the repository's
 Playwright version. A release is supported only when that matrix passes.
 
-The Playwright engines are reproducible compatibility proxies, not a
-substitute for release smoke tests in the branded browsers. Release testing
-must cover the current stable Chrome, Edge, Firefox, and Safari versions.
-Mobile layouts are responsive, but mobile browser and assistive-technology
-support is not claimed until it is tested and recorded.
+The pinned Playwright Chromium, Firefox, and WebKit engines are the automated
+release compatibility gate. Manual smoke testing in branded browsers is
+optional and may be added when a change's risk warrants it. Mobile layouts are
+responsive, but mobile browser and assistive-technology support is not claimed.
 
 ## Required platform features
 

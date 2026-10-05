@@ -133,7 +133,7 @@ export async function prepareRelease({ version: requestedVersion, yes = false } 
       '.github/release-state.json',
       `${JSON.stringify({ version }, undefined, 2)}\n`,
     )
-    run(npm, ['test'])
+    run(npm, ['run', 'test:validation'])
     run(npm, ['run', 'check:package'])
     run('git', ['diff', '--check'])
 

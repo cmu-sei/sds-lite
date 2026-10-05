@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { spawnSync } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
@@ -14,15 +15,11 @@ import {
   validateReleaseEnvironment,
   validateReleaseOrder,
 } from '../scripts/validate-release.mjs'
+import { formatReleaseNotes } from '../scripts/format-release-notes.mjs'
 import { parsePrepareReleaseArguments } from '../scripts/prepare-release.mjs'
 import {
-  requiredReleaseChecks,
   validateReleasePullRequest,
 } from '../scripts/validate-release-pr.mjs'
-
-const completedReleaseBody = `${requiredReleaseChecks
-  .map((check) => `- [x] Complete <!-- release-check:${check} -->`)
-  .join('\n')}\n\nAccessibility evidence was recorded.`
 
 test('release versions use strict Semantic Versioning', () => {
   assert.deepEqual(parseReleaseVersion('1.2.3'), {
@@ -149,10 +146,9 @@ test('release preparation accepts only the explicit automation arguments', () =>
   )
 })
 
-test('release PR validation requires matching state and completed checks', () => {
+test('release PR validation requires matching branch and state', () => {
   assert.doesNotThrow(() =>
     validateReleasePullRequest({
-      body: completedReleaseBody,
       branch: 'release/v1.2.3',
       packageVersion: '1.2.3',
       stateVersion: '1.2.3',
@@ -161,7 +157,6 @@ test('release PR validation requires matching state and completed checks', () =>
   assert.throws(
     () =>
       validateReleasePullRequest({
-        body: completedReleaseBody,
         branch: 'release/v1.2.4',
         packageVersion: '1.2.3',
         stateVersion: '1.2.3',
@@ -171,23 +166,58 @@ test('release PR validation requires matching state and completed checks', () =>
   assert.throws(
     () =>
       validateReleasePullRequest({
-        body: completedReleaseBody.replace('- [x]', '- [ ]'),
         branch: 'release/v1.2.3',
         packageVersion: '1.2.3',
-        stateVersion: '1.2.3',
+        stateVersion: '1.2.4',
       }),
-    /must be completed/,
+    /state/,
   )
-  assert.throws(
-    () =>
-      validateReleasePullRequest({
-        body: `${completedReleaseBody}\n<!-- release-evidence:replace -->`,
-        branch: 'release/v1.2.3',
-        packageVersion: '1.2.3',
-        stateVersion: '1.2.3',
-      }),
-    /evidence/,
+})
+
+test('generated release notes are safe and clear for nontechnical editors', () => {
+  const generated = `<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## What's Changed
+### Fixes
+* Improve validation by @octocat in https://github.com/cmu-sei/sds-lite/pull/12
+
+**Full Changelog**: https://github.com/cmu-sei/sds-lite/commits/v1.2.3`
+  const formatted = formatReleaseNotes(generated, '1.2.3')
+
+  assert.match(formatted, /Most releases need no edits/)
+  assert.match(formatted, /## Summary/)
+  assert.match(formatted, /## Upgrade notes/)
+  assert.match(formatted, /No upgrade steps are listed/)
+  assert.doesNotMatch(formatted, /migration steps are required/)
+  assert.match(formatted, /## Changes/)
+  assert.match(formatted, /pull\/12/)
+  assert.match(formatted, /Full Changelog/)
+  assert.equal(formatReleaseNotes(formatted, '1.2.3'), formatted)
+})
+
+test('generated release notes call out breaking changes automatically', () => {
+  const formatted = formatReleaseNotes(
+    "## What's Changed\n### Breaking changes\n* Remove deprecated entry",
+    '2.0.0',
   )
+
+  assert.match(formatted, /contains breaking changes/)
+})
+
+test('release note formatter accepts generated notes through standard input', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['scripts/format-release-notes.mjs'],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, VERSION: '1.2.3' },
+      input: "## What's Changed\n### Fixes\n* Improve validation",
+    },
+  )
+
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /SDS Lite 1\.2\.3/)
+  assert.match(result.stdout, /Improve validation/)
 })
 
 test('GitHub release metadata selects the expected npm tag', () => {
@@ -272,6 +302,8 @@ test('workflow release validation rejects versions older than prior tags', () =>
 })
 
 test('release workflows preserve the prepare-review-publish boundary', async () => {
+  const ci = await readFile('.github/workflows/ci.yml', 'utf8')
+  const releaseNotes = await readFile('.github/release.yml', 'utf8')
   const prepare = await readFile(
     '.github/workflows/prepare-release.yml',
     'utf8',
@@ -281,6 +313,17 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
     'utf8',
   )
 
+  assert.match(ci, /project: \[chromium, firefox, webkit\]/)
+  assert.match(ci, /run: npm run test:validation/)
+  assert.match(
+    ci,
+    /run: npm run test:browser -- --project=\$\{\{ matrix\.project \}\}/,
+  )
+  assert.match(ci, /name: Build and test/)
+  assert.match(ci, /needs: \[validation, browser\]/)
+  assert.doesNotMatch(ci, /playwright install --with-deps chromium firefox webkit/)
+  assert.doesNotMatch(ci, /run: npm test$/m)
+
   assert.match(prepare, /workflow_dispatch:/)
   assert.match(prepare, /type: choice/)
   assert.match(prepare, /- beta/)
@@ -289,16 +332,41 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(prepare, /release:prepare -- --version "\$VERSION" --yes/)
   assert.match(prepare, /gh release create "\$TAG"/)
   assert.match(prepare, /OPTIONS=\(--draft --generate-notes/)
+  assert.match(prepare, /node scripts\/format-release-notes\.mjs/)
+  assert.match(prepare, /gh release edit "\$TAG" --notes-file/)
   assert.match(prepare, /gh workflow run ci\.yml --ref "\$branch"/)
+  assert.doesNotMatch(prepare, /playwright install/)
+  assert.doesNotMatch(prepare, /run: npm test$/m)
+  assert.match(releaseNotes, /authors:\s+\- github-actions\[bot\]/)
 
   assert.match(finalize, /pull_request:/)
   assert.match(finalize, /types: \[closed\]/)
   assert.match(finalize, /github\.event\.pull_request\.merged == true/)
   assert.match(finalize, /node scripts\/validate-release-pr\.mjs/)
   assert.match(finalize, /environment: \$\{\{/)
+  assert.match(finalize, /project: \[chromium, firefox, webkit\]/)
+  assert.match(finalize, /run: npm run test:validation/)
+  assert.match(
+    finalize,
+    /run: npm run test:browser -- --project=\$\{\{ matrix\.project \}\}/,
+  )
+  assert.match(finalize, /needs: \[build, browser\]/)
   assert.match(finalize, /actions\/upload-artifact@/)
   assert.match(finalize, /actions\/download-artifact@/)
+  assert.match(
+    finalize,
+    /echo "tarball=\$PWD\/\$\{TARBALLS\[0\]\}" >> "\$GITHUB_OUTPUT"/,
+  )
   assert.match(finalize, /gh release edit "\$TAG"/)
   assert.match(finalize, /npm publish "\$TARBALL"/)
+  assert.match(
+    finalize,
+    /git\/refs\/heads\/\$RELEASE_BRANCH/,
+  )
+  assert.doesNotMatch(
+    finalize,
+    /playwright install --with-deps chromium firefox webkit/,
+  )
+  assert.doesNotMatch(finalize, /run: npm test$/m)
   assert.doesNotMatch(finalize, /^  release:/m)
 })
