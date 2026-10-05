@@ -15,10 +15,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
-    name: Build and test
+  validation:
+    name: Validate build and package
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
 
     steps:
       - name: Check out source
@@ -38,17 +38,64 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Install browser engines
-        run: npx playwright install --with-deps chromium firefox webkit
-
       - name: Preserve the committed distribution
         run: cp -R dist "$RUNNER_TEMP/committed-dist"
 
-      - name: Build and test
-        run: npm test
+      - name: Build and validate
+        run: npm run test:validation
 
       - name: Verify the committed distribution is current
         run: diff --recursive --brief "$RUNNER_TEMP/committed-dist" dist
 
       - name: Verify the package contents
         run: npm run check:package
+
+  browser:
+    name: Browser (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit]
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Use the pinned npm version
+        run: npm install --global npm@11.6.4
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install browser engine
+        run: npx playwright install --with-deps ${{ matrix.project }}
+
+      - name: Test browser
+        run: npm run test:browser -- --project=${{ matrix.project }}
+
+  required:
+    name: Build and test
+    if: always()
+    needs: [validation, browser]
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Require validation and browser tests
+        env:
+          BROWSER_RESULT: ${{ needs.browser.result }}
+          VALIDATION_RESULT: ${{ needs.validation.result }}
+        run: |
+          if [[ "$VALIDATION_RESULT" != success || "$BROWSER_RESULT" != success ]]; then
+            echo "::error::Validation or browser tests failed"
+            exit 1
+          fi

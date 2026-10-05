@@ -151,18 +151,14 @@ overrides can break it. Test:
 - focus visibility;
 - every custom semantic-color assignment.
 
-## Release checklist
+## Automated release checks
 
 1. Run `npm test`; the suite includes axe checks in Chromium, Firefox, and
    WebKit plus HTML conformance and executable contrast checks.
-2. Navigate the complete workflow using only a keyboard.
-3. Verify names, roles, states, and announcements with a screen reader.
-4. Test error recovery, loading, empty, and success states.
-5. Test zoom, reflow, reduced motion, light, and dark schemes.
-6. Re-test after any token, content, or framework integration change.
+2. Confirm CI passes its Chromium, Firefox, and WebKit matrix before merging a
+  release pull request.
 
-Automated checks catch only part of the contract; keyboard and
-assistive-technology testing remain required. Record the browser, operating
-system, screen reader, version, tester, date, and result in the release pull
-request. A stable release must not claim WCAG conformance without a reviewed
-conformance assessment covering the released version.
+Manual keyboard, screen-reader, zoom, motion, and branded-browser testing may
+be added when a change's risk warrants it, but evidence is not required for
+publication. Do not claim WCAG conformance without a reviewed conformance
+assessment covering the released version.

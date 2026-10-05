@@ -199,22 +199,28 @@ test('a short deliberate panel drag settles back open', async ({ page }) => {
 test('popover opens after hover delay, stays open over content, and closes after leaving', async ({
   page,
 }) => {
+  await page.clock.install()
+  await page.clock.pauseAt(new Date())
   const popover = page.locator('sds-popover').first()
   const trigger = popover.locator(':scope > button')
   const content = popover.locator(':scope > .sds-popover-content')
 
   await trigger.scrollIntoViewIfNeeded()
   await trigger.dispatchEvent('pointerenter')
-  await page.waitForTimeout(350)
+  await page.clock.fastForward(499)
   await expect(content).not.toBeVisible()
-  await expect(content).toBeVisible({ timeout: 500 })
+  await page.clock.fastForward(1)
+  await expect(content).toBeVisible()
 
   await content.hover()
-  await page.waitForTimeout(400)
+  await page.clock.fastForward(500)
   await expect(content).toBeVisible()
 
   await page.mouse.move(0, 0)
-  await expect(content).not.toBeVisible({ timeout: 1200 })
+  await page.clock.fastForward(119)
+  await expect(content).toBeVisible()
+  await page.clock.fastForward(1)
+  await expect(content).not.toBeVisible()
 })
 
 for (const elementName of ['sds-dropdown', 'sds-popover']) {
