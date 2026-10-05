@@ -139,7 +139,7 @@ jobs:
             echo "::error::Expected exactly one package tarball"
             exit 1
           fi
-          echo "tarball=${TARBALLS[0]}" >> "$GITHUB_OUTPUT"
+          echo "tarball=$PWD/${TARBALLS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Inspect an existing GitHub release
         id: github-release

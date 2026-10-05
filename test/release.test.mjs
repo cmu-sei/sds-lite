@@ -298,6 +298,10 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(finalize, /environment: \$\{\{/)
   assert.match(finalize, /actions\/upload-artifact@/)
   assert.match(finalize, /actions\/download-artifact@/)
+  assert.match(
+    finalize,
+    /echo "tarball=\$PWD\/\$\{TARBALLS\[0\]\}" >> "\$GITHUB_OUTPUT"/,
+  )
   assert.match(finalize, /gh release edit "\$TAG"/)
   assert.match(finalize, /npm publish "\$TARBALL"/)
   assert.doesNotMatch(finalize, /^  release:/m)
