@@ -54,7 +54,18 @@ test('focusable controls share the design-system focus colors in both schemes', 
       for (const selector of fields) {
         const field = page.locator(selector).first()
         await field.focus()
-        await page.waitForTimeout(50)
+        await expect
+          .poll(
+            () =>
+              field.evaluate((element, expectedColor) => {
+                const boxShadow = getComputedStyle(element).boxShadow
+                return (
+                  boxShadow.includes(expectedColor) && boxShadow.includes('2px')
+                )
+              }, color),
+            { message: selector },
+          )
+          .toBe(true)
         const style = await field.evaluate((element) => {
           const computed = getComputedStyle(element)
           return {
@@ -68,11 +79,16 @@ test('focusable controls share the design-system focus colors in both schemes', 
         expect(style.boxShadow, selector).toContain(color)
         expect(style.boxShadow, selector).toContain('2px')
         if (selector === '#file-input') {
-          const uploadShadow = await page
-            .locator('.sds-file-upload')
-            .first()
-            .evaluate((element) => getComputedStyle(element).boxShadow)
-          expect(uploadShadow).toContain(color)
+          await expect
+            .poll(
+              () =>
+                page
+                  .locator('.sds-file-upload')
+                  .first()
+                  .evaluate((element) => getComputedStyle(element).boxShadow),
+              { message: '.sds-file-upload' },
+            )
+            .toContain(color)
         }
       }
     }
