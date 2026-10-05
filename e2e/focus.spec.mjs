@@ -1,48 +1,48 @@
 import { expect, test } from '@playwright/test'
 
-test('focusable controls share the design-system focus colors in both schemes', async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-  await page.locator('[data-sds-root]').evaluate((root) => {
-    root.insertAdjacentHTML(
-      'afterbegin',
-      '<input id="standalone-file" type="file">',
-    )
-  })
-  const focusColor = await page.locator('[data-sds-root]').evaluate((root) =>
-    getComputedStyle(root).getPropertyValue('--sds-color-focus-ring').trim(),
-  )
-  expect(focusColor.replaceAll(/\s/g, '')).toBe(
-    'light-dark(#2eb1e6,#034f8d)',
-  )
+const fields = [
+  '#default-action-tones button[type="button"]',
+  '.sds-link',
+  '.sds-disclosure > summary',
+  '#text-input',
+  '#horizontal-input',
+  '#textarea-input',
+  '#select-input',
+  '#theme',
+  '.sds-choice input[type="checkbox"]:not(:checked):not(:disabled)',
+  '.sds-choice input[type="radio"]:not(:checked):not(:disabled)',
+  '.sds-switch input[role="switch"]:not(:disabled)',
+  '#record-picker > input',
+  '#standalone-file',
+  '#file-input',
+  'a.sds-tag',
+  'button.sds-tag',
+  '.sds-tag-action',
+]
 
-  const fields = [
-    '#default-action-tones button[type="button"]',
-    '.sds-link',
-    '.sds-disclosure > summary',
-    '#text-input',
-    '#horizontal-input',
-    '#textarea-input',
-    '#select-input',
-    '#theme',
-    '.sds-choice input[type="checkbox"]:not(:checked):not(:disabled)',
-    '.sds-choice input[type="radio"]:not(:checked):not(:disabled)',
-    '.sds-switch input[role="switch"]:not(:disabled)',
-    '#record-picker > input',
-    '#standalone-file',
-    '#file-input',
-    'a.sds-tag',
-    'button.sds-tag',
-    '.sds-tag-action',
-  ]
+for (const theme of ['forge', 'plaid']) {
+  for (const [scheme, color] of [
+    ['light', 'rgb(46, 177, 230)'],
+    ['dark', 'rgb(3, 79, 141)'],
+  ]) {
+    test(`focusable controls share the design-system focus color in ${theme} ${scheme}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.goto('/')
+      await page.locator('[data-sds-root]').evaluate((root) => {
+        root.insertAdjacentHTML(
+          'afterbegin',
+          '<input id="standalone-file" type="file">',
+        )
+      })
+      const focusColor = await page.locator('[data-sds-root]').evaluate((root) =>
+        getComputedStyle(root).getPropertyValue('--sds-color-focus-ring').trim(),
+      )
+      expect(focusColor.replaceAll(/\s/g, '')).toBe(
+        'light-dark(#2eb1e6,#034f8d)',
+      )
 
-  for (const theme of ['forge', 'plaid']) {
-    for (const [scheme, color] of [
-      ['light', 'rgb(46, 177, 230)'],
-      ['dark', 'rgb(3, 79, 141)'],
-    ]) {
       await page.locator('[data-sds-root]').evaluate(
         (root, { theme, scheme }) => {
           root.setAttribute('data-sds-theme', theme)
@@ -54,7 +54,18 @@ test('focusable controls share the design-system focus colors in both schemes', 
       for (const selector of fields) {
         const field = page.locator(selector).first()
         await field.focus()
-        await page.waitForTimeout(50)
+        await expect
+          .poll(
+            () =>
+              field.evaluate((element, expectedColor) => {
+                const boxShadow = getComputedStyle(element).boxShadow
+                return (
+                  boxShadow.includes(expectedColor) && boxShadow.includes('2px')
+                )
+              }, color),
+            { message: selector },
+          )
+          .toBe(true)
         const style = await field.evaluate((element) => {
           const computed = getComputedStyle(element)
           return {
@@ -68,16 +79,21 @@ test('focusable controls share the design-system focus colors in both schemes', 
         expect(style.boxShadow, selector).toContain(color)
         expect(style.boxShadow, selector).toContain('2px')
         if (selector === '#file-input') {
-          const uploadShadow = await page
-            .locator('.sds-file-upload')
-            .first()
-            .evaluate((element) => getComputedStyle(element).boxShadow)
-          expect(uploadShadow).toContain(color)
+          await expect
+            .poll(
+              () =>
+                page
+                  .locator('.sds-file-upload')
+                  .first()
+                  .evaluate((element) => getComputedStyle(element).boxShadow),
+              { message: '.sds-file-upload' },
+            )
+            .toContain(color)
         }
       }
-    }
+    })
   }
-})
+}
 
 test('linked tag labels show the shared focus ring on their tag', async ({
   page,

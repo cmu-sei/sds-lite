@@ -136,23 +136,25 @@ test('checked switch thumbs meet non-text contrast for every tone', async ({
         },
         { theme, scheme },
       )
-      await page.waitForTimeout(200)
 
       for (const tone of tones) {
-        const colors = await page
-          .locator(`[data-switch-tone="${tone}"]`)
-          .evaluate((element) => {
-            const style = getComputedStyle(element)
-            return {
-              track: style.backgroundColor,
-              thumb: style.backgroundImage.match(/rgba?\([^)]+\)/)?.[0],
-            }
-          })
-        expect(colors.thumb, `${theme} ${scheme}: ${tone} thumb`).toBeTruthy()
-        expect(
-          contrast(colors.thumb, colors.track),
-          `${theme} ${scheme}: ${tone} (${colors.thumb} on ${colors.track})`,
-        ).toBeGreaterThanOrEqual(3)
+        await expect
+          .poll(
+            async () => {
+              const colors = await page
+                .locator(`[data-switch-tone="${tone}"]`)
+                .evaluate((element) => {
+                  const style = getComputedStyle(element)
+                  return {
+                    track: style.backgroundColor,
+                    thumb: style.backgroundImage.match(/rgba?\([^)]+\)/)?.[0],
+                  }
+                })
+              return colors.thumb ? contrast(colors.thumb, colors.track) : 0
+            },
+            { message: `${theme} ${scheme}: ${tone} switch contrast` },
+          )
+          .toBeGreaterThanOrEqual(3)
       }
     }
   }
