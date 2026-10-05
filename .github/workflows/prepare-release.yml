@@ -68,9 +68,11 @@ jobs:
           RELEASE_CHANNEL: ${{ inputs.channel }}
         run: |
           VERSION="$(node scripts/resolve-release-version.mjs)"
-          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
-          echo "TAG=v$VERSION" >> "$GITHUB_ENV"
-          echo "branch=release/v$VERSION" >> "$GITHUB_ENV"
+          {
+            echo "VERSION=$VERSION"
+            echo "TAG=v$VERSION"
+            echo "branch=release/v$VERSION"
+          } >> "$GITHUB_ENV"
           echo "Preparing $RELEASE_CHANNEL release v$VERSION" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Ensure only one release is in progress
@@ -151,21 +153,25 @@ jobs:
           ## Automated validation
 
           - Package version, generated distribution, non-browser tests, and package limits were validated by the preparation workflow.
-          - The full browser matrix is dispatched explicitly for this generated branch.
+          - The generated pull request runs the required full browser CI matrix. Refreshing an existing release explicitly reruns it.
           - The draft release is published only after this pull request is approved and merged.
           EOF
 
           PR_URL="$(gh pr list --state open --head "$branch" --json url --jq '.[0].url // ""')"
           if [[ -n "$PR_URL" ]]; then
             gh pr edit "$PR_URL" --title "Release v$VERSION" --add-label release
+            REFRESHED=true
           else
             PR_URL="$(gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Release v$VERSION" --body-file "$BODY" --label release)"
+            REFRESHED=false
           fi
           echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
+          echo "refreshed=$REFRESHED" >> "$GITHUB_OUTPUT"
           echo "### Release pull request" >> "$GITHUB_STEP_SUMMARY"
           echo "$PR_URL" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Dispatch CI for the generated branch
+      - name: Rerun CI for a refreshed release
+        if: steps.pull-request.outputs.refreshed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run ci.yml --ref "$branch"

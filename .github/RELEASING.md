@@ -35,7 +35,8 @@ publication, and branch cleanup.
 4. Merge the release pull request normally. When **Finalize Release** pauses,
    approve the matching protected deployment environment.
 5. Confirm that Finalize Release is green and that the GitHub release and
-   GitHub Package are published. The release branch is deleted automatically.
+   GitHub Package are published. Its job summary links to the release, package,
+   and versioned CDN files. The release branch is deleted automatically.
 
 Never create a release tag, publish the draft release, run `npm publish`, or
 edit generated version files manually. If automation fails, use the recovery
@@ -119,11 +120,12 @@ the package version and version-pinned documentation, regenerates `dist/`, runs
 non-browser validation, enforces package content and size limits, and runs
 `git diff --check`. It then creates or refreshes `release/v<version>`, opens a
 draft GitHub release with generated notes, opens the release pull request, and
-dispatches the full browser CI matrix for the generated branch.
+lets the generated pull request run the required full browser CI matrix.
 
 Rerunning the same base version and channel refreshes the release branch from
 current `main` without erasing edits already made to the pull request or draft
-release.
+release. The refresh explicitly reruns CI because bot-authored branch updates
+do not reliably emit another pull request event.
 
 Review the generated pull request. Any changes should be limited to:
 
@@ -196,8 +198,10 @@ https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.css
    GitHub release and package checksum before doing any work again.
 - Release artifacts are retained for seven days. After that, rerun the build
    job as well as the publication job to regenerate the tested artifact.
-- To abandon an unmerged release, close its pull request and delete its draft
-   release and `release/v<version>` branch.
+- To abandon an unmerged release, run **Actions > Abandon Release**, enter its
+   exact generated version, and type the requested confirmation. The workflow
+   refuses published tags and releases, then closes the generated pull request
+   and deletes its draft release and `release/v<version>` branch.
 - If the tagged source, version, package, or documentation is wrong, do not
   move or delete the tag. Prepare and publish a new version.
 - If the registry reports that the version already exists, verify the existing
