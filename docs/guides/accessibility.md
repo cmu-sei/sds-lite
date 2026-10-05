@@ -153,10 +153,10 @@ overrides can break it. Test:
 
 ## Automated release checks
 
-1. Run `npm test`; the suite includes axe checks in Chromium, Firefox, and
-   WebKit plus HTML conformance and executable contrast checks.
-2. Confirm CI passes its Chromium, Firefox, and WebKit matrix before merging a
-  release pull request.
+1. The required **Build and test** check runs HTML conformance, executable
+  contrast checks, and axe checks across Chromium, Firefox, and WebKit.
+2. Finalize Release reruns validation and the three-browser matrix on the
+  merged release commit before publication approval.
 
 Manual keyboard, screen-reader, zoom, motion, and branded-browser testing may
 be added when a change's risk warrants it, but evidence is not required for
