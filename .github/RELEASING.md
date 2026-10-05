@@ -189,10 +189,10 @@ out that commit for tag verification, downloads the tested tarball without
 rebuilding it, checks the registry, performs an `npm publish --dry-run`, and
 then publishes it under `beta` or `latest`.
 
-For example, release `v0.1.0` serves:
+For example, release `v0.2.0` serves:
 
 ```text
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.css
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.0/dist/sds.css
 ```
 
 ## Recover from a failed release
