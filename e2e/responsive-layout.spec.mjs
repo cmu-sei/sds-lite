@@ -558,6 +558,7 @@ test('badges keep their intrinsic height inside grids', async ({ page }) => {
 test('catalog compositions group related options and reflow before crowding', async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
   await page.evaluate(() => document.fonts.ready)
@@ -572,13 +573,16 @@ test('catalog compositions group related options and reflow before crowding', as
     )
   expect(Math.abs(desktopSetupCards[0] - desktopSetupCards[1])).toBeLessThan(1)
 
-  const formFields = await Promise.all(
-    ['#text-input', '#email-input', '#password-input'].map((selector) =>
-      page.locator(`.sds-field:has(${selector})`).boundingBox(),
-    ),
-  )
-  expect(formFields[0]?.y).toBe(formFields[1]?.y)
-  expect(formFields[2]?.y).toBeGreaterThan(formFields[0]?.y ?? 0)
+  const formFieldRows = await page
+    .locator(
+      '.sds-field:has(#text-input), .sds-field:has(#email-input), .sds-field:has(#password-input)',
+    )
+    .evaluateAll((fields) =>
+      fields.map((field) => field.getBoundingClientRect().y),
+    )
+  expect(formFieldRows).toHaveLength(3)
+  expect(formFieldRows[0]).toBe(formFieldRows[1])
+  expect(formFieldRows[2]).toBeGreaterThan(formFieldRows[0])
 
   const calloutToneGroups = page.locator(
     '#callout-variants > .sds-grid > section',
