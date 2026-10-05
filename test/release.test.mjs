@@ -452,6 +452,10 @@ test('workflow release validation rejects versions older than prior tags', () =>
 
 test('release workflows preserve the prepare-review-publish boundary', async () => {
   const ci = await readFile('.github/workflows/ci.yml', 'utf8')
+  const pullRequestTemplate = await readFile(
+    '.github/PULL_REQUEST_TEMPLATE.md',
+    'utf8',
+  )
   const releaseNotes = await readFile('.github/release.yml', 'utf8')
   const abandon = await readFile(
     '.github/workflows/abandon-release.yml',
@@ -475,8 +479,14 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(ci, /name: Build and test/)
   assert.match(ci, /needs: \[validation, browser\]/)
   assert.doesNotMatch(ci, /^  push:/m)
+  assert.doesNotMatch(ci, /committed distribution/)
+  assert.doesNotMatch(ci, /committed-dist/)
   assert.doesNotMatch(ci, /playwright install --with-deps chromium firefox webkit/)
   assert.doesNotMatch(ci, /run: npm test$/m)
+
+  assert.doesNotMatch(pullRequestTemplate, /## Release note/)
+  assert.doesNotMatch(pullRequestTemplate, /Generated `dist\/` changes/)
+  assert.doesNotMatch(pullRequestTemplate, /`internal`, or `release`/)
 
   assert.match(prepare, /workflow_dispatch:/)
   assert.match(prepare, /type: choice/)
@@ -493,6 +503,8 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
     /if: steps\.pull-request\.outputs\.refreshed == 'true'/,
   )
   assert.match(prepare, /gh workflow run ci\.yml --ref "\$branch"/)
+  assert.doesNotMatch(prepare, /Obtain approval/)
+  assert.match(prepare, /reviewed and merged/)
   assert.doesNotMatch(prepare, /playwright install/)
   assert.doesNotMatch(prepare, /run: npm test$/m)
   assert.match(releaseNotes, /authors:\s+\- github-actions\[bot\]/)
@@ -504,6 +516,8 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(finalize, /environment: \$\{\{/)
   assert.match(finalize, /project: \[chromium, firefox, webkit\]/)
   assert.match(finalize, /run: npm run test:validation/)
+  assert.match(finalize, /Preserve the committed distribution/)
+  assert.match(finalize, /Verify the committed distribution is current/)
   assert.match(
     finalize,
     /run: npm run test:browser -- --project=\$\{\{ matrix\.project \}\}/,

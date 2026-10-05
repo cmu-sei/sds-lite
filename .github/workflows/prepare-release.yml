@@ -147,14 +147,14 @@ jobs:
 
           1. Wait for **Build and test** to pass and review the generated file changes.
           2. Open the [draft GitHub release]($DRAFT_RELEASE_URL) and follow its editor guide. If the generated notes are already clear and accurate, no edits are needed.
-          3. Obtain approval and merge normally. Merging confirms that the generated changes and draft release were reviewed.
+          3. Merge normally. Merging confirms that the generated changes and draft release were reviewed.
           4. Approve the protected deployment when **Finalize Release** pauses.
 
           ## Automated validation
 
           - Package version, generated distribution, non-browser tests, and package limits were validated by the preparation workflow.
           - The generated pull request runs the required full browser CI matrix. Refreshing an existing release explicitly reruns it.
-          - The draft release is published only after this pull request is approved and merged.
+          - The draft release is published only after this pull request is reviewed and merged.
           EOF
 
           PR_URL="$(gh pr list --state open --head "$branch" --json url --jq '.[0].url // ""')"

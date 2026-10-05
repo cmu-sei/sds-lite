@@ -31,7 +31,7 @@ publication, and branch cleanup.
    the workflow.
 3. Open the generated release pull request and follow its **Finish this
    release** section. Review the generated changes and linked draft release,
-   then obtain approval. Merging confirms that both were reviewed.
+   then merge normally. Merging confirms that both were reviewed.
 4. Merge the release pull request normally. When **Finalize Release** pauses,
    approve the matching protected deployment environment.
 5. Confirm that Finalize Release is green and that the GitHub release and
@@ -61,9 +61,9 @@ section at the end of this guide.
    `enhancement`, `bug`, `documentation`, and `internal`; these labels are not
    created by automation. The preparation workflow creates and applies only
    the `release` label.
-8. Configure branch protection for `main` to require CI and at least one
-   approving review. Do not allow the release pull request to bypass these
-   requirements; the release workflows do not enforce merge policy.
+8. Configure branch protection for `main` to require pull requests and the
+   current **Build and test** check. Do not allow bypasses. Protected
+   environment approval is the final publication authorization gate.
 
 No long-lived npm token is required. Publication uses the workflow's
 short-lived `GITHUB_TOKEN`.
@@ -122,6 +122,13 @@ non-browser validation, enforces package content and size limits, and runs
 draft GitHub release with generated notes, opens the release pull request, and
 lets the generated pull request run the required full browser CI matrix.
 
+Ordinary contributor pull requests do not need to commit generated `dist/`
+changes. CI builds and tests them without modifying the pull request. Prepare
+Release owns the committed distribution, and Finalize Release rebuilds and
+verifies it before publication. If a contributor includes `dist/` changes,
+release preparation replaces them with a clean build; they do not affect
+publication.
+
 Rerunning the same base version and channel refreshes the release branch from
 current `main` without erasing edits already made to the pull request or draft
 release. The refresh explicitly reruns CI because bot-authored branch updates
@@ -138,12 +145,12 @@ Review the generated pull request. Any changes should be limited to:
 The preparation workflow does not modify legal files. Any legal-file change in
 the generated pull request is unexpected and requires separate approval.
 
-The automated suite covers keyboard behavior, zoom and responsive layouts,
-reduced motion, forced colors, accessibility rules, and the Chromium, Firefox,
-and WebKit browser engines. Manual test evidence is not required for a release.
-Review the generated changes and draft release notes, obtain approval, and
-merge normally. The protected merge is the human confirmation that the release
-is ready.
+The automated suite covers keyboard behavior, responsive layouts, reduced
+motion, forced colors, accessibility rules, and the Chromium, Firefox, and
+WebKit browser engines. Manual test evidence is not required for a release.
+Review the generated changes and draft release notes, then merge normally. The
+merge is the human confirmation that the release is ready for protected
+publication approval.
 
 ## Publish the release
 
