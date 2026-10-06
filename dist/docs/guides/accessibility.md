@@ -155,7 +155,7 @@ overrides can break it. Test:
 
 1. The required **Build and test** check runs HTML conformance, executable
   contrast checks, and axe checks across Chromium, Firefox, and WebKit.
-2. Finalize Release reruns validation and the three-browser matrix on the
+2. Release - Publish Merged Release reruns validation and the three-browser matrix on the
   merged release commit before publication approval.
 
 Manual keyboard, screen-reader, zoom, motion, and branded-browser testing may

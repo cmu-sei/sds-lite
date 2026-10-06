@@ -14,10 +14,10 @@ The URL format is:
 https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@vVERSION/dist/FILE
 ```
 
-For example, release `v0.2.1-beta.1` provides `dist/sds.css` at:
+For example, release `v0.2.1` provides `dist/sds.css` at:
 
 ```text
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/sds.css
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css
 ```
 
 ## Complete starter page
@@ -33,11 +33,11 @@ Save this as `index.html` and open it through any web server:
     <title>My SDS Lite application</title>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/sds.css"
+      href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css"
     >
     <script
       type="module"
-      src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/auto.js"
+      src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/auto.js"
     ></script>
   </head>
   <body
@@ -69,7 +69,7 @@ work with the CDN tags above or NPM imports.
 Use the exact protected Git tag for the release:
 
 ```text
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/sds.css
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css
 ```
 
 An exact version prevents a future release from changing a deployed page
@@ -85,7 +85,7 @@ SDS dialog, panel, or mobile-sidebar compatibility behavior, omit the script:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/sds.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css"
 >
 ```
 
@@ -99,7 +99,7 @@ behavior:
 <script type="module">
   import {
     notify,
-  } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/auto.js'
+  } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/auto.js'
 
   document.querySelector('#save').addEventListener('click', () => {
     notify('Your changes were saved.', {
@@ -118,7 +118,7 @@ hydration). For a plain HTML page, omit the `auto.js` tag and use:
 
 ```html
 <script type="module">
-  import { setupSds } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/sds.js'
+  import { setupSds } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.js'
 
   setupSds()
 </script>
@@ -133,7 +133,7 @@ per-element CDN entries to choose or coordinate.
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/brand.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/brand.css"
 >
 ```
 
