@@ -84,7 +84,22 @@ test('focus keeps the blue ring and adds a contrasting control boundary', async 
         { theme, scheme },
       )
       await input.focus()
-      await page.waitForTimeout(50)
+      const expectedFocusColor =
+        scheme === 'light' ? 'rgb(46, 177, 230)' : 'rgb(3, 79, 141)'
+      await expect
+        .poll(
+          () =>
+            input.evaluate((element, expectedColor) => {
+              const boxShadow = getComputedStyle(element).boxShadow
+              return (
+                element.matches(':focus-visible') &&
+                boxShadow.includes(expectedColor) &&
+                boxShadow.includes('0px 0px 0px 2px')
+              )
+            }, expectedFocusColor),
+          { message: `${theme} ${scheme}` },
+        )
+        .toBe(true)
 
       const styles = await input.evaluate((element) => {
         const style = getComputedStyle(element)
@@ -103,9 +118,7 @@ test('focus keeps the blue ring and adds a contrasting control boundary', async 
       expect(contrast(styles.borderColor, styles.background)).toBeGreaterThanOrEqual(3)
       expect(contrast(styles.borderColor, shadowColors[0])).toBeGreaterThanOrEqual(3)
       expect(styles.borderWidth).toBe('1px')
-      expect(shadowColors[0].replaceAll(/\s/g, '')).toBe(
-        scheme === 'light' ? 'rgb(46,177,230)' : 'rgb(3,79,141)',
-      )
+      expect(shadowColors[0]).toBe(expectedFocusColor)
     }
   }
 })
