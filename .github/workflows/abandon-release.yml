@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       confirmation:
-        description: Type abandon vVERSION using the exact version above
+        description: Retype the exact prepared version above to confirm
         required: true
         type: string
 

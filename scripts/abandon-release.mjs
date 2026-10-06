@@ -6,9 +6,11 @@ import { parseReleaseVersion } from './release-version.mjs'
 export function resolveAbandonedRelease(version, confirmation) {
   const parsed = parseReleaseVersion(version?.trim() ?? '')
   const tag = `v${parsed.version}`
-  const expectedConfirmation = `abandon ${tag}`
+  const expectedConfirmation = parsed.version
   if (confirmation?.trim() !== expectedConfirmation) {
-    throw new Error(`Confirmation must be exactly: ${expectedConfirmation}`)
+    throw new Error(
+      `Confirmation must exactly match version "${expectedConfirmation}"`,
+    )
   }
 
   return {

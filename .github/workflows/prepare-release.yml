@@ -108,27 +108,31 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_DATA="$(gh release view "$TAG" --json isDraft,url 2>/dev/null || true)"
+          RELEASE_DATA="$(gh release view "$TAG" --json isDraft 2>/dev/null || true)"
           if [[ -n "$RELEASE_DATA" ]]; then
             if [[ "$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")" != true ]]; then
               echo "::error::$TAG is already published"
               exit 1
             fi
-            RELEASE_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).url)' "$RELEASE_DATA")"
           else
             OPTIONS=(--draft --generate-notes --target "${{ github.event.repository.default_branch }}" --title "SDS Lite $TAG")
             if [[ "$VERSION" == *-beta.* ]]; then
               OPTIONS+=(--prerelease)
             fi
-            RELEASE_URL="$(gh release create "$TAG" "${OPTIONS[@]}")"
+            gh release create "$TAG" "${OPTIONS[@]}"
           fi
-          RELEASE_URL="$(node scripts/release-url.mjs draft-editor "$RELEASE_URL")"
           RAW_NOTES="$RUNNER_TEMP/release-notes-raw.md"
           FORMATTED_NOTES="$RUNNER_TEMP/release-notes-formatted.md"
           gh release view "$TAG" --json body --jq .body > "$RAW_NOTES"
           VERSION="$VERSION" node scripts/format-release-notes.mjs < "$RAW_NOTES" > "$FORMATTED_NOTES"
           if ! cmp --silent "$RAW_NOTES" "$FORMATTED_NOTES"; then
             gh release edit "$TAG" --notes-file "$FORMATTED_NOTES"
+          fi
+          RELEASES_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases"
+          RELEASE_URL="$(gh release view "$TAG" --json url --jq .url 2>/dev/null || true)"
+          if [[ "$RELEASE_URL" != "$RELEASES_URL/tag/untagged-"* ]]; then
+            echo "::warning::GitHub did not return a usable draft release URL; linking to $RELEASES_URL"
+            RELEASE_URL="$RELEASES_URL"
           fi
           echo "url=$RELEASE_URL" >> "$GITHUB_OUTPUT"
 
@@ -160,7 +164,7 @@ jobs:
 
           PR_URL="$(gh pr list --state open --head "$branch" --json url --jq '.[0].url // ""')"
           if [[ -n "$PR_URL" ]]; then
-            gh pr edit "$PR_URL" --title "Release v$VERSION" --add-label release
+            gh pr edit "$PR_URL" --title "Release v$VERSION" --body-file "$BODY" --add-label release
             REFRESHED=true
           else
             PR_URL="$(gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Release v$VERSION" --body-file "$BODY" --label release)"
