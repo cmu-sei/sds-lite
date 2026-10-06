@@ -1,4 +1,4 @@
-name: Finalize Release
+name: Release - Publish Merged Release
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: release-${{ github.event.pull_request.head.ref }}
@@ -50,6 +51,12 @@ jobs:
 
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
+
+      - name: Reject a cancelled release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node scripts/cancel-release.mjs assert-active
 
       - name: Validate release pull request
         env:
@@ -97,7 +104,10 @@ jobs:
     name: Browser (${{ matrix.project }})
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
     strategy:
       fail-fast: false
       matrix:
@@ -122,9 +132,6 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Install browser engine
-        run: npx playwright install --with-deps ${{ matrix.project }}
-
       - name: Test browser
         run: npm run test:browser -- --project=${{ matrix.project }}
 
@@ -133,10 +140,14 @@ jobs:
     needs: [build, browser]
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: release-publication-${{ needs.build.outputs.version }}
+      cancel-in-progress: false
     environment: ${{ needs.build.outputs.dist-tag == 'latest' && 'github-packages-production' || 'github-packages-beta' }}
     permissions:
       contents: write
       packages: write
+      pull-requests: read
 
     steps:
       - name: Check out the released commit
@@ -156,6 +167,12 @@ jobs:
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
 
+      - name: Reject a cancelled release after approval
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node scripts/cancel-release.mjs assert-active
+
       - name: Download the tested package
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
@@ -172,8 +189,10 @@ jobs:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           EXPECTED_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_PR_NUMBER: ${{ github.event.pull_request.number }}
           TAG: v${{ needs.build.outputs.version }}
         run: |
+          node scripts/cancel-release.mjs assert-active
           RELEASE_DATA="$(gh release view "$TAG" --json isDraft,isPrerelease)"
           IS_DRAFT="$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")"
           ACTUAL_PRERELEASE="$(node -e 'console.log(JSON.parse(process.argv[1]).isPrerelease)' "$RELEASE_DATA")"
@@ -238,8 +257,10 @@ jobs:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           EXPECTED_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_PR_NUMBER: ${{ github.event.pull_request.number }}
           TAG: v${{ needs.build.outputs.version }}
         run: |
+          node scripts/cancel-release.mjs assert-active
           RELEASE_DATA="$(gh release view "$TAG" --json isDraft,isPrerelease)"
           CURRENT_DRAFT="$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")"
           CURRENT_PRERELEASE="$(node -e 'console.log(JSON.parse(process.argv[1]).isPrerelease)' "$RELEASE_DATA")"
@@ -264,9 +285,13 @@ jobs:
         if: steps.registry.outputs.published == 'false'
         env:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_PR_NUMBER: ${{ github.event.pull_request.number }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
-        run: node scripts/release-artifact.mjs publish "$TARBALL" "$DIST_TAG"
+        run: |
+          node scripts/cancel-release.mjs assert-active
+          node scripts/release-artifact.mjs publish "$TARBALL" "$DIST_TAG"
 
       - name: Summarize publication
         env:

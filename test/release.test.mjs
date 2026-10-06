@@ -18,6 +18,14 @@ import {
   selectReleasePullRequestForAbandonment,
 } from '../scripts/abandon-release.mjs'
 import {
+  activeReleaseRuns,
+  assertReleaseActive,
+  cancellationLabel,
+  cancelRelease,
+  revertReleaseCommit,
+  validateMergedRelease,
+} from '../scripts/cancel-release.mjs'
+import {
   validateReleaseEnvironment,
   validateReleaseOrder,
 } from '../scripts/validate-release.mjs'
@@ -223,6 +231,184 @@ test('release abandonment selects the active or latest unmerged pull request', (
     () => selectReleasePullRequestForAbandonment([], [merged]),
     /No open or closed-unmerged/,
   )
+})
+
+function cancellationHarness(options = {}) {
+  const commands = []
+  const pullRequest = {
+    number: 42,
+    state: 'closed',
+    merged_at: '2026-10-06T12:00:00Z',
+    merge_commit_sha: 'a'.repeat(40),
+    commits: 1,
+    labels: [{ name: 'release' }],
+    head: { ref: 'release/v1.2.3', sha: 'b'.repeat(40), repo: { full_name: 'cmu-sei/sds-lite' } },
+    base: { ref: 'main' },
+    ...options.pullRequest,
+  }
+  let active = options.active ?? true
+  let draftExists = options.draftExists ?? true
+  const run = (command, args) => {
+    commands.push([command, ...args])
+    const success = (value = {}) => ({ status: 0, stdout: JSON.stringify(value), stderr: '' })
+    const missing = () => ({ status: 1, stdout: '', stderr: 'HTTP 404' })
+    if (command === 'npm') {
+      return options.packageResult ?? { status: 1, stdout: JSON.stringify({ error: { code: 'E404' } }), stderr: '' }
+    }
+    if (args[0] === 'pr' && args[1] === 'list') return success([{ number: 42 }])
+    if (args[0] === 'pr' && args[1] === 'edit') {
+      pullRequest.labels.push({ name: cancellationLabel })
+      return success()
+    }
+    if (args[0] === 'label') return success()
+    if (args[0] === 'release') {
+      draftExists = false
+      return success()
+    }
+    if (args.includes('--slurp')) {
+      return success([{ workflow_runs: active ? [{ id: 100, status: 'waiting', head_sha: pullRequest.merge_commit_sha }] : [] }])
+    }
+    const endpoint = args.at(-1)
+    if (endpoint.endsWith('/cancel')) {
+      if (!options.stuck) active = false
+      return success()
+    }
+    if (endpoint.endsWith('/pulls/42')) return success(pullRequest)
+    if (endpoint.includes('/contents/package.json')) {
+      return success({ content: Buffer.from(JSON.stringify({ name: '@cmu-sei/sds-lite', version: options.packageVersion ?? '1.2.3' })).toString('base64') })
+    }
+    if (endpoint.includes('/releases/tags/')) return draftExists ? success({ draft: options.draft ?? true }) : missing()
+    if (endpoint.includes('/git/ref/tags/')) return options.tagExists ? success({ ref: 'refs/tags/v1.2.3' }) : missing()
+    throw new Error(`Unexpected command: ${command} ${args.join(' ')}`)
+  }
+  return {
+    commands,
+    pullRequest,
+    request: (phase) => cancelRelease({
+      phase,
+      version: '1.2.3',
+      confirmation: '1.2.3',
+      repository: 'cmu-sei/sds-lite',
+      defaultBranch: 'main',
+      run,
+      wait: async () => {},
+    }),
+  }
+}
+
+test('merged release cancellation marks the PR before stopping finalization', async () => {
+  const harness = cancellationHarness()
+  const result = await harness.request('request')
+  assert.equal(result.pullRequest.number, 42)
+  assert.throws(() => assertReleaseActive(harness.pullRequest), /cancelled/)
+  const marked = harness.commands.findIndex((command) => command.includes('--add-label'))
+  const stopped = harness.commands.findIndex((command) => command.at(-1).endsWith('/cancel'))
+  assert.ok(marked >= 0 && stopped > marked)
+  assert.equal(harness.commands.some((command) => command[1] === 'release'), false)
+  await harness.request('cleanup')
+  assert.equal(harness.commands.filter((command) => command[1] === 'release').length, 1)
+  await harness.request('cleanup')
+  assert.equal(harness.commands.filter((command) => command[1] === 'release').length, 1)
+})
+
+test('merged cancellation refuses public releases, tags, packages, and uncertain registry state', async () => {
+  for (const options of [
+    { draft: false },
+    { tagExists: true },
+    { packageResult: { status: 0, stdout: '"1.2.3"', stderr: '' } },
+    { packageResult: { status: 1, stdout: '{"error":{"code":"E401"}}', stderr: '' } },
+    { packageResult: { status: 1, stdout: '', stderr: 'network timeout' } },
+    { packageVersion: '1.2.4' },
+  ]) {
+    const harness = cancellationHarness(options)
+    await assert.rejects(harness.request('request'), /published|already exists|Could not verify|does not match/)
+    assert.equal(harness.commands.some((command) => command.includes('--add-label')), false)
+    assert.equal(harness.commands.some((command) => command[1] === 'release'), false)
+  }
+})
+
+test('merged cancellation keeps its publication block when finalization cannot stop', async () => {
+  const harness = cancellationHarness({ stuck: true })
+  await assert.rejects(harness.request('request'), /still active/)
+  assert.throws(() => assertReleaseActive(harness.pullRequest), /cancelled/)
+  await assert.rejects(harness.request('cleanup'), /still active/)
+  assert.equal(harness.commands.some((command) => command[1] === 'release'), false)
+})
+
+test('cancellation cleanup rechecks publication and requires the persistent marker', async () => {
+  const unmarked = cancellationHarness({ active: false })
+  await assert.rejects(unmarked.request('cleanup'), /Request cancellation/)
+  const published = cancellationHarness({
+    active: false,
+    draft: false,
+    pullRequest: { labels: [{ name: 'release' }, { name: cancellationLabel }] },
+  })
+  await assert.rejects(published.request('cleanup'), /already published/)
+  assert.equal(published.commands.some((command) => command[1] === 'release'), false)
+})
+
+test('merged cancellation validates provenance and only cancels matching active runs', () => {
+  const { pullRequest } = cancellationHarness()
+  const release = resolveAbandonedRelease('1.2.3', '1.2.3')
+  for (const changes of [
+    { merged_at: null },
+    { commits: 2 },
+    { head: { ref: release.branch, repo: { full_name: 'attacker/fork' } } },
+    { base: { ref: 'other' } },
+    { labels: [] },
+  ]) {
+    assert.throws(() => validateMergedRelease({ ...pullRequest, ...changes }, release, 'cmu-sei/sds-lite', 'main'))
+  }
+  assertReleaseActive(pullRequest)
+  assert.throws(() => assertReleaseActive({}), /Could not verify/)
+  const runs = [
+    { id: 1, status: 'queued', head_sha: pullRequest.merge_commit_sha },
+    { id: 2, status: 'completed', head_sha: pullRequest.merge_commit_sha },
+    { id: 3, status: 'waiting', pull_requests: [{ number: 42 }] },
+    { id: 4, status: 'in_progress', head_branch: 'release/v9.0.0' },
+    { id: 5, status: 'in_progress', head_branch: pullRequest.head.ref },
+  ]
+  assert.deepEqual(activeReleaseRuns([{ workflow_runs: runs }], pullRequest).map((run) => run.id), [1, 3, 5])
+})
+
+test('release-only recovery reverts squash and merge commits while preserving later work', async (context) => {
+  for (const merge of ['squash', 'merge']) {
+    const directory = await mkdtemp(join(tmpdir(), 'sds-release-revert-'))
+    context.after(() => rm(directory, { recursive: true, force: true }))
+    const run = (command, args) => spawnSync(command, args, { cwd: directory, encoding: 'utf8' })
+    const git = (...args) => {
+      const result = run('git', args)
+      assert.equal(result.status, 0, result.stderr)
+      return result.stdout.trim()
+    }
+    git('init', '--initial-branch=main')
+    git('config', 'user.name', 'Release Test')
+    git('config', 'user.email', 'release@example.test')
+    await writeFile(join(directory, 'version.txt'), '1.2.2\n')
+    await writeFile(join(directory, 'feature.txt'), 'before\n')
+    git('add', '--all')
+    git('commit', '-m', 'Initial version')
+    git('switch', '-c', 'release/v1.2.3')
+    await writeFile(join(directory, 'version.txt'), '1.2.3\n')
+    git('add', '--all')
+    git('commit', '-m', 'Prepare release')
+    git('switch', 'main')
+    if (merge === 'squash') {
+      git('merge', '--squash', 'release/v1.2.3')
+      git('commit', '-m', 'Squash release')
+    } else {
+      git('merge', '--no-ff', 'release/v1.2.3', '-m', 'Merge release')
+    }
+    const commit = git('rev-parse', 'HEAD')
+    await writeFile(join(directory, 'feature.txt'), 'later work\n')
+    git('add', '--all')
+    git('commit', '-m', 'Later work')
+    revertReleaseCommit(commit, run)
+    assert.equal(await readFile(join(directory, 'version.txt'), 'utf8'), '1.2.2\n')
+    assert.equal(await readFile(join(directory, 'feature.txt'), 'utf8'), 'later work\n')
+    assert.equal(git('diff', '--cached', '--name-only'), 'version.txt')
+  }
+  assert.throws(() => revertReleaseCommit('--all'), /merge commit is required/)
 })
 
 test('release PR validation requires matching branch and state', () => {
@@ -448,6 +634,56 @@ test('workflow release validation rejects versions older than prior tags', () =>
       ]),
     /must be greater/,
   )
+})
+
+test('browser workflows use containers matching the locked Playwright version', async () => {
+  const lock = JSON.parse(await readFile('package-lock.json', 'utf8'))
+  const version = lock.packages['node_modules/playwright'].version
+  for (const filename of ['ci.yml', 'release-package.yml']) {
+    const workflow = await readFile(`.github/workflows/${filename}`, 'utf8')
+    assert.ok(workflow.includes(`image: mcr.microsoft.com/playwright:v${version}-noble`))
+    assert.match(workflow, /options: --ipc=host/)
+    assert.doesNotMatch(workflow, /playwright install/)
+    assert.match(workflow, /project: \[chromium, firefox, webkit\]/)
+  }
+})
+
+test('release workflow names state their stage and recovery locks publication', async () => {
+  const names = {
+    'ci.yml': 'CI - Build and Browser Tests',
+    'prepare-release.yml': 'Release - Create Release PR',
+    'release-package.yml': 'Release - Publish Merged Release',
+    'abandon-release.yml': 'Release - Discard Unmerged Release PR',
+    'cancel-merged-release.yml': 'Release - Cancel Merged Unpublished Release',
+  }
+  for (const [filename, name] of Object.entries(names)) {
+    const workflow = await readFile(`.github/workflows/${filename}`, 'utf8')
+    assert.equal(workflow.split('\n')[0], `name: ${name}`)
+  }
+  const publish = await readFile('.github/workflows/release-package.yml', 'utf8')
+  const cancel = await readFile('.github/workflows/cancel-merged-release.yml', 'utf8')
+  const prepare = await readFile('.github/workflows/prepare-release.yml', 'utf8')
+  assert.match(publish, /group: release-publication-\$\{\{ needs\.build\.outputs\.version \}\}/)
+  assert.match(cancel, /group: release-publication-\$\{\{ needs\.stop\.outputs\.version \}\}/)
+  assert.match(cancel, /needs: stop/)
+  assert.match(cancel, /node scripts\/cancel-release\.mjs request/)
+  assert.match(cancel, /node scripts\/cancel-release\.mjs cleanup/)
+  assert.match(cancel, /actions: write/)
+  assert.match(cancel, /packages: read/)
+  assert.match(cancel, /node scripts\/cancel-release\.mjs revert/)
+  assert.match(cancel, /gh pr create --base "\$DEFAULT_BRANCH"/)
+  assert.match(cancel, /gh workflow run ci\.yml --ref "\$REVERT_BRANCH"/)
+  assert.doesNotMatch(cancel, /git push --force|gh pr merge|gh release delete.*--cleanup-tag/)
+  assert.match(prepare, /--state merged --head "\$branch" --label release-cancelled/)
+  assert.match(prepare, /Choose a newer base version/)
+  for (const step of ['Publish the reviewed GitHub release', 'Publish to GitHub Packages']) {
+    const block = publish.split(`- name: ${step}\n`)[1].split('\n      - name:')[0]
+    assert.match(block, /RELEASE_PR_NUMBER: \$\{\{ github\.event\.pull_request\.number \}\}/)
+    assert.match(block, /node scripts\/cancel-release\.mjs assert-active/)
+    assert.ok(block.indexOf('assert-active') < block.indexOf(
+      step === 'Publish to GitHub Packages' ? 'node scripts/release-artifact.mjs publish' : 'gh release edit',
+    ))
+  }
 })
 
 test('release workflows preserve the prepare-review-publish boundary', async () => {

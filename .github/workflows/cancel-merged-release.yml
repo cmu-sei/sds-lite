@@ -1,0 +1,163 @@
+name: Release - Cancel Merged Unpublished Release
+run-name: Cancel merged unpublished release v${{ inputs.version }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact merged but unpublished version, such as 1.2.0-beta.1
+        required: true
+        type: string
+      confirmation:
+        description: Retype the exact version to block publication and request a revert
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prepare-release
+  cancel-in-progress: false
+
+jobs:
+  stop:
+    name: Block publication and stop release jobs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: write
+      contents: read
+      issues: write
+      packages: read
+      pull-requests: write
+    outputs:
+      version: ${{ steps.cancel.outputs.version }}
+    steps:
+      - name: Require the default branch workflow
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          SELECTED_BRANCH: ${{ github.ref_name }}
+        run: |
+          if [[ "$SELECTED_BRANCH" != "$DEFAULT_BRANCH" ]]; then
+            echo "::error::Run this workflow from $DEFAULT_BRANCH"
+            exit 1
+          fi
+
+      - name: Check out the recovery controller
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Set up Node.js and registry authentication
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: '@cmu-sei'
+
+      - name: Block publication and wait for finalization to stop
+        id: cancel
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_CONFIRMATION: ${{ inputs.confirmation }}
+        run: node scripts/cancel-release.mjs request
+
+  recover:
+    name: Remove draft and open reviewed revert PR
+    needs: stop
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: release-publication-${{ needs.stop.outputs.version }}
+      cancel-in-progress: false
+    permissions:
+      actions: write
+      contents: write
+      packages: read
+      pull-requests: write
+    steps:
+      - name: Check out the current default branch
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js and registry authentication
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: '@cmu-sei'
+
+      - name: Verify publication is stopped and remove only the draft
+        id: recovery
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_CONFIRMATION: ${{ inputs.confirmation }}
+        run: node scripts/cancel-release.mjs cleanup
+
+      - name: Create or reuse the revert pull request
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_COMMIT: ${{ steps.recovery.outputs.merge-commit }}
+          RELEASE_PR_NUMBER: ${{ steps.recovery.outputs.pull-request }}
+          REVERT_BRANCH: ${{ steps.recovery.outputs.revert-branch }}
+          TAG: ${{ steps.recovery.outputs.tag }}
+        run: |
+          PR_URL="$(gh pr list --state all --head "$REVERT_BRANCH" --json url --jq '.[0].url // ""')"
+          if [[ -n "$PR_URL" ]]; then
+            PR_STATE="$(gh pr view "$PR_URL" --json state --jq .state)"
+            if [[ "$PR_STATE" == CLOSED ]]; then
+              gh pr reopen "$PR_URL"
+            fi
+          else
+            if ! git merge-base --is-ancestor "$MERGE_COMMIT" HEAD; then
+              echo "::error::Release commit is not on the default branch. Publication remains blocked; recover manually"
+              exit 1
+            fi
+            gh auth setup-git
+            REMOTE_BRANCH="$(git ls-remote --heads origin "refs/heads/$REVERT_BRANCH")"
+            if [[ -n "$REMOTE_BRANCH" ]]; then
+              git fetch origin "refs/heads/$REVERT_BRANCH"
+              git switch --create "$REVERT_BRANCH" FETCH_HEAD
+              if ! git log -1 --format=%B | grep -Fx "Reverts release commit: $MERGE_COMMIT"; then
+                echo "::error::Existing recovery branch does not match this release. Review it manually"
+                exit 1
+              fi
+            else
+              git switch --create "$REVERT_BRANCH"
+              node scripts/cancel-release.mjs revert
+              git config user.name 'github-actions[bot]'
+              git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+              git commit -m "release: revert cancelled $TAG" -m "Reverts release commit: $MERGE_COMMIT"
+              git push origin "HEAD:refs/heads/$REVERT_BRANCH"
+            fi
+            BODY="$RUNNER_TEMP/revert-release.md"
+            printf '%s\n' \
+              "## Cancel merged unpublished release $TAG" \
+              "" \
+              "Publication of release PR #$RELEASE_PR_NUMBER is permanently blocked by its release-cancelled label. Its draft GitHub release was removed after verifying that no tag or package version was published." \
+              "" \
+              "Review this revert and wait for Build and test before merging. It reverses only the release preparation commit; later work remains on the default branch. Do not remove the cancellation label or rerun the old publication workflow. Prepare a newer base version after this PR merges." > "$BODY"
+            PR_URL="$(gh pr create --base "$DEFAULT_BRANCH" --head "$REVERT_BRANCH" --title "Revert cancelled release $TAG" --body-file "$BODY" --label release)"
+          fi
+          if [[ "$(gh pr view "$PR_URL" --json state --jq .state)" == OPEN ]]; then
+            gh workflow run ci.yml --ref "$REVERT_BRANCH"
+          fi
+          {
+            echo "### Cancelled unpublished $TAG"
+            echo "- Publication is blocked by the release-cancelled label on PR #$RELEASE_PR_NUMBER."
+            echo "- Draft release removed; no published tag or package was deleted."
+            echo "- Review and merge the revert PR: $PR_URL"
+            echo "- Keep the cancellation label and use a newer base version for the next release."
+          } >> "$GITHUB_STEP_SUMMARY"

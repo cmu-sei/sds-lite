@@ -1,6 +1,6 @@
 # Releasing SDS Lite
 
-Run the **Prepare Release** workflow, choose the release channel, enter the base
+Run the **Release - Create Release PR** workflow, choose the release channel, enter the base
 version, review its pull request and draft GitHub release, and merge the pull
 request. After protected environment approval, automation publishes the
 reviewed GitHub release and the exact package artifact that passed the release
@@ -17,6 +17,19 @@ steps:
 Versioned browser files are served from the immutable release tag through
 jsDelivr. The npm package is published to GitHub Packages.
 
+## Workflow names and stages
+
+| Workflow | When to use it |
+| --- | --- |
+| **CI - Build and Browser Tests** | Validate a contributor, release, or recovery PR. |
+| **Release - Create Release PR** | Prepare a version, draft release, and PR for review. |
+| **Release - Publish Merged Release** | Automatically validate and publish a merged release PR after approval. |
+| **Release - Discard Unmerged Release PR** | Close an unmerged release PR and delete its draft and branch. |
+| **Release - Cancel Merged Unpublished Release** | Block publication, remove the draft, and open a revert PR after merge. |
+
+Workflow filenames stay unchanged where possible so existing dispatch commands
+continue to work. The required branch-protection check remains **Build and test**.
+
 ## Routine release: start here
 
 This is the only section needed for a normal release. Automation handles the
@@ -26,15 +39,15 @@ publication, and branch cleanup.
 1. Choose the base Semantic Version: patch for a fix, minor for backward-
    compatible functionality, or major for a breaking change. Use the intended
    stable version even for a beta, such as `1.3.0`.
-2. Open **Actions > Prepare Release > Run workflow**, select `main`, choose
+2. Open **Actions > Release - Create Release PR > Run workflow**, select `main`, choose
    `stable` or `beta`, enter the base version without `v` or `-beta.N`, and run
    the workflow.
 3. Open the generated release pull request and follow its **Finish this
    release** section. Review the generated changes and linked draft release,
    then merge normally. Merging confirms that both were reviewed.
-4. Merge the release pull request normally. When **Finalize Release** pauses,
+4. Merge the release pull request normally. When **Release - Publish Merged Release** pauses,
    approve the matching protected deployment environment.
-5. Confirm that Finalize Release is green and that the GitHub release and
+5. Confirm that Release - Publish Merged Release is green and that the GitHub release and
    GitHub Package are published. Its job summary links to the release, package,
    and versioned CDN files. The release branch is deleted automatically.
 
@@ -106,7 +119,7 @@ Use Semantic Versioning:
 
 ## Prepare the release pull request
 
-1. Open **Actions > Prepare Release > Run workflow**.
+1. Open **Actions > Release - Create Release PR > Run workflow**.
 2. Select `main`, choose `stable` or `beta`, and enter only the base version,
    such as `1.2.0`.
 3. Run the workflow.
@@ -123,8 +136,8 @@ draft GitHub release with generated notes, opens the release pull request, and
 lets the generated pull request run the required full browser CI matrix.
 
 Ordinary contributor pull requests do not need to commit generated `dist/`
-changes. CI builds and tests them without modifying the pull request. Prepare
-Release owns the committed distribution, and Finalize Release rebuilds and
+changes. CI builds and tests them without modifying the pull request. Release -
+Create Release PR owns the committed distribution, and Release - Publish Merged Release rebuilds and
 verifies it before publication. If a contributor includes `dist/` changes,
 release preparation replaces them with a clean build; they do not affect
 publication.
@@ -156,7 +169,7 @@ publication approval.
 
 After the release PR is merged:
 
-1. The Finalize Release workflow validates the merged branch, version marker,
+1. The Release - Publish Merged Release workflow validates the merged branch, version marker,
    release order, and beta/stable channel.
 2. Its unprivileged jobs rebuild, run non-browser validation and the three
    browser projects in parallel, verify committed `dist/`, check package
@@ -177,6 +190,13 @@ Publication stops if it finds:
 - A package that exceeds its content or size budget.
 - A package version that exists while the GitHub release is still a draft.
 - An existing package whose checksum differs from the tested artifact.
+- A merged release PR carrying the persistent `release-cancelled` label.
+
+Both PR CI and merged-release browser jobs use the official Playwright container
+with preinstalled Chromium, Firefox, WebKit, and Linux dependencies. The image
+version must match the Playwright version in `package-lock.json`; the release
+tests enforce that match. Update both workflow images when updating Playwright.
+Browser jobs have a 15-minute budget including setup and tests.
 
 The tag and its CDN files become public when the protected job publishes the
 draft release. The workflow cannot retract an immutable tag, so merge only
@@ -200,16 +220,61 @@ https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/sds.css
 - If preparation fails, correct the reported problem and rerun the same
    base version and channel. An existing generated pull request and draft
    release are reused.
-- If environment approval or a temporary service failure prevents
-   publication, rerun the failed job. Publication retries verify the existing
-   GitHub release and package checksum before doing any work again.
+- If logs identify a transient runner, browser setup, network, or service
+   failure, retry the failed jobs once. If it repeats, investigate before
+   retrying again. Do not rerun unexplained test assertion failures until green.
+- If environment approval prevents publication, obtain approval and rerun as
+   needed. Publication retries verify the existing GitHub release and package
+   checksum before doing any work again.
 - Release artifacts are retained for seven days. After that, rerun the build
-   job as well as the publication job to regenerate the tested artifact.
-- To abandon an unmerged release, run **Actions > Abandon Release**, enter its
-   exact generated version in both fields, such as `1.2.0-beta.1`. The workflow
-   refuses published tags and releases, then closes the generated pull request
-   and deletes its draft release and `release/v<version>` branch.
+   and browser jobs as well as publication to regenerate and validate the artifact.
+- Before merge, run **Actions > Release - Discard Unmerged Release PR** from
+   `main`, entering its exact generated version in both fields, such as
+   `1.2.0-beta.1`. It refuses merged PRs, published tags, and published releases,
+   then closes the PR and deletes its draft and `release/v<version>` branch.
+- After merge but before any publication, follow the cancellation procedure
+   below. Discard Unmerged Release PR cannot undo a merge.
 - If the tagged source, version, package, or documentation is wrong, do not
   move or delete the tag. Prepare and publish a new version.
 - If the registry reports that the version already exists, verify the existing
   package and prepare a new version. Never overwrite a published version.
+
+### Cancel a merged but unpublished release
+
+1. Open **Actions > Release - Cancel Merged Unpublished Release > Run workflow**
+   on `main`. Enter the exact version in both fields.
+2. The workflow verifies the merged release PR and checks GitHub, the tag, and
+   GitHub Packages. It refuses cancellation if any publication has happened;
+   authentication and lookup errors also stop recovery rather than assuming absence.
+3. It sets `release-cancelled` on the merged PR before cancelling active and
+   approval-waiting finalization runs. It waits for those runs to stop, then
+   takes the same per-version lock as publication and checks all publication
+   state again before removing the draft.
+4. Open the revert PR linked in the workflow summary. Review its changes, wait
+   for **Build and test**, and merge normally. It reverts only the release
+   preparation commit, preserving later work. It never force-pushes `main` or
+   merges the revert automatically.
+5. Prepare a newer base version after the revert merges. Cancelled versions
+   are reserved and cannot be prepared again, including beta versions; for a
+   cancelled `1.3.0-beta.1`, choose a newer base such as `1.3.1`.
+
+Keep the `release-cancelled` label permanently. Publication checks it at build,
+after protected approval, and before either publish action. Removing it removes
+the persistent block. Deleting the draft alone is not the cancellation mechanism.
+
+Cancellation is retryable: it retains the block if stopping jobs, removing the
+draft, or creating the revert fails, and reuses an existing recovery PR. If a
+revert conflicts with later changes, resolve the release-only revert in a manual
+PR; publication remains blocked. Automatic recovery supports the generated
+single-commit release PRs with squash, rebase, or normal merge commits.
+
+This protection applies to finalization runs using the updated workflow. GitHub
+reruns older workflows at their original revision, so do not rerun a historical
+publication workflow that predates the cancellation guard. Fixes subsequently
+merged into `main` do not change the original release's tested commit.
+
+If publication wins the race with a cancellation request, recovery refuses to
+delete public state. GitHub release/tag publication and package publication are
+not atomic: a public GitHub release with a failed package publish is already
+published, not cancellable. Resume that publication after investigating or
+prepare a corrected version; never delete or move immutable public tags.
