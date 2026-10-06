@@ -206,7 +206,7 @@ https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.0/dist/sds.css
 - Release artifacts are retained for seven days. After that, rerun the build
    job as well as the publication job to regenerate the tested artifact.
 - To abandon an unmerged release, run **Actions > Abandon Release**, enter its
-   exact generated version, and type the requested confirmation. The workflow
+   exact generated version in both fields, such as `1.2.0-beta.1`. The workflow
    refuses published tags and releases, then closes the generated pull request
    and deletes its draft release and `release/v<version>` branch.
 - If the tagged source, version, package, or documentation is wrong, do not

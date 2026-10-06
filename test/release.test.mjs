@@ -27,7 +27,6 @@ import {
   releasePublishArguments,
 } from '../scripts/release-artifact.mjs'
 import { parsePrepareReleaseArguments } from '../scripts/prepare-release.mjs'
-import { draftReleaseEditorUrl } from '../scripts/release-url.mjs'
 import {
   validateReleasePullRequest,
 } from '../scripts/validate-release-pr.mjs'
@@ -141,23 +140,6 @@ test('release channels resolve stable versions and beta sequence numbers', () =>
   )
 })
 
-test('draft release links open the GitHub release editor', () => {
-  assert.equal(
-    draftReleaseEditorUrl(
-      'https://github.com/cmu-sei/sds-lite/releases/tag/untagged-8cfa5d9210364dea899a',
-    ),
-    'https://github.com/cmu-sei/sds-lite/releases/edit/untagged-8cfa5d9210364dea899a',
-  )
-  assert.throws(
-    () => draftReleaseEditorUrl('https://example.com/releases/tag/untagged-1'),
-    /GitHub draft release URL/,
-  )
-  assert.throws(
-    () => draftReleaseEditorUrl('https://github.com/cmu-sei/sds-lite/issues/1'),
-    /GitHub draft release URL/,
-  )
-})
-
 test('release preparation accepts only the explicit automation arguments', () => {
   assert.deepEqual(parsePrepareReleaseArguments([]), {})
   assert.deepEqual(
@@ -176,7 +158,7 @@ test('release preparation accepts only the explicit automation arguments', () =>
 
 test('release abandonment requires the exact version confirmation', () => {
   assert.deepEqual(
-    resolveAbandonedRelease('1.2.3-beta.2', 'abandon v1.2.3-beta.2'),
+    resolveAbandonedRelease('1.2.3-beta.2', '1.2.3-beta.2'),
     {
       version: '1.2.3-beta.2',
       tag: 'v1.2.3-beta.2',
@@ -184,11 +166,11 @@ test('release abandonment requires the exact version confirmation', () => {
     },
   )
   assert.throws(
-    () => resolveAbandonedRelease('1.2.3', 'abandon v1.2.4'),
-    /Confirmation must be exactly/,
+    () => resolveAbandonedRelease('1.2.3', '1.2.4'),
+    /Confirmation must exactly match version "1\.2\.3"/,
   )
   assert.throws(
-    () => resolveAbandonedRelease('v1.2.3', 'abandon v1.2.3'),
+    () => resolveAbandonedRelease('v1.2.3', '1.2.3'),
     /stable version/,
   )
 })
@@ -513,10 +495,28 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(prepare, /release:prepare -- --version "\$VERSION" --yes/)
   assert.match(prepare, /gh release create "\$TAG"/)
   assert.match(prepare, /OPTIONS=\(--draft --generate-notes/)
-  assert.match(prepare, /node scripts\/release-url\.mjs draft-editor/)
   assert.match(prepare, /node scripts\/format-release-notes\.mjs/)
   assert.match(prepare, /gh release edit "\$TAG" --notes-file/)
+  assert.match(
+    prepare,
+    /RELEASE_URL="\$\(gh release view "\$TAG" --json url --jq \.url/,
+  )
+  assert.ok(
+    prepare.indexOf('RELEASE_URL="$(gh release view "$TAG"') >
+      prepare.indexOf('gh release edit "$TAG" --notes-file'),
+  )
+  assert.match(
+    prepare,
+    /RELEASES_URL="\$GITHUB_SERVER_URL\/\$GITHUB_REPOSITORY\/releases"/,
+  )
+  assert.match(prepare, /RELEASE_URL="\$RELEASES_URL"/)
+  assert.doesNotMatch(prepare, /releases\/edit\/untagged-/)
+  assert.doesNotMatch(prepare, /scripts\/release-url\.mjs/)
   assert.match(prepare, /actions: write/)
+  assert.match(
+    prepare,
+    /gh pr edit "\$PR_URL" --title "Release v\$VERSION" --body-file "\$BODY"/,
+  )
   assert.match(
     prepare,
     /if: steps\.pull-request\.outputs\.refreshed == 'true'/,
