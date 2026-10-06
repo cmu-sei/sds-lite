@@ -1,4 +1,4 @@
-name: Release - Publish Merged Release
+name: Automatic - Publish Release
 
 on:
   pull_request:

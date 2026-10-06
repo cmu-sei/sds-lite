@@ -2,9 +2,6 @@
 
 <!-- Explain the outcome and why it matters. -->
 
-## Checklist
-
-- [ ] The PR title is concise and meaningful in generated release notes.
-- [ ] The PR has one release-note label: `breaking`, `enhancement`, `bug`,
-    `documentation`, or `internal`.
-- [ ] Public behavior and documentation agree.
+<!-- Optional title prefixes: fix:, feat:, docs:, internal:, or breaking:.
+     Automation adds the corresponding release-note label when none exists.
+     Include migration guidance here for breaking changes. -->

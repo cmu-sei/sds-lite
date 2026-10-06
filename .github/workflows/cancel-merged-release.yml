@@ -1,4 +1,4 @@
-name: Release - Cancel Merged Unpublished Release
+name: Recovery - Cancel Unpublished Release
 run-name: Cancel merged unpublished release v${{ inputs.version }}
 
 on:
