@@ -3,7 +3,7 @@ import { appendFile } from 'node:fs/promises'
 import { setTimeout } from 'node:timers/promises'
 import { pathToFileURL } from 'node:url'
 
-import { resolveAbandonedRelease } from './abandon-release.mjs'
+import { assertPackageUnpublished, resolveAbandonedRelease } from './abandon-release.mjs'
 
 export const cancellationLabel = 'release-cancelled'
 
@@ -35,7 +35,8 @@ export function validateMergedRelease(pullRequest, release, repository, defaultB
     pullRequest.state !== 'closed' ||
     pullRequest.head?.ref !== release.branch ||
     pullRequest.head?.repo?.full_name !== repository ||
-    pullRequest.base?.ref !== defaultBranch ||
+    (pullRequest.base?.ref !== defaultBranch &&
+      (release.version.includes('-') || pullRequest.base?.ref !== `hotfix/v${release.version}`)) ||
     !pullRequest.labels?.some((label) => label.name === 'release') ||
     !/^[a-f0-9]{40}$/.test(pullRequest.merge_commit_sha ?? '')
   ) {
@@ -106,22 +107,7 @@ export async function cancelRelease({
     if (optionalApi(`repos/${repository}/git/ref/tags/${release.tag}`)) {
       throw new Error('Release tag already exists; cancellation is not allowed')
     }
-    const result = run('npm', [
-      'view', `${packageJson.name}@${release.version}`, 'version', '--json',
-      '--registry=https://npm.pkg.github.com',
-    ])
-    if (result.status === 0) {
-      throw new Error('Package version is already published; cancellation is not allowed')
-    }
-    let error
-    try {
-      error = JSON.parse(result.stdout).error
-    } catch {
-      throw new Error('Could not verify package publication state')
-    }
-    if (error?.code !== 'E404') {
-      throw new Error('Could not verify package publication state')
-    }
+    assertPackageUnpublished(packageJson.name, release.version, run)
     return githubRelease
   }
   const listRuns = () => {
@@ -202,6 +188,7 @@ async function main() {
       `tag=${release.tag}`,
       `pull-request=${release.pullRequest.number}`,
       `merge-commit=${release.pullRequest.merge_commit_sha}`,
+      `base-branch=${release.pullRequest.base.ref}`,
       `revert-branch=recovery/cancel-${release.tag}`,
       '',
     ].join('\n'))

@@ -109,7 +109,11 @@ export function validatePreparedVersion(currentVersion, nextVersion, tags) {
   }
   assertVersionAdvances(currentVersion, nextVersion)
 
-  const latestVersion = previousVersions.sort(compareReleaseVersions).at(-1)
+  const next = parseReleaseVersion(nextVersion)
+  const latestVersion = previousVersions
+    .filter((version) => next.prerelease || !parseReleaseVersion(version).prerelease)
+    .sort(compareReleaseVersions)
+    .at(-1)
   if (latestVersion) assertVersionAdvances(latestVersion, nextVersion)
 }
 

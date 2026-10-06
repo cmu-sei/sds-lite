@@ -144,7 +144,7 @@ export async function prepareRelease({ version: requestedVersion, yes = false } 
 Release v${version} is prepared locally.
 
 Review the changes with git diff and git status. The supported publication
-path is the Prepare Release workflow, which creates the branch, draft release,
+path is the Release - Create Release PR workflow, which creates the branch, draft release,
 pull request, and CI run needed for protected publication.
 
 This script did not stage, commit, tag, push, or publish anything.`)

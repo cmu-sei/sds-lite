@@ -2,7 +2,7 @@ name: Release - Publish Merged Release
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, 'hotfix/v*']
     types: [closed]
 
 permissions:
@@ -36,10 +36,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify the release commit is on main
+      - name: Verify the release commit is on its reviewed base
+        env:
+          RELEASE_BASE: ${{ github.event.pull_request.base.ref }}
         run: |
-          if ! git merge-base --is-ancestor HEAD refs/remotes/origin/main; then
-            echo "::error::The merged release commit must be on main"
+          if ! git merge-base --is-ancestor HEAD "refs/remotes/origin/$RELEASE_BASE"; then
+            echo "::error::The merged release commit must be on its reviewed base branch"
             exit 1
           fi
 
@@ -61,6 +63,7 @@ jobs:
       - name: Validate release pull request
         env:
           RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+          RELEASE_BASE: ${{ github.event.pull_request.base.ref }}
         run: node scripts/validate-release-pr.mjs
 
       - name: Validate release metadata
@@ -141,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: release-publication-${{ needs.build.outputs.version }}
+      group: release-publication
       cancel-in-progress: false
     environment: ${{ needs.build.outputs.dist-tag == 'latest' && 'github-packages-production' || 'github-packages-beta' }}
     permissions:
@@ -172,6 +175,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: node scripts/cancel-release.mjs assert-active
+
+      - name: Recheck release order after approval
+        env:
+          RELEASE_TAG: v${{ needs.build.outputs.version }}
+          IS_PRERELEASE: ${{ needs.build.outputs.dist-tag == 'beta' && 'true' || 'false' }}
+        run: |
+          git fetch origin --tags
+          node scripts/validate-release.mjs
 
       - name: Download the tested package
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -243,12 +254,22 @@ jobs:
             exit 1
           fi
 
+      - name: Check package distribution tag before publication
+        env:
+          DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_NAME: ${{ needs.build.outputs.package-name }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: node scripts/release-artifact.mjs check-tag "$PACKAGE_NAME" "$VERSION" "$DIST_TAG"
+
       - name: Dry-run publication
         if: steps.registry.outputs.published == 'false'
         env:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_NAME: ${{ needs.build.outputs.package-name }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: node scripts/release-artifact.mjs publish "$TARBALL" "$DIST_TAG" --dry-run
 
       - name: Publish the reviewed GitHub release
@@ -287,11 +308,21 @@ jobs:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_NAME: ${{ needs.build.outputs.package-name }}
           RELEASE_PR_NUMBER: ${{ github.event.pull_request.number }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
           node scripts/cancel-release.mjs assert-active
           node scripts/release-artifact.mjs publish "$TARBALL" "$DIST_TAG"
+
+      - name: Verify package distribution tag
+        env:
+          DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_NAME: ${{ needs.build.outputs.package-name }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: node scripts/release-artifact.mjs verify-tag "$PACKAGE_NAME" "$VERSION" "$DIST_TAG"
 
       - name: Summarize publication
         env:

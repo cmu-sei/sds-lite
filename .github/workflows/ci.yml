@@ -2,7 +2,7 @@ name: CI - Build and Browser Tests
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, 'hotfix/v*']
   workflow_dispatch:
 
 permissions:
