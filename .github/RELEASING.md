@@ -300,7 +300,12 @@ Contributor PRs use a metadata-only `pull_request_target` workflow on the truste
 default branch to dispatch CI and assign labels. It never executes PR code.
 CI pins both test jobs to one commit, uses read-only test permissions, persists
 no checkout credentials, and writes no shared npm cache. Only the isolated
-reporting job can write **Build and test** results to the tested PR commit.
+reporting job has `statuses: write` and publishes the **Build and test** commit
+status on the tested PR commit, linking to the CI run. GitHub does not evaluate
+`workflow_dispatch` job check runs for PR-required checks, so the reporter uses
+the commit-status API rather than creating another workflow check run. Local
+tests cannot verify that the live repository accepts the reported status; check
+the PR's required-check result after running CI.
 
 External fork PRs without an owner, member, or collaborator author need a
 maintainer to start **Automatic - CI** from `main` with the PR number. This
