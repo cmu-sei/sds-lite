@@ -1,0 +1,142 @@
+name: Abandon Release
+run-name: Abandon release v${{ inputs.version }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact prepared version, such as 1.2.0 or 1.2.0-beta.1
+        required: true
+        type: string
+      confirmation:
+        description: Type abandon vVERSION using the exact version above
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: prepare-release
+  cancel-in-progress: false
+
+jobs:
+  abandon:
+    name: Remove unmerged release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out the default branch
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Validate the requested release
+        id: release
+        env:
+          RELEASE_CONFIRMATION: ${{ inputs.confirmation }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: node scripts/abandon-release.mjs
+
+      - name: Remove the generated release
+        env:
+          BRANCH: ${{ steps.release.outputs.branch }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          OPEN_PRS="$RUNNER_TEMP/open-release-prs.json"
+          CLOSED_PRS="$RUNNER_TEMP/closed-release-prs.json"
+          gh pr list --state open --head "$BRANCH" --label release --limit 2 --json number,url,state,mergedAt > "$OPEN_PRS"
+          gh pr list --state closed --head "$BRANCH" --label release --limit 100 --json number,url,state,mergedAt > "$CLOSED_PRS"
+          PR_DATA="$(node scripts/abandon-release.mjs select-pull-request "$OPEN_PRS" "$CLOSED_PRS")"
+          PR_NUMBER="$(node -e 'console.log(JSON.parse(process.argv[1]).number)' "$PR_DATA")"
+          PR_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).url)' "$PR_DATA")"
+          PR_WAS_OPEN="$(node -e 'console.log(JSON.parse(process.argv[1]).wasOpen)' "$PR_DATA")"
+
+          RELEASE_ERROR="$RUNNER_TEMP/release-error"
+          if RELEASE_DATA="$(gh release view "$TAG" --json isDraft,url 2>"$RELEASE_ERROR")"; then
+            if [[ "$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")" != true ]]; then
+              echo "::error::$TAG is already published and cannot be abandoned"
+              exit 1
+            fi
+            RELEASE_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).url)' "$RELEASE_DATA")"
+          elif grep -qi 'release not found' "$RELEASE_ERROR"; then
+            RELEASE_DATA=""
+            RELEASE_URL=""
+          else
+            cat "$RELEASE_ERROR"
+            exit 1
+          fi
+
+          TAG_ERROR="$RUNNER_TEMP/tag-error"
+          if gh api --silent "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" 2>"$TAG_ERROR"; then
+            echo "::error::Tag $TAG already exists and cannot be abandoned"
+            exit 1
+          elif ! grep -q 'HTTP 404' "$TAG_ERROR"; then
+            cat "$TAG_ERROR"
+            exit 1
+          fi
+
+          BRANCH_ERROR="$RUNNER_TEMP/branch-error"
+          if gh api --silent "repos/$GITHUB_REPOSITORY/git/ref/heads/$BRANCH" 2>"$BRANCH_ERROR"; then
+            BRANCH_EXISTS=true
+          elif grep -q 'HTTP 404' "$BRANCH_ERROR"; then
+            BRANCH_EXISTS=false
+          else
+            cat "$BRANCH_ERROR"
+            exit 1
+          fi
+
+          if [[ "$PR_WAS_OPEN" == true ]]; then
+            gh pr close "$PR_NUMBER"
+          fi
+          MERGED_AT="$(gh pr view "$PR_NUMBER" --json mergedAt --jq '.mergedAt // ""')"
+          if [[ -n "$MERGED_AT" ]]; then
+            echo "::error::$PR_URL was merged and cannot be abandoned"
+            exit 1
+          fi
+
+          if [[ -n "$RELEASE_DATA" ]]; then
+            RELEASE_DATA="$(gh release view "$TAG" --json isDraft,url)"
+            if [[ "$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")" != true ]]; then
+              echo "::error::$TAG is already published and cannot be abandoned"
+              exit 1
+            fi
+          fi
+          if gh api --silent "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" 2>"$TAG_ERROR"; then
+            echo "::error::Tag $TAG was published while abandonment was in progress"
+            exit 1
+          elif ! grep -q 'HTTP 404' "$TAG_ERROR"; then
+            cat "$TAG_ERROR"
+            exit 1
+          fi
+
+          if [[ -n "$RELEASE_DATA" ]]; then
+            gh release delete "$TAG" --yes
+          fi
+          if [[ "$BRANCH_EXISTS" == true ]]; then
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH"
+          fi
+
+          {
+            echo "### Abandoned $TAG"
+            if [[ "$PR_WAS_OPEN" == true ]]; then
+              echo "- Closed pull request: $PR_URL"
+            else
+              echo "- Pull request was already closed: $PR_URL"
+            fi
+            if [[ -n "$RELEASE_URL" ]]; then
+              echo "- Deleted draft release: $RELEASE_URL"
+            fi
+            if [[ "$BRANCH_EXISTS" == true ]]; then
+              echo "- Deleted branch: \`$BRANCH\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

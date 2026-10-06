@@ -148,27 +148,31 @@ jobs:
 
           1. Wait for **Build and test** to pass and review the generated file changes.
           2. Open the [draft GitHub release]($DRAFT_RELEASE_URL) and follow its editor guide. If the generated notes are already clear and accurate, no edits are needed.
-          3. Obtain approval and merge normally. Merging confirms that the generated changes and draft release were reviewed.
+          3. Merge normally. Merging confirms that the generated changes and draft release were reviewed.
           4. Approve the protected deployment when **Finalize Release** pauses.
 
           ## Automated validation
 
           - Package version, generated distribution, non-browser tests, and package limits were validated by the preparation workflow.
-          - The full browser matrix is dispatched explicitly for this generated branch.
-          - The draft release is published only after this pull request is approved and merged.
+          - The generated pull request runs the required full browser CI matrix. Refreshing an existing release explicitly reruns it.
+          - The draft release is published only after this pull request is reviewed and merged.
           EOF
 
           PR_URL="$(gh pr list --state open --head "$branch" --json url --jq '.[0].url // ""')"
           if [[ -n "$PR_URL" ]]; then
             gh pr edit "$PR_URL" --title "Release v$VERSION" --add-label release
+            REFRESHED=true
           else
             PR_URL="$(gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Release v$VERSION" --body-file "$BODY" --label release)"
+            REFRESHED=false
           fi
           echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
+          echo "refreshed=$REFRESHED" >> "$GITHUB_OUTPUT"
           echo "### Release pull request" >> "$GITHUB_STEP_SUMMARY"
           echo "$PR_URL" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Dispatch CI for the generated branch
+      - name: Rerun CI for a refreshed release
+        if: steps.pull-request.outputs.refreshed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run ci.yml --ref "$branch"

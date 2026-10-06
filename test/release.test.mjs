@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { readFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { isAbsolute, join } from 'node:path'
 import test from 'node:test'
 
 import {
@@ -12,10 +14,18 @@ import {
   validateRelease,
 } from '../scripts/release-version.mjs'
 import {
+  resolveAbandonedRelease,
+  selectReleasePullRequestForAbandonment,
+} from '../scripts/abandon-release.mjs'
+import {
   validateReleaseEnvironment,
   validateReleaseOrder,
 } from '../scripts/validate-release.mjs'
 import { formatReleaseNotes } from '../scripts/format-release-notes.mjs'
+import {
+  locateReleaseArtifact,
+  releasePublishArguments,
+} from '../scripts/release-artifact.mjs'
 import { parsePrepareReleaseArguments } from '../scripts/prepare-release.mjs'
 import { draftReleaseEditorUrl } from '../scripts/release-url.mjs'
 import {
@@ -164,6 +174,75 @@ test('release preparation accepts only the explicit automation arguments', () =>
   )
 })
 
+test('release abandonment requires the exact version confirmation', () => {
+  assert.deepEqual(
+    resolveAbandonedRelease('1.2.3-beta.2', 'abandon v1.2.3-beta.2'),
+    {
+      version: '1.2.3-beta.2',
+      tag: 'v1.2.3-beta.2',
+      branch: 'release/v1.2.3-beta.2',
+    },
+  )
+  assert.throws(
+    () => resolveAbandonedRelease('1.2.3', 'abandon v1.2.4'),
+    /Confirmation must be exactly/,
+  )
+  assert.throws(
+    () => resolveAbandonedRelease('v1.2.3', 'abandon v1.2.3'),
+    /stable version/,
+  )
+})
+
+test('release abandonment selects the active or latest unmerged pull request', () => {
+  const open = {
+    number: 12,
+    url: 'https://example.test/pull/12',
+    state: 'OPEN',
+    mergedAt: null,
+  }
+  const olderClosed = {
+    number: 10,
+    url: 'https://example.test/pull/10',
+    state: 'CLOSED',
+    mergedAt: null,
+  }
+  const latestClosed = {
+    number: 11,
+    url: 'https://example.test/pull/11',
+    state: 'CLOSED',
+    mergedAt: null,
+  }
+  const merged = {
+    number: 9,
+    url: 'https://example.test/pull/9',
+    state: 'MERGED',
+    mergedAt: '2026-10-05T17:15:18Z',
+  }
+
+  assert.deepEqual(
+    selectReleasePullRequestForAbandonment(
+      [open],
+      [latestClosed, olderClosed, merged],
+    ),
+    { ...open, wasOpen: true },
+  )
+  assert.deepEqual(
+    selectReleasePullRequestForAbandonment(
+      [],
+      [olderClosed, merged, latestClosed],
+    ),
+    { ...latestClosed, wasOpen: false },
+  )
+  assert.throws(
+    () => selectReleasePullRequestForAbandonment([open, open], []),
+    /at most one open/,
+  )
+  assert.throws(
+    () => selectReleasePullRequestForAbandonment([], [merged]),
+    /No open or closed-unmerged/,
+  )
+})
+
 test('release PR validation requires matching branch and state', () => {
   assert.doesNotThrow(() =>
     validateReleasePullRequest({
@@ -236,6 +315,76 @@ test('release note formatter accepts generated notes through standard input', ()
   assert.equal(result.status, 0, result.stderr)
   assert.match(result.stdout, /SDS Lite 1\.2\.3/)
   assert.match(result.stdout, /Improve validation/)
+})
+
+test('release artifacts resolve to one absolute tarball path', async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), 'sds-release-artifact-'))
+  context.after(() => rm(directory, { recursive: true, force: true }))
+
+  await assert.rejects(
+    locateReleaseArtifact(directory),
+    /found 0/,
+  )
+  await writeFile(join(directory, 'cmu-sei-sds-lite-1.2.3.tgz'), '')
+
+  const tarball = await locateReleaseArtifact(directory)
+  assert.equal(isAbsolute(tarball), true)
+  assert.equal(tarball, join(directory, 'cmu-sei-sds-lite-1.2.3.tgz'))
+
+  await writeFile(join(directory, 'unexpected.tgz'), '')
+  await assert.rejects(
+    locateReleaseArtifact(directory),
+    /found 2/,
+  )
+})
+
+test('release publication accepts only absolute tested artifacts', () => {
+  assert.deepEqual(
+    releasePublishArguments('/tmp/package.tgz', 'beta', true),
+    [
+      'publish',
+      '/tmp/package.tgz',
+      '--tag',
+      'beta',
+      '--ignore-scripts',
+      '--dry-run',
+    ],
+  )
+  assert.deepEqual(
+    releasePublishArguments('/tmp/package.tgz', 'latest'),
+    [
+      'publish',
+      '/tmp/package.tgz',
+      '--tag',
+      'latest',
+      '--ignore-scripts',
+    ],
+  )
+  assert.throws(
+    () => releasePublishArguments('release-artifact/package.tgz', 'latest'),
+    /must be absolute/,
+  )
+  assert.throws(
+    () => releasePublishArguments('/tmp/package.tgz', 'next'),
+    /must be beta or latest/,
+  )
+})
+
+test('the release artifact CLI rejects unknown publish options', () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      'scripts/release-artifact.mjs',
+      'publish',
+      '/tmp/package.tgz',
+      'latest',
+      '--unexpected',
+    ],
+    { encoding: 'utf8' },
+  )
+
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /Usage:/)
 })
 
 test('GitHub release metadata selects the expected npm tag', () => {
@@ -321,7 +470,15 @@ test('workflow release validation rejects versions older than prior tags', () =>
 
 test('release workflows preserve the prepare-review-publish boundary', async () => {
   const ci = await readFile('.github/workflows/ci.yml', 'utf8')
+  const pullRequestTemplate = await readFile(
+    '.github/PULL_REQUEST_TEMPLATE.md',
+    'utf8',
+  )
   const releaseNotes = await readFile('.github/release.yml', 'utf8')
+  const abandon = await readFile(
+    '.github/workflows/abandon-release.yml',
+    'utf8',
+  )
   const prepare = await readFile(
     '.github/workflows/prepare-release.yml',
     'utf8',
@@ -339,13 +496,19 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   )
   assert.match(ci, /name: Build and test/)
   assert.match(ci, /needs: \[validation, browser\]/)
+  assert.doesNotMatch(ci, /^  push:/m)
+  assert.doesNotMatch(ci, /committed distribution/)
+  assert.doesNotMatch(ci, /committed-dist/)
   assert.doesNotMatch(ci, /playwright install --with-deps chromium firefox webkit/)
   assert.doesNotMatch(ci, /run: npm test$/m)
+
+  assert.doesNotMatch(pullRequestTemplate, /## Release note/)
+  assert.doesNotMatch(pullRequestTemplate, /Generated `dist\/` changes/)
+  assert.doesNotMatch(pullRequestTemplate, /`internal`, or `release`/)
 
   assert.match(prepare, /workflow_dispatch:/)
   assert.match(prepare, /type: choice/)
   assert.match(prepare, /- beta/)
-  assert.match(prepare, /actions: write/)
   assert.match(prepare, /node scripts\/resolve-release-version\.mjs/)
   assert.match(prepare, /release:prepare -- --version "\$VERSION" --yes/)
   assert.match(prepare, /gh release create "\$TAG"/)
@@ -353,7 +516,14 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(prepare, /node scripts\/release-url\.mjs draft-editor/)
   assert.match(prepare, /node scripts\/format-release-notes\.mjs/)
   assert.match(prepare, /gh release edit "\$TAG" --notes-file/)
+  assert.match(prepare, /actions: write/)
+  assert.match(
+    prepare,
+    /if: steps\.pull-request\.outputs\.refreshed == 'true'/,
+  )
   assert.match(prepare, /gh workflow run ci\.yml --ref "\$branch"/)
+  assert.doesNotMatch(prepare, /Obtain approval/)
+  assert.match(prepare, /reviewed and merged/)
   assert.doesNotMatch(prepare, /playwright install/)
   assert.doesNotMatch(prepare, /run: npm test$/m)
   assert.match(releaseNotes, /authors:\s+\- github-actions\[bot\]/)
@@ -365,6 +535,8 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(finalize, /environment: \$\{\{/)
   assert.match(finalize, /project: \[chromium, firefox, webkit\]/)
   assert.match(finalize, /run: npm run test:validation/)
+  assert.match(finalize, /Preserve the committed distribution/)
+  assert.match(finalize, /Verify the committed distribution is current/)
   assert.match(
     finalize,
     /run: npm run test:browser -- --project=\$\{\{ matrix\.project \}\}/,
@@ -374,10 +546,26 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(finalize, /actions\/download-artifact@/)
   assert.match(
     finalize,
-    /echo "tarball=\$PWD\/\$\{TARBALLS\[0\]\}" >> "\$GITHUB_OUTPUT"/,
+    /node scripts\/release-artifact\.mjs locate release-artifact/,
   )
   assert.match(finalize, /gh release edit "\$TAG"/)
-  assert.match(finalize, /npm publish "\$TARBALL"/)
+  assert.match(finalize, /was published outside this workflow/)
+  assert.match(finalize, /prerelease setting changed before publication/)
+  assert.match(
+    finalize,
+    /release-artifact\.mjs publish "\$TARBALL" "\$DIST_TAG" --dry-run/,
+  )
+  assert.match(
+    finalize,
+    /release-artifact\.mjs publish "\$TARBALL" "\$DIST_TAG"/,
+  )
+  assert.match(finalize, /### Published v\$VERSION/)
+  assert.match(finalize, /packages\/npm\/package\/\$PACKAGE_SLUG/)
+  assert.match(
+    finalize,
+    /cdn\.jsdelivr\.net\/gh\/\$GITHUB_REPOSITORY@v\$VERSION/,
+  )
+  assert.match(finalize, /GITHUB_STEP_SUMMARY/)
   assert.match(
     finalize,
     /git\/refs\/heads\/\$RELEASE_BRANCH/,
@@ -388,4 +576,18 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   )
   assert.doesNotMatch(finalize, /run: npm test$/m)
   assert.doesNotMatch(finalize, /^  release:/m)
+
+  assert.match(abandon, /workflow_dispatch:/)
+  assert.match(abandon, /group: prepare-release/)
+  assert.match(abandon, /node scripts\/abandon-release\.mjs/)
+  assert.match(abandon, /gh pr list --state open/)
+  assert.match(abandon, /gh pr list --state closed/)
+  assert.match(abandon, /select-pull-request/)
+  assert.match(abandon, /merged and cannot be abandoned/)
+  assert.match(abandon, /is already published and cannot be abandoned/)
+  assert.match(abandon, /gh pr close "\$PR_NUMBER"/)
+  assert.match(abandon, /gh pr view "\$PR_NUMBER" --json mergedAt/)
+  assert.match(abandon, /was published while abandonment was in progress/)
+  assert.match(abandon, /gh release delete "\$TAG" --yes/)
+  assert.match(abandon, /git\/refs\/heads\/\$BRANCH/)
 })

@@ -164,13 +164,7 @@ jobs:
 
       - name: Locate the tested package
         id: artifact
-        run: |
-          TARBALLS=(release-artifact/*.tgz)
-          if [[ "${#TARBALLS[@]}" -ne 1 || ! -f "${TARBALLS[0]}" ]]; then
-            echo "::error::Expected exactly one package tarball"
-            exit 1
-          fi
-          echo "tarball=$PWD/${TARBALLS[0]}" >> "$GITHUB_OUTPUT"
+        run: node scripts/release-artifact.mjs locate release-artifact
 
       - name: Inspect an existing GitHub release
         id: github-release
@@ -236,7 +230,7 @@ jobs:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
-        run: npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts --dry-run
+        run: node scripts/release-artifact.mjs publish "$TARBALL" "$DIST_TAG" --dry-run
 
       - name: Publish the reviewed GitHub release
         if: steps.github-release.outputs.draft == 'true'
@@ -246,6 +240,18 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: v${{ needs.build.outputs.version }}
         run: |
+          RELEASE_DATA="$(gh release view "$TAG" --json isDraft,isPrerelease)"
+          CURRENT_DRAFT="$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")"
+          CURRENT_PRERELEASE="$(node -e 'console.log(JSON.parse(process.argv[1]).isPrerelease)' "$RELEASE_DATA")"
+          EXPECTED_PRERELEASE=$([[ "$DIST_TAG" == beta ]] && echo true || echo false)
+          if [[ "$CURRENT_DRAFT" != true ]]; then
+            echo "::error::$TAG was published outside this workflow"
+            exit 1
+          fi
+          if [[ "$CURRENT_PRERELEASE" != "$EXPECTED_PRERELEASE" ]]; then
+            echo "::error::$TAG prerelease setting changed before publication"
+            exit 1
+          fi
           gh release edit "$TAG" --target "$EXPECTED_COMMIT" --draft=false
           git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
           TAG_COMMIT="$(git rev-list -n 1 "$TAG")"
@@ -260,7 +266,29 @@ jobs:
           DIST_TAG: ${{ needs.build.outputs.dist-tag }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARBALL: ${{ steps.artifact.outputs.tarball }}
-        run: npm publish "$TARBALL" --tag "$DIST_TAG" --ignore-scripts
+        run: node scripts/release-artifact.mjs publish "$TARBALL" "$DIST_TAG"
+
+      - name: Summarize publication
+        env:
+          PACKAGE_NAME: ${{ needs.build.outputs.package-name }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          PACKAGE_SLUG="${PACKAGE_NAME##*/}"
+          RELEASE_URL="https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSION"
+          PACKAGE_URL="https://github.com/orgs/$GITHUB_REPOSITORY_OWNER/packages/npm/package/$PACKAGE_SLUG"
+          CDN_ROOT="https://cdn.jsdelivr.net/gh/$GITHUB_REPOSITORY@v$VERSION/dist"
+          {
+            echo "### Published v$VERSION"
+            echo
+            echo "- [GitHub release]($RELEASE_URL)"
+            echo "- [GitHub Package]($PACKAGE_URL)"
+            echo "- [CDN stylesheet]($CDN_ROOT/sds.css)"
+            echo "- [CDN automatic setup]($CDN_ROOT/auto.js)"
+            echo
+            echo '```sh'
+            echo "npm install $PACKAGE_NAME@$VERSION"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Delete the merged release branch
         env:

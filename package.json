@@ -1,6 +1,6 @@
 {
   "name": "@cmu-sei/sds-lite",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "SDS Lite: the dependency-free, framework-neutral core of the SEI Design System.",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://github.com/cmu-sei/sds-lite#readme",
@@ -97,8 +97,8 @@
     "@playwright/test": "^1.63.0",
     "happy-dom": "^20.14.5",
     "html-validate": "^10.17.0",
-    "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "typescript": "~7.0.2",
+    "vite": "^8.3.2"
   },
   "allowScripts": {
     "fsevents@2.3.3": true

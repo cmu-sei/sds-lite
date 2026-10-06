@@ -31,11 +31,12 @@ publication, and branch cleanup.
    the workflow.
 3. Open the generated release pull request and follow its **Finish this
    release** section. Review the generated changes and linked draft release,
-   then obtain approval. Merging confirms that both were reviewed.
+   then merge normally. Merging confirms that both were reviewed.
 4. Merge the release pull request normally. When **Finalize Release** pauses,
    approve the matching protected deployment environment.
 5. Confirm that Finalize Release is green and that the GitHub release and
-   GitHub Package are published. The release branch is deleted automatically.
+   GitHub Package are published. Its job summary links to the release, package,
+   and versioned CDN files. The release branch is deleted automatically.
 
 Never create a release tag, publish the draft release, run `npm publish`, or
 edit generated version files manually. If automation fails, use the recovery
@@ -60,9 +61,9 @@ section at the end of this guide.
    `enhancement`, `bug`, `documentation`, and `internal`; these labels are not
    created by automation. The preparation workflow creates and applies only
    the `release` label.
-8. Configure branch protection for `main` to require CI and at least one
-   approving review. Do not allow the release pull request to bypass these
-   requirements; the release workflows do not enforce merge policy.
+8. Configure branch protection for `main` to require pull requests and the
+   current **Build and test** check. Do not allow bypasses. Protected
+   environment approval is the final publication authorization gate.
 
 No long-lived npm token is required. Publication uses the workflow's
 short-lived `GITHUB_TOKEN`.
@@ -119,11 +120,19 @@ the package version and version-pinned documentation, regenerates `dist/`, runs
 non-browser validation, enforces package content and size limits, and runs
 `git diff --check`. It then creates or refreshes `release/v<version>`, opens a
 draft GitHub release with generated notes, opens the release pull request, and
-dispatches the full browser CI matrix for the generated branch.
+lets the generated pull request run the required full browser CI matrix.
+
+Ordinary contributor pull requests do not need to commit generated `dist/`
+changes. CI builds and tests them without modifying the pull request. Prepare
+Release owns the committed distribution, and Finalize Release rebuilds and
+verifies it before publication. If a contributor includes `dist/` changes,
+release preparation replaces them with a clean build; they do not affect
+publication.
 
 Rerunning the same base version and channel refreshes the release branch from
 current `main` without erasing edits already made to the pull request or draft
-release.
+release. The refresh explicitly reruns CI because bot-authored branch updates
+do not reliably emit another pull request event.
 
 Review the generated pull request. Any changes should be limited to:
 
@@ -136,12 +145,12 @@ Review the generated pull request. Any changes should be limited to:
 The preparation workflow does not modify legal files. Any legal-file change in
 the generated pull request is unexpected and requires separate approval.
 
-The automated suite covers keyboard behavior, zoom and responsive layouts,
-reduced motion, forced colors, accessibility rules, and the Chromium, Firefox,
-and WebKit browser engines. Manual test evidence is not required for a release.
-Review the generated changes and draft release notes, obtain approval, and
-merge normally. The protected merge is the human confirmation that the release
-is ready.
+The automated suite covers keyboard behavior, responsive layouts, reduced
+motion, forced colors, accessibility rules, and the Chromium, Firefox, and
+WebKit browser engines. Manual test evidence is not required for a release.
+Review the generated changes and draft release notes, then merge normally. The
+merge is the human confirmation that the release is ready for protected
+publication approval.
 
 ## Publish the release
 
@@ -180,10 +189,10 @@ out that commit for tag verification, downloads the tested tarball without
 rebuilding it, checks the registry, performs an `npm publish --dry-run`, and
 then publishes it under `beta` or `latest`.
 
-For example, release `v0.1.0` serves:
+For example, release `v0.2.0` serves:
 
 ```text
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.css
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.0/dist/sds.css
 ```
 
 ## Recover from a failed release
@@ -196,8 +205,10 @@ https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.1.0/dist/sds.css
    GitHub release and package checksum before doing any work again.
 - Release artifacts are retained for seven days. After that, rerun the build
    job as well as the publication job to regenerate the tested artifact.
-- To abandon an unmerged release, close its pull request and delete its draft
-   release and `release/v<version>` branch.
+- To abandon an unmerged release, run **Actions > Abandon Release**, enter its
+   exact generated version, and type the requested confirmation. The workflow
+   refuses published tags and releases, then closes the generated pull request
+   and deletes its draft release and `release/v<version>` branch.
 - If the tagged source, version, package, or documentation is wrong, do not
   move or delete the tag. Prepare and publish a new version.
 - If the registry reports that the version already exists, verify the existing
