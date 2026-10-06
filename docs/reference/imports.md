@@ -37,10 +37,10 @@ setupSds()
 Stable top-level browser files:
 
 ```text
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/auto.js
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/brand.css
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.js
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.2/dist/sds.css
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.2/dist/auto.js
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.2/dist/brand.css
+https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.2/dist/sds.js
 ```
 
 Pin an exact package version in production.
