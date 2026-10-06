@@ -17,6 +17,7 @@ async function sourceFiles(directory, extension) {
 
 const documentationFiles = [
   'README.md',
+  '.github/RELEASING.md',
   ...(await sourceFiles('docs', '.md')),
 ]
 const reference = (

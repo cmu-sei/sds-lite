@@ -3,9 +3,54 @@ import { appendFile, readdir } from 'node:fs/promises'
 import { isAbsolute, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
+import { compareReleaseVersions, parseReleaseVersion } from './release-version.mjs'
+
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const usage =
-  'Usage: release-artifact.mjs locate <directory> | publish <tarball> <beta|latest> [--dry-run]'
+  'Usage: release-artifact.mjs locate <directory> | publish <tarball> <beta|latest> [--dry-run] | check-tag|verify-tag <package> <version> <beta|latest>'
+
+export function resolveReleaseDistTag(version, distTag, tags) {
+  const parsed = parseReleaseVersion(version)
+  if (distTag !== (parsed.prerelease ? 'beta' : 'latest')) {
+    throw new Error('Release version does not match its distribution tag')
+  }
+  if (!tags || typeof tags !== 'object' || Array.isArray(tags)) {
+    throw new Error('Could not verify package distribution tags')
+  }
+  const current = tags[distTag]
+  if (current !== undefined && compareReleaseVersions(current, version) > 0) {
+    throw new Error(`Refusing to move ${distTag} backward from ${current} to ${version}`)
+  }
+  return current !== version
+}
+
+function registryCommand(args) {
+  const result = spawnSync(npm, [...args, '--registry=https://npm.pkg.github.com'], { encoding: 'utf8' })
+  if (result.error) throw result.error
+  if (result.status !== 0) {
+    let error
+    try { error = JSON.parse(result.stdout).error } catch {}
+    if (args[0] === 'view' && args[2] === 'dist-tags' && error?.code === 'E404') return '{}'
+    throw new Error(result.stderr || result.stdout || 'Registry lookup failed')
+  }
+  return result.stdout
+}
+
+export function checkReleaseDistTag(packageName, version, distTag, execute = registryCommand) {
+  if (!/^@[a-z0-9-]+\/[a-z0-9._-]+$/.test(packageName)) throw new Error('A scoped package name is required')
+  return resolveReleaseDistTag(version, distTag, JSON.parse(execute(['view', packageName, 'dist-tags', '--json'])))
+}
+
+export function ensureReleaseDistTag(packageName, version, distTag, execute = registryCommand) {
+  if (!/^@[a-z0-9-]+\/[a-z0-9._-]+$/.test(packageName)) throw new Error('A scoped package name is required')
+  const readTags = () => JSON.parse(execute(['view', packageName, 'dist-tags', '--json']))
+  if (resolveReleaseDistTag(version, distTag, readTags())) {
+    execute(['dist-tag', 'add', `${packageName}@${version}`, distTag])
+  }
+  if (resolveReleaseDistTag(version, distTag, readTags())) {
+    throw new Error(`Could not confirm ${packageName}@${distTag} points to ${version}`)
+  }
+}
 
 export async function locateReleaseArtifact(directory) {
   const entries = await readdir(directory, { withFileTypes: true })
@@ -40,9 +85,16 @@ export function releasePublishArguments(tarball, distTag, dryRun = false) {
   ]
 }
 
-function publishReleaseArtifact(tarball, distTag, dryRun) {
+export function publishReleaseArtifact(tarball, distTag, dryRun, {
+  packageName = process.env.PACKAGE_NAME,
+  version = process.env.VERSION,
+  execute = registryCommand,
+  publish = spawnSync,
+} = {}) {
   const args = releasePublishArguments(tarball, distTag, dryRun)
-  const result = spawnSync(npm, args, { stdio: 'inherit' })
+  checkReleaseDistTag(packageName, version, distTag, execute)
+  const result = publish(npm, args, { stdio: 'inherit' })
+  if (result.error) throw result.error
   if (result.status !== 0) {
     throw new Error(`npm ${args.join(' ')} failed with exit code ${result.status}`)
   }
@@ -70,6 +122,12 @@ async function main() {
       throw new Error(usage)
     }
     publishReleaseArtifact(tarball, distTag, option === '--dry-run')
+    return
+  }
+  if (command === 'check-tag' || command === 'verify-tag') {
+    if (args.length !== 3) throw new Error(usage)
+    if (command === 'check-tag') checkReleaseDistTag(...args)
+    else ensureReleaseDistTag(...args)
     return
   }
   throw new Error(usage)

@@ -1,11 +1,11 @@
-name: Abandon Release
-run-name: Abandon release v${{ inputs.version }}
+name: Release - Discard Unmerged Release PR
+run-name: Discard unmerged release PR for v${{ inputs.version }}
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: Exact prepared version, such as 1.2.0 or 1.2.0-beta.1
+        description: Exact version of an unmerged release PR, such as 1.2.0-beta.1
         required: true
         type: string
       confirmation:
@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  packages: read
   pull-requests: write
 
 concurrency:
@@ -28,6 +29,16 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Require the default branch workflow
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          SELECTED_BRANCH: ${{ github.ref_name }}
+        run: |
+          if [[ "$SELECTED_BRANCH" != "$DEFAULT_BRANCH" ]]; then
+            echo "::error::Run this workflow from $DEFAULT_BRANCH"
+            exit 1
+          fi
+
       - name: Check out the default branch
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -38,6 +49,8 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: '@cmu-sei'
 
       - name: Validate the requested release
         id: release
@@ -50,16 +63,19 @@ jobs:
         env:
           BRANCH: ${{ steps.release.outputs.branch }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
           TAG: ${{ steps.release.outputs.tag }}
         run: |
           OPEN_PRS="$RUNNER_TEMP/open-release-prs.json"
           CLOSED_PRS="$RUNNER_TEMP/closed-release-prs.json"
           gh pr list --state open --head "$BRANCH" --label release --limit 2 --json number,url,state,mergedAt > "$OPEN_PRS"
           gh pr list --state closed --head "$BRANCH" --label release --limit 100 --json number,url,state,mergedAt > "$CLOSED_PRS"
-          PR_DATA="$(node scripts/abandon-release.mjs select-pull-request "$OPEN_PRS" "$CLOSED_PRS")"
-          PR_NUMBER="$(node -e 'console.log(JSON.parse(process.argv[1]).number)' "$PR_DATA")"
-          PR_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).url)' "$PR_DATA")"
+          PR_DATA="$(node scripts/abandon-release.mjs select-pull-request "$OPEN_PRS" "$CLOSED_PRS" --allow-missing)"
+          PR_NUMBER="$(node -e 'console.log(JSON.parse(process.argv[1]).number ?? "")' "$PR_DATA")"
+          PR_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).url ?? "")' "$PR_DATA")"
           PR_WAS_OPEN="$(node -e 'console.log(JSON.parse(process.argv[1]).wasOpen)' "$PR_DATA")"
+          node scripts/abandon-release.mjs assert-unpublished
 
           RELEASE_ERROR="$RUNNER_TEMP/release-error"
           if RELEASE_DATA="$(gh release view "$TAG" --json isDraft,url 2>"$RELEASE_ERROR")"; then
@@ -98,10 +114,12 @@ jobs:
           if [[ "$PR_WAS_OPEN" == true ]]; then
             gh pr close "$PR_NUMBER"
           fi
-          MERGED_AT="$(gh pr view "$PR_NUMBER" --json mergedAt --jq '.mergedAt // ""')"
-          if [[ -n "$MERGED_AT" ]]; then
-            echo "::error::$PR_URL was merged and cannot be abandoned"
-            exit 1
+          if [[ -n "$PR_NUMBER" ]]; then
+            MERGED_AT="$(gh pr view "$PR_NUMBER" --json mergedAt --jq '.mergedAt // ""')"
+            if [[ -n "$MERGED_AT" ]]; then
+              echo "::error::$PR_URL was merged and cannot be abandoned"
+              exit 1
+            fi
           fi
 
           if [[ -n "$RELEASE_DATA" ]]; then
@@ -119,6 +137,7 @@ jobs:
             exit 1
           fi
 
+          node scripts/abandon-release.mjs assert-unpublished
           if [[ -n "$RELEASE_DATA" ]]; then
             gh release delete "$TAG" --yes
           fi
@@ -130,8 +149,10 @@ jobs:
             echo "### Abandoned $TAG"
             if [[ "$PR_WAS_OPEN" == true ]]; then
               echo "- Closed pull request: $PR_URL"
-            else
+            elif [[ -n "$PR_URL" ]]; then
               echo "- Pull request was already closed: $PR_URL"
+            else
+              echo "- No release pull request was created; cleaned up partial preparation."
             fi
             if [[ -n "$RELEASE_URL" ]]; then
               echo "- Deleted draft release: $RELEASE_URL"

@@ -100,15 +100,21 @@ test('small badges fit inline content more tightly', async ({ page }) => {
   await expect(badge).toHaveCSS('padding-inline', '8px')
   await expect(badge).toHaveCSS('vertical-align', '1.98px')
 
-  const alignment = await badge.evaluate((element) => {
-    const badgeRect = element.getBoundingClientRect()
-    const lineRect = element.parentElement.getBoundingClientRect()
-    return Math.abs(
-      (badgeRect.top + badgeRect.bottom) / 2 -
-        (lineRect.top + lineRect.bottom) / 2,
-    )
-  })
-  expect(alignment).toBeLessThan(0.75)
+  for (const fontFamily of ['', 'serif', 'sans-serif']) {
+    const alignment = await badge.evaluate((element, family) => {
+      const paragraph = element.parentElement
+      paragraph.style.fontFamily = family
+      const raisedOffset =
+        element.getBoundingClientRect().top - paragraph.getBoundingClientRect().top
+      const originalAlignment = element.style.verticalAlign
+      element.style.verticalAlign = 'baseline'
+      const baselineOffset =
+        element.getBoundingClientRect().top - paragraph.getBoundingClientRect().top
+      element.style.verticalAlign = originalAlignment
+      return baselineOffset - raisedOffset
+    }, fontFamily)
+    expect(alignment, `baseline offset with ${fontFamily || 'default'} font`).toBeCloseTo(1.98, 1)
+  }
 })
 
 test('linked badges use tone-aware hover styling', async ({ page }) => {

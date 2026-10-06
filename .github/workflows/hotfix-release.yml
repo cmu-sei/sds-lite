@@ -1,0 +1,25 @@
+name: Release - Hotfix Latest
+run-name: Hotfix latest with fix PR ${{ inputs.fix_pr }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      fix_pr:
+        description: Paste the link or number of the merged fix pull request
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  packages: read
+  pull-requests: write
+
+jobs:
+  hotfix:
+    name: Prepare latest hotfix
+    uses: ./.github/workflows/prepare-release.yml
+    with:
+      channel: hotfix
+      fix_pr: ${{ inputs.fix_pr }}

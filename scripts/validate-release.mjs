@@ -29,6 +29,7 @@ export async function validateReleaseEnvironment(env = process.env) {
 }
 
 export function validateReleaseOrder(version, releaseTag, tags) {
+  const next = parseReleaseVersion(version)
   const previousVersions = tags
     .filter((tag) => tag !== releaseTag && tag.startsWith('v'))
     .flatMap((tag) => {
@@ -38,6 +39,7 @@ export function validateReleaseOrder(version, releaseTag, tags) {
         return []
       }
     })
+    .filter((previous) => next.prerelease || !parseReleaseVersion(previous).prerelease)
     .sort(compareReleaseVersions)
   const latestVersion = previousVersions.at(-1)
   if (latestVersion) assertVersionAdvances(latestVersion, version)

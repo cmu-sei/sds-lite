@@ -1,26 +1,43 @@
-name: Prepare Release
-run-name: Prepare ${{ inputs.channel }} release from ${{ inputs.version }}
+name: Release - Create Release PR
+run-name: Create ${{ inputs.channel }} release PR from ${{ inputs.version }}
 
 on:
+  workflow_call:
+    inputs:
+      channel:
+        required: true
+        type: string
+      version:
+        default: ''
+        type: string
+      fix_pr:
+        default: ''
+        type: string
   workflow_dispatch:
     inputs:
       channel:
-        description: stable publishes to latest; beta publishes the next beta
+        description: stable = main to latest; beta = next beta; hotfix = fix latest only
         required: true
         default: stable
         type: choice
         options:
           - stable
           - beta
+          - hotfix
       version:
-        description: Base SemVer only, such as 1.2.0 (no v or -beta.N)
-        required: true
+        description: Stable/beta only - base version such as 1.2.0. Leave blank for hotfix.
+        required: false
+        type: string
+      fix_pr:
+        description: Hotfix only - paste the merged fix pull request link or number
+        required: false
         type: string
 
 permissions:
   actions: write
   contents: write
   issues: write
+  packages: read
   pull-requests: write
 
 concurrency:
@@ -55,14 +72,14 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: '@cmu-sei'
 
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
 
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
-
       - name: Validate the requested release
+        if: inputs.channel != 'hotfix'
         env:
           BASE_VERSION: ${{ inputs.version }}
           RELEASE_CHANNEL: ${{ inputs.channel }}
@@ -72,19 +89,38 @@ jobs:
             echo "VERSION=$VERSION"
             echo "TAG=v$VERSION"
             echo "branch=release/v$VERSION"
+            echo "RELEASE_BASE=${{ github.event.repository.default_branch }}"
           } >> "$GITHUB_ENV"
           echo "Preparing $RELEASE_CHANNEL release v$VERSION" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Prepare latest-only hotfix source
+        if: inputs.channel == 'hotfix'
+        env:
+          BASE_VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOTFIX_PR: ${{ inputs.fix_pr }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ -n "$BASE_VERSION" ]]; then
+            echo "::error::Leave version blank for hotfix; the next patch is selected automatically"
+            exit 1
+          fi
+          node scripts/prepare-hotfix.mjs
 
       - name: Ensure only one release is in progress
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh label create release --color 5319e7 --description "Release preparation" --force
-          OPEN_BRANCH="$(gh pr list --state open --label release --json headRefName --jq '.[0].headRefName // ""')"
-          if [[ -n "$OPEN_BRANCH" && "$OPEN_BRANCH" != "$branch" ]]; then
-            echo "::error::Release pull request $OPEN_BRANCH is already open"
+          CANCELLED_PR="$(gh pr list --state merged --head "$branch" --label release-cancelled --json number --jq '.[0].number // ""')"
+          if [[ -n "$CANCELLED_PR" ]]; then
+            echo "::error::$TAG was cancelled after merge. Choose a newer base version"
             exit 1
           fi
+          gh label create release --color 5319e7 --description "Release preparation" --force
+          RELEASE_BRANCH="$branch" node scripts/validate-release-pr.mjs prepare
+
+      - name: Install release source dependencies
+        run: npm ci --ignore-scripts
 
       - name: Prepare and validate the release
         run: |
@@ -100,7 +136,11 @@ jobs:
             echo "::error::Release preparation did not produce any changes"
             exit 1
           fi
-          git commit -m "release: prepare v$VERSION"
+          if [[ "${{ inputs.channel }}" == hotfix ]]; then
+            git commit --amend --reset-author -m "release: prepare hotfix v$VERSION (fix #$HOTFIX_NUMBER)"
+          else
+            git commit -m "release: prepare v$VERSION"
+          fi
           git push --force-with-lease --set-upstream origin "$branch"
 
       - name: Create or locate the draft GitHub release
@@ -108,14 +148,27 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_DATA="$(gh release view "$TAG" --json isDraft 2>/dev/null || true)"
+          RELEASE_ERROR="$RUNNER_TEMP/draft-release-error"
+          if RELEASE_DATA="$(gh release view "$TAG" --json isDraft 2>"$RELEASE_ERROR")"; then
+            :
+          elif grep -qi 'release not found' "$RELEASE_ERROR"; then
+            RELEASE_DATA=""
+          else
+            cat "$RELEASE_ERROR"
+            exit 1
+          fi
           if [[ -n "$RELEASE_DATA" ]]; then
             if [[ "$(node -e 'console.log(JSON.parse(process.argv[1]).isDraft)' "$RELEASE_DATA")" != true ]]; then
               echo "::error::$TAG is already published"
               exit 1
             fi
           else
-            OPTIONS=(--draft --generate-notes --target "${{ github.event.repository.default_branch }}" --title "SDS Lite $TAG")
+            OPTIONS=(--draft --generate-notes --target "$branch" --title "SDS Lite $TAG")
+            if [[ -n "${NOTES_START_TAG:-}" ]]; then
+              HOTFIX_NOTES="$RUNNER_TEMP/hotfix-notes.md"
+              gh api "repos/$GITHUB_REPOSITORY/pulls/$HOTFIX_NUMBER" | node scripts/format-release-notes.mjs --hotfix > "$HOTFIX_NOTES"
+              OPTIONS=(--draft --target "$branch" --title "SDS Lite $TAG" --notes-file "$HOTFIX_NOTES")
+            fi
             if [[ "$VERSION" == *-beta.* ]]; then
               OPTIONS+=(--prerelease)
             fi
@@ -146,14 +199,14 @@ jobs:
           cat > "$BODY" <<EOF
           ## Release v$VERSION
 
-          This pull request was generated by the Prepare Release workflow. Merging it starts protected publication.
+          This pull request was generated by the Release - Create Release PR workflow. Merging it starts protected publication.
 
           ## Finish this release
 
           1. Wait for **Build and test** to pass and review the generated file changes.
           2. Open the [draft GitHub release]($DRAFT_RELEASE_URL) and follow its editor guide. If the generated notes are already clear and accurate, no edits are needed.
           3. Merge normally. Merging confirms that the generated changes and draft release were reviewed.
-          4. Approve the protected deployment when **Finalize Release** pauses.
+          4. Approve the protected deployment when **Release - Publish Merged Release** pauses.
 
           ## Automated validation
 
@@ -161,13 +214,17 @@ jobs:
           - The generated pull request runs the required full browser CI matrix. Refreshing an existing release explicitly reruns it.
           - The draft release is published only after this pull request is reviewed and merged.
           EOF
+          if [[ -n "${HOTFIX_NUMBER:-}" ]]; then
+            printf '\n## Latest-only hotfix\n\nApplies fix #%s to %s and publishes to latest. Beta development on main is unchanged. Merge into %s, not main.\n' \
+              "$HOTFIX_NUMBER" "$NOTES_START_TAG" "$RELEASE_BASE" >> "$BODY"
+          fi
 
           PR_URL="$(gh pr list --state open --head "$branch" --json url --jq '.[0].url // ""')"
           if [[ -n "$PR_URL" ]]; then
             gh pr edit "$PR_URL" --title "Release v$VERSION" --body-file "$BODY" --add-label release
             REFRESHED=true
           else
-            PR_URL="$(gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Release v$VERSION" --body-file "$BODY" --label release)"
+            PR_URL="$(gh pr create --base "$RELEASE_BASE" --head "$branch" --title "Release v$VERSION" --body-file "$BODY" --label release)"
             REFRESHED=false
           fi
           echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
@@ -175,8 +232,7 @@ jobs:
           echo "### Release pull request" >> "$GITHUB_STEP_SUMMARY"
           echo "$PR_URL" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Rerun CI for a refreshed release
-        if: steps.pull-request.outputs.refreshed == 'true'
+      - name: Run CI for the release pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run ci.yml --ref "$branch"
