@@ -1,20 +1,56 @@
-name: CI - Build and Browser Tests
+name: Automatic - CI
+run-name: "CI for ${{ inputs.pull_request && format('PR #{0}', inputs.pull_request) || github.ref_name }}"
 
 on:
-  pull_request:
-    branches: [main, 'hotfix/v*']
   workflow_dispatch:
+    inputs:
+      pull_request:
+        description: 'PR number (optional; leave blank to test the selected branch)'
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ inputs.pull_request || github.ref }}
   cancel-in-progress: true
 
 jobs:
+  source:
+    name: Select tested commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - name: Resolve the commit
+        id: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ inputs.pull_request }}
+          SELECTED_SHA: ${{ github.sha }}
+        run: |
+          SHA="$SELECTED_SHA"
+          if [[ -n "$PR_NUMBER" ]]; then
+            if [[ ! "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]; then
+              echo "::error::Enter a positive PR number"
+              exit 1
+            fi
+            SHA="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')"
+          fi
+          if [[ ! "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Could not resolve the tested commit"
+            exit 1
+          fi
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
   validation:
     name: Validate build and package
+    needs: source
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -22,13 +58,13 @@ jobs:
       - name: Check out source
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
+          ref: ${{ needs.source.outputs.sha }}
           persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
-          cache: npm
 
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
@@ -44,6 +80,7 @@ jobs:
 
   browser:
     name: Browser (${{ matrix.project }})
+    needs: source
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container:
@@ -58,13 +95,13 @@ jobs:
       - name: Check out source
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
+          ref: ${{ needs.source.outputs.sha }}
           persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
-          cache: npm
 
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
@@ -80,10 +117,29 @@ jobs:
   required:
     name: Build and test
     if: always()
-    needs: [validation, browser]
+    needs: [source, validation, browser]
     runs-on: ubuntu-latest
     timeout-minutes: 1
+    permissions:
+      checks: write
     steps:
+      - name: Report checks on the tested PR commit
+        if: inputs.pull_request != '' && needs.source.result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BROWSER_RESULT: ${{ needs.browser.result }}
+          VALIDATION_RESULT: ${{ needs.validation.result }}
+          TESTED_SHA: ${{ needs.source.outputs.sha }}
+        run: |
+          CONCLUSION=failure
+          if [[ "$VALIDATION_RESULT" == success && "$BROWSER_RESULT" == success ]]; then
+            CONCLUSION=success
+          fi
+          gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
+            -f name='Build and test' -f head_sha="$TESTED_SHA" \
+            -f status=completed -f conclusion="$CONCLUSION" \
+            -f details_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
+
       - name: Require validation and browser tests
         env:
           BROWSER_RESULT: ${{ needs.browser.result }}

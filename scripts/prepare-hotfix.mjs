@@ -153,7 +153,8 @@ export async function prepareHotfix({ env = process.env, execute = run, cwd = pr
       'scripts/prepare-hotfix.mjs', 'scripts/prepare-release.mjs', 'scripts/release-version.mjs',
       'scripts/resolve-release-version.mjs', 'scripts/validate-release.mjs', 'scripts/validate-release-pr.mjs',
       'scripts/cancel-release.mjs', 'scripts/abandon-release.mjs', 'scripts/release-artifact.mjs',
-      'scripts/format-release-notes.mjs', 'test/release.test.mjs', '.github/workflows', '.github/RELEASING.md'])
+      'scripts/format-release-notes.mjs', 'scripts/pull-request.mjs',
+      'test/release.test.mjs', '.github/workflows', '.github/RELEASING.md'])
     const lock = JSON.parse(await readFile(join(cwd, 'package-lock.json'), 'utf8'))
     const playwright = lock.packages['node_modules/playwright'].version
     for (const filename of ['ci.yml', 'release-package.yml']) {

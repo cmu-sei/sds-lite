@@ -1,17 +1,29 @@
 # Releasing SDS Lite
 
-You can run a release entirely in GitHub. Automation builds, tests, and publishes
-the package; you choose what to release, review the changes, and approve
-publication. No local setup or terminal commands are needed.
+Start a workflow, review its PR and draft notes, then merge. Automation builds,
+tests, and publishes the package. No terminal, personal token, or GitHub App is
+needed. Publication approval is optional repository policy, separate from CI.
+
+## Find the right workflow
+
+In **Actions**, pin **Release - Create Release PR** and **Release - Hotfix Latest**
+using the pin icon beside each name. These are the only routine starting points.
+
+- **Release**: start a stable/beta release or a latest-only hotfix.
+- **Recovery**: discard an unmerged release or cancel a merged, unpublished one.
+- **Automatic**: CI, PR labels, and publication. Do not start these for a release.
+
+GitHub lists automatic workflows too; repository files cannot hide them from
+the sidebar. **Automatic - CI** keeps a **Run workflow** button for troubleshooting
+and reviewed external contributions, not routine release preparation.
 
 ## Before you start
 
 - Ask a maintainer to confirm that [repository setup](#one-time-repository-setup)
   is complete and that the updated release workflows are on `main`.
-- You need permission to run workflows and merge pull requests. A pull request
-  (PR) is GitHub's review page for proposed changes.
-- Arrange for an eligible PR reviewer and a deployment approver. If you cannot
-  approve a deployment yourself, ask the team's authorized reviewer to do it.
+- You need permission to run workflows and merge pull requests (PRs).
+- Arrange a reviewer. If the repository requires publication approval, arrange
+   an authorized deployment approver too.
 - Finish or discard any open release PR before starting another. If a release
   is already merged, finish its publication or cancellation first.
 
@@ -32,17 +44,14 @@ includes only the selected fix applied to the current stable release.
 
 ## Start a stable or beta release
 
-1. Ask a maintainer to confirm that all intended changes are merged into `main`
-   and choose the version using [the version guide](#choose-the-version).
+1. Confirm the intended changes are on `main` and
+   [choose the version](#choose-the-version).
 2. Open [Release - Create Release PR](https://github.com/cmu-sei/sds-lite/actions/workflows/prepare-release.yml)
-   in the repository's **Actions** tab, then click **Run workflow**.
-3. Leave **Use workflow from** set to `main`.
-4. Choose `stable` or `beta` in **channel**.
-5. Enter the intended stable version in **version**, such as `1.3.0`. Do not
-   include `v` or `-beta.N`. Leave **fix_pr** blank.
-6. Click **Run workflow**. Open the new run and wait for it to finish.
-7. Open the release PR linked in the run's summary, then follow
-   [Finish the release](#finish-the-release).
+   in **Actions**, then click **Run workflow**. Select `main`.
+3. Choose `stable` or `beta`. Enter the intended stable version, such as `1.3.0`,
+   without `v` or `-beta.N`, and run the workflow.
+4. When it finishes, open the PR linked in its summary and
+   [finish the release](#finish-the-release).
 
 For `stable`, entering `1.3.0` prepares version `1.3.0`. For `beta`, the same
 input prepares `1.3.0-beta.1`, or the next beta number if previous betas exist.
@@ -55,14 +64,12 @@ that should not reach stable users yet. For example, with `latest` at `1.2.3`
 and `beta` at `1.3.0-beta.2`, a hotfix normally publishes `1.2.4` to `latest`
 without changing `beta`.
 
-1. Ask a maintainer for the link to a focused, backward-compatible fix PR
-   already merged into `main`. This keeps the fix in future releases too.
+1. Choose a focused, backward-compatible fix PR already merged into `main`.
 2. Open [Release - Hotfix Latest](https://github.com/cmu-sei/sds-lite/actions/workflows/hotfix-release.yml)
    in **Actions**, then click **Run workflow**.
-3. Leave **Use workflow from** set to `main`. Paste the fix PR link into
-   **fix_pr**; a PR number also works. This is the only input.
-4. Click **Run workflow**. Open the new run and wait for it to finish.
-5. Open the release PR linked in the summary, then follow
+3. Select `main`, enter the fix PR link or number in **fix_pr**, and run the
+   workflow. This is the only input.
+4. When it finishes, open the PR linked in the summary and follow
    [Finish the release](#finish-the-release). Keep its target branch as
    `hotfix/v<version>`; do not change it to `main`.
 
@@ -76,33 +83,23 @@ compatible fix PR rather than trying to force the release through.
 
 ## Finish the release
 
-Follow these steps for stable, beta, and hotfix releases.
+1. **Review changes and notes.** Open **Files changed** and the linked draft
+   release. Expect version files, documentation, generated `dist/`, and the
+   release state marker; hotfixes also include the selected fix. Investigate
+   unexpected changes. [Edit notes](#edit-release-notes) only if needed and
+   save them as a draft, not a published release.
+2. **Wait for CI, obtain review, and merge.** **Build and test** starts
+   automatically, including when preparation refreshes the PR. Do not approve
+   a workflow to start these checks. Merging starts **Automatic - Publish Release**.
+3. **Confirm publication.** Open the publication run in **Actions**. If it
+   displays **Review deployments**, an authorized reviewer must approve the
+   environment; otherwise publication continues automatically. A successful
+   run links to the release, package, and CDN files. Hotfixes advance `latest`
+   without changing `beta`.
 
-1. **Review the release PR.** Open **Files changed** and ask a maintainer to
-   confirm that the changes are expected. Normal releases update version
-   files, version-pinned documentation, generated `dist/` files, and the release
-   state marker. Hotfixes also include the selected fix. Unexpected code or
-   legal-file changes need investigation before merging.
-2. **Review the draft release notes.** Follow the draft link in the PR's
-   **Finish this release** section. Check that the notes accurately describe
-   the release. Use [the editing guidance](#edit-release-notes) if changes are
-   needed. Save edits as a draft; do not click **Publish release**.
-3. **Wait for checks and review.** The **Build and test** check must pass, and
-   an eligible reviewer must approve the PR. If checks fail, use
-   [the recovery guide](#recover-from-a-failed-release).
-4. **Merge the PR once.** Use GitHub's normal merge controls. This confirms
-   that the generated changes and draft notes have been reviewed and starts
-   **Release - Publish Merged Release** automatically.
-5. **Approve publication.** Open that workflow run in **Actions**. It rebuilds
-   and tests the merged code before waiting for deployment approval. When
-   **Review deployments** appears, an authorized reviewer should approve
-   `github-packages-production` for stable/hotfix releases, or
-   `github-packages-beta` for beta releases if approval is configured.
-6. **Confirm success.** Wait for the publication run to finish successfully.
-   Its summary links to the GitHub release, GitHub Package, and versioned CDN
-   files. Check that the version is correct. For a hotfix, also confirm that
-   `latest` advanced and `beta` stayed unchanged; ask a maintainer to verify
-   the package labels if needed.
+To remove a separate publication approval, an administrator must change
+[environment settings](#deployment-environments). It is not a CI approval or
+a token requirement.
 
 The temporary `release/v<version>` branch is deleted after publication. Hotfix
 base branches remain for audit; do not use them for feature work.
@@ -140,13 +137,24 @@ You may simplify the summary, clarify change descriptions, and add upgrade
 steps. Keep the release title, tag, prerelease setting, section headings, PR
 links and numbers, contributor names, and Full Changelog link unchanged.
 Do not remove hidden hotfix source markers; they bind the draft to its fix PR.
-Save changes as a draft; automation publishes it after review and approval.
+Save changes as a draft; automation publishes it after merge and any configured
+deployment approval.
 
-For contributors: keep fix and feature PRs focused, prefer squash merges, and
-describe breaking changes and migrations. Apply one release-note label:
-`breaking`, `enhancement`, `bug`, `documentation`, or `internal`. Use `internal`
-for changes users do not need to see. Automation uses `release` for release
-preparation. The grouping rules are in [release.yml](release.yml).
+For contributors, title prefixes add release-note labels automatically:
+
+| PR title starts with | Label |
+| --- | --- |
+| `fix:` | `bug` |
+| `feat:` | `enhancement` |
+| `docs:` | `documentation` |
+| `internal:` | `internal` (omitted from notes) |
+| `breaking:` or a prefix with `!`, such as `feat!:` | `breaking` |
+
+Scopes work too, such as `fix(tabs): correct focus`. Existing category labels
+are preserved; change them manually to override the category. Ordinary titles
+are allowed and appear under **Other changes** when unlabelled. Describe
+migrations for breaking changes. Release PRs receive `release` automatically.
+Grouping rules are in [release.yml](release.yml).
 
 ## Recover from a failed release
 
@@ -161,6 +169,7 @@ Do not keep rerunning a failing test until it happens to pass.
 | An open release PR needs refreshing | Rerun preparation. For a hotfix, use the same fix PR. Review changed files again and obtain fresh approval where required. |
 | You want to select a different hotfix PR | Discard the existing preparation first, even if only a draft was created, then start the hotfix workflow with the new fix. |
 | A known temporary network, runner, or service failure occurred | Retry the failed jobs once. Investigate if it happens again. |
+| A generated PR asks you to approve CI workflows | Confirm dispatch-only CI is on `main` and refresh preparation. Old runs retain their original workflow and cannot verify the fix. |
 | Publication is waiting for approval | Ask an authorized environment reviewer to approve the deployment. |
 | Publication failed after approval | Ask a maintainer to investigate, then retry the publication run. Existing tags and packages are verified before reuse. |
 | More than seven days have passed since the release build | Rerun build and browser jobs as well as publication; the stored package artifact expires after seven days. |
@@ -175,7 +184,7 @@ Use this before merge, including when preparation failed before creating a PR.
 
 1. Copy the exact version from the generated PR title or the preparation run's
    summary, such as `1.3.0-beta.2`.
-2. Open **Actions > Release - Discard Unmerged Release PR > Run workflow**.
+2. Open **Actions > Recovery - Discard Unmerged Release > Run workflow**.
 3. Select `main` and enter that version, without `v`, in both input fields.
 4. Run the workflow and confirm success. It closes the PR if one exists and
    removes the draft release and temporary release branch.
@@ -190,7 +199,7 @@ Use this after merge, but only if neither the GitHub release/tag nor the
 package has been published. If either is public, do not cancel; investigate
 and resume publication or release a corrected version.
 
-1. Open **Actions > Release - Cancel Merged Unpublished Release > Run workflow**.
+1. Open **Actions > Recovery - Cancel Unpublished Release > Run workflow**.
 2. Select `main` and enter the exact version, without `v`, in both fields.
 3. Run the workflow. It blocks publication, stops active publication jobs,
    removes the draft after checking publication state, and opens a revert PR.
@@ -209,6 +218,9 @@ recovery PR is reused. Ask a maintainer to resolve revert conflicts. If
 publication finishes before cancellation can stop it, cancellation refuses to
 delete public state.
 
+<details>
+<summary>Administrator setup and maintainer reference</summary>
+
 ## One-time repository setup
 
 **For repository administrators, not routine release operators.** Confirm
@@ -224,8 +236,8 @@ be merged into `main` before they can be launched from the Actions tab.
 3. Confirm the GitHub Package has the intended visibility and that this
    repository has access to publish it. No long-lived npm token is needed;
    workflows use the short-lived `GITHUB_TOKEN`.
-4. Create the release-note labels `breaking`, `enhancement`, `bug`,
-   `documentation`, and `internal`. Automation creates the `release` label.
+4. PR automation creates missing category labels and preserves existing ones.
+   Preparation creates `release`. No personal access token or App is needed.
 
 ### Branch and tag rules
 
@@ -245,16 +257,17 @@ be merged into `main` before they can be launched from the Actions tab.
 
 ### Deployment environments
 
-1. In **Settings > Environments**, configure `github-packages-production` with
-   required reviewers and enable **Prevent self-review** so the person who
-   initiates deployment cannot approve it. Keep the team's other production
-   deployment protections.
-2. Configure `github-packages-beta` with the protections appropriate for testing.
+1. In **Settings > Environments**, configure `github-packages-production` and
+   `github-packages-beta`. For a single human gate, require PR review and leave
+   environment **Required reviewers** disabled. Remove existing reviewers to
+   stop the extra publication approval prompt.
+2. If policy requires a second approval, enable **Required reviewers** and
+   **Prevent self-review** instead. This intentionally adds a publication step.
 3. If production uses **Selected branches and tags**, include a **Branch**
    rule for `hotfix/v*`. Keep the existing `main` and PR merge-ref rules needed
    by the publication workflow.
-4. Confirm the assigned reviewers can approve deployments. PR approval and
-   deployment approval are separate gates.
+4. Keep environment branch restrictions. These are independent of the optional
+   reviewer gate. Committing workflows does not change these live settings.
 
 ### Verify the first hotfix
 
@@ -267,18 +280,32 @@ registry access, or the complete approval and publication transaction.
 
 | Workflow | Purpose |
 | --- | --- |
-| **CI - Build and Browser Tests** | Runs contributor, release, and recovery PR checks. The required aggregate check is **Build and test**. |
+| **Automatic - CI** | Runs contributor, release, and recovery PR checks. The required check is **Build and test**. |
+| **Automatic - PR Labels and CI** | Labels contributor PRs and dispatches CI without running PR code. |
 | **Release - Create Release PR** | Prepares a stable/beta release; also implements the shared hotfix preparation logic. |
 | **Release - Hotfix Latest** | Starts hotfix preparation with one merged fix PR input. |
-| **Release - Publish Merged Release** | Tests and publishes the merged release after environment approval. |
-| **Release - Discard Unmerged Release PR** | Closes an unmerged release PR and removes its draft and temporary branch. |
-| **Release - Cancel Merged Unpublished Release** | Blocks publication and opens a reviewed revert PR after merge. |
+| **Automatic - Publish Release** | Tests and publishes after merge, subject to environment protections. |
+| **Recovery - Discard Unmerged Release** | Closes an unmerged release PR and removes its draft and temporary branch. |
+| **Recovery - Cancel Unpublished Release** | Blocks publication and opens a reviewed revert PR after merge. |
 
 Preparation updates `package.json`, `package-lock.json`, version-pinned
 documentation, `dist/`, and `.github/release-state.json`. Contributor PRs do not
 need to commit generated `dist/` changes; preparation replaces them with a clean
-build. Every release PR creation and refresh explicitly dispatches CI because
-events created with `GITHUB_TOKEN` do not trigger another workflow automatically.
+build. Preparation and recovery dispatch CI directly using `GITHUB_TOKEN`.
+CI uses only `workflow_dispatch`, so bot-created PRs do not create a duplicate
+approval-required CI run. GitHub's native `pull_request` runs for bot-created PRs
+would require approval; dispatches do not.
+
+Contributor PRs use a metadata-only `pull_request_target` workflow on the trusted
+default branch to dispatch CI and assign labels. It never executes PR code.
+CI pins both test jobs to one commit, uses read-only test permissions, persists
+no checkout credentials, and writes no shared npm cache. Only the isolated
+reporting job can write **Build and test** results to the tested PR commit.
+
+External fork PRs without an owner, member, or collaborator author need a
+maintainer to start **Automatic - CI** from `main` with the PR number. This
+preserves a human decision before running untrusted contributions. Team PRs and
+generated release/recovery PRs need no CI approval.
 
 Hotfix bases start from the published stable tag with current release tooling
 and the stable dependencies. The selected fix and release updates form one
@@ -332,3 +359,5 @@ This opt-in test uses a temporary clone, installs dependencies, prepares a real
 patch, validates its release state, and dry-runs package creation. It needs
 network access for dependency installation and the local stable tag for `0.2.0`. It does
 not replace the first reviewed publication in the real GitHub environment.
+
+</details>

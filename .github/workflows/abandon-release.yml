@@ -1,4 +1,4 @@
-name: Release - Discard Unmerged Release PR
+name: Recovery - Discard Unmerged Release
 run-name: Discard unmerged release PR for v${{ inputs.version }}
 
 on:

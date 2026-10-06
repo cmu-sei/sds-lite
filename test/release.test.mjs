@@ -40,6 +40,7 @@ import {
   resolveReleaseDistTag,
 } from '../scripts/release-artifact.mjs'
 import { parsePrepareReleaseArguments } from '../scripts/prepare-release.mjs'
+import { automatePullRequest, resolvePullRequestLabel } from '../scripts/pull-request.mjs'
 import { applyHotfix, prepareHotfix, resolveHotfix, validateHotfixDraft } from '../scripts/prepare-hotfix.mjs'
 import {
   validateReleasePreparation,
@@ -616,7 +617,7 @@ test('supported stable tag completes real release preparation and package valida
   execute('git', ['clone', '--no-hardlinks', '--no-checkout', process.cwd(), '.'])
   execute('git', ['switch', '--detach', 'v0.2.0'])
   for (const filename of ['prepare-hotfix', 'prepare-release', 'release-version', 'resolve-release-version',
-    'validate-release', 'validate-release-pr', 'cancel-release', 'abandon-release', 'release-artifact', 'format-release-notes']) {
+    'validate-release', 'validate-release-pr', 'cancel-release', 'abandon-release', 'release-artifact', 'format-release-notes', 'pull-request']) {
     await cp(new URL(`../scripts/${filename}.mjs`, import.meta.url), join(directory, `scripts/${filename}.mjs`))
   }
   await cp(new URL('../.github/workflows/', import.meta.url), join(directory, '.github/workflows'), { recursive: true })
@@ -716,7 +717,9 @@ test('hotfix workflows retain explicit CI, stable ancestry, and channel guards',
   const publish = await readFile('.github/workflows/release-package.yml', 'utf8')
   const ci = await readFile('.github/workflows/ci.yml', 'utf8')
   const cancel = await readFile('.github/workflows/cancel-merged-release.yml', 'utf8')
-  assert.match(prepare, /- hotfix/)
+  const dispatch = prepare.split('  workflow_dispatch:')[1].split('\npermissions:')[0]
+  assert.doesNotMatch(dispatch, /fix_pr:|- hotfix/)
+  assert.match(prepare.split('  workflow_dispatch:')[0], /fix_pr:/)
   assert.match(prepare, /node scripts\/prepare-hotfix.mjs/)
   assert.match(prepare, /git commit --amend --reset-author/)
   assert.match(prepare, /gh pr create --base "\$RELEASE_BASE"/)
@@ -728,7 +731,9 @@ test('hotfix workflows retain explicit CI, stable ancestry, and channel guards',
   assert.match(hotfix, /fix_pr: \$\{\{ inputs.fix_pr \}\}/)
   assert.doesNotMatch(hotfix, /version:|type: choice/)
   assert.match(prepare, /workflow_call:/)
-  for (const workflow of [ci, publish]) assert.match(workflow, /branches: \[main, 'hotfix\/v\*'\]/)
+  const metadata = await readFile('.github/workflows/pull-request.yml', 'utf8')
+  for (const workflow of [metadata, publish]) assert.match(workflow, /branches: \[main, 'hotfix\/v\*'\]/)
+  assert.match(ci, /workflow_dispatch:/)
   assert.match(publish, /refs\/remotes\/origin\/\$RELEASE_BASE/)
   assert.match(publish, /Recheck release order after approval/)
   assert.match(cancel, /DEFAULT_BRANCH: \$\{\{ steps.recovery.outputs.base-branch \}\}/)
@@ -980,11 +985,13 @@ test('browser workflows use containers matching the locked Playwright version', 
 
 test('release workflow names state their stage and recovery locks publication', async () => {
   const names = {
-    'ci.yml': 'CI - Build and Browser Tests',
+    'ci.yml': 'Automatic - CI',
+    'pull-request.yml': 'Automatic - PR Labels and CI',
     'prepare-release.yml': 'Release - Create Release PR',
-    'release-package.yml': 'Release - Publish Merged Release',
-    'abandon-release.yml': 'Release - Discard Unmerged Release PR',
-    'cancel-merged-release.yml': 'Release - Cancel Merged Unpublished Release',
+    'hotfix-release.yml': 'Release - Hotfix Latest',
+    'release-package.yml': 'Automatic - Publish Release',
+    'abandon-release.yml': 'Recovery - Discard Unmerged Release',
+    'cancel-merged-release.yml': 'Recovery - Cancel Unpublished Release',
   }
   for (const [filename, name] of Object.entries(names)) {
     const workflow = await readFile(`.github/workflows/${filename}`, 'utf8')
@@ -1017,6 +1024,90 @@ test('release workflow names state their stage and recovery locks publication', 
   }
 })
 
+test('PR labels follow explicit titles and preserve existing categories', () => {
+  for (const [title, expected] of [
+    ['fix: correct badge alignment', 'bug'],
+    ['feat(tabs): add keyboard support', 'enhancement'],
+    ['docs: simplify releases', 'documentation'],
+    ['internal: update CI', 'internal'],
+    ['feat!: remove an obsolete API', 'breaking'],
+    ['refactor(api)!: change the contract', 'breaking'],
+    ['breaking: rename an API', 'breaking'],
+    ['A descriptive ordinary title', null],
+    ['constructor: do not infer unknown categories', null],
+  ]) {
+    assert.equal(resolvePullRequestLabel(title), expected)
+  }
+  for (const name of ['bug', 'enhancement', 'documentation', 'internal', 'breaking', 'release']) {
+    assert.equal(resolvePullRequestLabel('feat: add support', [{ name }]), null)
+  }
+  assert.equal(resolvePullRequestLabel('fix: correct behavior', [{ name: 'accessibility' }]), 'bug')
+})
+
+test('PR automation dispatches trusted CI without executing PR code or bypassing fork review', async () => {
+  const event = {
+    action: 'opened', repository: { default_branch: 'main' },
+    pull_request: { number: 42, state: 'open', title: 'fix: correct behavior', labels: [],
+      author_association: 'NONE', base: { repo: { full_name: 'cmu-sei/sds-lite' } },
+      head: { repo: { full_name: 'cmu-sei/sds-lite' } } },
+  }
+  const commands = []
+  const execute = (command, args) => {
+    commands.push([command, ...args])
+    return { status: 0, stdout: '[]' }
+  }
+  automatePullRequest(event, 'cmu-sei/sds-lite', execute)
+  assert.deepEqual(commands[0], ['gh', 'workflow', 'run', 'ci.yml', '--repo',
+    'cmu-sei/sds-lite', '--ref', 'main', '-f', 'pull_request=42'])
+  assert.ok(commands.some((args) => args.includes('--add-label') && args.includes('bug')))
+  commands.length = 0
+  automatePullRequest(event, 'cmu-sei/sds-lite', (command, args) => {
+    commands.push([command, ...args])
+    return { status: 0, stdout: '[{"name":"bug"}]' }
+  })
+  assert.ok(commands.every((args) => !(args[1] === 'label' && args[2] === 'create')))
+  assert.ok(commands.some((args) => args.includes('--add-label') && args.includes('bug')))
+  commands.length = 0
+  automatePullRequest({ ...event, action: 'edited' }, 'cmu-sei/sds-lite', execute)
+  assert.ok(commands.every((args) => !args.includes('workflow')))
+  commands.length = 0
+  const fork = structuredClone(event)
+  fork.pull_request.head.repo.full_name = 'outsider/sds-lite'
+  automatePullRequest(fork, 'cmu-sei/sds-lite', execute, () => {})
+  assert.ok(commands.every((args) => !args.includes('workflow')))
+  commands.length = 0
+  fork.pull_request.author_association = 'COLLABORATOR'
+  automatePullRequest(fork, 'cmu-sei/sds-lite', execute)
+  assert.equal(commands[0][1], 'workflow')
+  assert.throws(() => automatePullRequest(event, 'another/repo', execute), /Invalid pull request/)
+  const workflow = await readFile('.github/workflows/pull-request.yml', 'utf8')
+  assert.match(workflow, /pull_request_target:/)
+  assert.match(workflow, /ref: \$\{\{ github\.sha \}\}/)
+  assert.match(workflow, /persist-credentials: false/)
+  assert.doesNotMatch(workflow, /npm |pull_request\.head|pull_request\.title/)
+})
+
+test('release and recovery CI requires no independent token or PR workflow approval', async () => {
+  const ci = await readFile('.github/workflows/ci.yml', 'utf8')
+  assert.doesNotMatch(ci, /^  pull_request:/m)
+  assert.match(ci, /workflow_dispatch:/)
+  assert.match(ci, /contents: read/)
+  assert.match(ci, /persist-credentials: false/)
+  assert.doesNotMatch(ci, /cache: npm/)
+  assert.equal((ci.match(/ref: \$\{\{ needs\.source\.outputs\.sha \}\}/g) ?? []).length, 2)
+  const [testJobs, reporter] = ci.split('\n  required:\n')
+  assert.doesNotMatch(testJobs, /checks: write|contents: write|packages: write/)
+  assert.match(reporter, /checks: write/)
+  assert.match(reporter, /head_sha="\$TESTED_SHA"/)
+  assert.doesNotMatch(reporter, /actions\/checkout|npm /)
+  for (const filename of ['prepare-release.yml', 'cancel-merged-release.yml']) {
+    const workflow = await readFile(`.github/workflows/${filename}`, 'utf8')
+    assert.match(workflow, /GH_TOKEN: \$\{\{ secrets\.GITHUB_TOKEN \}\}/)
+    assert.match(workflow, /gh workflow run ci\.yml --ref/)
+    assert.doesNotMatch(workflow, /RELEASE_PR_TOKEN/)
+  }
+})
+
 test('release workflows preserve the prepare-review-publish boundary', async () => {
   const ci = await readFile('.github/workflows/ci.yml', 'utf8')
   const pullRequestTemplate = await readFile(
@@ -1044,7 +1135,7 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
     /run: npm run test:browser -- --project=\$\{\{ matrix\.project \}\}/,
   )
   assert.match(ci, /name: Build and test/)
-  assert.match(ci, /needs: \[validation, browser\]/)
+  assert.match(ci, /needs: \[source, validation, browser\]/)
   assert.doesNotMatch(ci, /^  push:/m)
   assert.doesNotMatch(ci, /committed distribution/)
   assert.doesNotMatch(ci, /committed-dist/)
@@ -1052,6 +1143,7 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.doesNotMatch(ci, /run: npm test$/m)
 
   assert.doesNotMatch(pullRequestTemplate, /## Release note/)
+  assert.doesNotMatch(pullRequestTemplate, /Checklist|\[ \]/)
   assert.doesNotMatch(pullRequestTemplate, /Generated `dist\/` changes/)
   assert.doesNotMatch(pullRequestTemplate, /`internal`, or `release`/)
 

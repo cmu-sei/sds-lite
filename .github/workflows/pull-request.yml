@@ -1,0 +1,34 @@
+name: Automatic - PR Labels and CI
+run-name: PR ${{ github.event.pull_request.number }} - labels and CI
+
+on:
+  pull_request_target:
+    branches: [main, 'hotfix/v*']
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: pr-metadata-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  metadata:
+    name: Label PR and start CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out trusted automation
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Apply labels and dispatch CI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/pull-request.mjs
