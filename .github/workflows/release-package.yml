@@ -136,6 +136,8 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Test browser
+        env:
+          HOME: /root
         run: npm run test:browser -- --project=${{ matrix.project }}
 
   publish:

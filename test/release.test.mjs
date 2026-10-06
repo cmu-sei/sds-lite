@@ -969,6 +969,10 @@ test('browser workflows use containers matching the locked Playwright version', 
     const workflow = await readFile(`.github/workflows/${filename}`, 'utf8')
     assert.ok(workflow.includes(`image: mcr.microsoft.com/playwright:v${version}-noble`))
     assert.match(workflow, /options: --ipc=host/)
+    assert.ok(
+      /- name: Test browser\n        env:\n          HOME: \/root\n        run: npm run test:browser/.test(workflow),
+      `${filename} must run browser tests with a root-owned HOME`,
+    )
     assert.doesNotMatch(workflow, /playwright install/)
     assert.match(workflow, /project: \[chromium, firefox, webkit\]/)
   }
