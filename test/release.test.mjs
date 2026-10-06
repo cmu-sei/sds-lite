@@ -27,6 +27,7 @@ import {
   releasePublishArguments,
 } from '../scripts/release-artifact.mjs'
 import { parsePrepareReleaseArguments } from '../scripts/prepare-release.mjs'
+import { draftReleaseEditorUrl } from '../scripts/release-url.mjs'
 import {
   validateReleasePullRequest,
 } from '../scripts/validate-release-pr.mjs'
@@ -137,6 +138,23 @@ test('release channels resolve stable versions and beta sequence numbers', () =>
         tags: [],
       }),
     /must not include/,
+  )
+})
+
+test('draft release links open the GitHub release editor', () => {
+  assert.equal(
+    draftReleaseEditorUrl(
+      'https://github.com/cmu-sei/sds-lite/releases/tag/untagged-8cfa5d9210364dea899a',
+    ),
+    'https://github.com/cmu-sei/sds-lite/releases/edit/untagged-8cfa5d9210364dea899a',
+  )
+  assert.throws(
+    () => draftReleaseEditorUrl('https://example.com/releases/tag/untagged-1'),
+    /GitHub draft release URL/,
+  )
+  assert.throws(
+    () => draftReleaseEditorUrl('https://github.com/cmu-sei/sds-lite/issues/1'),
+    /GitHub draft release URL/,
   )
 })
 
@@ -495,6 +513,7 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(prepare, /release:prepare -- --version "\$VERSION" --yes/)
   assert.match(prepare, /gh release create "\$TAG"/)
   assert.match(prepare, /OPTIONS=\(--draft --generate-notes/)
+  assert.match(prepare, /node scripts\/release-url\.mjs draft-editor/)
   assert.match(prepare, /node scripts\/format-release-notes\.mjs/)
   assert.match(prepare, /gh release edit "\$TAG" --notes-file/)
   assert.match(prepare, /actions: write/)

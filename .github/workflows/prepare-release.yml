@@ -122,6 +122,7 @@ jobs:
             fi
             RELEASE_URL="$(gh release create "$TAG" "${OPTIONS[@]}")"
           fi
+          RELEASE_URL="$(node scripts/release-url.mjs draft-editor "$RELEASE_URL")"
           RAW_NOTES="$RUNNER_TEMP/release-notes-raw.md"
           FORMATTED_NOTES="$RUNNER_TEMP/release-notes-formatted.md"
           gh release view "$TAG" --json body --jq .body > "$RAW_NOTES"
