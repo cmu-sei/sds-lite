@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.0/dist/interface-manifest.schema.json",
+  "$id": "https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1-beta.1/dist/interface-manifest.schema.json",
   "title": "SDS Lite interface manifest",
   "type": "object",
   "required": ["schemaVersion", "globalAttributes", "optionFamilies", "recipes", "customElements"],
