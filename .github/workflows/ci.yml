@@ -1,64 +1,31 @@
 name: Automatic - CI
-run-name: "CI for ${{ inputs.pull_request && format('PR #{0}', inputs.pull_request) || github.ref_name }}"
+run-name: "CI for ${{ github.event.pull_request.number && format('PR #{0}', github.event.pull_request.number) || github.ref_name }}"
 
 on:
+  pull_request:
+    branches: [main, 'hotfix/v*']
   workflow_dispatch:
-    inputs:
-      pull_request:
-        description: 'PR number (optional; leave blank to test the selected branch)'
-        required: false
-        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ inputs.pull_request || github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  source:
-    name: Select tested commit
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    permissions:
-      contents: read
-      pull-requests: read
-    outputs:
-      sha: ${{ steps.source.outputs.sha }}
-    steps:
-      - name: Resolve the commit
-        id: source
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ inputs.pull_request }}
-          SELECTED_SHA: ${{ github.sha }}
-        run: |
-          SHA="$SELECTED_SHA"
-          if [[ -n "$PR_NUMBER" ]]; then
-            if [[ ! "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]; then
-              echo "::error::Enter a positive PR number"
-              exit 1
-            fi
-            SHA="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')"
-          fi
-          if [[ ! "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
-            echo "::error::Could not resolve the tested commit"
-            exit 1
-          fi
-          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
-
   validation:
     name: Validate build and package
-    needs: source
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      browser-image: ${{ steps.browser-image.outputs.browser-image }}
 
     steps:
       - name: Check out source
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          ref: ${{ needs.source.outputs.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
       - name: Set up Node.js
@@ -68,6 +35,10 @@ jobs:
 
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
+
+      - name: Select the locked browser image
+        id: browser-image
+        run: node scripts/validate-release-pr.mjs browser-image
 
       - name: Install dependencies
         run: npm ci --ignore-scripts
@@ -80,11 +51,11 @@ jobs:
 
   browser:
     name: Browser (${{ matrix.project }})
-    needs: source
+    needs: validation
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      image: ${{ needs.validation.outputs.browser-image }}
       options: --ipc=host
     strategy:
       fail-fast: false
@@ -95,7 +66,7 @@ jobs:
       - name: Check out source
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          ref: ${{ needs.source.outputs.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
       - name: Set up Node.js
@@ -117,29 +88,10 @@ jobs:
   required:
     name: Build and test
     if: always()
-    needs: [source, validation, browser]
+    needs: [validation, browser]
     runs-on: ubuntu-latest
     timeout-minutes: 1
-    permissions:
-      statuses: write
     steps:
-      - name: Report status on the tested PR commit
-        if: inputs.pull_request != '' && needs.source.result == 'success'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BROWSER_RESULT: ${{ needs.browser.result }}
-          VALIDATION_RESULT: ${{ needs.validation.result }}
-          TESTED_SHA: ${{ needs.source.outputs.sha }}
-        run: |
-          CONCLUSION=failure
-          if [[ "$VALIDATION_RESULT" == success && "$BROWSER_RESULT" == success ]]; then
-            CONCLUSION=success
-          fi
-          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$TESTED_SHA" \
-            -f context='Build and test' -f state="$CONCLUSION" \
-            -f description='Build and browser validation result' \
-            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
-
       - name: Require validation and browser tests
         env:
           BROWSER_RESULT: ${{ needs.browser.result }}

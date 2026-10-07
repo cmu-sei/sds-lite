@@ -1,14 +1,13 @@
-name: Automatic - PR Labels and CI
-run-name: PR ${{ github.event.pull_request.number }} - labels and CI
+name: Automatic - PR Labels
+run-name: PR ${{ github.event.pull_request.number }} - labels
 
 on:
   pull_request_target:
     branches: [main, 'hotfix/v*']
-    types: [opened, reopened, synchronize, edited]
+    types: [opened, reopened, edited]
 
 permissions:
   contents: read
-  actions: write
   issues: write
   pull-requests: write
 
@@ -18,7 +17,7 @@ concurrency:
 
 jobs:
   metadata:
-    name: Label PR and start CI
+    name: Label PR
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
@@ -28,7 +27,7 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
 
-      - name: Apply labels and dispatch CI
+      - name: Apply labels
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/pull-request.mjs

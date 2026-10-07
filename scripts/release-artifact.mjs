@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process'
-import { appendFile, readdir } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { appendFile, readFile, readdir } from 'node:fs/promises'
 import { isAbsolute, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -7,7 +8,7 @@ import { compareReleaseVersions, parseReleaseVersion } from './release-version.m
 
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const usage =
-  'Usage: release-artifact.mjs locate <directory> | publish <tarball> <beta|latest> [--dry-run] | check-tag|verify-tag <package> <version> <beta|latest>'
+  'Usage: release-artifact.mjs locate <directory> | inspect <tarball> <package> <version> <true|false> | publish <tarball> <beta|latest> [--dry-run] | check-tag|verify-tag <package> <version> <beta|latest>'
 
 export function resolveReleaseDistTag(version, distTag, tags) {
   const parsed = parseReleaseVersion(version)
@@ -24,16 +25,38 @@ export function resolveReleaseDistTag(version, distTag, tags) {
   return current !== version
 }
 
-function registryCommand(args) {
+function registryCommand(args, { allowMissing = false } = {}) {
   const result = spawnSync(npm, [...args, '--registry=https://npm.pkg.github.com'], { encoding: 'utf8' })
   if (result.error) throw result.error
   if (result.status !== 0) {
     let error
     try { error = JSON.parse(result.stdout).error } catch {}
-    if (args[0] === 'view' && args[2] === 'dist-tags' && error?.code === 'E404') return '{}'
+    if (args[0] === 'view' && error?.code === 'E404') {
+      if (allowMissing) return null
+      if (args[2] === 'dist-tags') return '{}'
+    }
     throw new Error(result.stderr || result.stdout || 'Registry lookup failed')
   }
   return result.stdout
+}
+
+export async function inspectReleaseArtifact(tarball, packageName, version, isDraft, execute = registryCommand) {
+  if (!isAbsolute(tarball)) throw new Error('Release tarball path must be absolute')
+  if (!/^@[a-z0-9-]+\/[a-z0-9._-]+$/.test(packageName)) throw new Error('A scoped package name is required')
+  parseReleaseVersion(version)
+  if (typeof isDraft !== 'boolean') throw new Error('GitHub release draft state is required')
+  const result = execute(['view', `${packageName}@${version}`, 'dist.shasum', '--json'], { allowMissing: true })
+  if (result === null) return false
+  const checksum = JSON.parse(result)
+  if (typeof checksum !== 'string' || !/^[a-f0-9]{40}$/i.test(checksum)) {
+    throw new Error('Could not verify published package checksum')
+  }
+  if (isDraft) throw new Error('Package version already exists while its GitHub release is still a draft')
+  const localChecksum = createHash('sha1').update(await readFile(tarball)).digest('hex')
+  if (checksum.toLowerCase() !== localChecksum) {
+    throw new Error('Published package checksum does not match the tested artifact')
+  }
+  return true
 }
 
 export function checkReleaseDistTag(packageName, version, distTag, execute = registryCommand) {
@@ -102,6 +125,13 @@ export function publishReleaseArtifact(tarball, distTag, dryRun, {
 
 async function main() {
   const [command, ...args] = process.argv.slice(2)
+  if (command === 'inspect') {
+    if (args.length !== 4 || !['true', 'false'].includes(args[3])) throw new Error(usage)
+    const published = await inspectReleaseArtifact(args[0], args[1], args[2], args[3] === 'true')
+    if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `published=${published}\n`)
+    else console.log(`published=${published}`)
+    return
+  }
   if (command === 'locate') {
     if (args.length !== 1) throw new Error(usage)
     const tarball = await locateReleaseArtifact(args[0])

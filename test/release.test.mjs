@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { isAbsolute, join } from 'node:path'
@@ -17,23 +18,33 @@ import {
   assertPackageUnpublished,
   resolveAbandonedRelease,
   selectReleasePullRequestForAbandonment,
+  verifyAbandonedReleasePullRequest,
+  verifyReleaseCommitMetadata,
 } from '../scripts/abandon-release.mjs'
 import {
   activeReleaseRuns,
   assertReleaseActive,
+  cancellationContext,
   cancellationLabel,
   cancelRelease,
+  findRecoveryPullRequest,
+  isReleaseCancelled,
   revertReleaseCommit,
   validateMergedRelease,
+  verifyRecoveryPullRequest,
+  verifyReleaseRevert,
 } from '../scripts/cancel-release.mjs'
 import {
+  prepareGitHubReleasePublication,
   validateReleaseEnvironment,
   validateReleaseOrder,
+  verifyGitHubReleaseTarget,
 } from '../scripts/validate-release.mjs'
 import { formatHotfixReleaseNotes, formatReleaseNotes } from '../scripts/format-release-notes.mjs'
 import {
   checkReleaseDistTag,
   ensureReleaseDistTag,
+  inspectReleaseArtifact,
   locateReleaseArtifact,
   releasePublishArguments,
   publishReleaseArtifact,
@@ -43,6 +54,8 @@ import { parsePrepareReleaseArguments } from '../scripts/prepare-release.mjs'
 import { automatePullRequest, resolvePullRequestLabel } from '../scripts/pull-request.mjs'
 import { applyHotfix, prepareHotfix, resolveHotfix, validateHotfixDraft } from '../scripts/prepare-hotfix.mjs'
 import {
+  assertCompletedReleases,
+  resolveBrowserImage,
   validateReleasePreparation,
   validateReleasePullRequest,
 } from '../scripts/validate-release-pr.mjs'
@@ -136,7 +149,9 @@ test('hotfix planning needs only a merged fix PR and selects the next available 
   assert.throws(() => resolveHotfix({ ...options, latestVersion: '1.3.0-beta.2' }), /stable release/)
   assert.throws(() => resolveHotfix({ ...options, fix: 'https://github.com/other/repo/pull/42' }), /this repository/)
   assert.throws(() => resolveHotfix({ ...options, pullRequest: { ...options.pullRequest, merged_at: null } }), /already merged/)
-  assert.throws(() => resolveHotfix({ ...options, pullRequest: { ...options.pullRequest, labels: [{ name: 'release' }] } }), /not a release PR/)
+  assert.equal(resolveHotfix({ ...options, pullRequest: { ...options.pullRequest, labels: [{ name: 'release' }] } }).version, '1.2.4')
+  assert.throws(() => resolveHotfix({ ...options, pullRequest: { ...options.pullRequest,
+    labels: [], head: { ref: 'release/v1.2.4' } } }), /not a release PR/)
 })
 
 test('orphan hotfix drafts stay bound to the reviewed source and fix', () => {
@@ -265,6 +280,42 @@ test('partial release cleanup permits no PR but refuses published or uncertain p
   }
 })
 
+test('discard verifies committed release identity independently of labels', () => {
+  const repository = 'cmu-sei/sds-lite'
+  const release = resolveAbandonedRelease('1.2.3', '1.2.3')
+  const pr = { state: 'open', merged_at: null, labels: [],
+    head: { ref: release.branch, sha: 'a'.repeat(40), repo: { full_name: repository } },
+    base: { ref: 'main', repo: { full_name: repository } } }
+  const commands = []
+  let stateVersion = '1.2.3'
+  const run = (command, args) => {
+    commands.push([command, ...args])
+    const data = args.at(-1).includes('package.json')
+      ? { name: '@cmu-sei/sds-lite', version: '1.2.3' } : { version: stateVersion }
+    return { status: 0, stdout: JSON.stringify({ encoding: 'base64',
+      content: Buffer.from(JSON.stringify(data)).toString('base64') }) }
+  }
+  assert.doesNotThrow(() => verifyAbandonedReleasePullRequest(pr, release, repository, run))
+  assert.equal(commands.length, 2)
+  for (const changes of [
+    { merged_at: '2026-10-07' }, { state: 'unknown' },
+    { head: { ...pr.head, ref: 'feature' } },
+    { head: { ...pr.head, repo: { full_name: 'outsider/fork' } } },
+    { base: { ...pr.base, ref: 'hotfix/v9.0.0' } },
+    { base: { ...pr.base, repo: { full_name: 'other/repo' } } },
+  ]) {
+    commands.length = 0
+    assert.throws(() => verifyAbandonedReleasePullRequest({ ...pr, ...changes }, release, repository, run))
+    assert.equal(commands.length, 0)
+  }
+  stateVersion = '1.2.2'
+  assert.throws(() => verifyAbandonedReleasePullRequest(pr, release, repository, run), /do not match/)
+  assert.throws(() => verifyReleaseCommitMetadata(repository, pr.head.sha, release.version,
+    () => ({ status: 1, stderr: 'HTTP 403' })), /HTTP 403/)
+  assert.throws(() => verifyReleaseCommitMetadata(repository, pr.head.sha, release.version,
+    () => ({ status: 0, stdout: '{}' })), /Could not verify/)
+})
+
 test('release abandonment selects the active or latest unmerged pull request', () => {
   const open = {
     number: 12,
@@ -313,6 +364,11 @@ test('release abandonment selects the active or latest unmerged pull request', (
     () => selectReleasePullRequestForAbandonment([], [merged]),
     /No open or closed-unmerged/,
   )
+  assert.throws(() => selectReleasePullRequestForAbandonment([], [latestClosed,
+    { ...merged, number: 13 }]), /latest release PR was merged/)
+  assert.deepEqual(selectReleasePullRequestForAbandonment([
+    { ...open, isCrossRepository: true }, open,
+  ], []), { ...open, wasOpen: true })
 })
 
 function cancellationHarness(options = {}) {
@@ -330,6 +386,7 @@ function cancellationHarness(options = {}) {
   }
   let active = options.active ?? true
   let draftExists = options.draftExists ?? true
+  const statuses = options.statuses ?? []
   const run = (command, args) => {
     commands.push([command, ...args])
     const success = (value = {}) => ({ status: 0, stdout: JSON.stringify(value), stderr: '' })
@@ -337,7 +394,7 @@ function cancellationHarness(options = {}) {
     if (command === 'npm') {
       return options.packageResult ?? { status: 1, stdout: JSON.stringify({ error: { code: 'E404' } }), stderr: '' }
     }
-    if (args[0] === 'pr' && args[1] === 'list') return success([{ number: 42 }])
+    if (args[0] === 'pr' && args[1] === 'list') return success(options.candidates ?? [{ number: 42 }])
     if (args[0] === 'pr' && args[1] === 'edit') {
       pullRequest.labels.push({ name: cancellationLabel })
       return success()
@@ -346,6 +403,15 @@ function cancellationHarness(options = {}) {
     if (args[0] === 'release') {
       draftExists = false
       return success()
+    }
+    if (args.some((arg) => arg.includes(`/statuses/${pullRequest.merge_commit_sha}`))) {
+      if (options.statusWriteFails) return { status: 1, stderr: 'Status write failed' }
+      if (!options.statusNotRecorded) statuses.push({ context: cancellationContext, state: 'error' })
+      return success()
+    }
+    if (args.at(-1).includes('/statuses?')) {
+      if (options.statusReadFails) return { status: 1, stderr: 'Status read failed' }
+      return success([statuses])
     }
     if (args.includes('--slurp')) {
       return success([{ workflow_runs: active ? [{ id: 100, status: 'waiting', head_sha: pullRequest.merge_commit_sha }] : [] }])
@@ -356,8 +422,11 @@ function cancellationHarness(options = {}) {
       return success()
     }
     if (endpoint.endsWith('/pulls/42')) return success(pullRequest)
-    if (endpoint.includes('/contents/package.json')) {
-      return success({ content: Buffer.from(JSON.stringify({ name: '@cmu-sei/sds-lite', version: options.packageVersion ?? '1.2.3' })).toString('base64') })
+    if (endpoint.includes('/contents/')) {
+      return success({ encoding: 'base64', content: Buffer.from(JSON.stringify(
+        endpoint.includes('package.json')
+          ? { name: '@cmu-sei/sds-lite', version: options.packageVersion ?? '1.2.3' }
+          : { version: options.stateVersion ?? '1.2.3' })).toString('base64') })
     }
     if (endpoint.includes('/releases/tags/')) return draftExists ? success({ draft: options.draft ?? true }) : missing()
     if (endpoint.includes('/git/ref/tags/')) return options.tagExists ? success({ ref: 'refs/tags/v1.2.3' }) : missing()
@@ -378,19 +447,69 @@ function cancellationHarness(options = {}) {
   }
 }
 
-test('merged release cancellation marks the PR before stopping finalization', async () => {
+test('durable cancellation checks all status history and cannot be erased by newer statuses', () => {
+  const repository = 'cmu-sei/sds-lite'
+  const commit = 'a'.repeat(40)
+  const cancelled = { context: cancellationContext, state: 'error' }
+  const lookup = (pages) => (command, args) => {
+    assert.equal(command, 'gh')
+    assert.ok(args.includes('--paginate'))
+    assert.equal(args.at(-1), `repos/${repository}/commits/${commit}/statuses?per_page=100`)
+    return { status: 0, stdout: JSON.stringify(pages) }
+  }
+  assert.equal(isReleaseCancelled(repository, commit, lookup([[]])), false)
+  assert.equal(isReleaseCancelled(repository, commit, lookup([
+    [{ context: cancellationContext, state: 'success' }], [cancelled],
+  ])), true)
+  assert.equal(isReleaseCancelled(repository, commit, lookup([
+    [{ context: 'Build and test', state: 'failure' }],
+  ])), false)
+  assert.throws(() => isReleaseCancelled(repository, commit, lookup([{}])), /Could not verify/)
+  assert.throws(() => isReleaseCancelled(repository, commit, () =>
+    ({ status: 1, stderr: 'HTTP 403' })), /HTTP 403/)
+})
+
+test('merged release cancellation marks the PR only after stopping finalization and locking cleanup', async () => {
   const harness = cancellationHarness()
   const result = await harness.request('request')
   assert.equal(result.pullRequest.number, 42)
-  assert.throws(() => assertReleaseActive(harness.pullRequest), /cancelled/)
-  const marked = harness.commands.findIndex((command) => command.includes('--add-label'))
+  assertReleaseActive(harness.pullRequest)
+  assert.equal(harness.commands.some((command) => command.includes('--add-label')), false)
   const stopped = harness.commands.findIndex((command) => command.at(-1).endsWith('/cancel'))
-  assert.ok(marked >= 0 && stopped > marked)
   assert.equal(harness.commands.some((command) => command[1] === 'release'), false)
   await harness.request('cleanup')
+  assert.throws(() => assertReleaseActive(harness.pullRequest), /cancelled/)
+  const marked = harness.commands.findIndex((command) => command.includes('--add-label'))
+  const removed = harness.commands.findIndex((command) => command[1] === 'release')
+  assert.ok(stopped >= 0 && marked > stopped && removed > marked)
+  const recorded = harness.commands.findIndex((command) => command.includes('state=error'))
+  assert.ok(recorded > stopped && marked > recorded)
+  harness.pullRequest.labels = []
+  assert.throws(() => assertReleaseActive(harness.pullRequest, 'cmu-sei/sds-lite',
+    (command, args) => ({ status: 0, stdout: JSON.stringify([[{ context: cancellationContext, state: 'error' }]]) })), /cancelled/)
   assert.equal(harness.commands.filter((command) => command[1] === 'release').length, 1)
   await harness.request('cleanup')
+  assert.equal(harness.commands.filter((command) => command.includes('state=error')).length, 1)
   assert.equal(harness.commands.filter((command) => command[1] === 'release').length, 1)
+})
+
+test('cancellation persistence failures stop cleanup before deleting the draft', async () => {
+  for (const options of [{ statusWriteFails: true }, { statusReadFails: true }, { statusNotRecorded: true }]) {
+    const harness = cancellationHarness({ active: false, ...options })
+    await assert.rejects(harness.request('cleanup'), /Status|durable cancellation/)
+    assert.equal(harness.commands.some((command) => command.includes('--add-label')), false)
+    assert.equal(harness.commands.some((command) => command[1] === 'release'), false)
+  }
+})
+
+test('cancellation does not require release labels and rejects mismatched state', async () => {
+  const harness = cancellationHarness({ active: false, pullRequest: { labels: [] },
+    candidates: [{ number: 43, isCrossRepository: true }, { number: 42, isCrossRepository: false }] })
+  await harness.request('cleanup')
+  assert.ok(harness.commands.some((command) => command.includes('state=error')))
+  assert.ok(harness.commands.filter((command) => command[1] === 'pr' && command[2] === 'list')
+    .every((command) => !command.includes('--label')))
+  await assert.rejects(cancellationHarness({ stateVersion: '1.2.2' }).request('request'), /do not match/)
 })
 
 test('merged cancellation refuses public releases, tags, packages, and uncertain registry state', async () => {
@@ -403,23 +522,31 @@ test('merged cancellation refuses public releases, tags, packages, and uncertain
     { packageVersion: '1.2.4' },
   ]) {
     const harness = cancellationHarness(options)
-    await assert.rejects(harness.request('request'), /published|already exists|Could not verify|does not match/)
+    await assert.rejects(harness.request('request'), /published|already exists|Could not verify|do not match/)
     assert.equal(harness.commands.some((command) => command.includes('--add-label')), false)
+    assert.equal(harness.commands.some((command) => command.includes('state=error')), false)
     assert.equal(harness.commands.some((command) => command[1] === 'release'), false)
   }
 })
 
-test('merged cancellation keeps its publication block when finalization cannot stop', async () => {
+test('merged cancellation does not claim completion when finalization cannot stop', async () => {
   const harness = cancellationHarness({ stuck: true })
   await assert.rejects(harness.request('request'), /still active/)
-  assert.throws(() => assertReleaseActive(harness.pullRequest), /cancelled/)
+  assertReleaseActive(harness.pullRequest)
   await assert.rejects(harness.request('cleanup'), /still active/)
+  assert.equal(harness.commands.some((command) => command.includes('--add-label')), false)
   assert.equal(harness.commands.some((command) => command[1] === 'release'), false)
 })
 
-test('cancellation cleanup rechecks publication and requires the persistent marker', async () => {
-  const unmarked = cancellationHarness({ active: false })
-  await assert.rejects(unmarked.request('cleanup'), /Request cancellation/)
+test('cancellation cleanup rechecks publication before permanently blocking retries', async () => {
+  const options = {}
+  const raced = cancellationHarness(options)
+  await raced.request('request')
+  options.tagExists = true
+  await assert.rejects(raced.request('cleanup'), /tag already exists/)
+  assertReleaseActive(raced.pullRequest)
+  assert.equal(raced.commands.some((command) => command.includes('--add-label')), false)
+  assert.equal(raced.commands.some((command) => command[1] === 'release'), false)
   const published = cancellationHarness({
     active: false,
     draft: false,
@@ -437,10 +564,10 @@ test('merged cancellation validates provenance and only cancels matching active 
     { commits: 2 },
     { head: { ref: release.branch, repo: { full_name: 'attacker/fork' } } },
     { base: { ref: 'other' } },
-    { labels: [] },
   ]) {
     assert.throws(() => validateMergedRelease({ ...pullRequest, ...changes }, release, 'cmu-sei/sds-lite', 'main'))
   }
+  assert.doesNotThrow(() => validateMergedRelease({ ...pullRequest, labels: [] }, release, 'cmu-sei/sds-lite', 'main'))
   assertReleaseActive(pullRequest)
   assert.throws(() => assertReleaseActive({}), /Could not verify/)
   const runs = [
@@ -456,7 +583,8 @@ test('merged cancellation validates provenance and only cancels matching active 
 test('release-only recovery reverts squash and merge commits while preserving later work', async (context) => {
   for (const merge of ['squash', 'merge']) {
     const directory = await mkdtemp(join(tmpdir(), 'sds-release-revert-'))
-    context.after(() => rm(directory, { recursive: true, force: true }))
+    const remote = await mkdtemp(join(tmpdir(), 'sds-release-revert-remote-'))
+    context.after(() => Promise.all([directory, remote].map((path) => rm(path, { recursive: true, force: true }))))
     const run = (command, args) => spawnSync(command, args, { cwd: directory, encoding: 'utf8' })
     const git = (...args) => {
       const result = run('git', args)
@@ -464,14 +592,19 @@ test('release-only recovery reverts squash and merge commits while preserving la
       return result.stdout.trim()
     }
     git('init', '--initial-branch=main')
+    git('init', '--bare', remote)
+    git('remote', 'add', 'origin', remote)
     git('config', 'user.name', 'Release Test')
     git('config', 'user.email', 'release@example.test')
     await writeFile(join(directory, 'version.txt'), '1.2.2\n')
     await writeFile(join(directory, 'feature.txt'), 'before\n')
+    const shared = `release: before\n${'unchanged\n'.repeat(8)}later: before\n`
+    await writeFile(join(directory, 'shared.txt'), shared)
     git('add', '--all')
     git('commit', '-m', 'Initial version')
     git('switch', '-c', 'release/v1.2.3')
     await writeFile(join(directory, 'version.txt'), '1.2.3\n')
+    await writeFile(join(directory, 'shared.txt'), shared.replace('release: before', 'release: prepared'))
     git('add', '--all')
     git('commit', '-m', 'Prepare release')
     git('switch', 'main')
@@ -483,14 +616,110 @@ test('release-only recovery reverts squash and merge commits while preserving la
     }
     const commit = git('rev-parse', 'HEAD')
     await writeFile(join(directory, 'feature.txt'), 'later work\n')
+    await writeFile(join(directory, 'shared.txt'), shared.replace('release: before', 'release: prepared')
+      .replace('later: before', 'later: after'))
     git('add', '--all')
     git('commit', '-m', 'Later work')
+    git('switch', '-c', 'recovery/cancel-v1.2.3')
     revertReleaseCommit(commit, run)
     assert.equal(await readFile(join(directory, 'version.txt'), 'utf8'), '1.2.2\n')
     assert.equal(await readFile(join(directory, 'feature.txt'), 'utf8'), 'later work\n')
-    assert.equal(git('diff', '--cached', '--name-only'), 'version.txt')
+    assert.equal(await readFile(join(directory, 'shared.txt'), 'utf8'), shared.replace('later: before', 'later: after'))
+    assert.equal(git('diff', '--cached', '--name-only'), 'shared.txt\nversion.txt')
+    git('commit', '-m', 'Recover cancelled release')
+    const recovery = git('rev-parse', 'HEAD')
+    assert.doesNotThrow(() => verifyReleaseRevert(commit, recovery, run))
+    assert.throws(() => verifyReleaseRevert(commit, commit, run), /Distinct/)
+    git('push', 'origin', 'main', 'recovery/cancel-v1.2.3')
+    const repository = 'cmu-sei/sds-lite'
+    const options = { repository, releaseCommit: commit, branch: 'recovery/cancel-v1.2.3',
+      baseBranch: 'main', mergedAfter: '2026-10-07T12:00:00Z' }
+    const pullRequest = { number: 43, state: 'open', merged_at: null, commits: 1,
+      head: { ref: options.branch, sha: recovery, repo: { full_name: repository } },
+      base: { ref: 'main', repo: { full_name: repository } } }
+    assert.doesNotThrow(() => verifyRecoveryPullRequest(pullRequest, options, run))
+    git('switch', 'main')
+    if (merge === 'squash') {
+      git('merge', '--squash', options.branch)
+      git('commit', '-m', 'Squash recovery')
+    } else {
+      git('merge', '--no-ff', options.branch, '-m', 'Merge recovery')
+    }
+    const mergedRecovery = git('rev-parse', 'HEAD')
+    git('push', 'origin', 'main')
+    assert.doesNotThrow(() => verifyRecoveryPullRequest({ ...pullRequest, state: 'closed',
+      merged_at: '2026-10-07T13:00:00Z', merge_commit_sha: mergedRecovery },
+    { ...options, requireMerged: true }, run))
+    git('switch', '--detach', recovery)
+    await writeFile(join(directory, 'feature.txt'), 'unrelated recovery change\n')
+    git('add', '--all')
+    git('commit', '--amend', '-m', 'Tampered recovery')
+    assert.throws(() => verifyReleaseRevert(commit, git('rev-parse', 'HEAD'), run), /reverse only/)
+    git('switch', '--detach', `${recovery}^`)
+    git('commit', '--allow-empty', '-m', 'No-op recovery')
+    assert.throws(() => verifyReleaseRevert(commit, git('rev-parse', 'HEAD'), run), /reverse only/)
   }
   assert.throws(() => revertReleaseCommit('--all'), /merge commit is required/)
+})
+
+test('recovery PR verification rejects foreign, ambiguous, stale, and altered recoveries', () => {
+  const repository = 'cmu-sei/sds-lite'
+  const options = { repository, releaseCommit: 'a'.repeat(40), branch: 'recovery/cancel-v1.2.3',
+    baseBranch: 'main', mergedAfter: '2026-10-07T12:00:00Z' }
+  const recovery = { number: 43, state: 'closed', merged_at: '2026-10-07T13:00:00Z',
+    merge_commit_sha: 'b'.repeat(40), commits: 1,
+    head: { ref: options.branch, sha: 'b'.repeat(40), repo: { full_name: repository } },
+    base: { ref: 'main', repo: { full_name: repository } } }
+  let candidates = [recovery]
+  let invalidTree = false
+  let failedFetch = false
+  let failedMerge = false
+  const commands = []
+  const run = (program, args) => {
+    commands.push([program, ...args])
+    if (program === 'gh') return { status: 0,
+      stdout: JSON.stringify(args.includes('--paginate') ? [candidates] : candidates[0]) }
+    if (failedFetch && args[0] === 'fetch') return { status: 1, stderr: 'Fetch failed' }
+    if (failedMerge && args[0] === 'merge-tree') return { status: 1, stdout: 'Revert conflict' }
+    if (args[0] === 'rev-list') return { status: 0,
+      stdout: args.includes('--count') ? '1' : `${args.at(-1)} ${'c'.repeat(40)}` }
+    return { status: 0, stdout: args[0] === 'merge-tree' ? 'd'.repeat(40)
+      : args[0] === 'rev-parse' ? args.at(-1).startsWith('b') && !invalidTree ? 'd'.repeat(40) : 'e'.repeat(40) : '' }
+  }
+  assert.equal(findRecoveryPullRequest(options, run).number, 43)
+  assert.doesNotThrow(() => verifyRecoveryPullRequest({ ...recovery, state: 'open', merged_at: null }, options, run))
+  assert.doesNotThrow(() => verifyRecoveryPullRequest({ ...recovery, merged_at: null }, options, run))
+  for (const changes of [
+    { number: 0 }, { commits: 2 }, { state: 'open' },
+    { merged_at: '2026-10-06T12:00:00Z' }, { merged_at: options.mergedAfter }, { merged_at: 'invalid' },
+    { merge_commit_sha: options.releaseCommit }, { merge_commit_sha: '--all' },
+    { head: { ...recovery.head, repo: { full_name: 'outsider/fork' } } },
+    { head: { ...recovery.head, ref: 'another-branch' } },
+    { base: { ...recovery.base, ref: 'hotfix/v1.2.3' } },
+    { base: { ...recovery.base, repo: { full_name: 'other/repository' } } },
+  ]) {
+    commands.length = 0
+    assert.throws(() => verifyRecoveryPullRequest({ ...recovery, ...changes }, options, run))
+    assert.equal(commands.length, 0)
+  }
+  assert.throws(() => verifyRecoveryPullRequest({ ...recovery, merged_at: null },
+    { ...options, requireMerged: true }, run), /merged after/)
+  invalidTree = true
+  assert.throws(() => findRecoveryPullRequest(options, run), /reverse only/)
+  invalidTree = false
+  failedFetch = true
+  assert.throws(() => findRecoveryPullRequest(options, run), /Fetch failed/)
+  failedFetch = false
+  failedMerge = true
+  assert.throws(() => findRecoveryPullRequest(options, run), /Revert conflict/)
+  failedMerge = false
+  const fork = { ...recovery, head: { ...recovery.head, repo: { full_name: 'outsider/fork' } } }
+  candidates = [fork]
+  assert.equal(findRecoveryPullRequest(options, run), null)
+  candidates = [recovery, recovery]
+  assert.throws(() => findRecoveryPullRequest(options, run), /Multiple recovery PRs/)
+  candidates = [{ ...recovery, base: { ...recovery.base, ref: 'wrong-base' } }]
+  assert.equal(findRecoveryPullRequest(options, run), null)
 })
 
 test('hotfix preparation isolates stable code, preserves beta history, and refreshes safely', async (context) => {
@@ -586,10 +815,21 @@ test('hotfix preparation isolates stable code, preserves beta history, and refre
   assert.equal(JSON.parse(git('show', 'HEAD:package.json')).version, '1.2.3')
   assert.equal(git('rev-list', '--count', 'hotfix/v1.2.4..HEAD'), '1')
   assert.match(await readFile(join(remote, 'environment'), 'utf8'), /VERSION=1.2.4/)
-  assert.match(git('show', 'HEAD:.github/workflows/ci.yml'), /playwright:v1.60.0-noble/)
+  for (const filename of ['ci.yml', 'release-package.yml']) {
+    assert.equal(git('show', `HEAD:.github/workflows/${filename}`),
+      git('show', `main:.github/workflows/${filename}`))
+  }
+  assert.equal(JSON.parse(git('show', 'HEAD:package-lock.json')).packages['node_modules/playwright'].version, '1.60.0')
+  const base = git('rev-parse', 'hotfix/v1.2.4')
   git('switch', 'main')
+  const refreshedGuide = `${await readFile(join(directory, '.github/RELEASING.md'), 'utf8')}\nUpdated controller guidance.\n`
+  await writeFile(join(directory, '.github/RELEASING.md'), refreshedGuide)
+  git('add', '.github/RELEASING.md')
+  git('commit', '-m', 'Refresh release guidance after initial hotfix preparation')
   await prepareHotfix(options)
   assert.equal(git('rev-list', '--count', 'hotfix/v1.2.4..HEAD'), '1')
+  assert.equal(git('rev-parse', 'hotfix/v1.2.4'), base)
+  assert.equal(await readFile(join(directory, '.github/RELEASING.md'), 'utf8'), refreshedGuide)
   git('switch', 'main')
   fixNumber = 44
   git('push', 'origin', 'fix:refs/pull/44/head')
@@ -616,6 +856,8 @@ test('supported stable tag completes real release preparation and package valida
   }
   execute('git', ['clone', '--no-hardlinks', '--no-checkout', process.cwd(), '.'])
   execute('git', ['switch', '--detach', 'v0.2.0'])
+  const unrelatedTags = execute('git', ['tag', '--list']).split('\n').filter((tag) => tag && tag !== 'v0.2.0')
+  if (unrelatedTags.length) execute('git', ['tag', '--delete', ...unrelatedTags])
   for (const filename of ['prepare-hotfix', 'prepare-release', 'release-version', 'resolve-release-version',
     'validate-release', 'validate-release-pr', 'cancel-release', 'abandon-release', 'release-artifact', 'format-release-notes', 'pull-request']) {
     await cp(new URL(`../scripts/${filename}.mjs`, import.meta.url), join(directory, `scripts/${filename}.mjs`))
@@ -623,13 +865,6 @@ test('supported stable tag completes real release preparation and package valida
   await cp(new URL('../.github/workflows/', import.meta.url), join(directory, '.github/workflows'), { recursive: true })
   await cp(new URL('../.github/RELEASING.md', import.meta.url), join(directory, '.github/RELEASING.md'))
   await cp(new URL('./release.test.mjs', import.meta.url), join(directory, 'test/release.test.mjs'))
-  const lock = JSON.parse(await readFile(join(directory, 'package-lock.json'), 'utf8'))
-  for (const filename of ['ci.yml', 'release-package.yml']) {
-    const path = join(directory, '.github/workflows', filename)
-    const source = await readFile(path, 'utf8')
-    await writeFile(path, source.replace(/mcr\.microsoft\.com\/playwright:v[\d.]+-noble/g,
-      `mcr.microsoft.com/playwright:v${lock.packages['node_modules/playwright'].version}-noble`))
-  }
   execute('git', ['switch', '-c', 'release/v0.2.1'])
   execute('git', ['config', 'user.name', 'Release Rehearsal'])
   execute('git', ['config', 'user.email', 'release@example.test'])
@@ -661,6 +896,106 @@ test('hotfix backports landed merge resolutions and rejects ambiguous multi-comm
   }, { diff: 'complete PR changes', commits: 2 }), /Cannot safely backport/)
 })
 
+test('preparation blocks incomplete merged publication and cancellation across versions', () => {
+  const repository = 'cmu-sei/sds-lite'
+  const merged = { number: 42, merged_at: '2026-10-07', merge_commit_sha: 'a'.repeat(40),
+    head: { ref: 'release/v1.2.4', repo: { full_name: repository } },
+    base: { ref: 'main' }, labels: [{ name: 'release' }] }
+  const scenario = ({ draft = false, missing = false, failure = false, wrongCommit = false,
+    annotated = false, cancelled = false, recovered = false, historical = false,
+    beta = false, missingRelease = false, missingTag = false, wrongChannel = false,
+    latest, checksum = 'b'.repeat(40), recoveryChanges = {}, wrongRecoveryTree = false,
+    labelsRemoved = false, durable = false, stateVersion, packageVersion } = {}) => {
+    const commands = []
+    const version = beta ? '1.3.0-beta.1' : '1.2.4'
+    const releasePR = { ...merged, head: { ...merged.head, ref: `release/v${version}` } }
+    const execute = (program, args) => {
+      commands.push([program, ...args])
+      let value
+      if (args.at(-1).includes('/statuses?')) {
+        return { status: 0, stdout: JSON.stringify([[...(durable ? [{ context: cancellationContext, state: 'error' }] : [])]]) }
+      }
+      if (args.at(-1).includes('/contents/')) {
+        value = { encoding: 'base64', content: Buffer.from(JSON.stringify(
+          args.at(-1).includes('package.json')
+            ? { name: '@cmu-sei/sds-lite', version: packageVersion ?? version }
+            : { version: stateVersion ?? version })).toString('base64') }
+      }
+      else if (args.includes('--paginate')) value = [[{ ...releasePR,
+        labels: labelsRemoved ? [] : [...merged.labels, ...(cancelled ? [{ name: 'release-cancelled' }] : [])] }],
+      [...(recovered ? [{ ...merged, number: 43, merged_at: '2026-10-08',
+        head: { ...merged.head, ref: 'recovery/cancel-v1.2.4' } }] : []),
+        ...(historical ? [{ ...merged, number: 41, merged_at: '2026-10-06', merge_commit_sha: 'd'.repeat(40) }] : [])]]
+      else if (args.at(-1).endsWith('/pulls/43')) value = { ...merged, number: 43, state: 'closed', commits: 1,
+        merged_at: '2026-10-08', merge_commit_sha: 'c'.repeat(40),
+        head: { ref: 'recovery/cancel-v1.2.4', repo: { full_name: repository } },
+        base: { ref: 'main', repo: { full_name: repository } }, ...recoveryChanges }
+      else if (program === 'git') {
+        const stdout = args[0] === 'rev-list' ? `${args.at(-1)} ${'d'.repeat(40)}`
+          : args[0] === 'merge-tree' || !wrongRecoveryTree && args.at(-1) === `${'c'.repeat(40)}^{tree}` ? 'e'.repeat(40)
+          : args[0] === 'rev-parse' ? 'f'.repeat(40) : ''
+        return { status: 0, stdout }
+      }
+      else if (failure || missing && program === 'npm') {
+        return { status: 1, stdout: '', stderr: failure ? 'HTTP 401' : 'E404' }
+      } else if (missingRelease && args.at(-1).includes('/releases/') ||
+        missingTag && args.at(-1).includes('/git/ref/')) {
+        return { status: 1, stdout: '', stderr: 'HTTP 404' }
+      } else if (program === 'npm') value = { name: '@cmu-sei/sds-lite', version,
+        dist: { shasum: checksum }, 'dist-tags': { [beta ? 'beta' : 'latest']: latest ?? version } }
+      else if (args.at(-1).includes('/releases/')) value = { draft, prerelease: wrongChannel ? !beta : beta }
+      else value = { object: { type: annotated && args.at(-1).includes('/git/ref/') ? 'tag' : 'commit',
+        sha: wrongCommit ? 'c'.repeat(40) : merged.merge_commit_sha } }
+      return { status: 0, stdout: args.includes('--paginate')
+        ? value.map((page) => JSON.stringify(page)).join('\n') : JSON.stringify(value) }
+    }
+    return { commands, execute }
+  }
+  for (const options of [{}, { latest: '1.2.5' }, { annotated: true }, { historical: true },
+    { beta: true }, { beta: true, latest: '1.3.0-beta.2' }, { labelsRemoved: true },
+    { labelsRemoved: true, durable: true, recovered: true }]) {
+    assert.doesNotThrow(() => assertCompletedReleases(repository, scenario(options).execute))
+  }
+  for (const [options, message] of [
+    [{ draft: true }, /publication is incomplete/],
+    [{ missing: true }, /E404/],
+    [{ failure: true }, /HTTP 401/],
+    [{ missingRelease: true }, /HTTP 404/],
+    [{ missingTag: true }, /HTTP 404/],
+    [{ wrongChannel: true }, /publication is incomplete/],
+    [{ wrongCommit: true }, /reviewed release commit/],
+    [{ latest: '1.2.3' }, /package publication is incomplete/],
+    [{ latest: '1.3.0-beta.1' }, /package publication is incomplete/],
+    [{ beta: true, latest: '1.2.0-beta.1' }, /package publication is incomplete/],
+    [{ beta: true, latest: '1.3.0' }, /package publication is incomplete/],
+    [{ checksum: '' }, /package publication is incomplete/],
+    [{ cancelled: true }, /cancellation is incomplete/],
+    [{ labelsRemoved: true, draft: true }, /publication is incomplete/],
+    [{ labelsRemoved: true, missingRelease: true }, /HTTP 404/],
+    [{ labelsRemoved: true, durable: true }, /cancellation is incomplete/],
+    [{ stateVersion: '1.2.3' }, /release state do not match/],
+    [{ packageVersion: '1.2.3' }, /release state do not match/],
+  ]) assert.throws(() => assertCompletedReleases(repository, scenario(options).execute), message)
+  const cancelled = scenario({ cancelled: true, recovered: true })
+  assertCompletedReleases(repository, cancelled.execute)
+  assert.ok(cancelled.commands.some((command) => command.includes('merge-tree')))
+  for (const recoveryChanges of [{ merged_at: '2026-10-06' },
+    { merge_commit_sha: merged.merge_commit_sha }, { commits: 2 }, { merged_at: null },
+    { head: { ref: 'recovery/cancel-v1.2.4', repo: { full_name: 'outsider/fork' } } }]) {
+    assert.throws(() => assertCompletedReleases(repository,
+      scenario({ cancelled: true, recovered: true, recoveryChanges }).execute))
+  }
+  assert.throws(() => assertCompletedReleases(repository,
+    scenario({ cancelled: true, recovered: true, wrongRecoveryTree: true }).execute), /reverse only/)
+  assert.doesNotThrow(() => assertCompletedReleases(repository, () => ({ status: 0, stdout: '[]' })))
+  assert.throws(() => assertCompletedReleases(repository, () => ({ status: 1, stderr: 'HTTP 403' })), /HTTP 403/)
+  assert.throws(() => assertCompletedReleases(repository, () => ({ status: 0, stdout: 'not JSON' })))
+  for (const stdout of ['', '{}']) {
+    assert.throws(() => assertCompletedReleases(repository, () => ({ status: 0, stdout })), /release history/)
+  }
+  assert.throws(() => assertCompletedReleases('', scenario().execute), /Repository is required/)
+})
+
 test('release preparation rejects all conflicting targets and already-merged versions', () => {
   const options = { branch: 'release/v1.2.4', baseBranch: 'main', openPullRequests: [], previousPullRequests: [] }
   assert.doesNotThrow(() => validateReleasePreparation(options))
@@ -671,6 +1006,9 @@ test('release preparation rejects all conflicting targets and already-merged ver
   assert.throws(() => validateReleasePreparation({ ...options, openPullRequests: [{ ...same, baseRefName: 'hotfix/v1.2.4' }] }), /different version or target/)
   assert.throws(() => validateReleasePreparation({ ...options, previousPullRequests: [{ state: 'MERGED' }] }), /already has a merged/)
   assert.doesNotThrow(() => validateReleasePreparation({ ...options, previousPullRequests: [{ state: 'CLOSED' }] }))
+  assert.doesNotThrow(() => validateReleasePreparation({ ...options,
+    openPullRequests: [{ headRefName: 'release/v9.0.0', baseRefName: 'main', isCrossRepository: true }],
+    previousPullRequests: [{ state: 'MERGED', isCrossRepository: true }] }))
 })
 
 test('release PR validation requires matching branch and state', () => {
@@ -712,7 +1050,7 @@ test('hotfix release notes identify only the selected fix and stable comparison'
   assert.match(notes, /<!-- Hotfix source: v1.2.3; fix PR: #42 -->/)
 })
 
-test('hotfix workflows retain explicit CI, stable ancestry, and channel guards', async () => {
+test('hotfix workflows retain PR CI, stable ancestry, and channel guards', async () => {
   const prepare = await readFile('.github/workflows/prepare-release.yml', 'utf8')
   const publish = await readFile('.github/workflows/release-package.yml', 'utf8')
   const ci = await readFile('.github/workflows/ci.yml', 'utf8')
@@ -721,10 +1059,14 @@ test('hotfix workflows retain explicit CI, stable ancestry, and channel guards',
   assert.doesNotMatch(dispatch, /fix_pr:|- hotfix/)
   assert.match(prepare.split('  workflow_dispatch:')[0], /fix_pr:/)
   assert.match(prepare, /node scripts\/prepare-hotfix.mjs/)
+  assert.match(prepare, /node scripts\/validate-release-pr.mjs assert-complete/)
+  assert.ok(prepare.indexOf('node scripts/validate-release-pr.mjs assert-complete') <
+    prepare.indexOf('node scripts/prepare-hotfix.mjs'))
   assert.match(prepare, /git commit --amend --reset-author/)
   assert.match(prepare, /gh pr create --base "\$RELEASE_BASE"/)
   assert.match(prepare, /node scripts\/format-release-notes.mjs --hotfix/)
-  assert.match(prepare, /name: Run CI for the release pull request\n        env:/)
+  assert.doesNotMatch(prepare, /gh workflow run/)
+  assert.match(prepare, /Approve and run/)
   const hotfix = await readFile('.github/workflows/hotfix-release.yml', 'utf8')
   assert.match(hotfix, /uses: \.\/\.github\/workflows\/prepare-release.yml/)
   assert.match(hotfix, /channel: hotfix/)
@@ -732,7 +1074,7 @@ test('hotfix workflows retain explicit CI, stable ancestry, and channel guards',
   assert.doesNotMatch(hotfix, /version:|type: choice/)
   assert.match(prepare, /workflow_call:/)
   const metadata = await readFile('.github/workflows/pull-request.yml', 'utf8')
-  for (const workflow of [metadata, publish]) assert.match(workflow, /branches: \[main, 'hotfix\/v\*'\]/)
+  for (const workflow of [ci, metadata, publish]) assert.match(workflow, /branches: \[main, 'hotfix\/v\*'\]/)
   assert.match(ci, /workflow_dispatch:/)
   assert.match(publish, /refs\/remotes\/origin\/\$RELEASE_BASE/)
   assert.match(publish, /Recheck release order after approval/)
@@ -804,6 +1146,84 @@ test('release artifacts resolve to one absolute tarball path', async (context) =
     locateReleaseArtifact(directory),
     /found 2/,
   )
+})
+
+test('package inspection requires structured absence or the exact tested checksum', async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), 'sds-package-inspection-'))
+  context.after(() => rm(directory, { recursive: true, force: true }))
+  const tarball = join(directory, 'release.tgz')
+  const bytes = Buffer.from('tested package bytes')
+  await writeFile(tarball, bytes)
+  const checksum = createHash('sha1').update(bytes).digest('hex')
+  assert.equal(await inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.4', false, () => null), false)
+  assert.equal(await inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.4', false,
+    (args, options) => {
+      assert.deepEqual(args, ['view', '@cmu-sei/sds-lite@1.2.4', 'dist.shasum', '--json'])
+      assert.deepEqual(options, { allowMissing: true })
+      return JSON.stringify(checksum)
+    }), true)
+  await assert.rejects(inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.4', true,
+    () => JSON.stringify(checksum)), /still a draft/)
+  await assert.rejects(inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.4', false,
+    () => JSON.stringify('0'.repeat(40))), /does not match/)
+  for (const response of ['null', '{}', '"invalid checksum"', 'malformed JSON']) {
+    await assert.rejects(inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.4', false, () => response))
+  }
+  await assert.rejects(inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.4', false,
+    () => { throw new Error('E401 registry failure mentioning E404') }), /E401/)
+})
+
+test('GitHub publication verifies immutable tags and stops before workflow-changing publication', () => {
+  const options = { repository: 'cmu-sei/sds-lite', tag: 'v1.2.4', commit: 'a'.repeat(40),
+    isDraft: true, defaultBranch: 'main' }
+  const scenario = ({ exists = false, diff = 0, wrongCommit = false } = {}) => {
+    const commands = []
+    const execute = (command, args) => {
+      commands.push([command, ...args])
+      if (command === 'gh') {
+        if (args.includes('POST')) {
+          assert.ok(args.includes(`sha=${options.commit}`))
+          assert.ok(args.includes('ref=refs/tags/v1.2.4'))
+          exists = true
+        } else if (!exists) return { status: 1, stdout: '', stderr: 'HTTP 404' }
+      }
+      if (command === 'git' && args[0] === 'diff') return { status: diff, stdout: '', stderr: 'diff failed' }
+      return { status: 0, stdout: command === 'git' && args[0] === 'rev-parse'
+        ? (wrongCommit ? 'b'.repeat(40) : options.commit) : '{}', stderr: '' }
+    }
+    return { commands, execute }
+  }
+  const absent = scenario()
+  assert.equal(verifyGitHubReleaseTarget(options, absent.execute), false)
+  assert.throws(() => verifyGitHubReleaseTarget({ ...options, isDraft: false }, absent.execute), /no release tag/)
+  const wrong = scenario({ exists: true, wrongCommit: true })
+  assert.throws(() => prepareGitHubReleasePublication(options, wrong.execute), /does not point/)
+  assert.ok(wrong.commands.every((args) => !args.includes('POST')))
+  for (const diff of [1, 2]) {
+    const blocked = scenario({ diff })
+    assert.throws(() => prepareGitHubReleasePublication(options, blocked.execute),
+      diff === 1 ? /authorized operator.*exactly.*rerun/ : /diff failed/)
+    assert.ok(blocked.commands.every((args) => !args.includes('POST')))
+  }
+  const automatic = scenario()
+  prepareGitHubReleasePublication(options, automatic.execute)
+  assert.equal(automatic.commands.filter((args) => args.includes('POST')).length, 1)
+  assert.ok(automatic.commands.some((args) => args.join(' ') === 'git rev-parse FETCH_HEAD^{commit}'))
+  const existing = scenario({ exists: true })
+  prepareGitHubReleasePublication(options, existing.execute)
+  assert.ok(existing.commands.every((args) => !args.includes('POST')))
+  for (const blockedStep of ['lookup', 'fetch', 'create']) {
+    const failed = scenario()
+    const execute = (command, args, executionOptions) => {
+      const blocked = blockedStep === 'lookup' ? command === 'gh' && !args.includes('POST')
+        : blockedStep === 'fetch' ? command === 'git' && args.includes('refs/heads/main')
+        : command === 'gh' && args.includes('POST')
+      if (blocked) return { status: 1, stdout: '', stderr: 'permission denied' }
+      return failed.execute(command, args, executionOptions)
+    }
+    assert.throws(() => prepareGitHubReleasePublication(options, execute), /permission denied/)
+    assert.ok(failed.commands.every((args) => !args.includes('POST')))
+  }
 })
 
 test('release publication accepts only absolute tested artifacts', () => {
@@ -967,12 +1387,36 @@ test('workflow release validation rejects versions older than prior tags', () =>
   )
 })
 
-test('browser workflows use containers matching the locked Playwright version', async () => {
+test('browser workflows select matching locked Playwright containers without rewriting YAML', async (context) => {
   const lock = JSON.parse(await readFile('package-lock.json', 'utf8'))
   const version = lock.packages['node_modules/playwright'].version
+  assert.equal(resolveBrowserImage(lock), `mcr.microsoft.com/playwright:v${version}-noble`)
+  const olderLock = { packages: Object.fromEntries(['@playwright/test', 'playwright', 'playwright-core']
+    .map((name) => [`node_modules/${name}`, { version: '1.60.0' }])) }
+  assert.equal(resolveBrowserImage(olderLock), 'mcr.microsoft.com/playwright:v1.60.0-noble')
+  for (const badVersion of ['1.60.0-beta.1', '1.60.0\nother-output=bad', '1.60.0;echo bad']) {
+    const invalid = structuredClone(olderLock)
+    invalid.packages['node_modules/playwright'].version = badVersion
+    assert.throws(() => resolveBrowserImage(invalid))
+  }
+  assert.throws(() => resolveBrowserImage({ packages: {} }))
+  const mismatched = structuredClone(olderLock)
+  mismatched.packages['node_modules/playwright-core'].version = '1.59.0'
+  assert.throws(() => resolveBrowserImage(mismatched), /matching stable/)
+  const directory = await mkdtemp(join(tmpdir(), 'sds-browser-image-'))
+  context.after(() => rm(directory, { recursive: true, force: true }))
+  const output = join(directory, 'output')
+  const result = spawnSync(process.execPath, ['scripts/validate-release-pr.mjs', 'browser-image'],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_OUTPUT: output } })
+  assert.equal(result.status, 0, result.stderr)
+  assert.equal(await readFile(output, 'utf8'), `browser-image=mcr.microsoft.com/playwright:v${version}-noble\n`)
   for (const filename of ['ci.yml', 'release-package.yml']) {
     const workflow = await readFile(`.github/workflows/${filename}`, 'utf8')
-    assert.ok(workflow.includes(`image: mcr.microsoft.com/playwright:v${version}-noble`))
+    const source = filename === 'ci.yml' ? 'validation' : 'build'
+    assert.ok(workflow.includes(`image: \${{ needs.${source}.outputs.browser-image }}`))
+    assert.ok(workflow.includes(`needs: ${source}`))
+    assert.match(workflow, /browser-image: \$\{\{ steps\.browser-image\.outputs\.browser-image \}\}/)
+    assert.match(workflow, /run: node scripts\/validate-release-pr\.mjs browser-image/)
     assert.match(workflow, /options: --ipc=host/)
     assert.ok(
       /- name: Test browser\n        env:\n          HOME: \/root\n        run: npm run test:browser/.test(workflow),
@@ -986,7 +1430,7 @@ test('browser workflows use containers matching the locked Playwright version', 
 test('release workflow names state their stage and recovery locks publication', async () => {
   const names = {
     'ci.yml': 'Automatic - CI',
-    'pull-request.yml': 'Automatic - PR Labels and CI',
+    'pull-request.yml': 'Automatic - PR Labels',
     'prepare-release.yml': 'Release - Create Release PR',
     'hotfix-release.yml': 'Release - Hotfix Latest',
     'release-package.yml': 'Automatic - Publish Release',
@@ -1008,12 +1452,25 @@ test('release workflow names state their stage and recovery locks publication', 
   assert.match(cancel, /node scripts\/cancel-release\.mjs cleanup/)
   assert.match(cancel, /actions: write/)
   assert.match(cancel, /packages: read/)
-  assert.match(cancel, /node scripts\/cancel-release\.mjs revert/)
+  assert.match(cancel, /node "\$RECOVERY_CONTROLLER" revert/)
+  assert.match(cancel, /node "\$RECOVERY_CONTROLLER" recovery-pr/)
+  assert.match(cancel, /node "\$RECOVERY_CONTROLLER" verify-revert/)
+  assert.ok(cancel.indexOf('cp scripts/cancel-release.mjs') < cancel.indexOf('git switch --detach'))
+  assert.doesNotMatch(cancel, /gh pr list|git log -1/)
   assert.match(cancel, /gh pr create --base "\$DEFAULT_BRANCH"/)
-  assert.match(cancel, /gh workflow run ci\.yml --ref "\$REVERT_BRANCH"/)
+  assert.doesNotMatch(cancel, /gh workflow run/)
+  assert.match(cancel, /Approve and run/)
   assert.doesNotMatch(cancel, /git push --force|gh pr merge|gh release delete.*--cleanup-tag/)
-  assert.match(prepare, /--state merged --head "\$branch" --label release-cancelled/)
-  assert.match(prepare, /Choose a newer base version/)
+  assert.doesNotMatch(prepare, /--label release-cancelled/)
+  assert.match(cancel, /statuses: write/)
+  assert.match(prepare, /statuses: read/)
+  assert.match(publish, /statuses: read/)
+  const discard = await readFile('.github/workflows/abandon-release.yml', 'utf8')
+  assert.doesNotMatch(discard, /--label release/)
+  assert.match(discard, /abandon-release.mjs verify-pull-request/)
+  assert.match(discard, /abandon-release.mjs verify-branch/)
+  assert.ok(discard.indexOf('verify-pull-request') < discard.indexOf('gh pr close'))
+  assert.doesNotMatch(publish, /contains\(github.event.pull_request.labels/)
   for (const step of ['Publish the reviewed GitHub release', 'Publish to GitHub Packages']) {
     const block = publish.split(`- name: ${step}\n`)[1].split('\n      - name:')[0]
     assert.match(block, /RELEASE_PR_NUMBER: \$\{\{ github\.event\.pull_request\.number \}\}/)
@@ -1044,7 +1501,7 @@ test('PR labels follow explicit titles and preserve existing categories', () => 
   assert.equal(resolvePullRequestLabel('fix: correct behavior', [{ name: 'accessibility' }]), 'bug')
 })
 
-test('PR automation dispatches trusted CI without executing PR code or bypassing fork review', async () => {
+test('PR automation only labels PRs without dispatching CI or executing PR code', async () => {
   const event = {
     action: 'opened', repository: { default_branch: 'main' },
     pull_request: { number: 42, state: 'open', title: 'fix: correct behavior', labels: [],
@@ -1057,8 +1514,9 @@ test('PR automation dispatches trusted CI without executing PR code or bypassing
     return { status: 0, stdout: '[]' }
   }
   automatePullRequest(event, 'cmu-sei/sds-lite', execute)
-  assert.deepEqual(commands[0], ['gh', 'workflow', 'run', 'ci.yml', '--repo',
-    'cmu-sei/sds-lite', '--ref', 'main', '-f', 'pull_request=42'])
+  assert.deepEqual(commands[0], ['gh', 'label', 'list', '--repo',
+    'cmu-sei/sds-lite', '--limit', '1000', '--json', 'name'])
+  assert.ok(commands.every((args) => !args.includes('workflow')))
   assert.ok(commands.some((args) => args.includes('--add-label') && args.includes('bug')))
   commands.length = 0
   automatePullRequest(event, 'cmu-sei/sds-lite', (command, args) => {
@@ -1073,41 +1531,59 @@ test('PR automation dispatches trusted CI without executing PR code or bypassing
   commands.length = 0
   const fork = structuredClone(event)
   fork.pull_request.head.repo.full_name = 'outsider/sds-lite'
-  automatePullRequest(fork, 'cmu-sei/sds-lite', execute, () => {})
+  automatePullRequest(fork, 'cmu-sei/sds-lite', execute)
   assert.ok(commands.every((args) => !args.includes('workflow')))
+  assert.ok(commands.some((args) => args.includes('--add-label') && args.includes('bug')))
   commands.length = 0
   fork.pull_request.author_association = 'COLLABORATOR'
   automatePullRequest(fork, 'cmu-sei/sds-lite', execute)
-  assert.equal(commands[0][1], 'workflow')
+  assert.ok(commands.every((args) => !args.includes('workflow')))
+  commands.length = 0
+  automatePullRequest({ ...event, pull_request: { ...event.pull_request, state: 'closed' } },
+    'cmu-sei/sds-lite', execute)
+  assert.deepEqual(commands, [])
   assert.throws(() => automatePullRequest(event, 'another/repo', execute), /Invalid pull request/)
   const workflow = await readFile('.github/workflows/pull-request.yml', 'utf8')
   assert.match(workflow, /pull_request_target:/)
   assert.match(workflow, /ref: \$\{\{ github\.sha \}\}/)
   assert.match(workflow, /persist-credentials: false/)
-  assert.doesNotMatch(workflow, /npm |pull_request\.head|pull_request\.title/)
+  assert.doesNotMatch(workflow, /npm |pull_request\.head|pull_request\.title|actions: write|dispatch/)
 })
 
-test('release and recovery CI requires no independent token or PR workflow approval', async () => {
+test('PR CI concurrency cannot collide with legacy dispatched checks', async () => {
   const ci = await readFile('.github/workflows/ci.yml', 'utf8')
-  assert.doesNotMatch(ci, /^  pull_request:/m)
+  const template = ci.match(/^  group: (.+)$/m)?.[1]
+  assert.ok(template)
+  const group = template
+    .replaceAll('${{ github.workflow }}', 'Automatic - CI')
+    .replaceAll('${{ github.event_name }}', 'pull_request')
+    .replaceAll('${{ github.event.pull_request.number || github.ref }}', '15')
+  assert.doesNotMatch(group, /\$\{\{/)
+  assert.notEqual(group, 'ci-Automatic - CI-15')
+  assert.match(ci, /cancel-in-progress: true/)
+})
+
+test('release and recovery PRs use native CI checks without a dispatcher or reporter', async () => {
+  const ci = await readFile('.github/workflows/ci.yml', 'utf8')
+  assert.match(ci, /^  pull_request:/m)
+  assert.match(ci, /branches: \[main, 'hotfix\/v\*'\]/)
   assert.match(ci, /workflow_dispatch:/)
   assert.match(ci, /contents: read/)
   assert.match(ci, /persist-credentials: false/)
   assert.doesNotMatch(ci, /cache: npm/)
-  assert.equal((ci.match(/ref: \$\{\{ needs\.source\.outputs\.sha \}\}/g) ?? []).length, 2)
-  const [testJobs, reporter] = ci.split('\n  required:\n')
-  assert.doesNotMatch(testJobs, /checks: write|statuses: write|contents: write|packages: write/)
-  assert.match(reporter, /statuses: write/)
-  assert.match(reporter, /gh api --method POST "repos\/\$GITHUB_REPOSITORY\/statuses\/\$TESTED_SHA"/)
-  assert.match(reporter, /-f context='Build and test'/)
-  assert.match(reporter, /-f state="\$CONCLUSION"/)
-  assert.match(reporter, /-f target_url="\$GITHUB_SERVER_URL\/\$GITHUB_REPOSITORY\/actions\/runs\/\$GITHUB_RUN_ID"/)
-  assert.doesNotMatch(reporter, /checks: write|check-runs|head_sha=/)
-  assert.doesNotMatch(reporter, /actions\/checkout|npm /)
+  assert.equal((ci.match(/ref: \$\{\{ github\.event\.pull_request\.head\.sha \|\| github\.sha \}\}/g) ?? []).length, 2)
+  assert.doesNotMatch(ci, /: write|GH_TOKEN|gh api|inputs\.pull_request|needs\.source/)
+  const required = ci.split('\n  required:\n')[1]
+  assert.match(required, /name: Build and test/)
+  assert.match(required, /if: always\(\)/)
+  assert.match(required, /needs: \[validation, browser\]/)
+  assert.match(required, /"\$VALIDATION_RESULT" != success \|\| "\$BROWSER_RESULT" != success/)
+  assert.doesNotMatch(required, /actions\/checkout|npm /)
   for (const filename of ['prepare-release.yml', 'cancel-merged-release.yml']) {
     const workflow = await readFile(`.github/workflows/${filename}`, 'utf8')
     assert.match(workflow, /GH_TOKEN: \$\{\{ secrets\.GITHUB_TOKEN \}\}/)
-    assert.match(workflow, /gh workflow run ci\.yml --ref/)
+    assert.doesNotMatch(workflow, /gh workflow run/)
+    assert.match(workflow, /Approve and run/)
     assert.doesNotMatch(workflow, /RELEASE_PR_TOKEN/)
   }
 })
@@ -1139,7 +1615,7 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
     /run: npm run test:browser -- --project=\$\{\{ matrix\.project \}\}/,
   )
   assert.match(ci, /name: Build and test/)
-  assert.match(ci, /needs: \[source, validation, browser\]/)
+  assert.match(ci, /needs: \[validation, browser\]/)
   assert.doesNotMatch(ci, /^  push:/m)
   assert.doesNotMatch(ci, /committed distribution/)
   assert.doesNotMatch(ci, /committed-dist/)
@@ -1157,16 +1633,18 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(prepare, /node scripts\/resolve-release-version\.mjs/)
   assert.match(prepare, /release:prepare -- --version "\$VERSION" --yes/)
   assert.match(prepare, /gh release create "\$TAG"/)
-  assert.match(prepare, /OPTIONS=\(--draft --generate-notes/)
+  assert.match(prepare, /OPTIONS=\(--draft --target "\$DEFAULT_BRANCH"/)
+  assert.match(prepare, /releases\/generate-notes/)
+  assert.match(prepare, /target_commitish="\$branch"/)
   assert.match(prepare, /node scripts\/format-release-notes\.mjs/)
-  assert.match(prepare, /gh release edit "\$TAG" --notes-file/)
+  assert.match(prepare, /gh release edit "\$TAG" --target "\$DEFAULT_BRANCH" --notes-file/)
   assert.match(
     prepare,
     /RELEASE_URL="\$\(gh release view "\$TAG" --json url --jq \.url/,
   )
   assert.ok(
     prepare.indexOf('RELEASE_URL="$(gh release view "$TAG"') >
-      prepare.indexOf('gh release edit "$TAG" --notes-file'),
+      prepare.indexOf('gh release edit "$TAG" --target "$DEFAULT_BRANCH" --notes-file'),
   )
   assert.match(
     prepare,
@@ -1175,13 +1653,13 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
   assert.match(prepare, /RELEASE_URL="\$RELEASES_URL"/)
   assert.doesNotMatch(prepare, /releases\/edit\/untagged-/)
   assert.doesNotMatch(prepare, /scripts\/release-url\.mjs/)
-  assert.match(prepare, /actions: write/)
+  assert.doesNotMatch(prepare, /actions: write/)
   assert.match(
     prepare,
     /gh pr edit "\$PR_URL" --title "Release v\$VERSION" --body-file "\$BODY"/,
   )
-  assert.match(prepare, /name: Run CI for the release pull request\n        env:/)
-  assert.match(prepare, /gh workflow run ci\.yml --ref "\$branch"/)
+  assert.doesNotMatch(prepare, /gh workflow run/)
+  assert.match(prepare, /Approve and run/)
   assert.doesNotMatch(prepare, /Obtain approval/)
   assert.match(prepare, /reviewed and merged/)
   assert.doesNotMatch(prepare, /playwright install/)
@@ -1209,6 +1687,11 @@ test('release workflows preserve the prepare-review-publish boundary', async () 
     /node scripts\/release-artifact\.mjs locate release-artifact/,
   )
   assert.match(finalize, /gh release edit "\$TAG"/)
+  assert.match(finalize, /release-artifact\.mjs inspect "\$TARBALL" "\$PACKAGE_NAME" "\$VERSION" "\$RELEASE_IS_DRAFT"/)
+  assert.doesNotMatch(finalize, /grep.*E404|LOCAL_SHASUM/)
+  assert.match(finalize, /RELEASE_IS_DRAFT="\$IS_DRAFT" node scripts\/validate-release\.mjs github-target/)
+  assert.ok(finalize.indexOf('node scripts/validate-release.mjs prepare-github-publication') <
+    finalize.indexOf('gh release edit "$TAG" --target "$EXPECTED_COMMIT" --draft=false'))
   assert.match(finalize, /was published outside this workflow/)
   assert.match(finalize, /prerelease setting changed before publication/)
   assert.match(

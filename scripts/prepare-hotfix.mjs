@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { appendFile, readFile, writeFile } from 'node:fs/promises'
+import { appendFile, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -20,7 +20,7 @@ export function resolveHotfix({ latestVersion, fix, repository, pullRequest, res
   if (!Number.isSafeInteger(number) || number < 1 || pullRequest.number !== number ||
       !pullRequest.merged_at || pullRequest.base?.ref !== 'main' ||
       pullRequest.base?.repo?.full_name !== repository ||
-      pullRequest.labels?.some((label) => label.name === 'release') ||
+      pullRequest.head?.ref?.startsWith('release/v') ||
       !/^[a-f0-9]{40}$/.test(pullRequest.merge_commit_sha ?? '')) {
     throw new Error('Choose a fix PR already merged into main, not a release PR')
   }
@@ -98,10 +98,11 @@ export async function prepareHotfix({ env = process.env, execute = run, cwd = pr
   const latestVersion = JSON.parse(run('npm', ['view', packageJson.name, 'dist-tags.latest', '--json', '--registry=https://npm.pkg.github.com']))
   const pullRequest = JSON.parse(run('gh', ['api', `repos/${repository}/pulls/${number}`]))
   const diff = run('gh', ['api', '-H', 'Accept: application/vnd.github.diff', `repos/${repository}/pulls/${number}`])
-  const cancelled = JSON.parse(run('gh', ['pr', 'list', '--state', 'merged', '--label', 'release-cancelled',
-    '--limit', '1000', '--json', 'headRefName']))
+  const merged = JSON.parse(run('gh', ['pr', 'list', '--state', 'merged',
+    '--limit', '1000', '--json', 'headRefName,isCrossRepository']))
   const reservedVersions = [...run('git', ['tag', '--list', 'v*']).split('\n').map((tag) => tag.slice(1)),
-    ...cancelled.map((pr) => pr.headRefName.replace(/^release\/v/, ''))]
+    ...merged.filter((pr) => !pr.isCrossRepository && pr.headRefName.startsWith('release/v'))
+      .map((pr) => pr.headRefName.slice('release/v'.length))]
   const hotfix = resolveHotfix({ latestVersion, fix, repository, pullRequest, reservedVersions })
   let draft
   try {
@@ -110,12 +111,13 @@ export async function prepareHotfix({ env = process.env, execute = run, cwd = pr
     if (!/release not found/i.test(error.message)) throw error
   }
   validateHotfixDraft(draft, hotfix)
-  const open = JSON.parse(run('gh', ['pr', 'list', '--state', 'open', '--label', 'release', '--json', 'headRefName']))
-  if (open.some((pr) => pr.headRefName !== hotfix.branch)) {
+  const open = JSON.parse(run('gh', ['pr', 'list', '--state', 'open', '--limit', '1000', '--json', 'headRefName,isCrossRepository']))
+  if (open.some((pr) => !pr.isCrossRepository && pr.headRefName.startsWith('release/v') && pr.headRefName !== hotfix.branch)) {
     throw new Error('Another release PR is open. Finish or discard it before preparing this hotfix')
   }
   const candidates = JSON.parse(run('gh', ['pr', 'list', '--state', 'all', '--head', hotfix.branch,
-    '--json', 'number,state,baseRefName,body']))
+    '--limit', '1000', '--json', 'number,state,baseRefName,body,isCrossRepository']))
+    .filter((pr) => !pr.isCrossRepository)
   if (candidates.some((pr) => pr.state === 'MERGED')) {
     throw new Error('This version is already merged. Publish or cancel it before preparing another')
   }
@@ -149,25 +151,16 @@ export async function prepareHotfix({ env = process.env, execute = run, cwd = pr
     if (basePackage.version !== latestVersion) throw new Error('Hotfix base has changed; ask a maintainer to review it')
   } else {
     run('git', ['switch', '--create', hotfix.baseBranch, hotfix.baseTag])
-    run('git', ['restore', '--source', source, '--staged', '--worktree', '--',
-      'scripts/prepare-hotfix.mjs', 'scripts/prepare-release.mjs', 'scripts/release-version.mjs',
-      'scripts/resolve-release-version.mjs', 'scripts/validate-release.mjs', 'scripts/validate-release-pr.mjs',
-      'scripts/cancel-release.mjs', 'scripts/abandon-release.mjs', 'scripts/release-artifact.mjs',
-      'scripts/format-release-notes.mjs', 'scripts/pull-request.mjs',
-      'test/release.test.mjs', '.github/workflows', '.github/RELEASING.md'])
-    const lock = JSON.parse(await readFile(join(cwd, 'package-lock.json'), 'utf8'))
-    const playwright = lock.packages['node_modules/playwright'].version
-    for (const filename of ['ci.yml', 'release-package.yml']) {
-      const path = join(cwd, '.github/workflows', filename)
-      const workflow = await readFile(path, 'utf8')
-      await writeFile(path, workflow.replace(/mcr\.microsoft\.com\/playwright:v[\d.]+-noble/g,
-        `mcr.microsoft.com/playwright:v${playwright}-noble`))
-      run('git', ['add', '--', `.github/workflows/${filename}`])
-    }
     run('git', ['commit', '--allow-empty', '-m', `release: enable hotfix automation for ${hotfix.tag}`])
     run('git', ['push', 'origin', hotfix.baseBranch])
   }
   run('git', ['switch', '-C', hotfix.branch])
+  run('git', ['restore', '--source', source, '--staged', '--worktree', '--',
+    'scripts/prepare-hotfix.mjs', 'scripts/prepare-release.mjs', 'scripts/release-version.mjs',
+    'scripts/resolve-release-version.mjs', 'scripts/validate-release.mjs', 'scripts/validate-release-pr.mjs',
+    'scripts/cancel-release.mjs', 'scripts/abandon-release.mjs', 'scripts/release-artifact.mjs',
+    'scripts/format-release-notes.mjs', 'scripts/pull-request.mjs',
+    'test/release.test.mjs', '.github/workflows', '.github/RELEASING.md'])
   applyHotfix(hotfix.fixCommit, run, { diff, commits: pullRequest.commits })
   await appendFile(env.GITHUB_ENV, [
     `VERSION=${hotfix.version}`, `TAG=${hotfix.tag}`, `branch=${hotfix.branch}`,

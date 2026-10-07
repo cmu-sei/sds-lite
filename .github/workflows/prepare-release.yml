@@ -29,11 +29,11 @@ on:
         type: string
 
 permissions:
-  actions: write
   contents: write
   issues: write
   packages: read
   pull-requests: write
+  statuses: read
 
 concurrency:
   group: prepare-release
@@ -73,6 +73,12 @@ jobs:
       - name: Use the pinned npm version
         run: npm install --global npm@11.6.4
 
+      - name: Require previous releases to be complete
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/validate-release-pr.mjs assert-complete
+
       - name: Validate the requested release
         if: inputs.channel != 'hotfix'
         env:
@@ -106,11 +112,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          CANCELLED_PR="$(gh pr list --state merged --head "$branch" --label release-cancelled --json number --jq '.[0].number // ""')"
-          if [[ -n "$CANCELLED_PR" ]]; then
-            echo "::error::$TAG was cancelled after merge. Choose a newer base version"
-            exit 1
-          fi
           gh label create release --color 5319e7 --description "Release preparation" --force
           RELEASE_BRANCH="$branch" node scripts/validate-release-pr.mjs prepare
 
@@ -141,6 +142,7 @@ jobs:
       - name: Create or locate the draft GitHub release
         id: draft-release
         env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           RELEASE_ERROR="$RUNNER_TEMP/draft-release-error"
@@ -158,12 +160,14 @@ jobs:
               exit 1
             fi
           else
-            OPTIONS=(--draft --generate-notes --target "$branch" --title "SDS Lite $TAG")
+            GENERATED_NOTES="$RUNNER_TEMP/generated-release-notes.md"
             if [[ -n "${NOTES_START_TAG:-}" ]]; then
-              HOTFIX_NOTES="$RUNNER_TEMP/hotfix-notes.md"
-              gh api "repos/$GITHUB_REPOSITORY/pulls/$HOTFIX_NUMBER" | node scripts/format-release-notes.mjs --hotfix > "$HOTFIX_NOTES"
-              OPTIONS=(--draft --target "$branch" --title "SDS Lite $TAG" --notes-file "$HOTFIX_NOTES")
+              gh api "repos/$GITHUB_REPOSITORY/pulls/$HOTFIX_NUMBER" | node scripts/format-release-notes.mjs --hotfix > "$GENERATED_NOTES"
+            else
+              gh api --method POST "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
+                -f tag_name="$TAG" -f target_commitish="$branch" --jq '.body' > "$GENERATED_NOTES"
             fi
+            OPTIONS=(--draft --target "$DEFAULT_BRANCH" --title "SDS Lite $TAG" --notes-file "$GENERATED_NOTES")
             if [[ "$VERSION" == *-beta.* ]]; then
               OPTIONS+=(--prerelease)
             fi
@@ -173,9 +177,7 @@ jobs:
           FORMATTED_NOTES="$RUNNER_TEMP/release-notes-formatted.md"
           gh release view "$TAG" --json body --jq .body > "$RAW_NOTES"
           VERSION="$VERSION" node scripts/format-release-notes.mjs < "$RAW_NOTES" > "$FORMATTED_NOTES"
-          if ! cmp --silent "$RAW_NOTES" "$FORMATTED_NOTES"; then
-            gh release edit "$TAG" --notes-file "$FORMATTED_NOTES"
-          fi
+          gh release edit "$TAG" --target "$DEFAULT_BRANCH" --notes-file "$FORMATTED_NOTES"
           RELEASES_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases"
           RELEASE_URL="$(gh release view "$TAG" --json url --jq .url 2>/dev/null || true)"
           if [[ "$RELEASE_URL" != "$RELEASES_URL/tag/untagged-"* ]]; then
@@ -199,9 +201,9 @@ jobs:
           1. Review the generated changes and [draft release notes]($DRAFT_RELEASE_URL). Edit the notes only if needed; do not publish the draft yourself.
           2. Wait for **Build and test**, obtain review, and merge normally.
 
-          CI starts automatically; these checks need no workflow approval or extra token. The draft is published only after this PR is reviewed and merged.
+          CI is triggered by this pull request. If GitHub requests workflow approval, use **Approve and run** before waiting for **Build and test**. Refreshing this PR may require approval again. No personal token or GitHub App is needed. The draft is published only after this PR is reviewed and merged.
 
-          Merging starts **Automatic - Publish Release**. If repository settings require deployment approval, approve it in Actions when prompted.
+          Merging starts **Automatic - Publish Release**. If repository settings require deployment approval, approve it in Actions when prompted. If publication stops because the reviewed commit changes workflow files, follow its explicit manual GitHub-release instructions, then rerun the failed publication job; never run npm publish yourself.
           EOF
           if [[ -n "${HOTFIX_NUMBER:-}" ]]; then
             printf '\n## Latest-only hotfix\n\nApplies fix #%s to %s and publishes to latest. Beta development on main is unchanged. Merge into %s, not main.\n' \
@@ -220,8 +222,3 @@ jobs:
           echo "refreshed=$REFRESHED" >> "$GITHUB_OUTPUT"
           echo "### Release pull request" >> "$GITHUB_STEP_SUMMARY"
           echo "$PR_URL" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Run CI for the release pull request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run ci.yml --ref "$branch"

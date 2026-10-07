@@ -69,12 +69,15 @@ jobs:
         run: |
           OPEN_PRS="$RUNNER_TEMP/open-release-prs.json"
           CLOSED_PRS="$RUNNER_TEMP/closed-release-prs.json"
-          gh pr list --state open --head "$BRANCH" --label release --limit 2 --json number,url,state,mergedAt > "$OPEN_PRS"
-          gh pr list --state closed --head "$BRANCH" --label release --limit 100 --json number,url,state,mergedAt > "$CLOSED_PRS"
+          gh pr list --state open --head "$BRANCH" --limit 1000 --json number,url,state,mergedAt,isCrossRepository > "$OPEN_PRS"
+          gh pr list --state closed --head "$BRANCH" --limit 1000 --json number,url,state,mergedAt,isCrossRepository > "$CLOSED_PRS"
           PR_DATA="$(node scripts/abandon-release.mjs select-pull-request "$OPEN_PRS" "$CLOSED_PRS" --allow-missing)"
           PR_NUMBER="$(node -e 'console.log(JSON.parse(process.argv[1]).number ?? "")' "$PR_DATA")"
           PR_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).url ?? "")' "$PR_DATA")"
           PR_WAS_OPEN="$(node -e 'console.log(JSON.parse(process.argv[1]).wasOpen)' "$PR_DATA")"
+          if [[ -n "$PR_NUMBER" ]]; then
+            node scripts/abandon-release.mjs verify-pull-request "$PR_NUMBER"
+          fi
           node scripts/abandon-release.mjs assert-unpublished
 
           RELEASE_ERROR="$RUNNER_TEMP/release-error"
@@ -104,6 +107,7 @@ jobs:
           BRANCH_ERROR="$RUNNER_TEMP/branch-error"
           if gh api --silent "repos/$GITHUB_REPOSITORY/git/ref/heads/$BRANCH" 2>"$BRANCH_ERROR"; then
             BRANCH_EXISTS=true
+            node scripts/abandon-release.mjs verify-branch
           elif grep -q 'HTTP 404' "$BRANCH_ERROR"; then
             BRANCH_EXISTS=false
           else
