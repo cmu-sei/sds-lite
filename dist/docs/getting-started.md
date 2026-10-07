@@ -32,11 +32,11 @@ Add these version-pinned tags to `<head>`:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3-beta.1/dist/sds.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3/dist/sds.css"
 >
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3-beta.1/dist/auto.js"
+  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3/dist/auto.js"
 ></script>
 ```
 
@@ -170,7 +170,7 @@ step 1:
 
 ```html
 <script type="module">
-  import { notify } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3-beta.1/dist/auto.js'
+  import { notify } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3/dist/auto.js'
 
   notify('Your project was saved.', {
     title: 'Saved',

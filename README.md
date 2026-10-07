@@ -32,11 +32,11 @@ Add these two tags to the page:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3-beta.1/dist/sds.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3/dist/sds.css"
 >
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3-beta.1/dist/auto.js"
+  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.3/dist/auto.js"
 ></script>
 ```
 
