@@ -1,6 +1,7 @@
 import { pathToFileURL } from 'node:url'
 
 const editorGuideMarker = '<!-- RELEASE NOTE EDITOR GUIDE'
+const draftInstructions = 'Save this as a draft. Do not publish it manually unless the stopped publication workflow explicitly requests authorized GitHub publication at its exact reviewed commit. Then rerun the failed publication job; never run npm publish yourself.'
 
 export function formatHotfixReleaseNotes(pullRequest, version, baseTag, repository) {
   return formatReleaseNotes(`<!-- Hotfix source: ${baseTag}; fix PR: #${pullRequest.number} -->
@@ -19,7 +20,9 @@ export function formatReleaseNotes(generatedNotes, version) {
   if (!version) throw new Error('Release version is required')
 
   const source = generatedNotes.trim()
-  if (source.includes(editorGuideMarker)) return `${source}\n`
+  if (source.includes(editorGuideMarker)) {
+    return `${source.replace('Save this as a draft. Do not publish it manually.', draftInstructions)}\n`
+  }
 
   const changes = source
     .replace(
@@ -45,7 +48,7 @@ DO NOT EDIT:
 - Section headings.
 - Hidden hotfix source markers.
 
-Save this as a draft. Do not publish it manually.
+${draftInstructions}
 -->
 
 ## Summary

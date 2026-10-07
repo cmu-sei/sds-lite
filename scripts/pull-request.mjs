@@ -17,7 +17,7 @@ export function resolvePullRequestLabel(title, labels = []) {
   return match[2] ? 'breaking' : categories.get(match[1].toLowerCase()) ?? null
 }
 
-export function automatePullRequest(event, repository, execute = spawnSync, log = console.log) {
+export function automatePullRequest(event, repository, execute = spawnSync) {
   const pullRequest = event.pull_request
   if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository) ||
       !Number.isSafeInteger(pullRequest?.number) || pullRequest.number < 1 ||
@@ -29,18 +29,6 @@ export function automatePullRequest(event, repository, execute = spawnSync, log 
     const result = execute('gh', args, { encoding: 'utf8' })
     if (result.status !== 0) throw new Error(result.stderr || 'Pull request automation failed')
     return result.stdout
-  }
-  const trusted = pullRequest.head?.repo?.full_name === repository ||
-    ['OWNER', 'MEMBER', 'COLLABORATOR'].includes(pullRequest.author_association)
-  const changedCode = ['opened', 'reopened', 'synchronize'].includes(event.action) ||
-    (event.action === 'edited' && event.changes?.base)
-  if (trusted && changedCode) {
-    const branch = event.repository?.default_branch
-    if (typeof branch !== 'string' || !branch) throw new Error('Default branch is missing')
-    run(['workflow', 'run', 'ci.yml', '--repo', repository, '--ref', branch,
-      '-f', `pull_request=${pullRequest.number}`])
-  } else if (!trusted && changedCode) {
-    log('External fork: a maintainer must run CI from the default branch with this PR number.')
   }
   const label = resolvePullRequestLabel(pullRequest.title, pullRequest.labels)
   if (label) {

@@ -33,11 +33,48 @@ export function resolveAbandonedRelease(version, confirmation) {
   }
 }
 
+export function verifyReleaseCommitMetadata(repository, commit, version, run = spawnSync) {
+  parseReleaseVersion(version)
+  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository ?? '') ||
+      !/^[a-f0-9]{40}$/.test(commit ?? '')) {
+    throw new Error('Repository and release commit are required')
+  }
+  const read = (path) => {
+    const result = run('gh', ['api', `repos/${repository}/contents/${path}?ref=${commit}`], { encoding: 'utf8' })
+    if (result.error) throw result.error
+    if (result.status !== 0) throw new Error(result.stderr || result.stdout || 'Could not verify release metadata')
+    const contents = JSON.parse(result.stdout)
+    if (contents.encoding !== 'base64' || typeof contents.content !== 'string') {
+      throw new Error('Could not verify committed release metadata')
+    }
+    return JSON.parse(Buffer.from(contents.content, 'base64').toString('utf8'))
+  }
+  const packageJson = read('package.json')
+  const state = read('.github/release-state.json')
+  if (packageJson.name !== '@cmu-sei/sds-lite' || packageJson.version !== version || state.version !== version) {
+    throw new Error('Committed package and release state do not match the requested release')
+  }
+}
+
+export function verifyAbandonedReleasePullRequest(pullRequest, release, repository, run = spawnSync) {
+  if (pullRequest.merged_at) throw new Error('Merged release PRs cannot be discarded; use cancellation instead')
+  if (!['open', 'closed'].includes(pullRequest.state) ||
+      pullRequest.head?.repo?.full_name !== repository || pullRequest.base?.repo?.full_name !== repository ||
+      pullRequest.head.ref !== release.branch ||
+      (pullRequest.base.ref !== 'main' &&
+        (release.version.includes('-') || pullRequest.base.ref !== `hotfix/v${release.version}`))) {
+    throw new Error('Expected an unmerged release PR from this repository on its release base')
+  }
+  verifyReleaseCommitMetadata(repository, pullRequest.head.sha, release.version, run)
+}
+
 export function selectReleasePullRequestForAbandonment(
   openPullRequests,
   closedPullRequests,
   { allowMissing = false } = {},
 ) {
+  openPullRequests = openPullRequests.filter((pr) => !pr.isCrossRepository)
+  closedPullRequests = closedPullRequests.filter((pr) => !pr.isCrossRepository)
   if (openPullRequests.length > 1) {
     throw new Error(
       `Expected at most one open release pull request; found ${openPullRequests.length}`,
@@ -63,10 +100,32 @@ export function selectReleasePullRequestForAbandonment(
     }
     throw new Error('No open or closed-unmerged release pull request was found')
   }
+  if (closedPullRequests.some((candidate) => candidate.mergedAt && candidate.number > pullRequest.number)) {
+    throw new Error('The latest release PR was merged; use cancellation instead of discard')
+  }
   return { ...pullRequest, wasOpen: false }
 }
 
 async function main() {
+  if (process.argv[2] === 'verify-pull-request' && process.argv.length === 4) {
+    const number = process.argv[3]
+    if (!/^[1-9][0-9]*$/.test(number)) throw new Error('Release PR number is required')
+    const repository = process.env.GITHUB_REPOSITORY
+    const result = spawnSync('gh', ['api', `repos/${repository}/pulls/${number}`], { encoding: 'utf8' })
+    if (result.error) throw result.error
+    if (result.status !== 0) throw new Error(result.stderr || 'Could not verify release PR')
+    const release = resolveAbandonedRelease(process.env.RELEASE_VERSION, process.env.RELEASE_VERSION)
+    verifyAbandonedReleasePullRequest(JSON.parse(result.stdout), release, repository)
+    return
+  }
+  if (process.argv[2] === 'verify-branch' && process.argv.length === 3) {
+    const release = resolveAbandonedRelease(process.env.RELEASE_VERSION, process.env.RELEASE_VERSION)
+    const result = spawnSync('gh', ['api', `repos/${process.env.GITHUB_REPOSITORY}/git/ref/heads/${release.branch}`], { encoding: 'utf8' })
+    if (result.error) throw result.error
+    if (result.status !== 0) throw new Error(result.stderr || 'Could not verify release branch')
+    verifyReleaseCommitMetadata(process.env.GITHUB_REPOSITORY, JSON.parse(result.stdout).object?.sha, release.version)
+    return
+  }
   if (process.argv[2] === 'assert-unpublished' && process.argv.length === 3) {
     assertPackageUnpublished('@cmu-sei/sds-lite', process.env.RELEASE_VERSION)
     return

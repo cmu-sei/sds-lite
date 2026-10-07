@@ -22,15 +22,13 @@ concurrency:
 
 jobs:
   stop:
-    name: Block publication and stop release jobs
+    name: Stop release jobs before locked cancellation
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       actions: write
       contents: read
-      issues: write
       packages: read
-      pull-requests: write
     outputs:
       version: ${{ steps.cancel.outputs.version }}
     steps:
@@ -57,7 +55,7 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@cmu-sei'
 
-      - name: Block publication and wait for finalization to stop
+      - name: Request cancellation and wait for finalization to stop
         id: cancel
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -76,10 +74,12 @@ jobs:
       group: release-publication
       cancel-in-progress: false
     permissions:
-      actions: write
+      actions: read
       contents: write
+      issues: write
       packages: read
       pull-requests: write
+      statuses: write
     steps:
       - name: Check out the current default branch
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -95,7 +95,7 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@cmu-sei'
 
-      - name: Verify publication is stopped and remove only the draft
+      - name: Verify unpublished state, block retries, and remove only the draft
         id: recovery
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -113,12 +113,16 @@ jobs:
           RELEASE_PR_NUMBER: ${{ steps.recovery.outputs.pull-request }}
           REVERT_BRANCH: ${{ steps.recovery.outputs.revert-branch }}
           TAG: ${{ steps.recovery.outputs.tag }}
+          RECOVERY_CONTROLLER: ${{ runner.temp }}/recovery-controller/cancel-release.mjs
         run: |
+          mkdir -p "$(dirname "$RECOVERY_CONTROLLER")"
+          cp scripts/cancel-release.mjs scripts/abandon-release.mjs scripts/release-version.mjs "$(dirname "$RECOVERY_CONTROLLER")"
           git fetch origin "$DEFAULT_BRANCH"
           git switch --detach "refs/remotes/origin/$DEFAULT_BRANCH"
-          PR_URL="$(gh pr list --state all --head "$REVERT_BRANCH" --json url --jq '.[0].url // ""')"
+          RECOVERY_PR="$(node "$RECOVERY_CONTROLLER" recovery-pr)"
+          PR_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).url)' "$RECOVERY_PR")"
           if [[ -n "$PR_URL" ]]; then
-            PR_STATE="$(gh pr view "$PR_URL" --json state --jq .state)"
+            PR_STATE="$(node -e 'console.log(JSON.parse(process.argv[1]).state)' "$RECOVERY_PR")"
             if [[ "$PR_STATE" == CLOSED ]]; then
               gh pr reopen "$PR_URL"
             fi
@@ -132,34 +136,34 @@ jobs:
             if [[ -n "$REMOTE_BRANCH" ]]; then
               git fetch origin "refs/heads/$REVERT_BRANCH"
               git switch --create "$REVERT_BRANCH" FETCH_HEAD
-              if ! git log -1 --format=%B | grep -Fx "Reverts release commit: $MERGE_COMMIT"; then
-                echo "::error::Existing recovery branch does not match this release. Review it manually"
-                exit 1
-              fi
             else
               git switch --create "$REVERT_BRANCH"
-              node scripts/cancel-release.mjs revert
+              node "$RECOVERY_CONTROLLER" revert
               git config user.name 'github-actions[bot]'
               git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
               git commit -m "release: revert cancelled $TAG" -m "Reverts release commit: $MERGE_COMMIT"
+            fi
+            node "$RECOVERY_CONTROLLER" verify-revert
+            if [[ -z "$REMOTE_BRANCH" ]]; then
               git push origin "HEAD:refs/heads/$REVERT_BRANCH"
             fi
             BODY="$RUNNER_TEMP/revert-release.md"
             printf '%s\n' \
               "## Cancel merged unpublished release $TAG" \
               "" \
-              "Publication of release PR #$RELEASE_PR_NUMBER is permanently blocked by its release-cancelled label. Its draft GitHub release was removed after verifying that no tag or package version was published." \
+              "Publication of release PR #$RELEASE_PR_NUMBER is permanently blocked by its recorded cancellation. Its draft GitHub release was removed after verifying that no tag or package version was published." \
               "" \
-              "Review this revert and wait for Build and test before merging. It reverses only the release preparation commit; later work remains on the default branch. Do not remove the cancellation label or rerun the old publication workflow. Prepare a newer base version after this PR merges." > "$BODY"
+              "Review this revert, use Approve and run if GitHub requests workflow approval, and wait for Build and test before merging. It reverses only the release preparation commit; later work remains on the default branch. Do not rerun the old publication workflow. Prepare a newer base version after this PR merges." > "$BODY"
             PR_URL="$(gh pr create --base "$DEFAULT_BRANCH" --head "$REVERT_BRANCH" --title "Revert cancelled release $TAG" --body-file "$BODY" --label release)"
-          fi
-          if [[ "$(gh pr view "$PR_URL" --json state --jq .state)" == OPEN ]]; then
-            gh workflow run ci.yml --ref "$REVERT_BRANCH"
           fi
           {
             echo "### Cancelled unpublished $TAG"
-            echo "- Publication is blocked by the release-cancelled label on PR #$RELEASE_PR_NUMBER."
+            echo "- Publication is permanently blocked by the recorded cancellation of PR #$RELEASE_PR_NUMBER."
             echo "- Draft release removed; no published tag or package was deleted."
-            echo "- Review and merge the revert PR: $PR_URL"
-            echo "- Keep the cancellation label and use a newer base version for the next release."
+            if [[ "${PR_STATE:-}" == MERGED ]]; then
+              echo "- Verified recovery PR is already merged: $PR_URL"
+            else
+              echo "- Review and merge the verified revert PR: $PR_URL"
+            fi
+            echo "- Use a newer base version for the next release."
           } >> "$GITHUB_STEP_SUMMARY"
