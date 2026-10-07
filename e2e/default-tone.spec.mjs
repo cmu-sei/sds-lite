@@ -5,13 +5,13 @@ const cases = [
     name: 'button',
     defaultTone: 'info',
     markup:
-      '<button type="button" data-tone-target data-sds-variant="filled" {{tone}}>Button</button>',
+      '<button class="sds-button" type="button" data-tone-target data-sds-variant="filled" {{tone}}>Button</button>',
   },
   {
     name: 'compact-button',
     defaultTone: 'info',
     markup:
-      '<button type="button" data-tone-target data-sds-density="compact" data-sds-variant="filled" {{tone}}>Button</button>',
+      '<button class="sds-button" type="button" data-tone-target data-sds-density="compact" data-sds-variant="filled" {{tone}}>Button</button>',
   },
   {
     name: 'link',
@@ -22,7 +22,7 @@ const cases = [
     name: 'switch',
     defaultTone: 'info',
     markup:
-      '<label class="sds-switch" {{tone}}><input data-tone-target type="checkbox" role="switch" checked>Switch</label>',
+      '<label class="sds-switch" {{tone}}><input class="sds-checkbox" data-tone-target type="checkbox" role="switch" checked>Switch</label>',
   },
   {
     name: 'badge',
@@ -63,7 +63,7 @@ const cases = [
     name: 'dropdown-parts',
     defaultTone: 'neutral',
     markup:
-      '<div class="sds-dropdown-menu"><button type="button" data-tone-target {{tone}}>Item</button></div>',
+      '<div class="sds-dropdown-menu"><button class="sds-button" type="button" data-tone-target {{tone}}>Item</button></div>',
   },
   {
     name: 'prose',

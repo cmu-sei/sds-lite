@@ -20,8 +20,8 @@ Render the same beginner markup on the server:
 ```html
 <sds-tabs>
   <div aria-label="Project sections">
-    <button type="button" aria-selected="true">Overview</button>
-    <button type="button">Activity</button>
+    <button class="sds-button" type="button" aria-selected="true">Overview</button>
+    <button class="sds-button" type="button">Activity</button>
   </div>
   <section>Overview content</section>
   <section>Activity content</section>
@@ -135,7 +135,7 @@ hydration attaches behavior without changing this initial markup.
 <div class="sds-field">
   <label for="project">Project</label>
   <sds-combobox>
-    <input
+    <input class="sds-input"
       id="project"
       name="project"
       type="search"
@@ -171,7 +171,7 @@ has a complete record-selection example.
 
 ```html
 <sds-dropdown>
-  <button
+  <button class="sds-button"
     type="button"
     popovertarget="project-actions"
     aria-controls="project-actions"
@@ -188,7 +188,7 @@ has a complete record-selection example.
     aria-orientation="vertical"
   >
     <li role="none">
-      <button type="button" role="menuitem" tabindex="-1">Rename</button>
+      <button class="sds-button" type="button" role="menuitem" tabindex="-1">Rename</button>
     </li>
     <li role="none">
       <a href="/duplicate" role="menuitem" tabindex="-1">Duplicate</a>
@@ -201,7 +201,7 @@ has a complete record-selection example.
 
 ```html
 <sds-tooltip>
-  <button type="button" aria-describedby="slug-help">What is a slug?</button>
+  <button class="sds-button" type="button" aria-describedby="slug-help">What is a slug?</button>
   <span
     id="slug-help"
     class="sds-tooltip-content"
@@ -215,7 +215,7 @@ has a complete record-selection example.
 
 ```html
 <sds-popover>
-  <button type="button" popovertarget="project-details">
+  <button class="sds-button" type="button" popovertarget="project-details">
     Project details
   </button>
   <section

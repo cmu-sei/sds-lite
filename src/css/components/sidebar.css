@@ -29,8 +29,13 @@
   }
 
   :where(.sds-sidebar > header, .sds-sidebar > footer) {
+    box-sizing: border-box;
     flex: 0 0 auto;
     padding: var(--sds-space-md);
+  }
+
+  :where(.sds-sidebar > header > p, .sds-sidebar > footer > p) {
+    margin: 0;
   }
 
   :where(.sds-sidebar > header) {
@@ -63,6 +68,7 @@
     .sds-sidebar > nav li > :is(a, button),
     .sds-sidebar > nav li > details > summary
   ) {
+    box-sizing: border-box;
     display: flex;
     inline-size: 100%;
     min-block-size: 2.5rem;
@@ -75,7 +81,9 @@
     border-radius: 0;
     color: var(--sds-color-text-muted);
     background: transparent;
+    font-family: inherit;
     font-weight: 400;
+    line-height: inherit;
     text-align: start;
     text-decoration: none;
     cursor: pointer;

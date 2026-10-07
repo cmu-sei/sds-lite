@@ -9,9 +9,24 @@ templates, and static sites.
 
 ### 1. Choose one installation method
 
+#### CDN
+
+No account, token, or build step is required. Add these two tags to the page:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css"
+>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/auto.js"
+></script>
+```
+
 #### NPM
 
-Configure npm for GitHub Packages as described in the
+For bundled applications, configure GitHub Packages once using the
 [NPM installation guide](./docs/installation/npm.md), then install SDS Lite:
 
 ```sh
@@ -25,20 +40,9 @@ import '@cmu-sei/sds-lite/sds.css'
 import '@cmu-sei/sds-lite/auto'
 ```
 
-#### CDN
-
-Add these two tags to the page:
-
-```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css"
->
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/auto.js"
-></script>
-```
+When keeping Tailwind, Bootstrap, or another design system, use the
+[coexistence setup](./docs/guides/theming.md#combine-design-systems) instead
+of separate CSS imports.
 
 ### 2. Write semantic HTML
 
@@ -46,32 +50,38 @@ Add `data-sds-root` to the element that contains your interface:
 
 ```html
 <main data-sds-root>
-  <h1>Project Atlas</h1>
+  <h1 class="sds-text-h3">Project Atlas</h1>
   <p>Your project is ready.</p>
-  <button type="button">Open project</button>
+  <button class="sds-button" type="button">Open project</button>
 </main>
 ```
 
-That is enough SDS Lite markup for a styled page.
+The root supplies the theme; recipe classes opt elements into SDS appearance.
 
 ## The four rules
 
 1. Load `sds.css`.
 2. Load `/auto` if the page uses interactive SDS custom elements.
 3. Put `data-sds-root` around the interface.
-4. Write semantic HTML.
+4. Write semantic HTML with explicit recipe classes where SDS styling is wanted.
 
-SDS Lite styles headings, text, links, buttons, inputs, selects, checkboxes,
-and radio buttons without requiring classes. Add a class only for a larger
-visual recipe:
+Unmarked HTML retains browser or application styling. Use `.sds-text-h3`,
+`.sds-link`, `.sds-button`, and form-control classes for SDS appearance, or
+compose larger recipes:
 
 ```html
 <article class="sds-card">
-  <h2>Science project</h2>
+  <h2 class="sds-text-h3">Science project</h2>
   <p>Your project is ready to share.</p>
-  <button type="button">Open project</button>
+  <button class="sds-button" type="button">Open project</button>
 </article>
 ```
+
+Heading levels express document structure, not visual size. Choose a style from
+`.sds-text-h1` through `.sds-text-h6` independently of the heading level.
+Lead, body, and caption styles share the same SEI typography scale.
+`.sds-document` opts into
+page typography and background; `.sds-prose` opts into document typography.
 
 ## Interactive behavior
 
@@ -81,8 +91,8 @@ relationships, state, or positioning:
 ```html
 <sds-tabs>
   <div aria-label="Project sections">
-    <button type="button" aria-selected="true">Overview</button>
-    <button type="button">Files</button>
+    <button class="sds-button" type="button" aria-selected="true">Overview</button>
+    <button class="sds-button" type="button">Files</button>
   </div>
   <section>Overview content</section>
   <section>Files content</section>
@@ -185,10 +195,11 @@ and fallback guidance.
 
 | Goal | Guide |
 |---|---|
-| Build a useful page | [5-minute quick start](./docs/getting-started.md) |
+| Build a useful page | [Quick start](./docs/getting-started.md) |
 | Install the package | [NPM](./docs/installation/npm.md) or [CDN](./docs/installation/cdn.md) |
-| Copy a visual or interactive recipe | [Component guides](./docs/components/README.md) |
+| Find a feature or copy a recipe | [Feature index](./docs/components/README.md#feature-index) |
 | Integrate a framework | [Framework integration](./docs/guides/frameworks.md) |
+| Keep another design system | [Coexistence setup](./docs/guides/theming.md#combine-design-systems) |
 | Configure server rendering | [Server rendering](./docs/guides/server-rendering.md) |
 | Check accessibility responsibilities | [Accessibility guide](./docs/guides/accessibility.md) |
 | Migrate an existing interface | [Migration guides](./docs/migration/index.md) |

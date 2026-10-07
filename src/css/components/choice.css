@@ -2,8 +2,8 @@
   :where(
     .sds-choice > input[type="checkbox"],
     .sds-choice > input[type="radio"],
-    [data-sds-root] input[type="checkbox"],
-    [data-sds-root] input[type="radio"]
+    .sds-checkbox,
+    .sds-radio
   ) {
     margin: 0;
     inline-size: 1rem;
@@ -20,21 +20,21 @@
 
   :where(
     .sds-choice > input[type="checkbox"],
-    [data-sds-root] input[type="checkbox"]
+    .sds-checkbox
   ) {
     border-radius: var(--sds-radius-control);
   }
 
   :where(
     .sds-choice > input[type="radio"],
-    [data-sds-root] input[type="radio"]
+    .sds-radio
   ) {
     border-radius: var(--sds-radius-full);
   }
 
   :where(
     .sds-choice > input[type="checkbox"]:checked,
-    [data-sds-root] input[type="checkbox"]:checked
+    .sds-checkbox:checked
   ) {
     border-color: var(--sds-color-choice-checked);
     background-color: var(--sds-color-choice-checked);
@@ -43,7 +43,7 @@
 
   :where(
     .sds-choice > input[type="radio"]:checked,
-    [data-sds-root] input[type="radio"]:checked
+    .sds-radio:checked
   ) {
     border-color: var(--sds-color-choice-checked);
     background-color: var(--sds-color-choice-checked);
@@ -57,8 +57,8 @@
   :where(
     .sds-choice > input[type="checkbox"]:disabled,
     .sds-choice > input[type="radio"]:disabled,
-    [data-sds-root] input[type="checkbox"]:disabled,
-    [data-sds-root] input[type="radio"]:disabled
+    .sds-checkbox:disabled,
+    .sds-radio:disabled
   ) {
     border-color: var(--sds-color-form-border);
     background-color: var(--sds-color-form-disabled-background);
@@ -69,8 +69,8 @@
   :where(
     .sds-choice > input[type="checkbox"]:checked:disabled,
     .sds-choice > input[type="radio"]:checked:disabled,
-    [data-sds-root] input[type="checkbox"]:checked:disabled,
-    [data-sds-root] input[type="radio"]:checked:disabled
+    .sds-checkbox:checked:disabled,
+    .sds-radio:checked:disabled
   ) {
     background-color: var(--sds-color-form-disabled-text);
   }

@@ -1,112 +1,41 @@
 # SDS Lite documentation
 
-SDS Lite gives semantic HTML production-ready styling and accessible behavior
-without a framework or runtime dependency.
+Styles and accessible behavior for semantic HTML. No framework or runtime
+dependencies required.
 
-## Choose your path
+## Start here
 
 | I want to... | Start here |
 |---|---|
-| Try SDS Lite in an existing project | [5-minute quick start](./getting-started.md) |
-| Install it from NPM | [NPM installation](./installation/npm.md) |
-| Use it from a CDN | [CDN installation](./installation/cdn.md) |
-| Find a component recipe | [Component guides](./components/README.md) |
-| Integrate with a framework | [Framework integration](./guides/frameworks.md) |
-| Migrate from another design system | [Migration guides](./migration/index.md) |
-| Use server rendering or hydration | [Server rendering](./guides/server-rendering.md) |
-| Change the theme or design tokens | [Theming and customization](./guides/theming.md) |
-| Review accessibility requirements | [Accessibility](./guides/accessibility.md) |
-| Compose common multi-recipe patterns | [Composition patterns](./guides/composition-patterns.md) |
-| Look up an export, event, class, or token | [API reference](./reference/README.md) |
-| Fix an integration problem | [Troubleshooting](./troubleshooting.md) |
+| Build my first page | [Quick start](./getting-started.md) |
+| Install SDS Lite | [NPM](./installation/npm.md) or [account-free CDN](./installation/cdn.md) |
+| Find a specific feature | [Feature index](./components/README.md#feature-index) |
+| Keep Tailwind, Bootstrap, or Material | [Combine design systems](./guides/theming.md#combine-design-systems) |
+| Change colors, fonts, or themes | [Theming](./guides/theming.md) |
+| Fix something that is not working | [Troubleshooting by symptom](./troubleshooting.md) |
 
-## What SDS Lite provides
+## Integrate
 
-- Polished foundations for headings, text, links, buttons, form controls,
-  checkboxes, and radio buttons.
-- Copy-ready recipes for application content, feedback, navigation, data
-  display, loading states, and long-form prose.
-- Small custom elements for comboboxes, tabs, dropdowns, tooltips, popovers,
-  and toasts.
-- Native-dialog behavior for dialogs and panels.
-- Forge and Plaid themes with light, dark, and system color schemes.
-- Side-effect-free JavaScript entries for hydration-safe applications.
-- No runtime dependencies and no required framework, utility CSS, build
-  plugin, or client-side renderer.
+| Application | Guide |
+|---|---|
+| React, Vue, Angular, or Svelte | [Framework integration](./guides/frameworks.md) |
+| SSR or hydration | [Server rendering](./guides/server-rendering.md) |
+| Existing component library | [Migration guides](./migration/index.md) |
+| SEI Design System | [Incremental SEI adoption](./guides/theming.md#sei-adoption) |
 
-## The four rules
+## Build
 
-1. Load SDS Lite CSS.
-2. Load automatic behavior if the page uses interactive SDS elements.
-3. Put `data-sds-root` around the content SDS Lite should style.
-4. Start with semantic HTML, then add an SDS class or `data-sds-*` option only
-   when the recipe calls for it.
+- [Component recipes](./components/README.md): copy a minimal example and look up its options.
+- [Composition patterns](./guides/composition-patterns.md): accordions, error summaries, workflow steps, split actions, and sortable tables.
+- [Accessibility](./guides/accessibility.md): names, keyboard behavior, validation, contrast, and testing responsibilities.
+- [Browser support](./guides/browser-support.md): platform requirements and fallback policy.
 
-```html
-<main data-sds-root>
-  <h1>Project Atlas</h1>
-  <p>Your project is ready.</p>
-  <button type="button">Open project</button>
-</main>
-```
+## Look up an API
 
-Native semantics remain the API: use links for navigation, buttons for
-actions, `disabled` for unavailable controls, `checked` for choices, and
-`hidden` for content that is not displayed.
-
-Everything else in this documentation is progressive detail. You do not need
-JavaScript setup functions, framework types, or the machine-readable
-interface to build an ordinary page.
-
-## Documentation map
-
-### Start
-
-- [5-minute quick start](./getting-started.md)
-- [NPM installation](./installation/npm.md)
-- [CDN installation](./installation/cdn.md)
-
-### Components
-
-- [Actions](./components/actions.md)
-- [Forms](./components/forms.md)
-- [Feedback](./components/feedback.md)
-- [Data display](./components/data-display.md)
-- [Layout](./components/layout.md)
-- [Navigation](./components/navigation.md)
-- [Overlays](./components/overlays.md)
-- [Loading and empty states](./components/loading.md)
-- [Prose](./components/prose.md)
-
-### Build and operate
-
-- [Framework integration](./guides/frameworks.md)
-- [Server rendering](./guides/server-rendering.md)
-- [Accessibility](./guides/accessibility.md)
-- [Composition patterns](./guides/composition-patterns.md)
-- [Theming and customization](./guides/theming.md)
-- [Browser support](./guides/browser-support.md)
-- [Troubleshooting](./troubleshooting.md)
-- [Migration guides and codemod](./migration/index.md)
-
-### Reference
-
-- [Package imports](./reference/imports.md)
-- [JavaScript API and events](./reference/javascript.md)
-- [CSS API](./reference/css.md)
-- [Public interface index](./reference/public-interface.md)
-- [Generated recipe interface](./reference/recipes.md)
-
-## Production checklist
-
-- Pin an exact version in CDN URLs.
-- Import CSS early enough to include it in the first rendered page.
-- Give icon-only controls an accessible name.
-- If the server response must be fully accessible before hydration, render
-  complete IDs, relationships, and state. Otherwise, register behavior after
-  hydration so SDS Lite can supply them.
-- Use `role="alert"` only for urgent notifications.
-- Test keyboard navigation, zoom, light and dark schemes, and the browsers
-  supported by your application.
-
-[Get started in five minutes →](./getting-started.md)
+| Need | Reference |
+|---|---|
+| Imports and entry points | [Package imports](./reference/imports.md) |
+| Functions, properties, and events | [JavaScript API](./reference/javascript.md) |
+| Theme tokens and cascade layers | [CSS API](./reference/css.md) |
+| Classes, attributes, and defaults | [Recipe interface](./reference/recipes.md) |
+| Machine-readable contracts | [Public interface](./reference/public-interface.md) |

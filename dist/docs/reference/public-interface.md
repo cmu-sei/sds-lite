@@ -13,10 +13,9 @@ classes, options, custom-element attributes, properties, methods, and events.
 
 | Interface | Values or purpose |
 |---|---|
-| `data-sds-root` | Scope native-element styling and establish theme tokens |
+| `data-sds-root` | Establish theme tokens and color scheme without styling native elements |
 | `data-sds-theme` | `forge`, `plaid` |
 | `data-sds-color-scheme` | `light`, `dark`, `system` |
-| `data-sds-unstyled` | Opt a link out of automatic styling |
 | `data-sds-variant` | Recipe-specific visual treatment |
 | `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` |
 | `data-sds-size` | Recipe-specific size |

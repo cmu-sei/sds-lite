@@ -56,7 +56,7 @@ Then scope SDS Lite to your application:
 
 ```html
 <div data-sds-root>
-  <button type="button">Continue</button>
+  <button class="sds-button" type="button">Continue</button>
 </div>
 ```
 
@@ -160,12 +160,14 @@ Render this smoke test:
 ```html
 <main data-sds-root>
   <h1>SDS Lite is ready</h1>
-  <button type="button">Test button</button>
+  <button class="sds-button" type="button">Test button</button>
 </main>
 ```
 
 If the button is unstyled, confirm that the CSS import is included in the
-browser build and that the button is inside `[data-sds-root]`. If a custom
+browser build and that the button has `class="sds-button"`. A theme root
+does not style native elements by itself. With another design system, check
+the [cascade setup](../guides/theming.md#combine-design-systems). If a custom
 element does not respond, confirm that `/auto` is loaded in the browser.
 
 [Browse component recipes →](../components/README.md)

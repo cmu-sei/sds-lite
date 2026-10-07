@@ -69,14 +69,14 @@ Keep the primary command separate from related alternatives:
 
 ```html
 <div class="sds-cluster" data-sds-gap="xs">
-  <button type="button">Save</button>
+  <button class="sds-button" type="button">Save</button>
   <sds-dropdown hide-caret>
-    <button type="button" data-sds-variant="tonal" aria-label="Other save options">
+    <button class="sds-button" type="button" data-sds-variant="tonal" aria-label="Other save options">
       More
     </button>
     <menu>
-      <li><button type="button">Save and close</button></li>
-      <li><button type="button">Save as copy</button></li>
+      <li><button class="sds-button" type="button">Save and close</button></li>
+      <li><button class="sds-button" type="button">Save as copy</button></li>
     </menu>
   </sds-dropdown>
 </div>
@@ -90,14 +90,14 @@ depend on the last menu choice.
 Use native radios when exactly one mode is submitted with a form:
 
 ```html
-<fieldset class="sds-cluster" data-sds-gap="md">
+<fieldset class="sds-cluster sds-fieldset" data-sds-gap="md">
   <legend>View</legend>
   <label class="sds-choice">
-    <input type="radio" name="view" value="grid" checked>
+    <input class="sds-radio" type="radio" name="view" value="grid" checked>
     Grid
   </label>
   <label class="sds-choice">
-    <input type="radio" name="view" value="list">
+    <input class="sds-radio" type="radio" name="view" value="list">
     List
   </label>
 </fieldset>
@@ -116,7 +116,7 @@ Put the sort action in the header and report state with `aria-sort`:
     <thead>
       <tr>
         <th scope="col" aria-sort="ascending">
-          <button type="button" data-sds-variant="text">Project</button>
+          <button class="sds-button" type="button" data-sds-variant="text">Project</button>
         </th>
         <th scope="col">Owner</th>
       </tr>

@@ -4,7 +4,7 @@
   "globalAttributes": [
     {
       "name": "data-sds-root",
-      "description": "Scopes SDS Lite foundations, recipes, and tokens.",
+      "description": "Establishes SDS Lite theme tokens and color scheme without styling native elements.",
       "type": "boolean"
     },
     {
@@ -18,11 +18,6 @@
       "description": "Selects a light, dark, or system color scheme.",
       "values": ["light", "dark", "system"],
       "default": "light"
-    },
-    {
-      "name": "data-sds-unstyled",
-      "description": "Opts a link out of automatic SDS Lite styling.",
-      "type": "boolean"
     },
     {
       "name": "data-sds-column-span",
@@ -150,6 +145,48 @@
   },
   "recipes": [
     {
+      "name": "document",
+      "category": "Layout and composition",
+      "classes": ["sds-document"],
+      "elements": ["body"],
+      "description": "Opt-in standalone page typography, background, and margin reset.",
+      "options": {}
+    },
+    {
+      "name": "heading",
+      "category": "Content and data display",
+      "classes": ["sds-text-h1", "sds-text-h2", "sds-text-h3", "sds-text-h4", "sds-text-h5", "sds-text-h6"],
+      "elements": ["h1", "h2", "h3", "h4", "h5", "h6"],
+      "description": "Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-size": "md"
+      }
+    },
+    {
+      "name": "text",
+      "category": "Content and data display",
+      "classes": ["sds-text-lead", "sds-text-body", "sds-text-caption1", "sds-text-caption2"],
+      "elements": ["p", "span", "div", "small", "figcaption"],
+      "description": "Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected.",
+      "options": {
+        "data-sds-size": ["sm", "md", "lg"]
+      },
+      "defaults": {
+        "data-sds-size": "md"
+      }
+    },
+    {
+      "name": "fieldset",
+      "category": "Actions and forms",
+      "classes": ["sds-fieldset"],
+      "elements": ["fieldset"],
+      "description": "Explicit border and shape for a native fieldset.",
+      "options": {}
+    },
+    {
       "name": "button",
       "category": "Actions and forms",
       "classes": ["sds-button"],
@@ -241,7 +278,7 @@
     {
       "name": "range",
       "category": "Actions and forms",
-      "classes": [],
+      "classes": ["sds-range"],
       "elements": ["input"],
       "description": "Native range input styling.",
       "options": {
@@ -274,8 +311,8 @@
     {
       "name": "choice",
       "category": "Actions and forms",
-      "classes": ["sds-choice"],
-      "elements": ["label"],
+      "classes": ["sds-choice", "sds-checkbox", "sds-radio"],
+      "elements": ["label", "input"],
       "description": "Checkbox or radio with label text.",
       "options": {}
     },
@@ -308,7 +345,7 @@
         "data-sds-size": ["sm", "md", "lg"]
       },
       "optionTargets": {
-        "data-sds-size": ".sds-file-upload, .sds-file-input, [data-sds-root] input[type=\"file\"]"
+        "data-sds-size": ".sds-file-upload, .sds-file-input"
       },
       "defaults": {
         "data-sds-size": "md"
@@ -427,7 +464,7 @@
     {
       "name": "progress",
       "category": "Feedback and loading",
-      "classes": [],
+      "classes": ["sds-progress"],
       "elements": ["progress"],
       "description": "Native task progress styling.",
       "options": {
@@ -442,7 +479,7 @@
     {
       "name": "meter",
       "category": "Feedback and loading",
-      "classes": [],
+      "classes": ["sds-meter"],
       "elements": ["meter"],
       "description": "Native scalar measurement with semantic threshold colors.",
       "options": {

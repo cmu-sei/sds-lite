@@ -5,6 +5,9 @@
     flex-direction: column;
     color: var(--sds-color-text-default);
     background: var(--sds-color-background);
+    font-family: var(--sds-font-body);
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
   :where(

@@ -1,24 +1,7 @@
 @layer sds.components {
   :where(
     .sds-input,
-    .sds-select,
-    [data-sds-root] input:is(
-        [type="text"],
-        [type="email"],
-        [type="tel"],
-        [type="url"],
-        [type="password"],
-        [type="number"],
-        [type="search"],
-        [type="date"],
-        [type="datetime-local"],
-        [type="time"],
-        [type="month"],
-        [type="week"],
-        :not([type])
-      ),
-    [data-sds-root] select,
-    [data-sds-root] textarea
+    .sds-select
   ) {
     display: block;
     inline-size: 100%;
@@ -36,18 +19,26 @@
       box-shadow var(--sds-duration-normal) var(--sds-easing-standard);
   }
 
-  :where(
-    [data-sds-root] input,
-    [data-sds-root] textarea
-  )::placeholder {
+  :where(.sds-input)::placeholder {
     color: var(--sds-color-text-disabled);
     font-style: italic;
   }
 
+  :where(.sds-input[type="search"])::-webkit-search-cancel-button {
+    inline-size: 0.75em;
+    block-size: 0.75em;
+    margin-inline-start: var(--sds-space-sm);
+    color: var(--sds-color-text-muted);
+    background:
+      linear-gradient(45deg, transparent 43%, currentColor 43%, currentColor 57%, transparent 57%),
+      linear-gradient(-45deg, transparent 43%, currentColor 43%, currentColor 57%, transparent 57%);
+    appearance: none;
+    cursor: pointer;
+  }
+
   :where(
-    [data-sds-root] input:disabled,
-    [data-sds-root] select:disabled,
-    [data-sds-root] textarea:disabled
+    .sds-input:disabled,
+    .sds-select:disabled
   ) {
     color: var(--sds-color-form-disabled-text);
     background: var(--sds-color-form-disabled-background);
@@ -55,36 +46,28 @@
     pointer-events: none;
   }
 
-  :where(
-    [data-sds-root] input[readonly],
-    [data-sds-root] textarea[readonly]
-  ) {
+  :where(.sds-input[readonly]) {
     color: var(--sds-color-form-readonly-text);
     background: var(--sds-color-form-readonly-background);
   }
 
   :where(
-    [data-sds-root] input[aria-invalid="true"],
-    [data-sds-root] select[aria-invalid="true"],
-    [data-sds-root] textarea[aria-invalid="true"]
+    .sds-input[aria-invalid="true"],
+    .sds-select[aria-invalid="true"]
   ) {
     border-color: var(--sds-color-form-invalid);
   }
 
   :where(
-    [data-sds-root] input:user-valid,
-    [data-sds-root] select:user-valid,
-    [data-sds-root] textarea:user-valid
+    .sds-input:user-valid,
+    .sds-select:user-valid
   ) {
     border-color: var(--sds-color-form-valid);
   }
 
   :where(
     .sds-input[data-sds-size="sm"],
-    .sds-select[data-sds-size="sm"],
-    [data-sds-root] input[data-sds-size="sm"],
-    [data-sds-root] select[data-sds-size="sm"],
-    [data-sds-root] textarea[data-sds-size="sm"]
+    .sds-select[data-sds-size="sm"]
   ) {
     padding: var(--sds-space-xs) var(--sds-space-sm);
     font-size: 0.875rem;
@@ -92,17 +75,14 @@
 
   :where(
     .sds-input[data-sds-size="lg"],
-    .sds-select[data-sds-size="lg"],
-    [data-sds-root] input[data-sds-size="lg"],
-    [data-sds-root] select[data-sds-size="lg"],
-    [data-sds-root] textarea[data-sds-size="lg"]
+    .sds-select[data-sds-size="lg"]
   ) {
     padding: var(--sds-space-md) var(--sds-space-lg);
     border-radius: var(--sds-radius-container);
     font-size: 1rem;
   }
 
-  :where([data-sds-root] select, .sds-select) {
+  :where(.sds-select) {
     padding-inline-end: var(--sds-space-2xl);
     background-image:
       linear-gradient(
@@ -123,16 +103,20 @@
     appearance: none;
   }
 
-  :where(
-    [data-sds-root] select[data-sds-size="sm"],
-    .sds-select[data-sds-size="sm"]
-  ) {
+  :where(.sds-select[data-sds-size="sm"]) {
     padding-inline-end: var(--sds-space-xl);
   }
 
-  :where([data-sds-root] option) {
+  :where(.sds-select option) {
     color: var(--sds-color-text-default);
     background: var(--sds-color-surface-default);
+  }
+
+  @media (forced-colors: active) {
+    :where(.sds-input[type="search"])::-webkit-search-cancel-button {
+      color: ButtonText;
+      forced-color-adjust: none;
+    }
   }
 
 }

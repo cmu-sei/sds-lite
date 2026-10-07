@@ -30,7 +30,9 @@
 
     max-inline-size: 95ch;
     color: light-dark(var(--sds-gray-900), var(--sds-white));
+    font-family: var(--sds-font-body);
     font-size: 1rem;
+    line-height: 1.5;
     text-rendering: optimizeLegibility;
     text-wrap: pretty;
   }

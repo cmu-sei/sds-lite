@@ -69,7 +69,7 @@ test('action-bar buttons remain readable on the action surface', async ({
   await page.locator('.sds-app-action-bar').first().evaluate((bar) => {
     bar.insertAdjacentHTML(
       'beforeend',
-      '<button type="button" data-sds-variant="tonal">Tonal</button><button type="button" data-sds-variant="text">Text</button>',
+      '<button class="sds-button" type="button" data-sds-variant="tonal">Tonal</button><button class="sds-button" type="button" data-sds-variant="text">Text</button>',
     )
   })
   const actionBar = page.locator('.sds-app-action-bar').first()

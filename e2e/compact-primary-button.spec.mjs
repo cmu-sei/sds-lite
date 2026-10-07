@@ -22,10 +22,10 @@ test('density and shape apply their documented omission defaults', async ({
     root.insertAdjacentHTML(
       'afterbegin',
       `<div style="position: fixed; z-index: 10000; inset: 0 auto auto 0">
-        <button data-test-button="regular">Regular</button>
-        <button data-test-button="compact" data-sds-density="compact">Compact</button>
-        <button data-test-button="icon" data-sds-shape="icon" aria-label="Add">+</button>
-        <button data-test-button="icon-text" data-sds-shape="icon" data-sds-variant="text" aria-label="Edit">+</button>
+        <button class="sds-button" data-test-button="regular">Regular</button>
+        <button class="sds-button" data-test-button="compact" data-sds-density="compact">Compact</button>
+        <button class="sds-button" data-test-button="icon" data-sds-shape="icon" aria-label="Add">+</button>
+        <button class="sds-button" data-test-button="icon-text" data-sds-shape="icon" data-sds-variant="text" aria-label="Edit">+</button>
       </div>`,
     )
   })
@@ -110,11 +110,11 @@ test('compact button sizes use a consistent height scale', async ({ page }) => {
     root.insertAdjacentHTML(
       'afterbegin',
       `<div style="position: fixed; visibility: hidden">
-        <button data-test-compact-size="xs" data-sds-size="xs" data-sds-density="compact">xs</button>
-        <button data-test-compact-size="sm" data-sds-size="sm" data-sds-density="compact">sm</button>
-        <button data-test-compact-size="md" data-sds-size="md" data-sds-density="compact">md</button>
-        <button data-test-compact-size="lg" data-sds-size="lg" data-sds-density="compact">lg</button>
-        <button data-test-compact-size="xl" data-sds-size="xl" data-sds-density="compact">xl</button>
+        <button class="sds-button" data-test-compact-size="xs" data-sds-size="xs" data-sds-density="compact">xs</button>
+        <button class="sds-button" data-test-compact-size="sm" data-sds-size="sm" data-sds-density="compact">sm</button>
+        <button class="sds-button" data-test-compact-size="md" data-sds-size="md" data-sds-density="compact">md</button>
+        <button class="sds-button" data-test-compact-size="lg" data-sds-size="lg" data-sds-density="compact">lg</button>
+        <button class="sds-button" data-test-compact-size="xl" data-sds-size="xl" data-sds-density="compact">xl</button>
       </div>`,
     )
   })
@@ -215,7 +215,7 @@ test('button density and omitted tones preserve tone colors', async ({
         ['', 'compact'].flatMap((density) =>
           ['', 'info'].map(
             (tone) =>
-              `<button type="button" data-test-default-tone="${tone || 'omitted'}" data-sds-variant="${variant}"${density ? ` data-sds-density="${density}"` : ''}${tone ? ` data-sds-tone="${tone}"` : ''}>Button</button>`,
+              `<button class="sds-button" type="button" data-test-default-tone="${tone || 'omitted'}" data-sds-variant="${variant}"${density ? ` data-sds-density="${density}"` : ''}${tone ? ` data-sds-tone="${tone}"` : ''}>Button</button>`,
           ),
         ),
       )

@@ -156,7 +156,7 @@ test('recipes consume semantic color overrides', async ({ page }) => {
         <span class="sds-badge" data-sds-tone="accent" data-sds-variant="light">Badge</span>
         <div class="sds-datapoint" data-sds-tone="accent"><div><strong>42</strong></div></div>
         <article class="sds-prose" data-sds-tone="accent"><a href="#">Link</a></article>
-        <button data-sds-tone="accent" data-sds-variant="outlined">Button</button>
+        <button class="sds-button" data-sds-tone="accent" data-sds-variant="outlined">Button</button>
       </section>`,
     )
 

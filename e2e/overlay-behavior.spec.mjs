@@ -248,11 +248,11 @@ test('disabled dropdown items remain in the keyboard sequence', async ({
     const dropdown = document.createElement('sds-dropdown')
     dropdown.id = 'disabled-menu-test'
     dropdown.innerHTML = `
-      <button type="button">Actions</button>
+      <button class="sds-button" type="button">Actions</button>
       <menu>
-        <li><button type="button">First</button></li>
-        <li><button type="button" aria-disabled="true">Unavailable</button></li>
-        <li><button type="button">Last</button></li>
+        <li><button class="sds-button" type="button">First</button></li>
+        <li><button class="sds-button" type="button" aria-disabled="true">Unavailable</button></li>
+        <li><button class="sds-button" type="button">Last</button></li>
       </menu>
     `
     document.body.append(dropdown)

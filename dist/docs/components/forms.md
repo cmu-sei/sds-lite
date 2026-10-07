@@ -2,8 +2,12 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Forms
 
-SDS Lite styles native form controls, preserving browser validation,
-autofill, keyboard behavior, and form submission.
+Browser validation, autofill, keyboard behavior, and submission remain native.
+For styling and setup, follow the [quick start](../getting-started.md).
+
+Find: [fields](#form-and-field), [combobox](#combobox), [inputs and selects](#controls),
+[range](#range), [validation](#help-and-validation), [choices](#checkbox-and-radio),
+[switch](#switch), or [file upload](#file-input).
 
 ## Form and field
 
@@ -14,7 +18,7 @@ autofill, keyboard behavior, and form submission.
 <form class="sds-form">
   <div class="sds-field">
     <label for="project-name">Project name</label>
-    <input
+    <input class="sds-input"
       id="project-name"
       name="projectName"
       type="text"
@@ -25,19 +29,30 @@ autofill, keyboard behavior, and form submission.
   </div>
 
   <div class="sds-action-group">
-    <button type="submit">Save project</button>
-    <button type="button" data-sds-variant="text">Cancel</button>
+    <button class="sds-button" type="submit">Save project</button>
+    <button class="sds-button" type="button" data-sds-variant="text">Cancel</button>
   </div>
 </form>
 ```
 
+### Options
+
+Fields default to vertical. Use `data-sds-orientation="horizontal"` for the
+[horizontal layout](#horizontal-fields); configure control size on the control.
+
+### Accessibility
+
 Use stable IDs to connect labels and messages. Do not rely on placeholder text
 as a label.
+
+### Related
+
+[Controls](#controls), [help and validation](#help-and-validation).
 
 ## Combobox
 
 Use `<sds-combobox>` when users need to search choices. For a short fixed list,
-prefer a native `<select>`. The input remains a native, named form control:
+prefer a native `<select class="sds-select">`. The input remains a native, named form control:
 typed text is allowed, and the submitted value is the visible text, not an
 internal option ID.
 
@@ -45,7 +60,7 @@ internal option ID.
 <div class="sds-field">
   <label for="project">Project</label>
   <sds-combobox>
-    <input id="project" name="project" type="search" autocomplete="off">
+    <input class="sds-input" id="project" name="project" type="search" autocomplete="off">
     <ul hidden>
       <li>Atlas</li>
       <li>Orion</li>
@@ -56,189 +71,66 @@ internal option ID.
 </div>
 ```
 
-Automatic filtering matches option text without case sensitivity. Arrow Down
-and Arrow Up move the active suggestion without moving input focus; Enter or
-click selects it and fires native `input` and `change` events on the input.
-Escape closes suggestions; Tab leaves the typed value alone. An option with
-`aria-disabled="true"` cannot be selected. Give the input a visible label or
-another accessible name; keep the input and list as direct children. The
-suggestion list uses the Popover API and stays anchored while scrolling.
-Add an optional, initially empty `<output>` after the list to show
-**No results found.** in a floating dropdown for a nonempty query with no
-matching options. Its implicit `status` role announces the update politely
-without putting a non-option inside the listbox. Override the text with
-`<output data-empty-message="No matching projects."></output>`.
-The message clears when results return, the query clears, or the input loses
-focus. Escape dismisses it. For `filter="manual"`, mark the list
-`aria-busy="true"` while loading so an empty list does not announce a
-premature no-results message.
+### Options
+
+| Option | Values | Default |
+|---|---|---|
+| `filter` | `automatic`, `manual` | `automatic` |
+| `keep-open` | Presence | Close after selection |
+| `data-label` on an option | Nonempty selected display text | Option text |
+| `data-sds-value` on an option | Application value | Selected display text |
+| `data-empty-message` on `output` | No-results message | `No results found.` |
+
+Automatic filtering matches option text case-insensitively. The optional
+empty `output` shows a message for a nonempty query with no matches; it clears
+when matches return, the query clears, or focus leaves. Escape dismisses it.
+
+### Events
+
+Enter or click selects an option. Native `input` and `change` fire first,
+then `sds-select` exposes `detail.value` and the original `detail.option`.
+The named input submits visible text, not a separate record ID.
+
+### Accessibility
+
+Label the input and keep the input, list, and optional `output` as direct
+children. Do not put interactive controls in options. Arrow keys move the
+active suggestion; Escape closes it; Tab preserves typed text.
+`aria-disabled="true"` prevents option selection. The output's native status
+role announces no results outside the listbox.
+
+### Related
+
+- [Record IDs, rich options, multiple selections, and server results](../guides/combobox.md).
+- [Fully authored SSR markup](../guides/server-rendering.md#fully-authored-combobox).
+- [Combobox submission troubleshooting](../troubleshooting.md#a-combobox-submits-text-instead-of-a-record-id).
 
 ### Rich suggestions and record IDs
 
-Options can contain noninteractive HTML such as a name and description.
-Automatic filtering searches the option's `textContent`, including the
-description. Add a nonempty `data-label` when selecting the option should put
-only its name in the input; otherwise SDS Lite uses the option's full
-`textContent`. An empty `data-label` warns and prevents selection.
-The option remains accessible by its visible contents. Do not put links or
-buttons inside a listbox option.
-
-Keep record identity in application data. Put the submitted identity in
-`data-sds-value`; the `sds-select` event exposes it as `event.detail.value` while
-also returning the original option as `event.detail.option`:
-
-```html
-<form id="project-form">
-  <label for="record-query">Project</label>
-  <sds-combobox id="record-picker">
-    <input id="record-query" name="projectQuery" type="search" autocomplete="off">
-    <ul hidden>
-      <li data-label="Atlas" data-sds-value="p-atlas">
-        <span class="sds-stack" data-sds-gap="none">
-          <strong>Atlas</strong>
-          <small>Research · owner Avery</small>
-        </span>
-      </li>
-      <li data-label="Vega" data-sds-value="p-vega">
-        <span class="sds-stack" data-sds-gap="none">
-          <strong>Vega</strong>
-          <small>Engineering · owner Casey</small>
-        </span>
-      </li>
-    </ul>
-    <output></output>
-  </sds-combobox>
-  <input id="record-id" name="projectId" type="hidden">
-  <p id="selected-project" role="status"></p>
-  <button type="submit">Submit project</button>
-</form>
-```
-
-```js
-const records = new Map([
-  ['p-atlas', { id: 'p-atlas', name: 'Atlas', team: 'Research', owner: 'Avery' }],
-  ['p-vega', { id: 'p-vega', name: 'Vega', team: 'Engineering', owner: 'Casey' }],
-])
-const picker = document.querySelector('#record-picker')
-const query = document.querySelector('#record-query')
-const id = document.querySelector('#record-id')
-const selected = document.querySelector('#selected-project')
-
-query.addEventListener('input', () => {
-  id.value = ''
-  selected.textContent = ''
-})
-picker.addEventListener('sds-select', (event) => {
-  const record = records.get(event.detail.value)
-  if (!record) throw new Error('Selected project is missing from the catalog')
-  id.value = record.id
-  selected.textContent = `Selected project: ${record.name}`
-  query.value = ''
-  // Use record.team, record.owner, etc. in application state as needed.
-})
-document.querySelector('#project-form').addEventListener('reset', () => {
-  id.value = ''
-  selected.textContent = ''
-})
-```
-
-Without `keep-open`, SDS Lite sets the visible input to `data-label`, then
-fires native `input` and `change` on that input **before** `sds-select`.
-Clearing the stored ID on `input` and setting it on `sds-select` therefore
-keeps the ID tied to an actual selection. Clear the query *after* storing
-the ID; assigning `query.value = ''` does not dispatch another `input`
-event or erase the chosen ID. Show the selected record separately (as the
-playground does), since the search field is empty again. Subsequent edits
-invalidate the ID.
-Clear the ID on a form reset as well. If application code later changes the
-query without selecting a record, invalidate the ID explicitly: assigning
-`input.value` does not emit `input`.
-The query input submits an empty `projectQuery` after selection; the separate
-hidden input submits `projectId`. Before JavaScript runs, the query still
-submits typed text. When `data-sds-value` is omitted, `event.detail.value` is the
-displayed value from `data-label` or the option text. SDS Lite does **not**
-submit IDs, store objects, or validate that the selected ID still exists.
-Validate IDs on the server. Without
-JavaScript, the input remains usable for free text but the hidden ID stays
-empty; use a native `<select>` fallback when choosing a valid ID without
-JavaScript is required. Server templates should render the options and the
-application's lookup from the same record data. The
-[playground](../../index.html#record-form) runs this example.
-
-Add `keep-open` to select several suggestions without closing the list.
-Selection writes `data-label` (or the option text) to the input and fires
-native `input` and `change` before `sds-select`, whose `event.detail.option`
-is the chosen `<li>`. Other matches from the last search remain available
-until the user edits the input; the application owns selected values, tags,
-and any form submission. Use a search input without a `name` when its
-displayed value should not be submitted alongside the selected values.
-Disable selected options with `aria-disabled="true"` to prevent duplicates,
-and remove that attribute when a tag is removed. The list stays open while
-there are other matching options; Escape or moving focus away still closes
-it. Without `keep-open`, the combobox writes the chosen text, fires native
-events, and closes; application code may then clear the input.
-With `keep-open`, use `sds-select` rather than input events to track
-*which* option was chosen; `input` and `change` report its display text.
-The [playground](../../index.html#forms) shows a removable tag list using
-this small interface. Its `sds-select` handler adds a tag, then sets
-`input.value = ''` in either mode. That is application logic, not a combobox
-option. Because assigning `.value` does not emit `input`, `keep-open` can
-continue showing the last search's other matches; without it, the list closes.
-The same handler works with the CDN script or an NPM import.
-
-For suggestions from a server or a large catalog, set `filter="manual"`
-and render only the matching `li` children in response to input. Automatic
-filtering checks every authored option's text on each edit. SDS Lite observes
-the list and opens it when results arrive while the input has focus. The
-application owns fetching, loading/error messages, stale-response cancellation,
-and validation; set
-`aria-busy` on the list while fetching and connect any status message to the
-input with `aria-describedby`. Do not add untrusted HTML with `innerHTML`;
-create option nodes and set `textContent`.
-
-```js
-const input = document.querySelector('sds-combobox[filter="manual"] > input')
-const list = document.querySelector('sds-combobox[filter="manual"] > ul')
-const teams = ['Accessibility', 'Engineering', 'Research']
-
-input.addEventListener('input', () => {
-  const matches = teams.filter((team) =>
-    team.toLowerCase().includes(input.value.toLowerCase()))
-  list.replaceChildren(...matches.map((team) => {
-    const option = document.createElement('li')
-    option.textContent = team
-    return option
-  }))
-})
-```
-
-When the server response must include the fully enhanced accessibility state,
-render the complete closed-state markup *before* hydration (including IDs,
-roles, and `hidden`, plus an empty `<output>` when used). Otherwise, the
-beginner markup can be enhanced after hydration. In either case, call
-`setupSds()` after hydration. The
-[server-rendering guide](../guides/server-rendering.md#fully-authored-combobox)
-has a copy-ready example. A simple `<input>` still accepts free text and
-submits normally before JavaScript runs.
+Moved to [Advanced combobox workflows](../guides/combobox.md#rich-suggestions-and-record-ids).
 
 ## Controls
 
-SDS Lite automatically styles:
+Use `.sds-input` for text-like inputs and textareas, `.sds-select` for selects,
+`.sds-range` for range inputs, and `.sds-file-input` for file inputs. These
+classes opt native controls into SDS appearance while retaining native behavior.
+Text-like input types include:
 
 ```text
 input[type=text], input[type=email], input[type=tel], input[type=url],
 input[type=password], input[type=number], input[type=search],
 input[type=date], input[type=datetime-local], input[type=time],
-input[type=month], input[type=week], input[type=range], input[type=file],
-select, textarea
+input[type=month], input[type=week]
 ```
 
-`.sds-input` and `.sds-select` are explicit hooks when needed:
+Apply the recipe class directly to the control:
 
 ```html
 <input class="sds-input" type="text">
 <select class="sds-select"><option>Choose an option</option></select>
 ```
+
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -246,6 +138,15 @@ select, textarea
 | `disabled` | Native disabled state | Enabled |
 | `readonly` | Native input/textarea state | Editable |
 | `aria-invalid="true"` | Invalid semantics and appearance | Valid or unknown |
+
+### Accessibility
+
+Give every control a label and use `name` for submitted values. Connect help
+with `aria-describedby`; use native types and constraints before custom validation.
+
+### Related
+
+[Form fields](#form-and-field), [validation](#help-and-validation), [combobox](#combobox).
 
 ## Input prefix and suffix
 
@@ -258,37 +159,53 @@ include meaningful unit text in the label.
   <label for="budget">Budget in U.S. dollars</label>
   <div class="sds-input-group">
     <span class="sds-input-addon" aria-hidden="true">$</span>
-    <input id="budget" name="budget" type="number" min="0">
+    <input class="sds-input" id="budget" name="budget" type="number" min="0">
     <span class="sds-input-addon">USD</span>
   </div>
 </div>
 ```
 
-SDS Lite supplies only the shared border and spacing. Native input state,
-validation, and form submission remain unchanged.
+### Options
 
 `data-sds-size` on `.sds-input-group` accepts `sm`, `md`, or `lg` and sizes the
 control and add-ons together. The default is `md`.
 
+### Accessibility
+
+Include meaningful units in the label and hide decorative symbols. SDS Lite
+supplies shared borders and spacing; validation and submission remain native.
+
+### Related
+
+[Controls](#controls), [help and validation](#help-and-validation).
+
 ## Range
 
-Native range inputs are styled automatically and retain platform keyboard,
-pointer, and form behavior:
+Native range inputs opt into styling with `.sds-range` and retain platform
+keyboard, pointer, and form behavior:
 
 ```html
 <div class="sds-field">
   <label for="confidence">Confidence: 70%</label>
-  <input id="confidence" name="confidence" type="range" value="70">
+  <input class="sds-range" id="confidence" name="confidence" type="range" value="70">
 </div>
 ```
 
-Application code owns any live value shown in the label or help text. Use a
-number input when users must enter or verify an exact value.
+### Options
 
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-tone` | Any semantic tone | `info` |
 | `data-sds-size` | `sm`, `md`, `lg` | `md` |
+
+### Accessibility
+
+Label the range and keep live displayed values synchronized in application code.
+Use a number input when users must enter or verify an exact value.
+
+### Related
+
+[Controls](#controls), [measurement](./loading.md#progress-and-measurement).
 
 ## Help and validation
 
@@ -299,7 +216,7 @@ Place required or optional context in the label and connect every message:
   <label for="email">
     Email <small data-sds-tone="danger">Required</small>
   </label>
-  <input
+  <input class="sds-input"
     id="email"
     name="email"
     type="email"
@@ -313,12 +230,19 @@ Place required or optional context in the label and connect every message:
 </div>
 ```
 
-Set `aria-invalid="true"` only after validation determines that the value is
-invalid. Move focus to, or summarize, errors after a failed submission.
+### Options
 
 `data-sds-tone` accepts any semantic tone on a field's direct help text or
 label's small context. Putting it on the field container does not color
 either message.
+
+### Accessibility
+
+Set `aria-invalid="true"` only after validation identifies an error. Connect
+messages with `aria-describedby` and explain errors in text. After a failed
+submission, summarize errors or move focus according to the application's policy.
+
+### More examples
 
 Native `:user-valid` provides positive appearance after interaction with a
 constrained control:
@@ -326,7 +250,7 @@ constrained control:
 ```html
 <div class="sds-field">
   <label for="slug">Project URL</label>
-  <input
+  <input class="sds-input"
     id="slug"
     name="slug"
     value="atlas"
@@ -339,12 +263,16 @@ constrained control:
 
 Application code owns validation timing and message content.
 
+### Related
+
+[Error summaries](../guides/composition-patterns.md), [callout](./feedback.md#callout).
+
 ## Horizontal fields
 
 ```html
 <div class="sds-field" data-sds-orientation="horizontal">
   <label for="owner">Owner</label>
-  <select id="owner" name="owner" aria-describedby="owner-help">
+  <select class="sds-select" id="owner" name="owner" aria-describedby="owner-help">
     <option>Alex</option>
     <option>Jordan</option>
   </select>
@@ -352,42 +280,67 @@ Application code owns validation timing and message content.
 </div>
 ```
 
-The field stacks below 40rem.
+### Options
+
+Use `data-sds-orientation="horizontal"` on `.sds-field`. It stacks below `40rem`;
+the default orientation is vertical.
+
+### Accessibility
+
+Keep label, control, and help in reading order even when they appear side by side.
+
+### Related
+
+[Form and field](#form-and-field), [responsive composition](./layout.md#responsive-composition).
 
 ## Checkbox and radio
 
 Wrap the native input in `.sds-choice`:
 
 ```html
-<fieldset class="sds-form">
+<fieldset class="sds-form sds-fieldset">
   <legend>Notifications</legend>
   <label class="sds-choice">
-    <input type="checkbox" name="notifications" checked>
+    <input class="sds-checkbox" type="checkbox" name="notifications" checked>
     Send email notifications
   </label>
   <label class="sds-choice">
-    <input type="checkbox" name="digest">
+    <input class="sds-checkbox" type="checkbox" name="digest">
     Send a weekly digest
   </label>
 </fieldset>
 ```
 
+### Options
+
+Use native `checked`, `disabled`, and `required`. Give radio options the same
+`name` and different submitted `value`s.
+
+### Accessibility
+
+Group related choices with `fieldset` and `legend`, and label every input.
+
+### More examples
+
+Radio buttons select one value from a group:
+
 ```html
-<fieldset class="sds-form">
+<fieldset class="sds-form sds-fieldset">
   <legend>Visibility</legend>
   <label class="sds-choice">
-    <input type="radio" name="visibility" value="private" checked>
+    <input class="sds-radio" type="radio" name="visibility" value="private" checked>
     Private
   </label>
   <label class="sds-choice">
-    <input type="radio" name="visibility" value="public">
+    <input class="sds-radio" type="radio" name="visibility" value="public">
     Public
   </label>
 </fieldset>
 ```
 
-Use `fieldset` and `legend` for related choices. Use native `checked` and
-`disabled` state.
+### Related
+
+[Switch](#switch) for immediately applied settings, [form and field](#form-and-field).
 
 ## Switch
 
@@ -396,7 +349,7 @@ label so the complete visible label remains clickable:
 
 ```html
 <label class="sds-switch">
-  <input
+  <input class="sds-checkbox"
     type="checkbox"
     role="switch"
     name="automaticUpdates"
@@ -406,8 +359,7 @@ label so the complete visible label remains clickable:
 </label>
 ```
 
-The native `checked`, `disabled`, `required`, and form-submission behavior
-remain intact.
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -417,14 +369,42 @@ remain intact.
 | `disabled` on input | Native disabled state | Enabled |
 | `aria-invalid="true"` on input | Invalid semantics and appearance | Valid or unknown |
 
+### Accessibility
+
 Use a checkbox rather than a switch when the user is selecting an item for a
 later submit action. Use a switch when changing the value takes effect
-immediately.
+immediately. Keep the input inside its label; native constraints and submission remain intact.
+
+### Related
+
+[Checkbox and radio](#checkbox-and-radio), [validation](#help-and-validation).
 
 ## File input
 
-Native file inputs are styled automatically inside an SDS root. Use
-`.sds-file-input` as an explicit hook outside that scope:
+For a compact native file picker:
+
+```html
+<label for="attachment">Attachment</label>
+<input class="sds-file-input" id="attachment" name="attachment" type="file">
+```
+
+### Options
+
+| Option | Values | Default |
+|---|---|---|
+| `data-sds-size` on `.sds-file-upload` or `.sds-file-input` | `sm`, `md`, `lg` | `md` |
+
+Use native `accept`, `multiple`, `required`, and `disabled` attributes.
+
+### Accessibility
+
+Label the input and describe file restrictions. Applications own size/content
+validation, previews, and uploads. `accept` is a picker hint, not security
+validation; validate again on the server.
+
+### More examples
+
+For a full upload surface:
 
 ```html
 <div class="sds-field">
@@ -453,11 +433,6 @@ Native file inputs are styled automatically inside an SDS root. Use
 </div>
 ```
 
-Use native `accept`, `multiple`, `required`, and `disabled` attributes.
-Applications remain responsible for validating file content and size,
-displaying selected-file previews, and performing uploads. Do not treat
-`accept` as security validation; validate files again on the server.
-
 `.sds-file-upload`, `.sds-file-upload-surface`, and
 `.sds-file-upload-action` reproduce the established dashed SDS upload area.
 The transparent native input covers the complete surface. Clicking anywhere
@@ -466,10 +441,10 @@ behavior where supported. SDS Lite does not implement custom drag-and-drop
 handling. Omit those wrappers when the visible compact native input is
 preferred.
 
-| Option | Values | Default |
-|---|---|---|
-| `data-sds-size` on `.sds-file-upload` or `.sds-file-input` | `sm`, `md`, `lg` | `md` |
-
 On a composed upload, size adjusts the outer padding, drop-area padding,
 action, icon, and supporting text together. On a native file input, it adjusts
 the visible file-selector button.
+
+### Related
+
+[Form fields](#form-and-field), [progress](./loading.md#progress-and-measurement).

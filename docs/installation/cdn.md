@@ -51,7 +51,7 @@ Save this as `index.html` and open it through any web server:
           <h1>My application</h1>
           <p>SDS Lite is ready.</p>
         </div>
-        <button type="button">Get started</button>
+        <button class="sds-button" type="button">Get started</button>
       </header>
     </main>
   </body>
@@ -95,7 +95,7 @@ Add this inside the SDS root when you need `notify()` alongside automatic
 behavior:
 
 ```html
-<button id="save" type="button">Save</button>
+<button class="sds-button" id="save" type="button">Save</button>
 <script type="module">
   import {
     notify,

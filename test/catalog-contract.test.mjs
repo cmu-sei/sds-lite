@@ -243,6 +243,31 @@ test('catalog quick starts load automatic behavior', () => {
   assert.doesNotMatch(source, /import '@cmu-sei\/sds-lite'\s*</)
 })
 
+test('live and copyable custom-element examples use declared option values', () => {
+  const examples = Array.from(document.querySelectorAll('pre[id]'), (example) => {
+    const template = document.createElement('template')
+    template.innerHTML = example.textContent
+    return { name: example.id, root: template.content }
+  })
+  for (const { name, root } of [{ name: 'live catalog', root: document }, ...examples]) {
+    for (const element of interfaceManifest.customElements) {
+      for (const instance of root.querySelectorAll(element.tagName)) {
+        for (const attribute of element.attributes) {
+          if (!instance.hasAttribute(attribute.name)) continue
+          const value = instance.getAttribute(attribute.name)
+          const values = attribute.values ?? interfaceManifest.optionFamilies[attribute.family]?.values ?? []
+          if (values.length > 0) {
+            assert.ok(values.includes(value), `${name}: <${element.tagName}> uses unsupported ${attribute.name}="${value}"`)
+          }
+          if (attribute.type === 'number') {
+            assert.ok(value.trim() && Number.isFinite(Number(value)), `${name}: ${attribute.name} must be a finite number`)
+          }
+        }
+      }
+    }
+  }
+})
+
 test('catalog custom elements use only declared host attributes', () => {
   for (const module of customElementsManifest.modules) {
     for (const declaration of module.declarations ?? []) {

@@ -1,87 +1,35 @@
-# Get started in five minutes
+# Quick start
 
 [Documentation](./README.md) / Getting started
 
-This guide builds a small page with a card, form, tabs, dropdown, and
-notification. Choose NPM when your application has a build step. Choose CDN
-for plain HTML or a quick prototype.
+Build a styled form with no account, token, build step, or JavaScript.
+For a bundled application, use [NPM installation](./installation/npm.md) instead.
 
-## 1. Load SDS Lite
+## 1. Add the stylesheet
 
-### NPM
-
-First complete the one-time
-[GitHub Packages setup](./installation/npm.md#configure-github-packages), then:
-
-```sh
-npm install @cmu-sei/sds-lite
-```
-
-Import the stylesheet and automatic behavior once in the browser entry for
-your application:
-
-```js
-import '@cmu-sei/sds-lite/sds.css'
-import '@cmu-sei/sds-lite/auto'
-```
-
-### CDN
-
-Add these version-pinned tags to `<head>`:
+Add this version-pinned link to `<head>`:
 
 ```html
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/sds.css"
 >
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/auto.js"
-></script>
 ```
 
-## 2. Add an SDS root
+Keeping Tailwind, Bootstrap, or Material? Follow the
+[coexistence setup](./guides/theming.md#combine-design-systems) before loading styles.
 
-`data-sds-root` scopes SDS Lite styles and defines its design tokens. It can
-go on `<body>`, the application shell, or a smaller embedded region.
-
-```html
-<body data-sds-root>
-  <!-- Your application -->
-</body>
-```
-
-Forge and the light color scheme are the defaults. A production page that
-follows the operating system can be explicit:
+## 2. Add a form
 
 ```html
-<body
-  data-sds-root
-  data-sds-color-scheme="system"
->
-```
-
-## 3. Use native HTML
-
-Common elements need no SDS classes:
-
-```html
-<main class="sds-page">
-  <header class="sds-section-header">
-    <div>
-      <p class="sds-eyebrow">Workspace</p>
-      <h1>Project Atlas</h1>
-      <p>Review the project details before continuing.</p>
-    </div>
-    <button type="button">Create review</button>
-  </header>
-
+<main data-sds-root class="sds-page">
   <article class="sds-card">
-    <h2>Project details</h2>
+    <h1 class="sds-text-h3">Project details</h1>
     <form class="sds-form">
       <div class="sds-field">
         <label for="project-name">Project name</label>
         <input
+          class="sds-input"
           id="project-name"
           name="projectName"
           value="Atlas"
@@ -91,101 +39,33 @@ Common elements need no SDS classes:
         <small id="project-name-help">Use a short, recognizable name.</small>
       </div>
       <div class="sds-action-group">
-        <button type="submit">Save</button>
-        <button type="button" data-sds-variant="text">Cancel</button>
+        <button class="sds-button" type="submit">Save</button>
+        <button class="sds-button" type="button" data-sds-variant="text">Cancel</button>
       </div>
     </form>
   </article>
 </main>
 ```
 
-SDS Lite automatically styles the native heading, text, button, and input.
-Classes describe larger recipes such as a page, card, form field, or action
-group. Attributes such as `data-sds-variant` change a documented option.
+The input and buttons should now be styled. Browser validation and form
+submission remain native; your application supplies save and cancel behavior.
 
-For a responsive collection, let the available space determine the column
-count. This grid uses up to three columns and collapses before a card becomes
-narrower than `18rem`:
+## What to remember
 
-```html
-<section
-  class="sds-grid"
-  data-sds-columns="3"
-  data-sds-min-column-width="lg"
->
-  <article class="sds-card">First project</article>
-  <article class="sds-card">Second project</article>
-  <article class="sds-card">Third project</article>
-</section>
-```
+- `data-sds-root` supplies theme tokens. Recipe classes opt elements into styling.
+- Option attributes change a recipe, not an unmarked element. Unmarked HTML retains host styling.
+- Heading tags express structure; `.sds-text-h1` through `.sds-text-h6` choose visual size.
+- Add `.sds-document` when SDS should own page typography and background.
 
-See [Responsive composition](./components/layout.md#responsive-composition) for
-container-aware Cluster layouts, fluid spacing, and custom thresholds.
+Forge and light are the defaults. To follow the operating system, add
+`data-sds-color-scheme="system"` to the root.
 
-## 4. Add accessible behavior
+## Add only what you need
 
-Custom elements enhance ordinary light-DOM markup. For a client-rendered page,
-SDS Lite can supply classes, IDs, relationships, and initial state:
-
-```html
-<sds-tabs>
-  <div aria-label="Project sections">
-    <button aria-selected="true">Overview</button>
-    <button>Activity</button>
-  </div>
-
-  <section>Overview content</section>
-  <section>Activity content</section>
-</sds-tabs>
-```
-
-```html
-<sds-dropdown>
-  <button data-sds-variant="text">Actions</button>
-  <menu>
-    <li><button type="button">Rename</button></li>
-    <li><button type="button" data-sds-tone="danger">Delete</button></li>
-  </menu>
-</sds-dropdown>
-```
-
-For server-rendered applications, author the complete pre-upgrade markup shown
-in the [server-rendering guide](./guides/server-rendering.md).
-
-## 5. Send a notification
-
-With NPM, call `notify()` from your browser code:
-
-```js
-import { notify } from '@cmu-sei/sds-lite'
-
-notify('Your project was saved.', {
-  title: 'Saved',
-  tone: 'success',
-})
-```
-
-With CDN, import `notify()` from the `auto.js` module already loaded in
-step 1:
-
-```html
-<script type="module">
-  import { notify } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.2.1/dist/auto.js'
-
-  notify('Your project was saved.', {
-    title: 'Saved',
-    tone: 'success',
-  })
-</script>
-```
-
-`notify()` sets up the toast behavior it needs, creates or reuses a toaster,
-and supplies accessible markup. It does not require the `/auto` import.
-
-## What to read next
-
-- [NPM installation](./installation/npm.md) for build-tool and import details.
-- [CDN installation](./installation/cdn.md) for complete HTML files.
-- [Component guides](./components/README.md) for copy-ready recipes.
-- [Framework integration](./guides/frameworks.md) for React, Vue, Angular,
-  Svelte, and server templates.
+| Next task | Guide |
+|---|---|
+| Find a button, input, grid, or other feature | [Feature index](./components/README.md#feature-index) |
+| Add tabs, a menu, or a notification | [Interactive setup](./installation/cdn.md#complete-starter-page), then [tabs](./components/navigation.md#tabs), [dropdown](./components/navigation.md#dropdown-menu), or [toast](./components/feedback.md#toast) |
+| Use React, Vue, Angular, or Svelte | [Framework integration](./guides/frameworks.md) |
+| Render on the server | [Server rendering](./guides/server-rendering.md) |
+| Fix an unstyled control | [Troubleshooting](./troubleshooting.md#button-is-unstyled) |

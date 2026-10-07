@@ -6,7 +6,7 @@ test('form-control borders match the design-system palette in both themes and sc
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.locator('[data-sds-root]').evaluate((root) => {
-    root.insertAdjacentHTML('afterbegin', '<input id="standalone-file" type="file">')
+    root.insertAdjacentHTML('afterbegin', '<input class="sds-file-input" id="standalone-file" type="file">')
   })
 
   const colors = {
