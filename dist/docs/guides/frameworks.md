@@ -5,22 +5,16 @@
 SDS Lite uses ordinary HTML attributes, light DOM, native events, and custom
 elements. Framework adapters are not required.
 
-`<sds-combobox>` contains a native input, so frameworks can listen for its
-ordinary `input` and `change` events and keep the input's `name` for
-submitting text. For rich options, add `data-label` to control the selected
-input text and an application-owned `data-*` ID to locate the original
-record from `sds-select`'s `event.detail.option`. If submitting an ID, use
-a separate named input and clear it on a new search or form reset. Invalidate
-it explicitly for unrelated programmatic query changes. In the
-default close-on-select mode and with `keep-open`, the chosen text replaces
-the input value and `input` and `change` fire before `sds-select`. `keep-open`
-keeps the last search's other matches available until the user edits the
-input. Do not assume the combobox submits IDs or stores records.
-See the [forms recipe](../components/forms.md#rich-suggestions-and-record-ids).
-If the server response must include the fully enhanced accessibility state,
-author the complete closed markup described in the
-[server-rendering guide](./server-rendering.md#fully-authored-combobox).
-In either server-rendering path, register behavior after hydration.
+Using Tailwind, Bootstrap, or Material alongside SDS Lite? Configure the
+[shared cascade](./theming.md#combine-design-systems) before importing styles.
+
+Find: [React](#react), [Vue](#vue), [Angular](#angular), [Svelte](#svelte),
+[server templates](#server-templates-and-static-generators), or
+[SSR framework setups](#copy-ready-ssr-setups).
+
+For record IDs and framework form state, see [advanced combobox workflows](./combobox.md).
+For SSR, register after hydration; use the [server-rendering guide](./server-rendering.md)
+when initial markup needs complete accessibility state.
 
 ## React
 
@@ -40,7 +34,7 @@ export function ProjectCard() {
     <article className="sds-card">
       <h2>Project Atlas</h2>
       <p>Ready for review.</p>
-      <button type="button">Open project</button>
+      <button className="sds-button" type="button">Open project</button>
     </article>
   )
 }
@@ -57,8 +51,8 @@ function ProjectTabs() {
       onsds-change={(event) => console.log(event.detail.value)}
     >
       <div aria-label="Project sections">
-        <button type="button" value="overview">Overview</button>
-        <button type="button" value="activity">Activity</button>
+        <button className="sds-button" type="button" value="overview">Overview</button>
+        <button className="sds-button" type="button" value="activity">Activity</button>
       </div>
       <section>Overview content</section>
       <section>Activity content</section>
@@ -67,63 +61,8 @@ function ProjectTabs() {
 }
 ```
 
-For a record picker in React 19, `onsds-select` receives the selected
-`<li>`; the hidden input remains application-owned:
-
-```tsx
-import { useRef, useState } from 'react'
-
-function RecordPicker() {
-  const [projectId, setProjectId] = useState('')
-  const [projectName, setProjectName] = useState('')
-  const queryRef = useRef<HTMLInputElement>(null)
-
-  return (
-    <form onReset={() => {
-      setProjectId('')
-      setProjectName('')
-    }}>
-      <label htmlFor="record-query">Project</label>
-      <sds-combobox
-        onsds-select={(event) => {
-          const id = event.detail.option.dataset.projectId
-          const name = event.detail.option.dataset.label
-          if (!id || !name) throw new Error('Selected project has no ID or label')
-          setProjectId(id)
-          setProjectName(name)
-          if (queryRef.current) queryRef.current.value = ''
-        }}
-      >
-        <input ref={queryRef} id="record-query" name="projectQuery" type="search"
-          role="combobox" aria-autocomplete="list"
-          aria-controls="record-options" aria-expanded={false}
-          onInput={() => {
-            setProjectId('')
-            setProjectName('')
-          }} />
-        <ul id="record-options" className="sds-combobox-list"
-          role="listbox" popover="manual" hidden>
-          <li id="record-atlas" role="option" aria-selected="false"
-            data-label="Atlas" data-project-id="p-atlas">
-            <strong>Atlas</strong> — Research
-          </li>
-        </ul>
-      </sds-combobox>
-      <input type="hidden" name="projectId" value={projectId} readOnly />
-      <p role="status">{projectId ? `Selected project: ${projectName}` : ''}</p>
-      <button type="submit">Submit project</button>
-    </form>
-  )
-}
-```
-
-Server validation must still check `projectId`. Without JavaScript, the
-search input submits text but the hidden ID stays empty; use a native
-`<select>` fallback if selecting a valid ID must work without JavaScript.
-Avoid controlling the visible input with stale framework state: the
-combobox updates its native value when an option is chosen. Clearing that
-value after saving the ID is application logic; it does not emit another
-`input` event or erase the ID.
+For IDs rather than submitted display text, use the
+[React 19 record picker](./combobox.md#react-19-record-picker).
 
 For React 18 and earlier, attach custom events with a ref:
 
@@ -147,8 +86,8 @@ export function ProjectTabs() {
   return (
     <sds-tabs ref={tabsRef}>
       <div aria-label="Project sections">
-        <button type="button" value="overview">Overview</button>
-        <button type="button" value="activity">Activity</button>
+        <button className="sds-button" type="button" value="overview">Overview</button>
+        <button className="sds-button" type="button" value="activity">Activity</button>
       </div>
       <section>Overview content</section>
       <section>Activity content</section>
@@ -174,8 +113,8 @@ import '@cmu-sei/sds-lite/vue'
 <template>
   <sds-tabs @sds-change="onChange">
     <div aria-label="Project sections">
-      <button type="button" value="overview">Overview</button>
-      <button type="button" value="activity">Activity</button>
+      <button class="sds-button" type="button" value="overview">Overview</button>
+      <button class="sds-button" type="button" value="activity">Activity</button>
     </div>
     <section>Overview content</section>
     <section>Activity content</section>
@@ -189,14 +128,8 @@ function onChange(event) {
 </script>
 ```
 
-For a Vue record picker, use `@sds-select="onSelect"` on the combobox and
-`@input="projectId = ''"` on its native input. Read
-`event.detail.option.dataset.projectId` in `onSelect`, then bind
-`:value="projectId"` to an application-owned hidden input. Validate the
-ID before using it. To leave the search field empty after selection, clear
-its native `.value` in `onSelect` after storing the ID, and show the
-selection separately. Do not use a Vue model for the visible input unless it
-also synchronizes the value SDS Lite writes on selection.
+For IDs and native query synchronization, see the
+[Vue record picker](./combobox.md#vue-record-picker).
 
 Configure the Vue compiler to treat tags beginning with `sds-` as custom
 elements. The `/vue` entry contributes generated global component types and
@@ -283,8 +216,8 @@ import '@cmu-sei/sds-lite/auto'
 ```svelte
 <sds-tabs onsds-change={(event) => console.log(event.detail.value)}>
   <div aria-label="Project sections">
-    <button type="button" value="overview">Overview</button>
-    <button type="button" value="activity">Activity</button>
+    <button class="sds-button" type="button" value="overview">Overview</button>
+    <button class="sds-button" type="button" value="activity">Activity</button>
   </div>
   <section>Overview content</section>
   <section>Activity content</section>

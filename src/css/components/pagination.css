@@ -21,6 +21,7 @@
   }
 
   :where(.sds-pagination li > :is(a, button, span)) {
+    box-sizing: border-box;
     display: inline-flex;
     min-inline-size: 2.125rem;
     block-size: 2.125rem;
@@ -32,6 +33,7 @@
     border-radius: var(--sds-radius-control);
     color: var(--sds-color-text-muted);
     background: var(--sds-color-surface-default);
+    font-family: inherit;
     font-weight: 600;
     line-height: 1;
     text-decoration: none;

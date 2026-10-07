@@ -1,0 +1,108 @@
+@layer sds.utilities {
+  :where(.sds-text-h1, .sds-text-h2, .sds-text-h3, .sds-text-h4, .sds-text-h5, .sds-text-h6, .sds-text-lead, .sds-text-body, .sds-text-caption1, .sds-text-caption2) {
+    margin: 0;
+    font-size: var(--sds-typography-small-size);
+    line-height: var(--sds-typography-small-leading);
+    letter-spacing: 0;
+  }
+
+  :where(.sds-text-h1, .sds-text-h2, .sds-text-h3, .sds-text-h4) {
+    font-family: var(--sds-font-heading);
+    font-weight: var(--sds-typography-heading-weight);
+    text-transform: none;
+  }
+
+  :where(.sds-text-h5, .sds-text-h6, .sds-text-body, .sds-text-caption1, .sds-text-caption2) {
+    font-family: var(--sds-font-body);
+  }
+
+  :where(.sds-text-h1) {
+    --sds-typography-small-size: 1.875rem;
+    --sds-typography-small-leading: 2.375rem;
+    --sds-typography-large-size: 2.25rem;
+    --sds-typography-large-leading: 2.625rem;
+  }
+
+  :where(.sds-text-h2) {
+    --sds-typography-small-size: 1.5rem;
+    --sds-typography-small-leading: 1.75rem;
+    --sds-typography-large-size: 1.875rem;
+    --sds-typography-large-leading: 2.25rem;
+  }
+
+  :where(.sds-text-h3) {
+    --sds-typography-small-size: 1.25rem;
+    --sds-typography-small-leading: 1.625rem;
+    --sds-typography-large-size: 1.5rem;
+    --sds-typography-large-leading: 2rem;
+  }
+
+  :where(.sds-text-h4) {
+    --sds-typography-small-size: 1.125rem;
+    --sds-typography-small-leading: 1.25rem;
+    --sds-typography-large-size: 1.25rem;
+    --sds-typography-large-leading: 1.75rem;
+    text-transform: uppercase;
+  }
+
+  :where(.sds-text-h5, .sds-text-h6) {
+    --sds-typography-small-size: 0.75rem;
+    --sds-typography-small-leading: 1.25rem;
+    --sds-typography-large-size: 0.875rem;
+    --sds-typography-large-leading: 1.25rem;
+    font-weight: 600;
+    text-transform: none;
+  }
+
+  :where(.sds-text-h5) {
+    text-transform: uppercase;
+  }
+
+  :where(.sds-text-lead) {
+    --sds-typography-small-size: 1.25rem;
+    --sds-typography-small-leading: 1.5rem;
+    --sds-typography-large-size: 1.5rem;
+    --sds-typography-large-leading: 2rem;
+    font-family: var(--sds-font-heading);
+    font-weight: 400;
+  }
+
+  :where(.sds-text-body) {
+    --sds-typography-small-size: 0.875rem;
+    --sds-typography-small-leading: 1.25rem;
+    --sds-typography-large-size: 1rem;
+    --sds-typography-large-leading: 1.5rem;
+    font-weight: 400;
+  }
+
+  :where(.sds-text-caption1) {
+    --sds-typography-small-size: 1.125rem;
+    --sds-typography-small-leading: 1.5rem;
+    --sds-typography-large-size: 1.25rem;
+    --sds-typography-large-leading: 1.5rem;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  :where(.sds-text-caption2) {
+    --sds-typography-small-size: 0.75rem;
+    --sds-typography-small-leading: 1.25rem;
+    --sds-typography-large-size: 0.875rem;
+    --sds-typography-large-leading: 1.25rem;
+    color: var(--sds-color-text-muted);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  @media (min-width: 48rem) {
+    :where(.sds-text-h1, .sds-text-h2, .sds-text-h3, .sds-text-h4, .sds-text-h5, .sds-text-h6, .sds-text-lead, .sds-text-body, .sds-text-caption1, .sds-text-caption2):where(:not([data-sds-size="sm"])) {
+      font-size: var(--sds-typography-large-size);
+      line-height: var(--sds-typography-large-leading);
+    }
+  }
+
+  :where(.sds-text-h1, .sds-text-h2, .sds-text-h3, .sds-text-h4, .sds-text-h5, .sds-text-h6, .sds-text-lead, .sds-text-body, .sds-text-caption1, .sds-text-caption2):where([data-sds-size="lg"]) {
+    font-size: var(--sds-typography-large-size);
+    line-height: var(--sds-typography-large-leading);
+  }
+}

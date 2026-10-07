@@ -2,6 +2,9 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Data display
 
+Find: [avatar](#avatar), [card](#card), [metric](#datapoint), [list](#list),
+[timeline](#timeline), or [table](#table).
+
 ## Avatar
 
 Use an image when a portrait is available:
@@ -14,19 +17,7 @@ Use an image when a portrait is available:
 >
 ```
 
-Use text initials when there is no image. Supply the full name as the
-accessible label; SDS Lite does not derive initials from names:
-
-```html
-<span
-  class="sds-avatar"
-  role="img"
-  data-sds-tone="accent"
-  aria-label="Alex Morgan"
->
-  AM
-</span>
-```
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -35,9 +26,21 @@ accessible label; SDS Lite does not derive initials from names:
 | `data-sds-variant` | `subtle`, `solid`, `outline` | `subtle` |
 | `data-sds-tone` | Any semantic tone | Neutral |
 
+### Accessibility
+
 Use empty `alt=""` only when the adjacent text already identifies the person.
 An initials avatar needs `role="img"` and an `aria-label` unless equivalent
 visible text is present.
+
+### More examples
+
+SDS Lite does not derive initials from names:
+
+```html
+<span class="sds-avatar" role="img" data-sds-tone="accent" aria-label="Alex Morgan">
+  AM
+</span>
+```
 
 ### Avatar group
 
@@ -68,7 +71,7 @@ An avatar group is a list of people, not a generated image collection:
   <li>
     <sds-dropdown placement="block-end-end" width="sm" hide-caret>
       <button
-        class="sds-avatar"
+        class="sds-avatar sds-button"
         type="button"
         aria-label="View 4 more reviewers"
       >+4</button>
@@ -105,19 +108,32 @@ Add `data-sds-density="condensed"` to increase overlap. Applications decide how
 many people to show. Compose the existing dropdown for the overflow list;
 hovering avatars does not change their stacking order.
 
+### Related
+
+[Dropdown menu](./navigation.md#dropdown-menu), [badge](./feedback.md#badge).
+
 ## Card
 
 ```html
 <article class="sds-card">
   <p class="sds-card-label">Open findings</p>
-  <h2>12</h2>
+  <h2 class="sds-text-h3">12</h2>
   <p>Three require your attention.</p>
 </article>
 ```
 
-`.sds-card` and `.sds-card-label` have no variants. Use an `<article>` when
-the card is independently meaningful, `<section>` when it has a heading in the
-current page outline, or `<div>` for a purely visual group.
+### Options
+
+`.sds-card` and `.sds-card-label` have no variants. Compose typography and spacing explicitly.
+
+### Accessibility
+
+Use `<article>` for independently meaningful content, `<section>` for a titled
+region in the page outline, or `<div>` for a purely visual group.
+
+### Related
+
+[Grid](./layout.md#grid), [datapoint](#datapoint).
 
 ## Datapoint
 
@@ -134,10 +150,19 @@ context:
 </div>
 ```
 
-`data-sds-size` accepts `sm`, `md`, `lg`, or `xl`. Use `xl` for a primary
-metric in a dashboard summary or report hero; smaller sizes are preferable
-when several metrics appear together. `data-sds-tone` accepts every semantic
-tone.
+### Options
+
+`data-sds-size` accepts `sm`, `md`, `lg`, or `xl`; `data-sds-tone` accepts all
+semantic tones. See the [recipe reference](../reference/recipes.md) for defaults.
+Use smaller sizes for several metrics and `xl` for a primary summary metric.
+
+### Accessibility
+
+Include a readable label, value, and any units. Explain meaning in text, not color alone.
+
+### Related
+
+[Card](#card), [measurement](./loading.md#progress-and-measurement).
 
 ## List
 
@@ -160,14 +185,29 @@ tone.
 </ul>
 ```
 
-`data-sds-divided` adds separators. Omit `.sds-list-marker` for a single-column
-item. Set a consistent marker column when needed:
+### Options
+
+`data-sds-divided` adds separators; they are absent by default. Omit
+`.sds-list-marker` for single-column items. `--sds-list-marker-width` defaults to `auto`.
+
+### Accessibility
+
+Use an ordered list when sequence matters and an unordered list otherwise.
+Hide decorative markers, but keep meaningful status in visible text.
+
+### More examples
+
+Set a consistent marker column when needed:
 
 ```html
 <ol class="sds-list" style="--sds-list-marker-width: 2rem">
   ...
 </ol>
 ```
+
+### Related
+
+[Timeline](#timeline), [disclosure](./navigation.md#disclosure).
 
 ## Timeline
 
@@ -186,17 +226,21 @@ item. Set a consistent marker column when needed:
 </ol>
 ```
 
-Each item accepts any semantic tone. Mark the current event with
-`aria-current="step"`.
+### Options
 
 | Option | Target | Values | Default |
 |---|---|---|---|
 | `data-sds-orientation` | `.sds-timeline` | `horizontal`, `vertical` | `vertical` |
 | `data-sds-tone` | `.sds-timeline-item` | All semantic tones | Unaccented |
 
+### Accessibility
+
+Mark the current event with `aria-current="step"` and use meaningful time text.
 For a horizontal sequence, set `data-sds-orientation="horizontal"` and
 `tabindex="0"` on `.sds-timeline`. The tab stop lets keyboard users reach
 content that overflows the viewport.
+
+### More examples
 
 Replace a generated dot with a direct marker:
 
@@ -206,6 +250,10 @@ Replace a generated dot with a direct marker:
   <h3>Complete</h3>
 </li>
 ```
+
+### Related
+
+[List](#list), [workflow steps](../guides/composition-patterns.md).
 
 ## Table
 
@@ -233,6 +281,8 @@ Use native structure, a caption, and scoped headers:
 </div>
 ```
 
+### Options
+
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-size` on table | `sm`, `md`, `lg` | `md` |
@@ -244,6 +294,12 @@ Apply the same `data-sds-sticky` value to the header and every cell in that
 column. Table size changes header, body, and footer row density together. Use
 `.sds-table-container` whenever content can exceed the viewport.
 
+### Accessibility
+
+Provide a caption and scoped headers. Do not convey row state by hover or color alone.
+
+### More examples
+
 Keep visually hidden headers in the accessibility tree:
 
 ```html
@@ -254,3 +310,7 @@ Keep visually hidden headers in the accessibility tree:
   </tr>
 </thead>
 ```
+
+### Related
+
+[Pagination](./navigation.md#pagination), [sortable tables](../guides/composition-patterns.md).

@@ -102,7 +102,7 @@
     font-size: 0.875rem;
   }
 
-  :where(.sds-file-input, [data-sds-root] input[type="file"]) {
+  :where(.sds-file-input) {
     display: block;
     inline-size: fit-content;
     min-inline-size: 0;
@@ -140,8 +140,7 @@
   }
 
   :where(
-    .sds-file-input,
-    [data-sds-root] input[type="file"]
+    .sds-file-input
   )::file-selector-button {
     margin-inline-end: var(--sds-space-md);
     padding: var(--sds-space-xs) var(--sds-space-sm);
@@ -157,31 +156,27 @@
   }
 
   :where(
-    .sds-file-input[data-sds-size="sm"],
-    [data-sds-root] input[type="file"][data-sds-size="sm"]
+    .sds-file-input[data-sds-size="sm"]
   )::file-selector-button {
     padding: var(--sds-space-xs) var(--sds-space-sm);
     font-size: 0.875rem;
   }
 
   :where(
-    .sds-file-input[data-sds-size="lg"],
-    [data-sds-root] input[type="file"][data-sds-size="lg"]
+    .sds-file-input[data-sds-size="lg"]
   )::file-selector-button {
     padding: var(--sds-space-md) var(--sds-space-xl);
     font-size: 1.125rem;
   }
 
   :where(
-    .sds-file-input[aria-invalid="true"],
-    [data-sds-root] input[type="file"][aria-invalid="true"]
+    .sds-file-input[aria-invalid="true"]
   ) {
     border-color: var(--sds-color-form-invalid);
   }
 
   :where(
-    .sds-file-input:disabled,
-    [data-sds-root] input[type="file"]:disabled
+    .sds-file-input:disabled
   )::file-selector-button {
     color: var(--sds-color-form-disabled-text);
     background: var(--sds-color-form-disabled-background);
@@ -194,8 +189,7 @@
     }
 
     :where(
-      .sds-file-input:not(:disabled),
-      [data-sds-root] input[type="file"]:not(:disabled)
+      .sds-file-input:not(:disabled)
     ):hover::file-selector-button {
       color: var(--sds-color-action-primary-hover);
       background: var(--sds-color-interactive-subtle-hover);

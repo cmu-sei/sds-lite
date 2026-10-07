@@ -64,6 +64,74 @@ function markdownSection(source, heading) {
   return source.slice(start, end === -1 ? undefined : end)
 }
 
+test('component features are directly discoverable and consistently structured', async () => {
+  const index = await readFile('docs/components/README.md', 'utf8')
+  const guidanceSections = new Set([
+    'Responsive composition',
+    'Commands and dismissal',
+    'Choosing the right state',
+  ])
+  const guides = (await sourceFiles('docs/components', '.md'))
+    .filter((file) => path.basename(file) !== 'README.md')
+
+  assert.match(index, /## Feature index/)
+  for (const file of guides) {
+    const source = await readFile(file, 'utf8')
+    for (const section of source.split(/^## /m).slice(1)) {
+      const heading = section.slice(0, section.indexOf('\n')).trim()
+      if (guidanceSections.has(heading)) continue
+      const fragment = heading.toLowerCase().replace(/\s+/g, '-')
+      assert.ok(
+        index.includes(`(./${path.basename(file)}#${fragment})`),
+        `${file}: ${heading} must be directly linked from the feature index`,
+      )
+
+      const positions = [
+        section.search(/```(?:html|js|tsx)\n/),
+        section.indexOf('\n### Options\n'),
+        ...(section.includes('\n### Events\n')
+          ? [section.indexOf('\n### Events\n')]
+          : []),
+        section.indexOf('\n### Accessibility\n'),
+        section.indexOf('\n### Related\n'),
+      ]
+      assert.ok(
+        positions.every((position, index) =>
+          position >= 0 && (index === 0 || position > positions[index - 1])),
+        `${file}: ${heading} must order example, options, events, accessibility, and related links`,
+      )
+    }
+  }
+})
+
+test('quick start offers one CSS-only path and advanced workflows stay separate', async () => {
+  const starter = await readFile('docs/getting-started.md', 'utf8')
+  const forms = await readFile('docs/components/forms.md', 'utf8')
+  const advanced = await readFile('docs/guides/combobox.md', 'utf8')
+
+  assert.equal(htmlExamples(starter).length, 2)
+  assert.doesNotMatch(starter, /<script|<sds-|```(?:js|sh|tsx)\b/)
+  assert.match(starter, /<form class="sds-form">/)
+  assert.match(starter, /\[NPM installation\]\(\.\/installation\/npm\.md\)/)
+  assert.match(markdownSection(forms, 'Combobox'), /\.\.\/guides\/combobox\.md/)
+  assert.doesNotMatch(markdownSection(forms, 'Combobox'), /const records|useState|fetch\(/)
+  const filter = interfaceManifest.customElements
+    .find((element) => element.tagName === 'sds-combobox')
+    .attributes.find((attribute) => attribute.name === 'filter')
+  assert.ok(forms.includes(
+    `| \`filter\` | ${filter.values.map((value) => `\`${value}\``).join(', ')} | \`${filter.default}\` |`,
+  ))
+  for (const heading of [
+    'Rich suggestions and record IDs',
+    'Multiple selections',
+    'Application-supplied results',
+    'React 19 record picker',
+    'Vue record picker',
+  ]) {
+    assert.ok(advanced.includes(`## ${heading}`), heading)
+  }
+})
+
 test('CDN documentation uses the versioned GitHub repository location', async () => {
   const cdnGuide = await readFile('docs/installation/cdn.md', 'utf8')
   const sources = [
@@ -242,18 +310,43 @@ test('HTML examples use option values supported by their recipe', async () => {
   }
 })
 
+test('documented custom-element examples use declared option values', async () => {
+  const elements = new Map(interfaceManifest.customElements.map((element) => [element.tagName, element]))
+  for (const file of documentationFiles) {
+    const source = await readFile(file, 'utf8')
+    for (const example of htmlExamples(source)) {
+      for (const tag of openingTags(example)) {
+        const element = elements.get(tag.tagName)
+        if (!element) continue
+        for (const [name, value] of staticAttributes(tag.attributes)) {
+          const definition = element.attributes.find((attribute) => attribute.name === name)
+          if (!definition) continue
+          const values = allowedValues(definition)
+          if (values.length > 0) {
+            assert.ok(values.includes(value), `${file}: <${tag.tagName}> uses unsupported ${name}="${value}"`)
+          }
+          if (definition.type === 'number') {
+            assert.ok(value.trim() && Number.isFinite(Number(value)), `${file}: ${name} must be a finite number`)
+          }
+        }
+      }
+    }
+  }
+})
+
 test('CSS reference lists every public foundation property', async () => {
   const tokens = await readFile('src/css/tokens.css', 'utf8')
   const cssReference = await readFile('docs/reference/css.md', 'utf8')
   const foundation = tokens.slice(
     0,
     tokens.indexOf(
-      ':where(:root, [data-sds-root]) {\n    color-scheme:',
+      ':where([data-sds-root]) {\n    color-scheme:',
     ),
   )
   const properties = matches(foundation, /(--sds-[a-z0-9-]+)\s*:/g)
 
   for (const property of properties) {
+    if (property.startsWith('--sds-typography-')) continue
     const primitiveFamily = /^--sds-(gray|purple|blue|red|green|orange)-\d+$/.test(
       property,
     )

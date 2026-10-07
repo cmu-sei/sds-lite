@@ -3,7 +3,7 @@
   "globalAttributes": [
     {
       "name": "data-sds-root",
-      "description": "Scopes SDS Lite foundations, recipes, and tokens."
+      "description": "Establishes SDS Lite theme tokens and color scheme without styling native elements."
     },
     {
       "name": "data-sds-theme",
@@ -31,10 +31,6 @@
           "name": "system"
         }
       ]
-    },
-    {
-      "name": "data-sds-unstyled",
-      "description": "Opts a link out of automatic SDS Lite styling."
     },
     {
       "name": "data-sds-column-span",

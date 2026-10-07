@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import test from 'node:test'
 
 import { Window } from 'happy-dom'
@@ -9,6 +9,30 @@ const coreSource = await readFile('src/core.css', 'utf8')
 const window = new Window({ url: 'https://example.test/' })
 window.document.write(catalogSource)
 const { document } = window
+
+test('theme roots do not opt native elements into foundations', async () => {
+  const foundations = await readFile('src/css/foundations.css', 'utf8')
+  assert.doesNotMatch(foundations, /\[data-sds-root\]/)
+  assert.match(foundations, /\.sds-fieldset/)
+  assert.match(foundations, /\.sds-button/)
+})
+
+test('native recipes require explicit styling rather than a theme root', async () => {
+  for (const name of await readdir('src/css/components')) {
+    const source = await readFile(`src/css/components/${name}`, 'utf8')
+    assert.doesNotMatch(source, /\[data-sds-root\]/, name)
+  }
+  const typography = await readFile('src/css/components/typography.css', 'utf8')
+  assert.doesNotMatch(typography, /:where\(h[1-6]/)
+  assert.match(typography, /\.sds-text-h6/)
+  assert.match(typography, /min-width: 48rem/)
+})
+
+test('file-upload metadata only targets explicit recipes', async () => {
+  const manifest = JSON.parse(await readFile('interface-manifest.json', 'utf8'))
+  const recipe = manifest.recipes.find((candidate) => candidate.name === 'file-upload')
+  assert.equal(recipe.optionTargets['data-sds-size'], '.sds-file-upload, .sds-file-input')
+})
 
 test('the core stylesheet includes every native recipe', () => {
   for (const recipe of ['switch', 'file-input', 'avatar', 'pagination']) {

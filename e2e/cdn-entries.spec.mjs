@@ -27,9 +27,9 @@ async function openCdnPage(page, entry) {
               </script>
             </head>
             <body data-sds-root>
-              <button id="save" type="button">Save</button>
+              <button class="sds-button" id="save" type="button">Save</button>
               <sds-tabs>
-                <div aria-label="Sections"><button>One</button><button>Two</button></div>
+                <div aria-label="Sections"><button class="sds-button">One</button><button class="sds-button">Two</button></div>
                 <section>First</section><section>Second</section>
               </sds-tabs>
             </body>

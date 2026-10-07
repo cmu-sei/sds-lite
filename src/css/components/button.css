@@ -73,7 +73,7 @@
     );
   }
 
-  :where(.sds-button, [data-sds-root] button:not(.sds-tab)) {
+  :where(.sds-button) {
     --sds-button-accent: var(
       --sds-tone-strong,
       var(--sds-color-action-primary)

@@ -33,7 +33,7 @@ for (const theme of ['forge', 'plaid']) {
       await page.locator('[data-sds-root]').evaluate((root) => {
         root.insertAdjacentHTML(
           'afterbegin',
-          '<input id="standalone-file" type="file">',
+          '<input class="sds-file-input" id="standalone-file" type="file">',
         )
       })
       const focusColor = await page.locator('[data-sds-root]').evaluate((root) =>

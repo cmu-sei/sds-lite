@@ -120,6 +120,7 @@
       "Source Serif", ui-serif, Georgia, Cambria, "Times New Roman", serif;
     --sds-font-body: var(--sds-font-sans);
     --sds-font-heading: var(--sds-font-sans);
+    --sds-typography-heading-weight: 600;
 
     --sds-color-text-default: light-dark(
       var(--sds-gray-900),
@@ -354,7 +355,7 @@
     );
   }
 
-  :where(:root, [data-sds-root]) {
+  :where([data-sds-root]) {
     color-scheme: light;
   }
 
@@ -452,6 +453,7 @@
     --sds-gray-900: #1e1d1b;
     --sds-gray-950: #141211;
     --sds-font-heading: var(--sds-font-serif);
+    --sds-typography-heading-weight: 400;
     --sds-radius-control: 0;
     --sds-radius-container: 0;
   }

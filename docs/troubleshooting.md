@@ -2,22 +2,52 @@
 
 [Documentation](./README.md) / Troubleshooting
 
-## Nothing is styled
+Find the symptom, apply the smallest fix, then follow the linked recipe if needed.
 
-1. Confirm `sds.css` is present in the browser build.
-2. Confirm the element is inside `[data-sds-root]`.
-3. Check the network panel for a failed CDN request.
-4. Check whether application CSS intentionally overrides the layered rules.
+| Symptom | Check |
+|---|---|
+| Button or input is unstyled | [CSS and recipe classes](#button-is-unstyled) |
+| Tailwind or Bootstrap changes SDS controls | [Cascade layers](#tailwind-or-bootstrap-overrides-my-controls) |
+| Tabs or a menu do not respond | [Behavior setup and markup](#tabs-or-a-menu-do-not-respond) |
+| SSR hydration mismatch | [Registration timing](#hydration-reports-a-mismatch) |
+| Floating content is misplaced | [Structure and placement](#a-dropdown-tooltip-or-popover-is-misplaced) |
+| Combobox submits the wrong value | [Record identity](#a-combobox-submits-text-instead-of-a-record-id) |
+| Selected record ID is stale | [Selection invalidation](#selected-record-id-is-stale) |
+| Disabled link still activates | [Native versus ARIA state](#a-link-marked-disabled-still-activates) |
+| Dialog does not open | [Target and command](#a-dialog-does-not-open) |
+| Dark mode does not follow the system | [Root scheme](#dark-mode-does-not-follow-the-system) |
+| Notification throws during SSR | [Browser-only calls](#notify-throws-during-ssr) |
+| Custom tag has a type or compiler error | [Framework configuration](#typescript-does-not-recognize-a-custom-tag) |
+
+## Button is unstyled
+
+**Cause:** CSS is missing, or the native control has no recipe class.
+
+**Fix:** Load `sds.css`, add `.sds-button` or `.sds-input`, and use a root for
+theme tokens. Check failed requests in the network panel. A root or option
+attribute alone does not style a control.
 
 ```html
 <body data-sds-root>
-  <button type="button">Styled button</button>
+  <button class="sds-button" type="button">Styled button</button>
 </body>
 ```
 
-## A custom element does not respond
+More: [installation](./installation/npm.md#verify-the-setup).
 
-Confirm one behavior setup is loaded in the browser:
+## Tailwind or Bootstrap overrides my controls
+
+**Cause:** Host resets are unlayered or were loaded before the shared layer order.
+
+**Fix:** Declare the layer order before loading either system. Place resets
+below SDS and application utilities above it; remove separate unlayered host
+imports. See the [copy-ready coexistence setup](./guides/theming.md#combine-design-systems).
+
+## Tabs or a menu do not respond
+
+**Cause:** Behavior is not registered, or the child structure is invalid.
+
+**Fix:** Load one behavior entry in the browser:
 
 ```js
 import '@cmu-sei/sds-lite/auto'
@@ -30,13 +60,15 @@ import { setupSds } from '@cmu-sei/sds-lite'
 setupSds()
 ```
 
-Check the console. Invalid tabs and dropdown structures produce warnings
-instead of guessing an ambiguous relationship.
+Check console warnings and compare the direct children with the
+[tabs](./components/navigation.md#tabs) or [dropdown](./components/navigation.md#dropdown-menu)
+example. For SSR, use the registration timing below.
 
 ## Hydration reports a mismatch
 
-Use the side-effect-free entry and call `setupSds()` from the framework's
-post-hydration client lifecycle:
+**Cause:** Registration changed markup before the framework hydrated it.
+
+**Fix:** Use the side-effect-free entry and register after hydration:
 
 ```js
 import { setupSds } from '@cmu-sei/sds-lite'
@@ -45,77 +77,83 @@ import { setupSds } from '@cmu-sei/sds-lite'
 setupSds()
 ```
 
-If the mismatch happens before `setupSds()` runs, it comes from application
-markup rather than SDS Lite. To minimize changes after setup, render complete
-IDs, roles, ARIA relationships, selected state, tab order, and `hidden` panels
-on the server. See
-[Server rendering](./guides/server-rendering.md).
+If no SDS behavior ran before the mismatch, inspect application markup.
+For complete initial accessibility state, use the
+[server-rendering recipes](./guides/server-rendering.md).
 
 ## A dropdown, tooltip, or popover is misplaced
 
-- Keep the trigger and surface as direct children of the custom element.
-- Use a valid logical `placement`.
-- Use a nonnegative numeric `offset`.
-- Do not position the surface with application CSS.
-- Confirm the surface is not constrained by a transformed third-party
-  container.
+**Cause:** Invalid child structure or application positioning overrides.
 
-Placement is preferred, not fixed. SDS Lite flips the surface when the
-requested side would overflow.
+**Fix:** Keep trigger and surface as direct children, use a documented
+`placement` and nonnegative `offset`, and remove application positioning.
+Check transformed host containers. Placement may flip to avoid overflow.
 
-For a combobox, keep its native input and `ul` as direct children, with an
-optional empty `<output>` for no results. Suggestions use a manual Popover;
-the status output floats beside the input but remains outside the listbox.
-Both follow the input when scrolling. If selecting a rich option writes its
-description into the input, set a nonempty `data-label` on that `<li>`.
+For a [combobox](./components/forms.md#combobox), keep the input, `ul`, and
+optional empty `output` as direct children. See [overlays](./components/overlays.md).
 
 ## A combobox submits text instead of a record ID
 
-The named native input always submits its visible text, not `data-label` or
-an option's application-owned ID. Listen for `sds-select` and read the ID
-from `event.detail.option.dataset`, then store it in a separate named input.
-Clear that ID on user edits, unrelated programmatic query changes, and form
-reset. Clearing the query in `sds-select` after storing the chosen ID does
-not invalidate the selection.
-Validate the ID server-side; see the
-[rich record recipe](./components/forms.md#rich-suggestions-and-record-ids).
+**Cause:** A named native input submits its visible text, not a record ID.
+
+**Fix:** Put identity in `data-sds-value`, read `event.detail.value` in
+`sds-select`, and store it in a separate named input. Validate IDs server-side.
+If a description appears in the query, add a nonempty `data-label` to the option.
+See [rich suggestions and record IDs](./components/forms.md#rich-suggestions-and-record-ids).
+
+## Selected record ID is stale
+
+**Cause:** Query edits or a form reset did not invalidate the stored selection.
+
+**Fix:** Clear the ID on input edits and reset, then set it on `sds-select`.
+Unrelated programmatic query changes must clear it explicitly: assigning
+`.value` does not emit `input`. Clearing the query inside `sds-select` after
+storing the ID is intentional and does not invalidate that selection.
+See the [record-picker example](./components/forms.md#rich-suggestions-and-record-ids).
 
 ## A link marked disabled still activates
 
-`aria-disabled="true"` supplies semantics and appearance but cannot cancel
-navigation. Remove `href` only if the control is no longer a link, or prevent
-activation in application code. Prefer native `disabled` on buttons.
+**Cause:** `aria-disabled="true"` supplies semantics, not activation prevention.
+
+**Fix:** Prevent activation in application code, or remove `href` if the
+control is no longer a link. Prefer native `disabled` on buttons.
+See [link accessibility](./components/actions.md#link).
 
 ## A dialog does not open
 
-Confirm:
+**Cause:** The command target or browser behavior is missing.
 
-- the target is a native `<dialog>` with `.sds-dialog` or `.sds-panel`;
-- `commandfor` exactly matches its unique `id`;
-- `command` is `show-modal`, `close`, or `request-close`;
-- dialog behavior is registered;
-- the browser supports `HTMLDialogElement`.
+**Fix:** Target a native `<dialog class="sds-dialog">` or `.sds-panel` with a
+unique `id`. Match it in `commandfor`, use `show-modal`, `close`, or
+`request-close`, and load behavior in a browser supporting `HTMLDialogElement`.
+See [dialog commands](./components/overlays.md#commands-and-dismissal).
 
 ## Dark mode does not follow the system
 
-Set the scheme explicitly:
+**Cause:** An SDS root defaults to light rather than the operating-system scheme.
+
+**Fix:** Set the scheme explicitly:
 
 ```html
 <body data-sds-root data-sds-color-scheme="system">
 ```
 
-Without the attribute, the default is light.
+More: [themes and color schemes](./guides/theming.md#theme-and-color-scheme).
 
 ## `notify()` throws during SSR
 
-Importing it is safe; calling it creates browser DOM. Call it from a browser
-event or client lifecycle. Do not replace the error with a silent fallback.
+**Cause:** Calling `notify()` creates browser DOM; importing it does not.
+
+**Fix:** Call it from a browser event or client lifecycle, not server rendering.
+See [notifications](./components/feedback.md#toast).
 
 ## TypeScript does not recognize a custom tag
 
-Ensure the package declarations are included by the consuming TypeScript
-project. Some framework JSX compilers also require a local intrinsic-element
-declaration or compiler setting even when the DOM types are available.
+**Cause:** Framework types or custom-element compiler settings are missing.
+
+**Fix:** Import `/react` or `/vue` for typed markup. Vue also needs
+`isCustomElement`; Angular needs `CUSTOM_ELEMENTS_SCHEMA`. Check the
+[framework setup](./guides/frameworks.md) for your application.
 
 ## Still blocked
 

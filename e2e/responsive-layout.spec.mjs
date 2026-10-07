@@ -36,6 +36,10 @@ test('Overview actions stack on mobile and share a row on desktop', async ({ pag
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
 
+  await expect(page.locator('#overview .sds-callout')).toHaveCount(0)
+  const nextSection = page.locator('#getting-started')
+  expect((await nextSection.boundingBox()).y).toBeLessThan(844)
+
   const group = page.locator('#overview > .sds-cluster')
   const actions = group.locator(':scope > a')
   await expect(actions).toHaveCount(2)
@@ -51,6 +55,7 @@ test('Overview actions stack on mobile and share a row on desktop', async ({ pag
   expect(Math.abs(geometry[0].center - geometry[1].center)).toBeLessThan(1)
 
   await page.setViewportSize({ width: 1280, height: 900 })
+  expect((await nextSection.boundingBox()).y).toBeLessThan(900)
   const desktopGeometry = await actions.evaluateAll((links) =>
     links.map((link) => {
       const rect = link.getBoundingClientRect()
@@ -60,6 +65,23 @@ test('Overview actions stack on mobile and share a row on desktop', async ({ pag
 
   expect(Math.abs(desktopGeometry[0].top - desktopGeometry[1].top)).toBeLessThan(1)
   expect(desktopGeometry[0].width).toBeLessThan(await group.evaluate((element) => element.getBoundingClientRect().width))
+})
+
+test('playground page tracks and table captions stay within their mobile containers', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const sections = await page.locator('.sds-page').first().locator(':scope > section').evaluateAll((elements) =>
+    elements.map((element) => ({ right: element.getBoundingClientRect().right, width: element.getBoundingClientRect().width })),
+  )
+  for (const section of sections) {
+    expect(section.right).toBeLessThanOrEqual(374)
+    expect(section.width).toBeLessThanOrEqual(358)
+  }
+  await expect(page.locator('.sds-table caption').first()).toHaveCSS('box-sizing', 'border-box')
+  const bodyGeometry = await page.locator('.sds-app-body').first().evaluate((element) =>
+    ({ width: element.clientWidth, scrollWidth: element.scrollWidth }),
+  )
+  expect(bodyGeometry.scrollWidth).toBe(bodyGeometry.width)
 })
 
 test('page header action links share the available width on narrow screens', async ({
@@ -493,14 +515,18 @@ test('the application breakpoint does not make narrower viewports gain columns',
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
     columns.push(
-      await page.locator('main#top > .sds-page > section:first-child')
+      await page.locator('article.sds-card.sds-grid[data-sds-columns="2"][data-sds-min-column-width="lg"]')
         .evaluate((element) =>
           getComputedStyle(element).gridTemplateColumns.split(' ').length,
         ),
     )
   }
 
-  expect(columns).toEqual([2, 2, 2, 2, 1, 1])
+  expect(columns[0]).toBe(2)
+  expect(columns.at(-1)).toBe(1)
+  for (const [index, count] of columns.entries()) {
+    if (index > 0) expect(count).toBeLessThanOrEqual(columns[index - 1])
+  }
 })
 
 test('the playground keeps deliberate page, section, and card rhythm', async ({

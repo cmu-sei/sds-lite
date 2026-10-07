@@ -2,78 +2,11 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Layout
 
-## Responsive composition
+Find: [Grid](#grid), [Cluster](#cluster), [Stack](#stack), [spacing](#spacing-utilities),
+[page](#page-and-section), [sidebar](#standalone-sidebar), or [SEI shells](#sei-application-shells).
 
-SDS Lite favors layouts that respond to their own available space instead of
-viewport-specific utility variants. Start with the smallest interface that
-describes the content:
-
-| Need | Use |
-|---|---|
-| Cards or fields that should add columns when space permits | `.sds-grid` |
-| Related items that should wrap or stack when narrow | `.sds-cluster[data-sds-stack-at]` |
-| Content that is always vertical | `.sds-stack` |
-| Fluid gap or padding between supported bounds | Authored CSS with `clamp()` and SDS spacing tokens |
-| An unusual structural threshold | A small authored container query |
-
-Grid and Cluster respond to the space available to the layout, so the same markup
-works in a page, sidebar, dialog, or embedded region. Use media queries for
-viewport-owned behavior such as application navigation, not as the default way
-to compose local content.
-
-### Primitive names
-
-Grid, Cluster, and Stack name compositional patterns, not raw CSS display
-values. Grid creates responsive equal-width columns. Cluster is a wrapping
-flex row for related items. Stack creates a vertical content flow. Cluster and
-Stack use Flexbox internally, but intentionally do not expose the full Flexbox
-interface; Grid likewise does not mirror the full CSS Grid interface. Use
-authored CSS when direct control over alignment, distribution, tracks, growth,
-or shrinking is part of the application design.
-
-### Fluid spacing
-
-Use a documented option when one token value is enough. When spacing should
-grow gradually, override the standard CSS property with bounded token values:
-
-```css
-.project-grid {
-  gap: clamp(
-    var(--sds-space-md),
-    2vw,
-    var(--sds-space-xl)
-  );
-}
-```
-
-Unlayered application CSS overrides SDS Lite's layered defaults without
-specificity escalation. `clamp()` is best for scalar values such as `gap` and
-`padding`; use Grid, Cluster, or a container query for structural changes.
-
-### Custom thresholds
-
-The built-in Cluster thresholds cover most compositions. When content has a
-specific minimum width that does not match them, keep that decision local:
-
-```html
-<div class="sds-cluster report-actions">
-  <button type="button">Export report</button>
-  <button type="button">Create report</button>
-</div>
-```
-
-```css
-.report-actions { container-type: inline-size; }
-
-@container (max-width: 36rem) {
-  .report-actions > * {
-    flex-basis: 100%;
-  }
-}
-```
-
-Prefer this local escape hatch over adding application-specific responsive
-attributes to SDS Lite.
+Choose Grid for columns, Cluster for wrapping rows, and Stack for vertical flow.
+For fluid spacing or custom thresholds, see [responsive composition](#responsive-composition).
 
 ## Grid
 
@@ -87,6 +20,8 @@ nested in a flex or grid parent:
   <article class="sds-card">Third</article>
 </div>
 ```
+
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -106,6 +41,13 @@ how much room each column's content needs:
 | `lg` | `18rem` |
 | `xl` | `24rem` |
 | `2xl` | `32rem` |
+
+### Accessibility
+
+Keep content in reading order and test reflow at narrow widths and zoom.
+Do not use visual column placement to imply a different sequence.
+
+### More examples
 
 ```html
 <div
@@ -131,6 +73,10 @@ For item alignment, custom tracks, or other application-specific grid behavior,
 use authored CSS. SDS Lite intentionally does not mirror the full CSS Grid
 interface through attributes.
 
+### Related
+
+[Card](./data-display.md#card), [Cluster](#cluster), [custom thresholds](#custom-thresholds).
+
 ## Cluster
 
 ```html
@@ -141,9 +87,11 @@ interface through attributes.
 >
   <span class="sds-badge">Research</span>
   <span class="sds-badge">Engineering</span>
-  <button type="button">Add team</button>
+  <button class="sds-button" type="button">Add team</button>
 </div>
 ```
+
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -161,6 +109,12 @@ each direct child a full row when the cluster reaches the selected width:
 | `lg` | `48rem` |
 | `xl` | `64rem` |
 
+### Accessibility
+
+Keep related items in meaningful DOM order when they wrap or stack.
+
+### More examples
+
 ```html
 <header
   class="sds-cluster"
@@ -171,8 +125,8 @@ each direct child a full row when the cluster reaches the selected width:
     <p>Manage active projects.</p>
   </div>
   <div class="sds-action-group">
-    <button type="button">Import</button>
-    <button type="button">New project</button>
+    <button class="sds-button" type="button">Import</button>
+    <button class="sds-button" type="button">New project</button>
   </div>
 </header>
 ```
@@ -181,6 +135,10 @@ The threshold uses the cluster's own available width, so the same
 markup works in a full page, sidebar, dialog, or embedded region. It does not
 depend on the viewport. Use authored CSS when an application needs different
 alignment or distribution.
+
+### Related
+
+[Action group](./actions.md#action-group), [Grid](#grid), [Stack](#stack).
 
 ## Stack
 
@@ -195,7 +153,17 @@ Cluster:
 </article>
 ```
 
+### Options
+
 `data-sds-gap` accepts the shared gap scale and defaults to `lg`.
+
+### Accessibility
+
+Use semantic containers and a meaningful heading hierarchy; Stack only supplies layout.
+
+### Related
+
+[Card](./data-display.md#card), [spacing utilities](#spacing-utilities).
 
 ## Spacing utilities
 
@@ -209,6 +177,8 @@ Add tokenized margin or padding without a build step or application stylesheet:
   Section content
 </section>
 ```
+
+### Options
 
 Every spacing attribute accepts:
 
@@ -228,7 +198,13 @@ none | 2xs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl
 
 The explicit logical names remain understandable without remembering shorthand
 and adapt to the document's writing direction. For unusual values, use
-standard CSS with an SDS token:
+standard CSS with an SDS token.
+
+### Accessibility
+
+Test reflow and zoom when adding spacing, especially around controls.
+
+### More examples
 
 ```html
 <div style="margin-block-start: calc(var(--sds-space-lg) * 1.5)">
@@ -236,14 +212,11 @@ standard CSS with an SDS token:
 </div>
 ```
 
-## Page and section
+### Related
 
-`.sds-page` centers content at a maximum width of 80rem and supplies section
-spacing. `.sds-page-header` is the sticky application title and action row.
-It wraps actions naturally as space narrows and stacks below 40rem.
-`.sds-section-header` aligns section context and actions. The default rhythm
-uses 4XL space between page sections, 2XL space within a section, and 2XL card
-padding that reduces to XL on narrow screens.
+[Spacing tokens](../reference/css.md#spacing), [fluid spacing](#fluid-spacing).
+
+## Page and section
 
 ```html
 <main>
@@ -253,7 +226,7 @@ padding that reduces to XL on narrow screens.
       <h1>Overview</h1>
     </div>
     <div class="sds-action-group">
-      <button type="button">Create review</button>
+      <button class="sds-button" type="button">Create review</button>
     </div>
   </header>
 
@@ -269,6 +242,22 @@ padding that reduces to XL on narrow screens.
   </div>
 </main>
 ```
+
+### Options
+
+No recipe-specific options. `.sds-page` centers content at up to `80rem`.
+`.sds-page-header` is a sticky title/action row that stacks below `40rem`;
+`.sds-section-header` aligns section context and actions. Default spacing is
+4XL between sections, 2XL within sections, and 2XL card padding (XL when narrow).
+
+### Accessibility
+
+Use one primary `main`, meaningful headings, and descriptive action names.
+Check that sticky headers do not obscure focused content.
+
+### Related
+
+[Explicit typography](./prose.md#explicit-typography), [SEI shells](#sei-application-shells).
 
 ## Standalone sidebar
 
@@ -287,11 +276,70 @@ padding that reduces to XL on narrow screens.
 </div>
 ```
 
-This layout stacks at viewport widths of 64rem or less. Do not add `popover`
-to a contained standalone sidebar. Override its desktop width on the layout:
+### Options
+
+This layout stacks at viewport widths of `64rem` or less.
+`--sds-sidebar-width` defaults to `18rem`; set it on the layout.
+
+### Accessibility
+
+Label navigation and mark the current page with `aria-current="page"`.
+Do not add `popover` to a contained standalone sidebar.
+
+### More examples
+
+Override desktop width:
 
 ```html
 <div class="sds-sidebar-layout" style="--sds-sidebar-width: 22rem">
+```
+
+### Related
+
+[Application shell](#application-shell) for popover mobile navigation, [skip link](./navigation.md#skip-link).
+
+## Responsive composition
+
+Grid and Cluster respond to their own available width, so the same markup works
+in a page, sidebar, or dialog. Use media queries for viewport-owned behavior
+such as application navigation, not as the default for local composition.
+
+### Primitive names
+
+Grid means responsive columns; Cluster means a wrapping row; Stack means
+vertical flow. These are patterns, not exhaustive CSS Grid or Flexbox APIs.
+Use authored CSS for custom tracks, alignment, distribution, growth, or shrinking.
+
+### Fluid spacing
+
+Use an option for fixed token spacing and bounded CSS for fluid spacing:
+
+```css
+.project-grid {
+  gap: clamp(var(--sds-space-md), 2vw, var(--sds-space-xl));
+}
+```
+
+Unlayered application CSS overrides SDS defaults. Use `clamp()` for scalar
+values such as gap and padding, and container queries for structural changes.
+
+### Custom thresholds
+
+Keep content-specific thresholds local:
+
+```html
+<div class="sds-cluster report-actions">
+  <button class="sds-button" type="button">Export report</button>
+  <button class="sds-button" type="button">Create report</button>
+</div>
+```
+
+```css
+.report-actions { container-type: inline-size; }
+
+@container (max-width: 36rem) {
+  .report-actions > * { flex-basis: 100%; }
+}
 ```
 
 ## SEI application shells
@@ -302,6 +350,8 @@ Specialized shells require:
 import '@cmu-sei/sds-lite/brand.css'
 ```
 
+### Options
+
 `.sds-app` supports:
 
 | `data-sds-variant` | Purpose |
@@ -310,12 +360,18 @@ import '@cmu-sei/sds-lite/brand.css'
 | `simple` | Application framing without a sidebar |
 | `brochure` | Public Plaid site with CMU/SEI masthead and footer |
 
+### Accessibility
+
+Label navigation and icon controls, use a main landmark and skip link, and
+mark the current page. Preserve required brand and legal content. Mobile
+sidebar behavior also needs [JavaScript setup](../installation/npm.md#recommended-setup).
+
 ### Application shell
 
 ```html
 <div class="sds-app">
   <header class="sds-app-mobile-header">
-    <button
+    <button class="sds-button"
       type="button"
       data-sds-shape="icon"
       popovertarget="project-sidebar"
@@ -351,7 +407,7 @@ import '@cmu-sei/sds-lite/brand.css'
         </a>
         <button
           type="button"
-          class="sds-sidebar-close"
+          class="sds-sidebar-close sds-button"
           data-sds-shape="icon"
           popovertarget="project-sidebar"
           popovertargetaction="hide"
@@ -398,8 +454,8 @@ import '@cmu-sei/sds-lite/brand.css'
       </footer>
       <aside class="sds-app-action-bar" aria-label="Pending changes">
         <span>You have unsaved changes.</span>
-        <button type="button" data-sds-variant="text">Discard</button>
-        <button type="button">Save</button>
+        <button class="sds-button" type="button" data-sds-variant="text">Discard</button>
+        <button class="sds-button" type="button">Save</button>
       </aside>
     </div>
   </div>
@@ -428,7 +484,7 @@ image URL.
       Project Atlas
     </a>
     <div class="sds-action-group" aria-label="User actions">
-      <button type="button" data-sds-density="compact" data-sds-variant="text">Alex Morgan</button>
+      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text">Alex Morgan</button>
     </div>
   </header>
   <div class="sds-app-body">
@@ -453,3 +509,8 @@ content.
 
 The runnable catalog in [`index.html`](../../index.html) contains the complete
 brochure structure for copying and visual inspection.
+
+### Related
+
+[Standalone sidebar](#standalone-sidebar), [SEI token bridge](../guides/theming.md#sei-adoption),
+[brand imports](../installation/npm.md#specialized-application-shells).

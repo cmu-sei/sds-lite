@@ -10,10 +10,9 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Attribute | Values | Default | Purpose |
 |---|---|---|---|
-| `data-sds-root` | Presence |  | Scopes SDS Lite foundations, recipes, and tokens. |
+| `data-sds-root` | Presence |  | Establishes SDS Lite theme tokens and color scheme without styling native elements. |
 | `data-sds-theme` | `forge`, `plaid` | forge | Selects an SDS Lite theme. |
 | `data-sds-color-scheme` | `light`, `dark`, `system` | light | Selects a light, dark, or system color scheme. |
-| `data-sds-unstyled` | Presence |  | Opts a link out of automatic SDS Lite styling. |
 | `data-sds-column-span` | `full` |  | Lets a direct grid child span the full grid width. |
 | `data-sds-padding` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding on every side. |
 | `data-sds-padding-block` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized padding at the block start and end. |
@@ -30,21 +29,35 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | `data-sds-margin-inline-start` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the inline start. |
 | `data-sds-margin-inline-end` | `none`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` |  | Applies tokenized margin at the inline end. |
 
+## Layout and composition
+
+| Recipe | Classes | Elements | Options | Purpose |
+|---|---|---|---|---|
+| document | `.sds-document` | `<body>` |  | Opt-in standalone page typography, background, and margin reset. |
+
+## Content and data display
+
+| Recipe | Classes | Elements | Options | Purpose |
+|---|---|---|---|---|
+| heading | `.sds-text-h1`<br>`.sds-text-h2`<br>`.sds-text-h3`<br>`.sds-text-h4`<br>`.sds-text-h5`<br>`.sds-text-h6` | `<h1>`<br>`<h2>`<br>`<h3>`<br>`<h4>`<br>`<h5>`<br>`<h6>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| text | `.sds-text-lead`<br>`.sds-text-body`<br>`.sds-text-caption1`<br>`.sds-text-caption2` | `<p>`<br>`<span>`<br>`<div>`<br>`<small>`<br>`<figcaption>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
+
 ## Actions and forms
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
+| fieldset | `.sds-fieldset` | `<fieldset>` |  | Explicit border and shape for a native fieldset. |
 | button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `filled`, `tonal`, `outlined`, `text` (when omitted: filled for text buttons; text for icon buttons)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (when omitted: comfortable)<br>`data-sds-shape`: `icon` (when omitted: text)<br>`data-sds-block` (omitted by default) | Action styling for native buttons and links. |
 | link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (when omitted: primary)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (when omitted: inherited) | Link styling with semantic tone and emphasis. |
 | field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-field > small, .sds-field > label small`) (when omitted: muted help; inherited label color) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
 | form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit hooks for native form controls. |
 | input-group | `.sds-input-group`<br>`.sds-input-addon` |  | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native form control with a visible prefix or suffix. |
-| range |  | `<input>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native range input styling. |
+| range | `.sds-range` | `<input>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native range input styling. |
 | combobox-parts | `.sds-combobox-list` |  | `data-sds-value`: string (on `.sds-combobox-list > li`) (when omitted: displayed value) | Suggestion list for a native text input. |
-| choice | `.sds-choice` | `<label>` |  | Checkbox or radio with label text. |
+| choice | `.sds-choice`<br>`.sds-checkbox`<br>`.sds-radio` | `<label>`<br>`<input>` |  | Checkbox or radio with label text. |
 | switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`) | Native checkbox with switch appearance. |
-| file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-file-upload, .sds-file-input, [data-sds-root] input[type="file"]`) (default: `md`) | Native file input and composed upload surface. |
+| file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-file-upload, .sds-file-input`) (default: `md`) | Native file input and composed upload surface. |
 | action-group | `.sds-action-group` |  |  | Responsive layout for related actions. |
 
 ## Feedback and loading
@@ -57,8 +70,8 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (when omitted: subtle)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (omitted by default)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (omitted by default) | Contextual message in page content. |
 | toast-region | `.sds-toaster` |  | `data-sds-toast-open`: id (on `[data-sds-toast-open]`) (when omitted: no target)<br>`data-sds-toast-close` (on `sds-toast [data-sds-toast-close]`) (omitted by default) | Fixed notification region. |
 | spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Animated loading indicator. |
-| progress |  | `<progress>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native task progress styling. |
-| meter |  | `<meter>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native scalar measurement with semantic threshold colors. |
+| progress | `.sds-progress` | `<progress>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native task progress styling. |
+| meter | `.sds-meter` | `<meter>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native scalar measurement with semantic threshold colors. |
 | skeleton | `.sds-skeleton` |  |  | Loading placeholder. |
 | empty-state | `.sds-empty-state` |  |  | Empty-result message. |
 

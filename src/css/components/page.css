@@ -13,13 +13,8 @@
     background: var(--sds-color-surface-default);
   }
 
-  :where(.sds-page-header :is(h1, h2, h3, h4, h5, h6)) {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 500;
-  }
-
   :where(.sds-eyebrow) {
+    margin: 0;
     color: var(--sds-color-brand);
     font-size: 0.6875rem;
     font-weight: 700;
@@ -29,6 +24,7 @@
 
   :where(.sds-page) {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     inline-size: min(80rem, 100%);
     gap: var(--sds-space-4xl);
     margin-inline: auto;
@@ -37,6 +33,7 @@
 
   :where(.sds-page > section) {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--sds-space-2xl);
     scroll-margin-block-start:
       calc(var(--sds-space-4xl) + var(--sds-space-lg));

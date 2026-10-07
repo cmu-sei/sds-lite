@@ -7,8 +7,8 @@ content, names, state, focus decisions, and end-to-end testing.
 
 ## Start with semantic HTML
 
-- Use `<button>` for actions and `<a href>` for navigation.
-- Use `<label>` with form controls and `<fieldset>`/`<legend>` for groups.
+- Use `<button class="sds-button">` for actions and `<a href>` for navigation.
+- Use `<label>` with form controls and `<fieldset class="sds-fieldset">`/`<legend>` for groups.
 - Use native headings in a meaningful hierarchy.
 - Use `<table>`, `<caption>`, and scoped headers for tabular data.
 - Use `<dialog>`, `<details>`, `<nav>`, lists, and landmarks for their intended
@@ -23,7 +23,7 @@ Every control needs a name. Visible text is best. Icon-only controls need
 `aria-label` or another explicit relationship:
 
 ```html
-<button type="button" data-sds-shape="icon" aria-label="Close dialog">
+<button class="sds-button" type="button" data-sds-shape="icon" aria-label="Close dialog">
   <svg aria-hidden="true"><!-- icon --></svg>
 </button>
 ```
@@ -36,8 +36,8 @@ busy region needs a useful label.
 Use native state whenever it exists:
 
 ```html
-<button disabled>Save</button>
-<input type="checkbox" checked>
+<button class="sds-button" disabled>Save</button>
+<input class="sds-checkbox" type="checkbox" checked>
 <details open>...</details>
 <section hidden>...</section>
 ```
@@ -46,7 +46,7 @@ Use documented ARIA state only where native HTML has no equivalent:
 
 ```html
 <a aria-current="page" href="/projects">Projects</a>
-<input aria-invalid="true">
+<input class="sds-input" aria-invalid="true">
 ```
 
 `aria-disabled="true"` does not block keyboard activation. Prefer native
@@ -68,7 +68,7 @@ Connect help and error messages with `aria-describedby`:
 ```html
 <div class="sds-field">
   <label for="email">Email</label>
-  <input
+  <input class="sds-input"
     id="email"
     type="email"
     aria-invalid="true"
@@ -102,9 +102,9 @@ accessibility tree:
 <section id="advanced-settings" hidden>...</section>
 ```
 
-SDS Lite reinforces ordinary `[hidden]` inside an SDS root so component
-display rules cannot reveal it. `hidden="until-found"` retains native
-find-in-page behavior.
+SDS Lite reinforces ordinary `[hidden]` on explicit recipe elements so its
+display rules cannot reveal them. Unmarked host elements keep their own
+styling. `hidden="until-found"` retains native find-in-page behavior.
 
 ## Keyboard behavior
 
@@ -162,3 +162,11 @@ Manual keyboard, screen-reader, zoom, motion, and branded-browser testing may
 be added when a change's risk warrants it, but evidence is not required for
 publication. Do not claim WCAG conformance without a reviewed conformance
 assessment covering the released version.
+
+Before adopting SDS Lite as an application's accessibility foundation,
+record manual results for its supported screen-reader/browser combinations
+(for example, VoiceOver with Safari and NVDA with Firefox or Chrome).
+Include names, announced state changes, keyboard navigation, focus return,
+and notifications. Test touch interactions and zoom on actual mobile devices
+when mobile support is required. Desktop engine and responsive-layout checks
+do not substitute for those results.

@@ -2,6 +2,7 @@
 
 @import './css/tokens.css';
 @import './css/foundations.css';
+@import './css/components/typography.css';
 @import './css/components/button.css';
 @import './css/components/link.css';
 @import './css/components/form.css';

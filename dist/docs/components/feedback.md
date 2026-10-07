@@ -6,10 +6,10 @@ Choose feedback by purpose:
 
 | Need | Recipe |
 |---|---|
-| Compact status or category | Badge |
-| Category, filter, or removable label | Tag |
-| Contextual message in the page | Callout |
-| Temporary application notification | Toast |
+| Compact status or category | [Badge](#badge) |
+| Category, filter, or removable label | [Tag](#tag) |
+| Contextual message in the page | [Callout](#callout) |
+| Temporary application notification | [Toast](#toast) |
 
 ## Badge
 
@@ -20,16 +20,24 @@ Choose feedback by purpose:
 </a>
 ```
 
+### Options
+
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-tone` | All semantic tones | `neutral` |
 | `data-sds-variant` | `light`, `light-border`, `dark` | Solid tone |
 | `data-sds-size` | `sm`, `md` | `md` |
 
+### Accessibility
+
 Badges are short labels. Use an anchor with `.sds-badge` when the badge itself
 navigates to a related resource; linked badges receive tone-aware hover styling.
 Use `data-sds-size="sm"` when a badge sits inline with body text or other
 compact content.
+
+### Related
+
+[Tag](#tag), [callout](#callout).
 
 ## Tag
 
@@ -41,7 +49,17 @@ Choose the native element that matches the interaction:
 <button class="sds-tag" type="button">Filter by active</button>
 ```
 
-`data-sds-size` accepts `sm` or `md`; `sm` is the default.
+### Options
+
+`data-sds-size` accepts `sm` or `md`; `sm` is the default. For tone targets,
+see the tag rows in the [recipe interface](../reference/recipes.md).
+
+### Accessibility
+
+Use text for a label, a link for navigation, and a button for an action.
+Name remove actions and avoid nesting interactive controls inside each other.
+
+### More examples
 
 For a removable tag without a separate link, make the entire tag one button.
 Its danger tone highlights the whole tag on hover, with a single keyboard
@@ -74,6 +92,10 @@ If the label links elsewhere, keep the link and action independent instead:
 Application code updates counters and handles actions. SDS Lite intentionally
 does not hide tag state behind a component event API.
 
+### Related
+
+[Multiple-selection combobox](../guides/combobox.md#multiple-selections), [badge](#badge).
+
 ## Callout
 
 ```html
@@ -86,6 +108,8 @@ does not hide tag state behind a component event API.
 </aside>
 ```
 
+### Options
+
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-tone` | All semantic tones | `neutral` |
@@ -97,6 +121,13 @@ Callout sizes scale typography and padding together. Use `xs` and `sm` for
 compact inline feedback, `md` for ordinary notices, and `lg` for prominent
 page-level guidance.
 
+### Accessibility
+
+Explain status in text, not color alone. Add an alert role only when a dynamic
+message must interrupt announcements. Name dismissal controls.
+
+### More examples
+
 An optional `[data-sds-callout-close]` control receives close-button positioning.
 Application code owns dismissal:
 
@@ -104,7 +135,7 @@ Application code owns dismissal:
 <aside id="tip" class="sds-callout" data-sds-tone="info">
   <strong>Tip</strong>
   <span>You can rename this project later.</span>
-  <button
+  <button class="sds-button"
     type="button"
     data-sds-shape="icon"
     data-sds-callout-close
@@ -114,6 +145,10 @@ Application code owns dismissal:
   </button>
 </aside>
 ```
+
+### Related
+
+[Validation messages](./forms.md#help-and-validation), [toast](#toast).
 
 ## Toast
 
@@ -128,6 +163,8 @@ notify('Your project was saved.', {
 })
 ```
 
+### Options
+
 | Option | Values | Default |
 |---|---|---|
 | `container` | An `HTMLElement` or toaster owner | First SDS root, then `body` |
@@ -141,10 +178,21 @@ notify('Your project was saved.', {
 removes the closed toast after its exit motion. It can be imported during SSR
 but must only be called in a browser. Invalid durations throw `RangeError`.
 
+### Events
+
+The returned toast emits bubbling `sds-open` and `sds-close` events. Close
+detail contains `reason`: `dismiss`, `programmatic`, or `timeout`.
+
+### Accessibility
+
+Use `urgent: true` or `role="alert"` only for urgent information. Timers pause
+on hover and focus. Persistent toasts need a close control; use persistence
+when users must read or act. Auto-dismiss only nonessential status available elsewhere.
+
 ### Authored toast
 
 ```html
-<button type="button" data-sds-toast-open="saved-toast">Show notification</button>
+<button class="sds-button" type="button" data-sds-toast-open="saved-toast">Show notification</button>
 
 <section class="sds-toaster" aria-label="Notifications">
   <sds-toast
@@ -155,7 +203,7 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
   >
     <strong>Project saved</strong>
     <span>Your changes are now available.</span>
-    <button
+    <button class="sds-button"
       type="button"
       data-sds-shape="icon"
       data-sds-toast-close
@@ -166,6 +214,8 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
   </sds-toast>
 </section>
 ```
+
+#### Options
 
 | Interface | Values | Default |
 |---|---|---|
@@ -178,11 +228,7 @@ but must only be called in a browser. Invalid durations throw `RangeError`.
 | `role` | `status`, `alert` | `status` |
 | `aria-atomic` | `"true"` | Added on upgrade |
 
-Use `role="alert"` only for urgent, time-sensitive information. Toasts pause
-their timer while hovered or while focus is inside. Persistent toasts need a
-close control. Use a persistent toast whenever a user must read or act on its
-content; reserve automatic dismissal for brief, nonessential status that is
-also available elsewhere.
+#### Programmatic control
 
 ```ts
 import '@cmu-sei/sds-lite'
@@ -196,3 +242,8 @@ if (toast) {
   toast.close('programmatic')
 }
 ```
+
+### Related
+
+[CDN function imports](../installation/cdn.md#import-javascript-functions),
+[notification accessibility](../guides/accessibility.md#notifications), [callout](#callout).

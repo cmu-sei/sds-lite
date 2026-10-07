@@ -1,5 +1,5 @@
 @layer sds.components {
-  :where([data-sds-root] :is(progress, meter)) {
+  :where(.sds-progress, .sds-meter) {
     display: block;
     inline-size: 100%;
     block-size: 0.75rem;
@@ -10,11 +10,11 @@
     accent-color: currentColor;
   }
 
-  :where([data-sds-root] progress) {
+  :where(.sds-progress) {
     color: var(--sds-tone-strong, var(--sds-color-info-strong));
   }
 
-  :where([data-sds-root] progress:indeterminate) {
+  :where(.sds-progress:indeterminate) {
     background-color: var(--sds-color-form-disabled-background);
     background-image: linear-gradient(currentColor, currentColor);
     background-position: -55% 0;
@@ -23,72 +23,72 @@
     animation: sds-progress-indeterminate 1.2s ease-in-out infinite;
   }
 
-  :where([data-sds-root] :is(progress, meter)[data-sds-size="sm"]) {
+  :where(.sds-progress[data-sds-size="sm"], .sds-meter[data-sds-size="sm"]) {
     block-size: 0.5rem;
   }
 
-  :where([data-sds-root] :is(progress, meter)[data-sds-size="lg"]) {
+  :where(.sds-progress[data-sds-size="lg"], .sds-meter[data-sds-size="lg"]) {
     block-size: 1rem;
   }
 
-  :where([data-sds-root] :is(progress, meter)) {
+  :where(.sds-progress, .sds-meter) {
     appearance: none;
   }
 
-  :where([data-sds-root] progress)::-webkit-progress-bar {
+  :where(.sds-progress)::-webkit-progress-bar {
     border-radius: inherit;
     background: var(--sds-color-form-disabled-background);
   }
 
-  :where([data-sds-root] progress:indeterminate)::-webkit-progress-bar {
+  :where(.sds-progress:indeterminate)::-webkit-progress-bar {
     background: transparent;
   }
 
-  :where([data-sds-root] progress)::-webkit-progress-value {
+  :where(.sds-progress)::-webkit-progress-value {
     border-radius: inherit;
     background: currentColor;
   }
 
-  :where([data-sds-root] progress)::-moz-progress-bar {
+  :where(.sds-progress)::-moz-progress-bar {
     border-radius: inherit;
     background: currentColor;
   }
 
-  :where([data-sds-root] progress:indeterminate)::-moz-progress-bar {
+  :where(.sds-progress:indeterminate)::-moz-progress-bar {
     background: transparent;
   }
 
-  :where([data-sds-root] meter)::-webkit-meter-bar {
+  :where(.sds-meter)::-webkit-meter-bar {
     border: 0;
     border-radius: inherit;
     background: var(--sds-color-form-disabled-background);
   }
 
-  :where([data-sds-root] meter)::-webkit-meter-optimum-value {
+  :where(.sds-meter)::-webkit-meter-optimum-value {
     border-radius: inherit;
     background: var(--sds-color-success-strong);
   }
 
-  :where([data-sds-root] meter)::-webkit-meter-suboptimum-value {
+  :where(.sds-meter)::-webkit-meter-suboptimum-value {
     border-radius: inherit;
     background: var(--sds-color-warning-strong);
   }
 
-  :where([data-sds-root] meter)::-webkit-meter-even-less-good-value {
+  :where(.sds-meter)::-webkit-meter-even-less-good-value {
     border-radius: inherit;
     background: var(--sds-color-danger-strong);
   }
 
-  :where([data-sds-root] meter)::-moz-meter-bar {
+  :where(.sds-meter)::-moz-meter-bar {
     border-radius: inherit;
     background: var(--sds-color-success-strong);
   }
 
-  :where([data-sds-root] meter:-moz-meter-sub-optimum)::-moz-meter-bar {
+  :where(.sds-meter:-moz-meter-sub-optimum)::-moz-meter-bar {
     background: var(--sds-color-warning-strong);
   }
 
-  :where([data-sds-root] meter:-moz-meter-sub-sub-optimum)::-moz-meter-bar {
+  :where(.sds-meter:-moz-meter-sub-sub-optimum)::-moz-meter-bar {
     background: var(--sds-color-danger-strong);
   }
 
@@ -103,18 +103,18 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :where([data-sds-root] progress:indeterminate) {
+    :where(.sds-progress:indeterminate) {
       background-position: 50% 0;
       animation: none;
     }
   }
 
   @media (forced-colors: active) {
-    :where([data-sds-root] :is(progress, meter)) {
+    :where(.sds-progress, .sds-meter) {
       color: Highlight;
     }
 
-    :where([data-sds-root] progress:indeterminate) {
+    :where(.sds-progress:indeterminate) {
       border: 1px solid ButtonText;
       background-color: Canvas;
       background-image: linear-gradient(
@@ -129,8 +129,8 @@
       forced-color-adjust: none;
     }
 
-    :where([data-sds-root] progress:indeterminate)::-webkit-progress-bar,
-    :where([data-sds-root] progress:indeterminate)::-moz-progress-bar {
+    :where(.sds-progress:indeterminate)::-webkit-progress-bar,
+    :where(.sds-progress:indeterminate)::-moz-progress-bar {
       background: transparent;
     }
   }

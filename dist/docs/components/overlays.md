@@ -6,11 +6,13 @@ Choose the smallest overlay that fits:
 
 | Content | Recipe |
 |---|---|
-| Short, noninteractive description | Tooltip |
-| Rich or interactive anchored content | Popover |
-| Focused decision or task | Dialog |
-| Long secondary workflow at an edge | Panel |
+| Short, noninteractive description | [Tooltip](#tooltip) |
+| Rich or interactive anchored content | [Popover](#popover) |
+| Focused decision or task | [Dialog](#dialog) |
+| Long secondary workflow at an edge | [Panel](#panel) |
 | List of actions | [Dropdown](./navigation.md#dropdown-menu) |
+
+Load behavior once using the [installation guide](../installation/npm.md#recommended-setup).
 
 ## Tooltip
 
@@ -18,24 +20,32 @@ Put the trigger first and short description second:
 
 ```html
 <sds-tooltip>
-  <button type="button">What is a slug?</button>
+  <button class="sds-button" type="button">What is a slug?</button>
   <span>A short name used in the project's URL.</span>
 </sds-tooltip>
 ```
 
-Tooltips open immediately on pointer hover or keyboard focus. Pointer leave,
-focus loss, or Escape closes them. SDS Lite adds the ID, role, class, manual
-Popover mode, and `aria-describedby`.
+### Options
 
 Tooltips support `size`, `placement`, and `offset`. Sizes are `sm`, `md`, `lg`,
 `xl`, and `auto`; the default is `sm`. The default offset is 6 CSS pixels.
-Keep content noninteractive; use a popover for controls or long text.
+Placement defaults to `block-start` and follows writing direction.
+
+### Accessibility
+
+Tooltips open on pointer hover or keyboard focus; pointer leave, focus loss,
+or Escape closes them. SDS Lite supplies `aria-describedby` and tooltip semantics.
+Keep text short and noninteractive; do not put essential instructions only in a tooltip.
+
+### Related
+
+[Popover](#popover) for controls or long text, [floating-placement troubleshooting](../troubleshooting.md#a-dropdown-tooltip-or-popover-is-misplaced).
 
 ## Popover
 
 ```html
 <sds-popover width="lg">
-  <button>Project details</button>
+  <button class="sds-button">Project details</button>
   <section>
     <h2>Project Atlas</h2>
     <p>Updated five minutes ago.</p>
@@ -44,13 +54,25 @@ Keep content noninteractive; use a popover for controls or long text.
 </sds-popover>
 ```
 
-Hover or focus opens after 500ms. Moving between trigger and surface keeps it
-open. Leaving both closes after a short grace period. Native click, touch,
-keyboard, Escape, and light-dismiss behavior remain available.
+### Options
 
 Popovers support the dropdown `width`, `placement`, and `offset` values.
 Their default offset is 9 CSS pixels. The reflected `open` property and
 `show()` and `hide()` methods provide programmatic control.
+
+### Events
+
+Listen for `sds-toggle` and read `detail.open` to synchronize application state
+with native Popover visibility.
+
+### Accessibility
+
+Keep trigger and surface as direct children. Hover or focus opens after 500ms;
+moving between them keeps it open. Leaving both closes after a grace period.
+Native click, touch, keyboard, Escape, and light-dismiss behavior remain available.
+Give the trigger a clear name and use meaningful structure inside the surface.
+
+### Positioning
 
 Tooltips, popovers, and dropdowns:
 
@@ -61,10 +83,45 @@ Tooltips, popovers, and dropdowns:
 - expose the resolved side through generated `data-sds-side`;
 - position their arrow toward the trigger without overlapping rounded corners.
 
+### Related
+
+[Dropdown menu](./navigation.md#dropdown-menu) for actions, [dialog](#dialog) for a modal task.
+
 ## Dialog
 
 ```html
-<button type="button" commandfor="confirm-dialog" command="show-modal">
+<button class="sds-button" type="button" commandfor="notice-dialog" command="show-modal">
+  Open dialog
+</button>
+<dialog id="notice-dialog" class="sds-dialog" aria-labelledby="notice-title">
+  <h2 id="notice-title">Project saved</h2>
+  <p>Your changes are available.</p>
+  <button class="sds-button" type="button" command="close">Done</button>
+</dialog>
+```
+
+### Options
+
+`data-sds-width` accepts `sm`, `md`, `lg`, `xl`, or `2xl`; `md` is the default.
+Use [commands and dismissal](#commands-and-dismissal) for close policy and return values.
+
+### Events
+
+Native `cancel` supports preventing a close request; `close` reports completed
+closure. Read `dialog.returnValue` for an authored result.
+
+### Accessibility
+
+Give the dialog a unique ID and accessible name through `aria-labelledby` or
+`aria-label`. Choose an appropriate initial focus and verify focus return.
+Name icon-only close controls.
+
+### More examples
+
+For a decision with header, description, and footer actions:
+
+```html
+<button class="sds-button" type="button" commandfor="confirm-dialog" command="show-modal">
   Open dialog
 </button>
 
@@ -80,7 +137,7 @@ Tooltips, popovers, and dropdowns:
       <h2 id="confirm-title">Confirm change</h2>
       <p id="confirm-description">This action can be reversed later.</p>
     </div>
-    <button
+    <button class="sds-button"
       type="button"
       data-sds-shape="icon"
       command="request-close"
@@ -93,7 +150,7 @@ Tooltips, popovers, and dropdowns:
   <p>Continue with this change?</p>
 
   <footer class="sds-dialog-footer">
-    <button
+    <button class="sds-button"
       type="button"
       data-sds-variant="text"
       command="close"
@@ -101,7 +158,7 @@ Tooltips, popovers, and dropdowns:
     >
       Cancel
     </button>
-    <button
+    <button class="sds-button"
       type="button"
       command="close"
       data-sds-return-value="confirm"
@@ -112,17 +169,19 @@ Tooltips, popovers, and dropdowns:
 </dialog>
 ```
 
-`data-sds-width` accepts `sm`, `md`, `lg`, `xl`, or `2xl`; `md` is the default.
-Every dialog needs a unique ID and accessible name through `aria-labelledby`
-or `aria-label`. The footer aligns actions right and places primary buttons
-after other variants.
+The footer aligns actions right and places primary buttons after other variants.
+
+### Related
+
+[Panel](#panel), [action hierarchy](./actions.md#action-hierarchy),
+[dialog troubleshooting](../troubleshooting.md#a-dialog-does-not-open).
 
 ## Panel
 
 Use direct `header`, `main` or `section`, and `footer` children:
 
 ```html
-<button type="button" commandfor="help-panel" command="show-modal">
+<button class="sds-button" type="button" commandfor="help-panel" command="show-modal">
   Open help
 </button>
 
@@ -134,7 +193,7 @@ Use direct `header`, `main` or `section`, and `footer` children:
 >
   <header>
     <h2 id="help-title">Help</h2>
-    <button
+    <button class="sds-button"
       type="button"
       data-sds-shape="icon"
       command="request-close"
@@ -145,10 +204,12 @@ Use direct `header`, `main` or `section`, and `footer` children:
   </header>
   <section aria-label="Panel content">Help content goes here.</section>
   <footer>
-    <button type="button" command="close">Done</button>
+    <button class="sds-button" type="button" command="close">Done</button>
   </footer>
 </dialog>
 ```
+
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -158,10 +219,22 @@ Use direct `header`, `main` or `section`, and `footer` children:
 For side panels size controls width; for bottom panels it controls height.
 Header and footer remain visible while `main` consumes the flexible space.
 `setupSds()` automatically adds an iOS-style pill handle; no additional markup
-is required. Drag toward the attached edge to dismiss. Short or slow drags
-settle back into place, while deliberate swipes use release velocity to
-complete naturally. Dragging emits the native cancelable `cancel` event before
-dismissal, so preventing that event returns the panel to its open position.
+is required.
+
+### Events
+
+Panels use native dialog events. Drag dismissal emits cancelable `cancel`;
+prevent it to return the panel to its open position.
+
+### Accessibility
+
+Use the dialog's naming and focus rules. Always provide a close control rather
+than requiring a gesture. Drag toward the attached edge to dismiss; short or
+slow drags settle back into place.
+
+### Related
+
+[Dialog](#dialog), [commands and dismissal](#commands-and-dismissal).
 
 ## Commands and dismissal
 

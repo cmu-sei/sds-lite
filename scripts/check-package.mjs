@@ -1,7 +1,15 @@
 import { spawnSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+import { gzipSync } from 'node:zlib'
 
 const maximumFileCount = 100
 const maximumUnpackedSize = 750_000
+const maximumCompressedSizes = {
+  'dist/sds.css': 22_000,
+  'dist/brand.css': 3_000,
+  'dist/auto.js': 13_000,
+  'dist/sds.js': 13_000,
+}
 const requiredFiles = [
   'LICENSE',
   'dist/package/sds.js',
@@ -60,6 +68,12 @@ if (report.unpackedSize > maximumUnpackedSize) {
   errors.push(
     `package is ${report.unpackedSize} bytes unpacked; limit is ${maximumUnpackedSize}`,
   )
+}
+for (const [filename, limit] of Object.entries(maximumCompressedSizes)) {
+  const compressedSize = gzipSync(readFileSync(filename)).length
+  if (compressedSize > limit) {
+    errors.push(`${filename} is ${compressedSize} bytes gzipped; limit is ${limit}`)
+  }
 }
 for (const filename of requiredFiles) {
   if (!files.has(filename)) errors.push(`package is missing ${filename}`)

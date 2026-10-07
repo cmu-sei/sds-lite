@@ -2,10 +2,12 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Navigation
 
+Find: [breadcrumb](#breadcrumb), [skip link](#skip-link), [tabs](#tabs),
+[pagination](#pagination), [dropdown](#dropdown-menu), or [disclosure](#disclosure).
+
 ## Breadcrumb
 
-Use a labeled navigation landmark and an ordered list. Mark the current page
-with `aria-current="page"` and plain text when it should not link to itself.
+Use a navigation landmark and an ordered list:
 
 ```html
 <nav class="sds-breadcrumb" aria-label="Breadcrumb">
@@ -17,7 +19,18 @@ with `aria-current="page"` and plain text when it should not link to itself.
 </nav>
 ```
 
+### Options
+
 `data-sds-size` accepts `sm`, `md`, or `lg`; the default is `md`.
+
+### Accessibility
+
+Label the navigation landmark. Mark the current page with `aria-current="page"`
+and plain text when it should not link to itself.
+
+### Related
+
+[Page layout](./layout.md#page-and-section), [pagination](#pagination).
 
 ## Skip link
 
@@ -29,10 +42,19 @@ Place a skip link before repeated navigation and target the main content:
 <main id="main-content">...</main>
 ```
 
-The link remains offscreen until it receives keyboard focus. Its target must
-be unique and should identify the beginning of the page's primary content.
+### Options
+
 `data-sds-size` accepts `sm` or `md` and defaults to `sm`. Its action color is
 fixed so the same keyboard affordance is recognizable on every page.
+
+### Accessibility
+
+The link appears on keyboard focus. Use a unique target at the start of the
+primary content and place the link before repeated navigation.
+
+### Related
+
+[Application shells](./layout.md#sei-application-shells), [keyboard accessibility](../guides/accessibility.md#keyboard-behavior).
 
 ## Tabs
 
@@ -41,8 +63,8 @@ For client-rendered markup, provide a named tab list and one panel per tab:
 ```html
 <sds-tabs>
   <div aria-label="Project settings">
-    <button>Profile</button>
-    <button aria-selected="true">Security</button>
+    <button class="sds-button">Profile</button>
+    <button class="sds-button" aria-selected="true">Security</button>
   </div>
   <section>Profile settings</section>
   <section>Security settings</section>
@@ -52,6 +74,8 @@ For client-rendered markup, provide a named tab list and one panel per tab:
 SDS Lite supplies missing classes, roles, IDs, relationships, tab order, and
 panel visibility. `aria-selected="true"` chooses the initial enabled tab; the
 first enabled tab is used when it is omitted.
+
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -66,16 +90,24 @@ first enabled tab is used when it is omitted.
 | `disabled` | Disabled button tab | Enabled |
 | `aria-disabled="true"` | Disabled tab | Enabled |
 
-Automatic activation selects as focus moves. Manual activation moves focus
-without selecting until click, Enter, or Space. Horizontal tabs use Left and
-Right; vertical tabs use Up and Down. Home and End move to the first and last
-enabled tab.
+### Events
+
+User selection emits `sds-change` with `detail.index` and `detail.value`.
+Programmatic value changes do not emit it.
 
 ```js
 document.querySelector('sds-tabs')?.addEventListener('sds-change', (event) => {
   console.log(event.detail.index, event.detail.value)
 })
 ```
+
+### Accessibility
+
+Name the tab list and provide one panel per tab. Automatic activation selects
+on focus; manual activation waits for click, Enter, or Space. Horizontal tabs
+use Left/Right, vertical tabs Up/Down, and Home/End reach the first/last enabled tab.
+
+### More examples
 
 The supplied visual recipe is a horizontal scrolling row. Applications using
 vertical orientation provide their own panel placement while retaining roles
@@ -96,8 +128,9 @@ Route-backed tabs may use `<a class="sds-tab" role="tab" href="...">`. Arrow
 keys move focus; activating a link navigates. Render the requested route with
 its corresponding link selected and panel visible.
 
-See [Server rendering](../guides/server-rendering.md) for complete authored
-tab markup.
+### Related
+
+[Fully authored SSR tabs](../guides/server-rendering.md), [framework events](../guides/frameworks.md).
 
 ## Pagination
 
@@ -129,6 +162,18 @@ works without JavaScript:
 </nav>
 ```
 
+### Options
+
+Use `aria-current="page"` for the current page. Page count, URLs, truncated
+range, and loading state belong to the application; there are no recipe options.
+
+### Accessibility
+
+Name the navigation landmark and icon-only links. Add `aria-live="polite"` to
+`.sds-pagination-status` when the result range changes without navigation.
+
+### More examples
+
 Use `aria-current="page"` on the current page. For unavailable previous or next actions, render a noninteractive link
 placeholder:
 
@@ -141,26 +186,28 @@ placeholder:
 Client-rendered applications may use buttons instead of links when changing
 pages does not change the URL.
 
-The server or application owns the page count, truncated range, URLs, and
-loading state. If the result range changes without navigation, add
-`aria-live="polite"` to `.sds-pagination-status`.
-
 Previous and next controls use compact, accessible icon links. The current
 page uses the established subtle blue surface and border rather than a
 solid-button treatment.
+
+### Related
+
+[Table](./data-display.md#table), [empty state](./loading.md#empty-state).
 
 ## Dropdown menu
 
 ```html
 <sds-dropdown>
-  <button>Actions</button>
+  <button class="sds-button">Actions</button>
   <menu>
-    <li><button type="button">Rename</button></li>
+    <li><button class="sds-button" type="button">Rename</button></li>
     <li><a href="/duplicate">Duplicate</a></li>
-    <li><button type="button" data-sds-tone="danger">Delete</button></li>
+    <li><button class="sds-button" type="button" data-sds-tone="danger">Delete</button></li>
   </menu>
 </sds-dropdown>
 ```
+
+### Options
 
 | Option | Values | Default |
 |---|---|---|
@@ -173,6 +220,21 @@ solid-button treatment.
 Logical sides are `block-start`, `block-end`, `inline-start`, and
 `inline-end`. Placement is preferred rather than fixed; the menu flips when
 the requested side would overflow.
+
+### Events
+
+`sds-toggle` reports actual visibility through `detail.open`. The reflected
+`open` property and `show()`/`hide()` methods support application control:
+
+```js
+const dropdown = document.querySelector('sds-dropdown')
+dropdown.show()
+dropdown.addEventListener('sds-toggle', (event) => {
+  console.log(event.detail.open)
+})
+```
+
+### Accessibility
 
 Dropdowns support:
 
@@ -189,23 +251,15 @@ prevents its activation. The trigger and menu must be direct children. SDS Lite 
 trigger `type` to `button`; an explicit type is preserved. Invalid
 or ambiguous structures are not enhanced and produce a console warning.
 
+### More examples
+
 Use `hide-caret` when the trigger already communicates that it opens a
 menu, such as an icon-only action or avatar-group overflow count.
 
-The host reflects actual visibility through `open`. Use `show()` and `hide()`
-for programmatic control and listen for `sds-toggle` when application state
-must follow native Popover visibility:
+### Related
 
-```js
-const dropdown = document.querySelector('sds-dropdown')
-dropdown.show()
-dropdown.addEventListener('sds-toggle', (event) => {
-  console.log(event.detail.open)
-})
-```
-
-Use `<sds-popover>` rather than a dropdown when the surface contains rich
-content instead of menu actions.
+Use a [popover](./overlays.md#popover) for rich content rather than menu actions.
+See [SSR menu markup](../guides/server-rendering.md) for server rendering.
 
 ## Disclosure
 
@@ -218,5 +272,18 @@ Use native `<details>` and `<summary>`:
 </details>
 ```
 
-Use native `open` for initial state. No JavaScript import is required. The
-summary must clearly describe the content it reveals.
+### Options
+
+Use native `open` for initial state. No JavaScript import is required.
+
+### Events
+
+Listen for native `toggle` if application state needs to follow disclosure state.
+
+### Accessibility
+
+The summary must clearly describe the content it reveals.
+
+### Related
+
+[Accordion groups](../guides/composition-patterns.md), [popover](./overlays.md#popover).

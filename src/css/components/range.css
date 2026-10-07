@@ -1,5 +1,5 @@
 @layer sds.components {
-  :where([data-sds-root] input[type="range"]) {
+  :where(.sds-range) {
     --sds-range-track-size: 0.375rem;
     --sds-range-thumb-size: 1.125rem;
 
@@ -15,39 +15,39 @@
     appearance: none;
   }
 
-  :where([data-sds-root] input[type="range"])[data-sds-size="sm"] {
+  :where(.sds-range)[data-sds-size="sm"] {
     --sds-range-track-size: 0.25rem;
     --sds-range-thumb-size: 1rem;
 
     block-size: 1.25rem;
   }
 
-  :where([data-sds-root] input[type="range"])[data-sds-size="lg"] {
+  :where(.sds-range)[data-sds-size="lg"] {
     --sds-range-track-size: 0.5rem;
     --sds-range-thumb-size: 1.25rem;
 
     block-size: 2rem;
   }
 
-  :where([data-sds-root] input[type="range"])::-webkit-slider-runnable-track {
+  :where(.sds-range)::-webkit-slider-runnable-track {
     block-size: var(--sds-range-track-size);
     border-radius: var(--sds-radius-full);
     background: var(--sds-color-border-default);
   }
 
-  :where([data-sds-root] input[type="range"])::-moz-range-track {
+  :where(.sds-range)::-moz-range-track {
     block-size: var(--sds-range-track-size);
     border-radius: var(--sds-radius-full);
     background: var(--sds-color-border-default);
   }
 
-  :where([data-sds-root] input[type="range"])::-moz-range-progress {
+  :where(.sds-range)::-moz-range-progress {
     block-size: var(--sds-range-track-size);
     border-radius: var(--sds-radius-full);
     background: currentColor;
   }
 
-  :where([data-sds-root] input[type="range"])::-webkit-slider-thumb {
+  :where(.sds-range)::-webkit-slider-thumb {
     inline-size: var(--sds-range-thumb-size);
     block-size: var(--sds-range-thumb-size);
     margin-block-start: calc(
@@ -60,7 +60,7 @@
     appearance: none;
   }
 
-  :where([data-sds-root] input[type="range"])::-moz-range-thumb {
+  :where(.sds-range)::-moz-range-thumb {
     inline-size: calc(var(--sds-range-thumb-size) - 0.25rem);
     block-size: calc(var(--sds-range-thumb-size) - 0.25rem);
     border: 2px solid var(--sds-color-surface-default);
@@ -69,14 +69,14 @@
     box-shadow: 0 0 0 1px currentColor;
   }
 
-  :where([data-sds-root] input[type="range"]:disabled) {
+  :where(.sds-range:disabled) {
     color: var(--sds-color-text-disabled);
     cursor: not-allowed;
     opacity: 0.7;
   }
 
   @media (forced-colors: active) {
-    :where([data-sds-root] input[type="range"]) {
+    :where(.sds-range) {
       color: Highlight;
     }
   }

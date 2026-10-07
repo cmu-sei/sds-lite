@@ -24,6 +24,16 @@ Set theme and scheme on an SDS root:
 
 Nested SDS roots may use independent themes. Forge uses sans-serif headings
 and rounded controls. Plaid uses serif headings and square corners.
+Importing the stylesheet does not change the host document's color scheme.
+An explicit SDS root defaults to light; recipes outside a root inherit the
+host's scheme.
+
+A theme root supplies design values, not automatic element styling. Use
+explicit recipe classes such as `.sds-button`, `.sds-input`, and `.sds-text-h3`
+to apply SDS appearance. Add `.sds-document` for page presentation or
+`.sds-prose` for document typography. Choose `.sds-text-h1` through
+`.sds-text-h6` independently of semantic heading level. Typography utilities
+switch scales at `48rem`; `data-sds-size="sm"` or `"lg"` fixes the scale.
 
 SDS Lite references `"Open Sans"` and `"Source Serif"` but does not download
 fonts. Load them in the host application when exact typography is required;
@@ -63,12 +73,91 @@ rather than SDS implementation structure:
 }
 ```
 
+## Combine design systems
+
+Declare layer order before either system loads. Namespaces prevent class
+collisions; layers decide whether resets, recipes, or utilities win. Keep
+resets below SDS and application utilities above it. Do not put two systems'
+component classes on the same element unless that override is intentional.
+
+### Tailwind CSS 4
+
+Use one application stylesheet instead of separate JavaScript CSS imports:
+
+```css
+@layer theme, base, sds, components, utilities;
+@import 'tailwindcss';
+@import '@cmu-sei/sds-lite/sds.css';
+```
+
+Tailwind Preflight runs below SDS recipes, and utilities such as `p-2` run
+above them. Import this stylesheet once from the application entry. If using
+`brand.css`, import it after `sds.css` in the same file. Declaring the order
+after either stylesheet has loaded cannot reorder existing layers.
+
+### Bootstrap and other global stylesheets
+
+Place the host stylesheet in an earlier layer:
+
+```css
+@layer vendor, sds, app;
+@import 'bootstrap/dist/css/bootstrap.css' layer(vendor);
+@import '@cmu-sei/sds-lite/sds.css';
+
+@layer app {
+  .project-action { min-inline-size: 8rem; }
+}
+```
+
+Remove any separate unlayered Bootstrap import. The same pattern works for
+other global resets. Unlayered rules override normal layered rules regardless
+of import order. Host `!important` utilities still override normal SDS rules;
+use them only deliberately.
+
+### Material Design
+
+Material Web components keep their internal styles in shadow DOM. Place them
+beside SDS recipes; SDS classes cannot restyle their shadow contents. Bridge
+documented Material tokens at a shared boundary when colors should match:
+
+```css
+.project-theme {
+  --md-sys-color-primary: var(--sds-color-action-primary);
+  --md-sys-color-on-primary: var(--sds-color-action-text);
+}
+```
+
+Apply `.project-theme` to an SDS root. Material libraries that inject global
+resets or CSS-in-JS rules need their own layer configuration; use the same
+reset-below-SDS policy rather than assuming shadow-DOM isolation.
+
+### SEI adoption
+
+Keep the existing Vue component API while replacing internals incrementally.
+Map the current SEI application tokens at a root, not through Lite's private
+component properties:
+
+```css
+.sei-theme[data-sds-root] {
+  --sds-font-body: var(--font-sans);
+  --sds-color-action-primary: var(--btn-accent-bg);
+  --sds-color-action-primary-hover: var(--btn-accent-bg-hover);
+  --sds-color-action-text: var(--btn-accent-text);
+}
+```
+
+Use this bridge only where the existing SEI stylesheet supplies those tokens.
+Synchronize the host theme/scheme with `data-sds-theme` and
+`data-sds-color-scheme`. Gradually choose one token source of truth, and let
+only one system own a component's behavior. Recheck all states and contrast
+after token mapping; a shared palette alone does not prove parity.
+
 ## Component options before CSS
 
 Use documented attributes before writing an override:
 
 ```html
-<button data-sds-size="lg" data-sds-tone="danger">Delete</button>
+<button class="sds-button" data-sds-size="lg" data-sds-tone="danger">Delete</button>
 <div class="sds-grid" data-sds-columns="3" data-sds-gap="xl">...</div>
 ```
 
@@ -89,7 +178,8 @@ themes.
 - Validate text, icon, border, focus, disabled, hover, and active contrast.
 - Do not depend on `--sds-tone-*`, `--sds-avatar-*`, `--sds-button-*`,
   `--sds-prose-*`, `--sds-tab-*`, `--sds-timeline-*`,
-  `--sds-datapoint-*`, `--sds-floating-*`, `--sds-grid-*`, or `--sds-tag-*`;
+  `--sds-datapoint-*`, `--sds-floating-*`, `--sds-grid-*`, `--sds-tag-*`, or
+  `--sds-typography-*`;
   they are implementation details.
 - Treat undocumented selectors and custom properties as private.
 

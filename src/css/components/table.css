@@ -16,6 +16,7 @@
   }
 
   :where(.sds-table caption) {
+    box-sizing: border-box;
     inline-size: 100%;
     padding: var(--sds-space-lg);
     border-block-end: 1px solid var(--sds-color-border-default);

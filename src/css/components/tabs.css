@@ -24,8 +24,10 @@
     border: 0;
     color: var(--sds-color-text-muted);
     background: transparent;
+    font-family: inherit;
     font-size: 0.875rem;
     font-weight: 600;
+    line-height: inherit;
     white-space: nowrap;
     cursor: pointer;
     transition:
@@ -140,6 +142,10 @@
 
   :where(.sds-tab-panel) {
     padding-block-start: var(--sds-space-xl);
+  }
+
+  :where(.sds-tab-panel > p) {
+    margin-block: 0;
   }
 
 }

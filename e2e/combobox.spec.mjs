@@ -1,6 +1,42 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+test('native search clear icons use neutral styling and preserve input events', async ({ page, browserName }) => {
+  test.skip(browserName === 'firefox', 'Firefox does not expose the WebKit search clear control')
+  await page.goto('/')
+  const stylesheet = await page.addStyleTag({ path: 'src/css/components/form-control.css' })
+  const clearColor = await stylesheet.evaluate((element) => {
+    const rules = Array.from(element.sheet.cssRules).flatMap((rule) => Array.from(rule.cssRules ?? [rule]))
+    return rules.find((rule) => rule.selectorText?.includes('::-webkit-search-cancel-button'))?.style.color
+  })
+  expect(clearColor).toBe('var(--sds-color-text-muted)')
+  const input = page.locator('#project-combobox')
+  await input.fill('Atlas')
+  await input.evaluate((element) => {
+    element.addEventListener('input', () => { element.dataset.cleared = 'true' }, { once: true })
+  })
+  const bounds = await input.boundingBox()
+  await input.click({ position: { x: bounds.width - 20, y: bounds.height / 2 } })
+  await expect(input).toHaveValue('')
+  await expect(input).toHaveAttribute('data-cleared', 'true')
+})
+
+test('tag dismiss glyphs have consistent weight and size across themes', async ({ page }) => {
+  await page.goto('/')
+  await page.addStyleTag({ path: 'src/css/components/tag.css' })
+  const action = page.getByRole('button', { name: 'Remove Security tag', exact: true })
+  await expect(action).toHaveCSS('cursor', 'pointer')
+  await expect(action.locator('span')).toHaveCSS('cursor', 'pointer')
+  for (const theme of ['forge', 'plaid']) {
+    await action.evaluate((element, theme) => {
+      element.closest('[data-sds-root]').dataset.sdsTheme = theme
+    }, theme)
+    await expect(action).toHaveCSS('font-size', '20px')
+    await expect(action).toHaveCSS('font-weight', '400')
+    await expect(action).toHaveCSS('line-height', '20px')
+  }
+})
+
 test('filters suggestions and selects with keyboard without losing native form state', async ({ page }) => {
   await page.goto('/')
   const input = page.locator('#project-combobox')
@@ -269,7 +305,7 @@ test('keep-open writes the selected suggestion to the input without losing other
     root.insertAdjacentHTML('afterbegin', `
       <label for="standalone-combobox">Topic</label>
       <sds-combobox keep-open>
-        <input id="standalone-combobox" type="search">
+        <input class="sds-input" id="standalone-combobox" type="search">
         <ul hidden>
           <li>Accessibility</li>
           <li>Architecture</li>
@@ -362,7 +398,7 @@ test('registration preserves complete server markup after hydration', async ({ p
       <body data-sds-root><form>
         <label for="ssr-project">Project</label>
         <sds-combobox>
-          <input id="ssr-project" name="project" type="search" role="combobox"
+          <input class="sds-input" id="ssr-project" name="project" type="search" role="combobox"
             aria-autocomplete="list" aria-controls="ssr-options" aria-expanded="false">
           <ul id="ssr-options" class="sds-combobox-list" role="listbox" popover="manual" hidden>
             <li id="ssr-atlas" role="option" aria-selected="false" data-label="Atlas" data-project-id="p-atlas">

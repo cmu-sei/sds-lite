@@ -48,10 +48,12 @@ markers are grouped per file.
 
 ## Final SDS Lite conventions
 
-Native elements and CSS recipes use namespaced data attributes:
+Recipe classes opt native elements into styling; namespaced data attributes
+configure their options. A theme root alone does not apply a recipe:
 
 ```html
 <button
+  class="sds-button"
   type="button"
   data-sds-variant="tonal"
   data-sds-tone="danger"

@@ -6,6 +6,10 @@
     gap: var(--sds-space-lg);
   }
 
+  :where(.sds-stack > p) {
+    margin-block: 0;
+  }
+
   :where(.sds-stack[data-sds-gap="none"]) {
     gap: 0;
   }

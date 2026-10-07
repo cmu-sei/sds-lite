@@ -1,7 +1,6 @@
 @layer sds.components {
   :where(
-    .sds-link,
-    [data-sds-root] a[href]:not([class*="sds-"], [data-sds-unstyled])
+    .sds-link
   ) {
     display: inline-block;
     color: var(--sds-color-info-text);
@@ -16,9 +15,7 @@
   }
 
   :where(
-    .sds-link[data-sds-tone],
-    [data-sds-root]
-      a[data-sds-tone]:not([class*="sds-"], [data-sds-unstyled])
+    .sds-link[data-sds-tone]
   ) {
     color: var(--sds-tone-text);
   }
@@ -81,9 +78,7 @@
 
   @media (hover: hover) {
     :where(
-      .sds-link:hover,
-      [data-sds-root]
-        a[href]:not([class*="sds-"], [data-sds-unstyled]):hover
+      .sds-link:hover
     ) {
       text-decoration: underline;
     }

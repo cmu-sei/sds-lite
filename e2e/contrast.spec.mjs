@@ -134,7 +134,7 @@ test('checked switch thumbs meet non-text contrast for every tone', async ({
       tones
         .map(
           (tone) =>
-            `<label class="sds-switch" data-sds-tone="${tone}"><input data-switch-tone="${tone}" type="checkbox" role="switch" checked>${tone}</label>`,
+            `<label class="sds-switch" data-sds-tone="${tone}"><input class="sds-checkbox" data-switch-tone="${tone}" type="checkbox" role="switch" checked>${tone}</label>`,
         )
         .join(''),
     )
@@ -180,7 +180,7 @@ test('warning switch uses a neutral thumb while off and a tone-aware thumb while
   await page.locator('[data-sds-root]').evaluate((root) => {
     root.insertAdjacentHTML(
       'afterbegin',
-      '<label class="sds-switch" data-sds-tone="warning"><input id="warning-switch" type="checkbox" role="switch">Warning</label>',
+      '<label class="sds-switch" data-sds-tone="warning"><input class="sds-checkbox" id="warning-switch" type="checkbox" role="switch">Warning</label>',
     )
   })
 
