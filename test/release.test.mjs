@@ -1550,6 +1550,19 @@ test('PR automation only labels PRs without dispatching CI or executing PR code'
   assert.doesNotMatch(workflow, /npm |pull_request\.head|pull_request\.title|actions: write|dispatch/)
 })
 
+test('PR CI concurrency cannot collide with legacy dispatched checks', async () => {
+  const ci = await readFile('.github/workflows/ci.yml', 'utf8')
+  const template = ci.match(/^  group: (.+)$/m)?.[1]
+  assert.ok(template)
+  const group = template
+    .replaceAll('${{ github.workflow }}', 'Automatic - CI')
+    .replaceAll('${{ github.event_name }}', 'pull_request')
+    .replaceAll('${{ github.event.pull_request.number || github.ref }}', '15')
+  assert.doesNotMatch(group, /\$\{\{/)
+  assert.notEqual(group, 'ci-Automatic - CI-15')
+  assert.match(ci, /cancel-in-progress: true/)
+})
+
 test('release and recovery PRs use native CI checks without a dispatcher or reporter', async () => {
   const ci = await readFile('.github/workflows/ci.yml', 'utf8')
   assert.match(ci, /^  pull_request:/m)
