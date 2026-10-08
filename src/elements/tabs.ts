@@ -26,7 +26,7 @@ export interface SdsTabsChangeDetail {
 }
 
 export class SdsTabsElement extends HTMLElementBase {
-  static observedAttributes = ['value']
+  static observedAttributes = ['value', 'orientation']
 
   private tabs: HTMLElement[] = []
   private panels = new Map<HTMLElement, HTMLElement>()
@@ -65,7 +65,6 @@ export class SdsTabsElement extends HTMLElementBase {
 
   set orientation(value: SdsOrientation) {
     reflectStringAttribute(this, 'orientation', value)
-    this.syncOrientation()
   }
 
   get size(): SdsTabsSize {
@@ -132,7 +131,7 @@ export class SdsTabsElement extends HTMLElementBase {
 
     tabList.classList.add('sds-tab-list')
     tabList.setAttribute('role', 'tablist')
-    this.syncOrientation(tabList)
+    if (this.hasAttribute('orientation')) this.syncOrientation(tabList)
     if (
       !tabList.hasAttribute('aria-label') &&
       !tabList.hasAttribute('aria-labelledby')
@@ -217,11 +216,15 @@ export class SdsTabsElement extends HTMLElementBase {
     oldValue: string | null,
     newValue: string | null,
   ): void {
+    if (oldValue === newValue) return
+    if (name === 'orientation') {
+      this.syncOrientation()
+      return
+    }
     if (
-      name !== 'value' ||
-      oldValue === newValue ||
-      this.reflectingValue ||
       !this.isConnected ||
+      name !== 'value' ||
+      this.reflectingValue ||
       newValue === null
     ) {
       return
@@ -252,8 +255,6 @@ export class SdsTabsElement extends HTMLElementBase {
   }
 
   private syncOrientation(tabList?: HTMLElement): void {
-    if (!this.hasAttribute('orientation')) return
-
     const target =
       tabList ??
       directElementChildren(this).find((child) =>

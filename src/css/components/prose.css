@@ -143,6 +143,12 @@
     margin-block-start: var(--sds-space-3xl);
   }
 
+  :where(
+    .sds-prose .sds-eyebrow + :is(h1, h2, h3, h4, h5, h6):not(.sds-not-prose, .sds-not-prose *)
+  ) {
+    margin-block-start: 0;
+  }
+
   :where(.sds-prose a:not(.sds-not-prose, .sds-not-prose *)) {
     display: inline;
     color: var(--sds-prose-link);

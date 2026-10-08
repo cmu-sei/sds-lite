@@ -53,18 +53,22 @@
   }
 
   :where(.sds-list-item h3) {
+    margin: 0;
     color: var(--sds-color-text-default);
     font-size: 0.875rem;
     font-weight: 600;
+    line-height: 1.25rem;
+  }
+
+  :where(.sds-list-item p) {
+    margin: 0;
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   :where(.sds-list-item h3 + p) {
     margin-block-start: var(--sds-space-xs);
-  }
-
-  :where(.sds-list-item p) {
-    color: var(--sds-color-text-muted);
-    font-size: 0.875rem;
   }
 
   :where(.sds-list-item h3 + :not(p), .sds-list-item p + *) {

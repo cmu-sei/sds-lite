@@ -51,7 +51,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 for (const selector of [
-  'dialog.sds-dialog',
+  '#catalog-dialog',
   '#panel-left-sm',
   '#panel-right-md',
   '#panel-bottom',
@@ -65,7 +65,7 @@ for (const selector of [
       .toBe(1)
     expectStable(opening.map((sample) => sample.width))
     expectStable(opening.map((sample) => sample.height))
-    if (selector === 'dialog.sds-dialog') {
+    if (selector === '#catalog-dialog') {
       expect(
         Math.max(...opening.map((sample) => sample.visualWidth)) -
           Math.min(...opening.map((sample) => sample.visualWidth)),

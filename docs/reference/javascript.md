@@ -11,27 +11,29 @@ import {
 } from '@cmu-sei/sds-lite'
 ```
 
-The root also exports these types:
+The root also exports these types (generated from the root entry):
 
-- `SdsDropdownElement`
+- `SdsNotifyOptions`
+- `SdsToastElement`
+- `SdsToastCloseReason`
+- `SdsToastTone`
 - `SdsComboboxElement`
+- `SdsComboboxSelectDetail`
+- `SdsDropdownElement`
+- `SdsPopoverElement`
+- `SdsTabsChangeDetail`
+- `SdsTabsElement`
+- `SdsTooltipElement`
 - `SdsGap`
 - `SdsOrientation`
 - `SdsPlacement`
-- `SdsPopoverElement`
 - `SdsSize`
 - `SdsTabsActivation`
-- `SdsTabsElement`
-- `SdsNotifyOptions`
 - `SdsTabsSize`
-- `SdsTabsChangeDetail`
 - `SdsTabsVariant`
 - `SdsToggleDetail`
-- `SdsToastCloseReason`
-- `SdsToastElement`
-- `SdsToastTone`
 - `SdsTone`
-- `SdsTooltipElement`
+- `SdsTooltipSize`
 - `SdsWidth`
 
 ### `setupSds()`
@@ -62,14 +64,14 @@ toast?.show()
 toast?.close('programmatic')
 ```
 
-| Member | Meaning |
-|---|---|
-| `open: boolean` | Reflects the `open` attribute |
-| `tone: SdsTone` | Reflects the `tone` attribute |
-| `duration: number` | Positive auto-dismiss duration |
-| `persistent: boolean` | Reflects the `persistent` attribute |
-| `show()` | Opens, starts timing, and dispatches `sds-open` |
-| `close(reason?)` | Closes and dispatches `sds-close` |
+| Member | Type | Meaning |
+|---|---|---|
+| `open` | `boolean` | Reflects the open attribute. |
+| `tone` | `SdsTone` | Reflects the tone attribute. |
+| `duration` | `number` | Reflects the duration attribute. |
+| `persistent` | `boolean` | Reflects the persistent attribute. |
+| `show()` | `void` | Opens the toast and starts its timer. |
+| `close(reason = 'programmatic')` | `void` | Closes the toast. |
 
 Changing `open` directly updates visibility and timing without dispatching
 open or close events.
@@ -85,19 +87,19 @@ tab whose native `value` attribute matches. An unknown value throws
 
 `<sds-dropdown>` and `<sds-popover>` expose:
 
-| Member | Meaning |
-|---|---|
-| `open: boolean` | Reflects actual Popover visibility |
-| `placement: SdsPlacement` | Preferred logical placement |
-| `offset: number` | Nonnegative offset in CSS pixels |
-| `width: SdsWidth` | Surface width |
-| `show()` | Opens the native Popover surface |
-| `hide()` | Closes the native Popover surface |
+| Member | Type | Meaning |
+|---|---|---|
+| `open` | `boolean` | Reflects the open attribute. |
+| `placement` | `SdsPlacement` | Reflects the placement attribute. |
+| `offset` | `number` | Reflects the offset attribute. |
+| `width` | `SdsWidth` | Reflects the width attribute. |
+| `show()` | `void` | Opens the popover. |
+| `hide()` | `void` | Closes the popover. |
 
 Dropdowns additionally expose `hideCaret: boolean`. Both dispatch
 `sds-toggle` with `{ open: boolean }` after their state changes.
 
-`<sds-tooltip>` exposes reflected `placement` and `offset` properties but no
+`<sds-tooltip>` exposes reflected `placement`, `size`, `offset` properties but no
 programmatic open state because its visibility follows hover and focus.
 
 ## Events
@@ -106,11 +108,11 @@ SDS custom events bubble and cross shadow roots.
 
 | Event | Target | Detail | When |
 |---|---|---|---|
-| `sds-select` | `<sds-combobox>` | `{ option: HTMLLIElement }` | A suggestion is chosen by keyboard or pointer |
-| `sds-change` | `<sds-tabs>` | `{ index: number, value: string }` | A new tab is selected |
-| `sds-toggle` | `<sds-dropdown>`, `<sds-popover>` | `{ open: boolean }` | Native Popover visibility changes |
-| `sds-open` | `<sds-toast>` | None | `show()` opens a closed toast |
-| `sds-close` | `<sds-toast>` | `{ reason: 'dismiss' \| 'programmatic' \| 'timeout' }` | A toast closes |
+| `sds-select` | `<sds-combobox>` | `{ option: HTMLLIElement; value: string }` | Dispatched when an option is selected; detail.value is data-sds-value or the displayed value, and detail.option is the selected li. |
+| `sds-toggle` | `<sds-dropdown>`, `<sds-popover>` | `{ open: boolean }` | Dispatched after the open state changes. |
+| `sds-change` | `<sds-tabs>` | `{ index: number; value: string }` | Dispatched when user interaction selects a new tab. |
+| `sds-open` | `<sds-toast>` | None | Dispatched when show() opens the toast. |
+| `sds-close` | `<sds-toast>` | `{ reason: SdsToastCloseReason }` | Dispatched when the toast closes. |
 
 ```ts
 document.querySelector('sds-tabs')?.addEventListener('sds-change', (event) => {

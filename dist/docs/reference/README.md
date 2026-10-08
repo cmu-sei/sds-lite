@@ -12,6 +12,8 @@ Use these pages to look up a known interface:
   element, and attribute family.
 - [Recipe interface](./recipes.md): generated class, option, element, property,
   method, and event tables.
+- [Composition contracts](./recipes.md#compositions): stylesheet, behavior,
+  asset, and structural dependencies for every shipped pattern and layout starter.
 
 For task-oriented instructions and copy-ready markup, use the
 [component guides](../components/README.md).

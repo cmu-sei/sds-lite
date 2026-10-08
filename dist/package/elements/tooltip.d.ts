@@ -1,5 +1,4 @@
-import type { SdsPlacement } from '../generated/interface.js';
-type SdsTooltipSize = 'sm' | 'md' | 'lg' | 'xl' | 'auto';
+import type { SdsPlacement, SdsTooltipSize } from '../generated/interface.js';
 declare const HTMLElementBase: typeof HTMLElement;
 export declare class SdsTooltipElement extends HTMLElementBase {
     static observedAttributes: string[];

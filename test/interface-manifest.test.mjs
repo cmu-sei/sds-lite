@@ -3,11 +3,103 @@ import { spawnSync } from 'node:child_process'
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import test from 'node:test'
+import { Window } from 'happy-dom'
+import { validateInterfaceManifest } from '../scripts/interface-contract.mjs'
 
 const manifest = JSON.parse(
   await readFile('interface-manifest.json', 'utf8'),
 )
 const htmlData = JSON.parse(await readFile('html-data.json', 'utf8'))
+const schema = JSON.parse(await readFile('interface-manifest.schema.json', 'utf8'))
+
+test('strict manifest validation rejects malformed or conflicting contracts', () => {
+  assert.doesNotThrow(() => validateInterfaceManifest(manifest, schema))
+  const mutations = [
+    data => data.customElements[0].members.push({ kind: 'field', name: 'value', description: 'Value' }),
+    data => data.customElements[1].members.push({ kind: 'method', name: 'invalid', description: 'Invalid', parameters: [{ name: 'value' }] }),
+    data => delete data.customElements[0].events[0].detail,
+    data => { data.customElements[0].events[0].detail.value = 42 },
+    data => { data.customElements[2].events[0].detail.open = 'string' },
+    data => { data.customElements[0].attributes[0].family = 'unknown' },
+    data => { delete data.recipes.find(recipe => recipe.name === 'badge').omissionDefaults },
+    data => { data.recipes[0].optionTargets = { 'data-sds-missing': '.missing' } },
+    data => data.compositions[0].recipes.push('unknown'),
+    data => { data.compositions[1].requiresSetup = false },
+    data => { data.compositions.find(composition => composition.kind === 'layout').stylesheets = ['sds.css'] },
+    data => { data.compositions[0].parts[0].minimum = 0 },
+  ]
+  for (const [index, mutate] of mutations.entries()) {
+    const invalid = structuredClone(manifest)
+    mutate(invalid)
+    assert.throws(() => validateInterfaceManifest(invalid, schema), undefined, `mutation ${index}`)
+  }
+})
+
+test('all shipped compositions declare their exact dependencies and required parts', async () => {
+  const window = new Window()
+  try {
+    const document = window.document
+    document.write(await readFile('index.html', 'utf8'))
+    const recipes = new Map(manifest.recipes.flatMap(recipe => recipe.classes.map(name => [name, recipe.name])))
+    const examples = [...document.querySelectorAll('[data-copy-layout], [data-pattern] [data-copy-example]')]
+    assert.equal(examples.length, manifest.compositions.length)
+    for (const root of examples) {
+      const kind = root.hasAttribute('data-copy-layout') ? 'layout' : 'pattern'
+      const name = root.dataset.copyLayout ?? root.closest('[data-pattern]').dataset.pattern
+      const composition = manifest.compositions.find(composition => composition.name === name && composition.kind === kind)
+      assert.ok(composition, name)
+      const nodes = [root, ...root.querySelectorAll('*')]
+      const actualRecipes = [...new Set(nodes.flatMap(node => [...node.classList].map(name => recipes.get(name)).filter(Boolean)))]
+      const actualElements = [...new Set(nodes.map(node => node.localName).filter(name => name.startsWith('sds-')))]
+      assert.deepEqual(actualRecipes.sort(), [...composition.recipes].sort(), `${name} recipes`)
+      assert.deepEqual(actualElements.sort(), [...composition.customElements].sort(), `${name} elements`)
+      const requiresSetup = actualElements.length > 0 || nodes.some(node => node.matches('dialog.sds-dialog, dialog.sds-panel, .sds-sidebar[popover]'))
+      assert.equal(composition.requiresSetup, requiresSetup, `${name} setup`)
+      for (const part of composition.parts) {
+        assert.ok(Number(root.matches(part.selector)) + root.querySelectorAll(part.selector).length >= part.minimum, `${name}: ${part.selector}`)
+      }
+      for (const asset of [...composition.stylesheets, ...composition.assets]) {
+        await assert.doesNotReject(readFile(path.join('dist', asset)), `${name}: ${asset}`)
+      }
+      for (const node of nodes) {
+        for (const attribute of ['for', 'aria-controls', 'aria-labelledby', 'aria-describedby', 'popovertarget']) {
+          for (const id of node.getAttribute(attribute)?.split(/\s+/).filter(Boolean) ?? []) {
+            assert.ok(nodes.some(candidate => candidate.id === id), `${name}: unresolved ${attribute}=${id}`)
+          }
+        }
+      }
+    }
+  } finally {
+    await window.happyDOM.close()
+  }
+})
+
+test('generated public inventories and specialized enums are complete', async () => {
+  const index = await readFile('docs/reference/public-interface.md', 'utf8')
+  const javascript = await readFile('docs/reference/javascript.md', 'utf8')
+  const types = await readFile('src/generated/interface.ts', 'utf8')
+  for (const recipe of manifest.recipes) {
+    for (const name of recipe.classes) assert.ok(index.includes(`\`.${name}\``), name)
+  }
+  for (const element of manifest.customElements) {
+    for (const member of element.members) {
+      const attribute = element.attributes.find(attribute => attribute.name === member.name)
+      const values = attribute?.values ?? manifest.optionFamilies[attribute?.family]?.values ?? []
+      if (member.type?.startsWith('Sds') && values.length) {
+        assert.ok(types.includes(`export type ${member.type} = ${values.map(value => JSON.stringify(value)).join(' | ')}`), member.type)
+      }
+    }
+    for (const event of element.events ?? []) {
+      for (const [name, type] of Object.entries(event.detail)) {
+        assert.ok(javascript.includes(`${name}: ${type}`), `${event.name}.${name}`)
+      }
+    }
+  }
+  for (const heading of ['Toast element', 'Tabs element', 'Dropdown and popover elements', 'Events']) {
+    assert.ok(javascript.includes(`## ${heading}`), heading)
+  }
+  assert.match(javascript, /Changing `open` directly/)
+})
 
 async function filesUnder(directory, extension) {
   const entries = await readdir(directory, { withFileTypes: true })
@@ -128,6 +220,7 @@ test('recipe omission defaults use audited implementation values', () => {
     ['toast-region:data-sds-toast-open', 'no target'],
     ['avatar:data-sds-density', 'comfortable'],
     ['timeline:data-sds-tone', 'unaccented'],
+    ['table:data-sds-density', 'comfortable'],
     ['table:data-sds-sticky', 'none'],
     ['grid:data-sds-columns', 'automatic'],
     ['cluster:data-sds-stack-at', 'none'],

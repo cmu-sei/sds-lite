@@ -61,7 +61,7 @@ The root supplies the theme; recipe classes opt elements into SDS appearance.
 ## The four rules
 
 1. Load `sds.css`.
-2. Load `/auto` if the page uses interactive SDS custom elements.
+2. Load `/auto` for SDS custom elements or dialog, panel, and mobile-sidebar compatibility behavior.
 3. Put `data-sds-root` around the interface.
 4. Write semantic HTML with explicit recipe classes where SDS styling is wanted.
 
@@ -101,7 +101,8 @@ relationships, state, or positioning:
 
 The `/auto` entry sets up every SDS custom element on the page. SDS Lite adds
 the missing classes, IDs, relationships, state, positioning, and keyboard
-behavior.
+behavior. It also supplies native dialog and panel command handling,
+backdrop dismissal, draggable panels, and mobile-sidebar compatibility behavior.
 
 For searchable choices, `<sds-combobox>` enhances a native text input and
 suggestion list. See the [form guide](./docs/components/forms.md#combobox)

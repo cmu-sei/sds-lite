@@ -5,9 +5,10 @@ export type SdsOrientation = "horizontal" | "vertical";
 export type SdsPlacement = "block-start" | "block-start-start" | "block-start-end" | "block-end" | "block-end-start" | "block-end-end" | "inline-start" | "inline-start-start" | "inline-start-end" | "inline-end" | "inline-end-start" | "inline-end-end";
 export type SdsGap = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type SdsSpace = "none" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
-export type SdsTabsActivation = 'automatic' | 'manual';
-export type SdsTabsSize = 'md' | 'lg';
-export type SdsTabsVariant = 'folder' | 'block' | 'underline';
+export type SdsTabsActivation = "automatic" | "manual";
+export type SdsTabsSize = "md" | "lg";
+export type SdsTabsVariant = "folder" | "block" | "underline";
+export type SdsTooltipSize = "sm" | "md" | "lg" | "xl" | "auto";
 export interface SdsToggleDetail {
     open: boolean;
 }

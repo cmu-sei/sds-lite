@@ -98,6 +98,8 @@ test('catalog sections follow a coherent task progression', () => {
     [
       'overview',
       'getting-started',
+      'layouts',
+      'patterns',
       'actions',
       'forms',
       'feedback',
@@ -125,7 +127,7 @@ test('component disclosures group API options beside copyable examples', () => {
   ])
 
   for (const section of document.querySelectorAll(
-    'main#top > .sds-page > section[id]:not(#overview):not(#getting-started)',
+    'main#top > .sds-page > section[id]:not(#overview):not(#getting-started):not(#layouts):not(#patterns)',
   )) {
     const reference = section.querySelector(
       ':scope > details.sds-card.sds-disclosure',

@@ -60,7 +60,7 @@ test('mobile menu icons use centered, font-independent geometry', () => {
   )
 
   assert.doesNotMatch(documentedMarkup, /&#9776;|☰/)
-  assert.equal(menuIcons?.length, 3)
+  assert.equal(menuIcons?.length, 5)
   assert.match(
     buttonCss,
     /\[data-sds-shape="icon"\]\s*>\s*svg[^}]*\{[^}]*inline-size:\s*1em[^}]*block-size:\s*1em/s,
@@ -68,9 +68,10 @@ test('mobile menu icons use centered, font-independent geometry', () => {
 })
 
 test('mobile sidebars animate on user entry and exit', () => {
+  assert.match(sidebarCss, /--sds-sidebar-drawer-offset:\s*-100%/)
   assert.match(
     sidebarCss,
-    /\.sds-sidebar\[popover\][^}]*\{[^}]*transform:\s*translateX\(-100%\)[^}]*transition:/s,
+    /\.sds-sidebar\[popover\][^}]*\{[^}]*transform:\s*translateX\(var\(--sds-sidebar-drawer-offset\)\)[^}]*transition:/s,
   )
   assert.match(
     sidebarCss,
@@ -88,6 +89,6 @@ test('mobile sidebars animate on user entry and exit', () => {
   )
   assert.match(
     sidebarCss,
-    /@starting-style[^}]*\.sds-sidebar\[popover\]:popover-open[^}]*\{[^}]*transform:\s*translateX\(-100%\)/s,
+    /@starting-style[^}]*\.sds-sidebar\[popover\]:popover-open[^}]*\{[^}]*transform:\s*translateX\(var\(--sds-sidebar-drawer-offset\)\)/s,
   )
 })

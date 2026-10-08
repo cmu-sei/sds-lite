@@ -90,6 +90,14 @@
     list-style: none;
   }
 
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav :is(a, button, summary) > svg,
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > header > :is(a, strong) > svg) {
+    display: block;
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex: 0 0 auto;
+  }
+
   :where(.sds-sidebar > nav details > summary)::-webkit-details-marker {
     display: none;
   }
@@ -173,6 +181,7 @@
 
   @media (min-width: 64.001rem) {
     :where(
+      .sds-app[data-sds-variant="documentation"] .sds-sidebar[popover],
       .sds-app[data-sds-variant="application"] .sds-sidebar[popover],
       .sds-app:not([data-sds-variant]) .sds-sidebar[popover]
     ) {
@@ -200,16 +209,20 @@
     }
 
     :where(.sds-sidebar[popover]) {
+      --sds-sidebar-drawer-inset: 0 auto 0 0;
+      --sds-sidebar-drawer-width: 66.667vw;
+      --sds-sidebar-drawer-offset: -100%;
+
       position: fixed;
-      inset: 0 auto 0 0;
-      inline-size: 66.667vw;
+      inset: var(--sds-sidebar-drawer-inset);
+      inline-size: var(--sds-sidebar-drawer-width);
       max-inline-size: none;
       block-size: 100dvh;
       max-block-size: none;
       margin: 0;
       border-inline-end: 1px solid var(--sds-color-border-default);
       box-shadow: var(--sds-shadow-overlay);
-      transform: translateX(-100%);
+      transform: translateX(var(--sds-sidebar-drawer-offset));
       transition:
         transform var(--sds-duration-normal) var(--sds-easing-standard),
         display var(--sds-duration-normal) allow-discrete,
@@ -256,12 +269,235 @@
 
     @starting-style {
       :where(.sds-sidebar[popover]:popover-open) {
-        transform: translateX(-100%);
+        transform: translateX(var(--sds-sidebar-drawer-offset));
       }
 
       :where(.sds-sidebar[popover]:popover-open)::backdrop {
         background: transparent;
       }
     }
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar) {
+    border-inline-end: 0;
+    font-size: 0.875rem;
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > :is(.sds-docs-navigation, .sds-docs-toc)) {
+    display: none;
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header,
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > footer) {
+    padding: var(--sds-space-md) var(--sds-space-xl);
+    border-block: 0;
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header > :is(a, strong)) {
+    display: flex;
+    gap: var(--sds-space-sm);
+    align-items: center;
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header) {
+    padding-block-end: var(--sds-space-xs);
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav > ul) {
+    padding-block-start: 0;
+    padding-inline: var(--sds-space-lg);
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav li > :is(a, button),
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav li > details > summary) {
+    position: relative;
+    min-block-size: 2rem;
+    align-items: center;
+    padding: var(--sds-space-xs) var(--sds-space-sm);
+    border-inline-start: 0;
+    border-radius: var(--sds-radius-container);
+    font-size: inherit;
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > summary)::after {
+    margin-block-start: 0;
+    transform: rotate(-45deg);
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details[open] > summary)::after {
+    transform: rotate(45deg);
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > ul) {
+    margin-inline-start: var(--sds-space-lg);
+    padding-inline: var(--sds-space-sm) 0;
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav > ul > li > details > ul) {
+    border-inline-start: 2px solid var(--sds-color-border-default);
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary) {
+    color: var(--sds-color-brand);
+    background: transparent;
+    font-weight: 400;
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary)::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 2px;
+    background: var(--sds-color-brand);
+    content: "";
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > :is(a, button)[aria-current],
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > details:not([open]):has([aria-current="page"]) > summary,
+    .sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc [aria-current])::before {
+    inset-inline-start: calc(-1 * (var(--sds-space-sm) + 2px));
+  }
+
+  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details details > ul > li > :is(a, button)[aria-current])::before {
+    inset-inline-start: calc(-1 * (var(--sds-space-lg) + 2 * var(--sds-space-sm) + 2px));
+  }
+
+  @media (min-width: 64.001rem) {
+    :where(.sds-app[data-sds-variant="brochure"] .sds-sidebar[popover]) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 64rem) {
+    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar[popover]) {
+      --sds-sidebar-drawer-inset: 0 0 0 auto;
+      --sds-sidebar-drawer-offset: 100%;
+      --sds-sidebar-drawer-width: min(28rem, calc(100vw - var(--sds-space-md)));
+
+      overflow-y: auto;
+      border-inline-end: 0;
+      border-radius: var(--sds-space-lg) var(--sds-space-lg) 0 0;
+      overscroll-behavior: contain;
+    }
+
+    :where(.sds-app[data-sds-variant="brochure"] .sds-sidebar[popover]) {
+      border: 1px solid var(--sds-color-border-default);
+      border-block-end: 0;
+      font-family: var(--sds-font-body);
+    }
+
+    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar > header) {
+      position: sticky;
+      z-index: 2;
+      inset-block-start: 0;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: var(--sds-space-md);
+      padding: var(--sds-space-xl) var(--sds-space-xl) var(--sds-space-sm);
+      border: 0;
+      background: var(--sds-color-surface-default);
+    }
+
+    :where(.sds-app[data-sds-variant="brochure"] .sds-sidebar > header > strong) {
+      font-size: 1.5rem;
+      font-weight: 300;
+      line-height: 2rem;
+    }
+
+    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar-close) {
+      position: static;
+      color: var(--sds-color-text-muted);
+      font-size: 1.5rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar > nav) {
+      flex: 0 0 auto;
+      overflow: visible;
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header > strong) {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > :is(.sds-docs-navigation, .sds-docs-toc)) {
+      display: block;
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav > ul) {
+      padding-block-end: 0;
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav + nav) {
+      margin-block-start: var(--sds-space-lg);
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav + nav)::before {
+      display: block;
+      block-size: 1px;
+      margin: 0 var(--sds-space-xl) var(--sds-space-lg);
+      background: var(--sds-color-border-default);
+      content: "";
+    }
+
+    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav > ul) {
+      display: grid;
+      gap: 0;
+      padding: 0;
+    }
+
+    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav li > a) {
+      position: relative;
+      min-block-size: 3rem;
+      align-items: center;
+      padding: var(--sds-space-md) var(--sds-space-xl);
+      border: 0;
+      border-radius: 0;
+      color: var(--sds-color-text-default);
+      font-family: var(--sds-font-body);
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5rem;
+    }
+
+    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav [aria-current]) {
+      background: transparent;
+    }
+
+    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav [aria-current])::before {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      inline-size: 0.25rem;
+      background: var(--sds-color-brand);
+      content: "";
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc) {
+      margin: var(--sds-space-lg) var(--sds-space-xl);
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc)::before {
+      margin-inline: 0;
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc > strong) {
+      display: block;
+      line-height: 1.25rem;
+    }
+
+    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc > ul) {
+      margin-block-start: var(--sds-space-sm);
+      padding: 0;
+      padding-inline-start: var(--sds-space-sm);
+      border-inline-start: 2px solid var(--sds-color-border-default);
+    }
+
   }
 }

@@ -48,161 +48,184 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 
 ## CSS classes
 
+> Class and element inventories are generated from the interface manifest.
+
 ### Foundations, actions, and forms
 
 | Class | Purpose |
 |---|---|
-| `.sds-action-group` | Responsive related-action layout |
-| `.sds-button` | Button appearance for a button or link |
-| `.sds-choice` | Checkbox or radio with label text |
-| `.sds-combobox-list` | Combobox suggestion list |
-| `.sds-field` | Label, control, help, and validation layout |
-| `.sds-file-input` | Explicit native file-input hook |
-| `.sds-file-upload` | Dashed file-upload container |
-| `.sds-file-upload-action` | Upload icon and action label |
-| `.sds-file-upload-surface` | Centered native file-input content |
-| `.sds-form` | Narrow vertical form |
-| `.sds-input` | Explicit text-control hook |
-| `.sds-input-addon` | Visible prefix or suffix beside a form control |
-| `.sds-input-group` | Shared border layout for a control and its add-ons |
-| `.sds-link` | Explicit link recipe |
-| `.sds-select` | Explicit select-control hook |
-| `.sds-switch` | Native checkbox with switch appearance |
+| `.sds-fieldset` | Explicit border and shape for a native fieldset. |
+| `.sds-button` | Action styling for native buttons and links. |
+| `.sds-link` | Link styling with semantic tone and emphasis. |
+| `.sds-field` | Label, control, help, and validation layout. |
+| `.sds-form` | Narrow vertical form layout. |
+| `.sds-input` | Explicit hooks for native form controls. |
+| `.sds-select` | Explicit hooks for native form controls. |
+| `.sds-input-group` | Native form control with a visible prefix or suffix. |
+| `.sds-input-addon` | Native form control with a visible prefix or suffix. |
+| `.sds-range` | Native range input styling. |
+| `.sds-combobox-list` | Suggestion list for a native text input. |
+| `.sds-choice` | Checkbox or radio with label text. |
+| `.sds-checkbox` | Checkbox or radio with label text. |
+| `.sds-radio` | Checkbox or radio with label text. |
+| `.sds-switch` | Native checkbox with switch appearance. |
+| `.sds-file-input` | Native file input and composed upload surface. |
+| `.sds-file-upload` | Native file input and composed upload surface. |
+| `.sds-file-upload-action` | Native file input and composed upload surface. |
+| `.sds-file-upload-surface` | Native file input and composed upload surface. |
+| `.sds-action-group` | Responsive layout for related actions. |
 
 ### Feedback and loading
 
 | Class | Purpose |
 |---|---|
-| `.sds-breadcrumb` | Hierarchical page navigation |
-| `.sds-badge` | Compact status or category |
-| `.sds-callout` | Contextual message |
-| `.sds-callout-timestamp` | Secondary callout timestamp |
-| `.sds-empty-state` | Empty-result message |
-| `.sds-skeleton` | Loading placeholder |
-| `.sds-spinner` | Loading indicator |
-| `.sds-tag` | Static or interactive category |
-| `.sds-tag-action` | Independent tag action |
-| `.sds-tag-counter` | Leading tag count |
-| `.sds-tag-label` | Truncating tag label |
-| `.sds-toaster` | Fixed notification region |
+| `.sds-badge` | Compact status or category. |
+| `.sds-tag` | Static or interactive category with an optional counter. |
+| `.sds-tag-counter` | Static or interactive category with an optional counter. |
+| `.sds-tag-label` | Static or interactive category with an optional counter. |
+| `.sds-tag-action` | Independent action inside a tag. |
+| `.sds-callout` | Contextual message in page content. |
+| `.sds-callout-timestamp` | Contextual message in page content. |
+| `.sds-toaster` | Fixed notification region. |
+| `.sds-spinner` | Animated loading indicator. |
+| `.sds-progress` | Native task progress styling. |
+| `.sds-meter` | Native scalar measurement with semantic threshold colors. |
+| `.sds-skeleton` | Loading placeholder. |
+| `.sds-empty-state` | Empty-result message. |
 
 ### Content and data
 
 | Class | Purpose |
 |---|---|
-| `.sds-avatar` | Person image or initials |
-| `.sds-avatar-group` | Overlapping list of people |
-| `.sds-card` | Raised content container |
-| `.sds-card-label` | Muted card label |
-| `.sds-datapoint` | Label, value, and context |
-| `.sds-list` | Structured content list |
-| `.sds-list-item` | Direct list item |
-| `.sds-list-marker` | Marker column |
-| `.sds-table` | Application data table |
-| `.sds-table-container` | Horizontally scrollable table wrapper |
-| `.sds-timeline` | Vertical or horizontal event sequence |
-| `.sds-timeline-item` | Timeline event |
-| `.sds-timeline-marker` | Custom event marker |
+| `.sds-avatar` | Person image or initials and overlapping groups. |
+| `.sds-avatar-group` | Person image or initials and overlapping groups. |
+| `.sds-card` | Raised content container, muted label, and optional stretched primary link. |
+| `.sds-card-label` | Raised content container, muted label, and optional stretched primary link. |
+| `.sds-card-link` | Raised content container, muted label, and optional stretched primary link. |
+| `.sds-datapoint` | Label, value, and context. |
+| `.sds-list` | Structured content list. |
+| `.sds-list-item` | Structured content list. |
+| `.sds-list-marker` | Structured content list. |
+| `.sds-timeline` | Vertical or horizontal event sequence. |
+| `.sds-timeline-item` | Vertical or horizontal event sequence. |
+| `.sds-timeline-marker` | Vertical or horizontal event sequence. |
+| `.sds-table` | Application data table and overflow container. |
+| `.sds-table-container` | Application data table and overflow container. |
+| `.sds-table-footer` | Application data table and overflow container. |
 
 ### Layout
 
 | Class | Purpose |
 |---|---|
-| `.sds-cluster` | Wrapping flex row for related content |
-| `.sds-grid` | Responsive equal-width column layout |
-| `.sds-page` | Centered page content |
-| `.sds-page-header` | Sticky page title and actions |
-| `.sds-section-header` | Section title, description, and actions |
-| `.sds-sidebar` | Persistent or mobile navigation |
-| `.sds-sidebar-close` | Mobile-sidebar close control |
-| `.sds-sidebar-layout` | Contained sidebar and content |
-| `.sds-stack` | Vertical content flow with consistent spacing |
+| `.sds-grid` | Responsive equal-width column layout. |
+| `.sds-cluster` | Wrapping flex row for related content. |
+| `.sds-stack` | Vertical content flow with consistent spacing. |
+| `.sds-page` | Page content, headers, and section context. |
+| `.sds-page-header` | Page content, headers, and section context. |
+| `.sds-section-header` | Page content, headers, and section context. |
+| `.sds-eyebrow` | Page content, headers, and section context. |
+| `.sds-sidebar` | Persistent or mobile navigation layout. |
+| `.sds-sidebar-close` | Persistent or mobile navigation layout. |
+| `.sds-sidebar-layout` | Persistent or mobile navigation layout. |
 
 ### Navigation and overlays
 
 | Class | Purpose |
 |---|---|
-| `.sds-dialog` | Native dialog surface |
-| `.sds-dialog-footer` | Dialog action layout |
-| `.sds-dialog-header` | Dialog title and close layout |
-| `.sds-disclosure` | Native details disclosure |
-| `.sds-dropdown-divider` | Menu separator |
-| `.sds-dropdown-label` | Noninteractive menu group label |
-| `.sds-dropdown-menu` | Dropdown surface |
-| `.sds-panel` | Edge-attached native dialog |
-| `.sds-pagination` | Page navigation and controls |
-| `.sds-pagination-status` | Current result range |
-| `.sds-popover-content` | Interactive anchored content |
-| `.sds-skip-link` | Keyboard-visible bypass link |
-| `.sds-tab` | Tab button or route link |
-| `.sds-tab-list` | Tab-list row |
-| `.sds-tab-panel` | Tab-controlled content |
-| `.sds-tooltip-content` | Anchored descriptive text |
+| `.sds-dialog` | Native dialog surface and action layout. |
+| `.sds-dialog-header` | Native dialog surface and action layout. |
+| `.sds-dialog-footer` | Native dialog surface and action layout. |
+| `.sds-panel` | Edge-attached native dialog. |
+| `.sds-disclosure` | Native details disclosure. |
+| `.sds-pagination` | Page navigation and result status. |
+| `.sds-pagination-status` | Page navigation and result status. |
+| `.sds-breadcrumb` | Hierarchical page navigation. |
+| `.sds-skip-link` | Keyboard-visible link that bypasses repeated content. |
+| `.sds-tab` | Generated or server-rendered tab structure. |
+| `.sds-tab-list` | Generated or server-rendered tab structure. |
+| `.sds-tab-panel` | Generated or server-rendered tab structure. |
+| `.sds-dropdown-menu` | Dropdown menu surface, separator, and label. |
+| `.sds-dropdown-divider` | Dropdown menu surface, separator, and label. |
+| `.sds-dropdown-label` | Dropdown menu surface, separator, and label. |
+| `.sds-popover-content` | Popover and tooltip surfaces. |
+| `.sds-tooltip-content` | Popover and tooltip surfaces. |
 
 ### Prose and utilities
 
 | Class | Purpose |
 |---|---|
-| `.sds-eyebrow` | Small uppercase context |
-| `.sds-not-prose` | Exclude subtree from prose styles |
-| `.sds-prose` | Long-form semantic typography |
-| `.sds-prose-lead` | Introductory prose paragraph |
-| `.sds-sr-only` | Visually hide accessible text |
+| `.sds-document` | Opt-in standalone page typography, background, and margin reset. |
+| `.sds-text-h1` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-h2` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-h3` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-h4` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-h5` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-h6` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-lead` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-body` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-caption1` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-caption2` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
+| `.sds-prose` | Long-form semantic typography and opt-out. |
+| `.sds-prose-lead` | Long-form semantic typography and opt-out. |
+| `.sds-not-prose` | Long-form semantic typography and opt-out. |
+| `.sds-sr-only` | Long-form semantic typography and opt-out. |
 
 ### Application shell
 
 | Class | Purpose |
 |---|---|
-| `.sds-app` | Application, simple, or brochure shell |
-| `.sds-app-action-bar` | Sticky pending-action area |
-| `.sds-app-body` | Independently scrolling body |
-| `.sds-app-brand` | Application brand link |
-| `.sds-app-brand-prefix` | Emphasized brand prefix |
-| `.sds-app-footer` | Application footer |
-| `.sds-app-footer-brand` | SEI wordmark region |
-| `.sds-app-footer-content` | Responsive footer row |
-| `.sds-app-footer-legal` | CMU copyright and handling statement |
-| `.sds-app-footer-middle` | Application-specific footer information |
-| `.sds-app-footer-top` | Optional footer content |
-| `.sds-app-header` | Simple-application header |
-| `.sds-app-layout` | Sidebar and body columns |
-| `.sds-app-main` | Flexible application content |
-| `.sds-app-mobile-header` | Mobile menu and identity header |
-| `.sds-sei-wordmark` | Official SEI wordmark |
+| `.sds-app` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-action-bar` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-body` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-brand` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-brand-prefix` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-brand` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-content` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-legal` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-middle` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-top` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-header` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-layout` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-main` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-mobile-header` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-docs-layout` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-docs-masthead` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-docs-navigation` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-docs-toc` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-sei-wordmark` | SEI application, simple, documentation, and brochure shells. |
 
 ### Brochure shell
 
 | Class | Purpose |
 |---|---|
-| `.sds-brochure-brand` | Brochure identity and organization |
-| `.sds-brochure-container` | Centered brochure content width |
-| `.sds-brochure-footer-about` | Official identity and address |
-| `.sds-brochure-footer-actions` | Public action links |
-| `.sds-brochure-footer-content` | Footer identity and navigation layout |
-| `.sds-brochure-footer-legal` | Legal-navigation footer row |
-| `.sds-brochure-footer-links` | Light pre-footer action region |
-| `.sds-brochure-footer-main` | Dark primary footer |
-| `.sds-brochure-footer-navigation` | Footer navigation groups |
-| `.sds-brochure-header` | Brochure masthead and navigation |
-| `.sds-brochure-main` | Brochure content region |
-| `.sds-brochure-masthead` | Carnegie Mellon masthead |
-| `.sds-brochure-navigation` | Identity and primary navigation |
-| `.sds-cmu-wordmark` | Official Carnegie Mellon wordmark |
-
+| `.sds-brochure-brand` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-container` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-footer-about` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-footer-actions` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-footer-content` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-footer-legal` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-footer-links` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-footer-main` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-footer-navigation` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-header` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-main` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-masthead` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-brochure-navigation` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-cmu-wordmark` | SEI application, simple, documentation, and brochure shells. |
 ## Custom elements
 
 | Element | Purpose |
 |---|---|
-| `<sds-combobox>` | Searchable native input with accessible suggestions |
-| `<sds-dropdown>` | Menu positioning and keyboard interaction |
-| `<sds-popover>` | Delayed-hover interactive anchored content |
-| `<sds-tabs>` | Tab selection and keyboard interaction |
-| `<sds-toast>` | Timed or persistent notification |
-| `<sds-tooltip>` | Hover and focus description |
+| `<sds-combobox>` | Enhances a native text input and suggestion list with accessible combobox keyboard behavior. |
+| `<sds-dropdown>` | Enhances a direct child button and menu with Popover positioning and menu keyboard behavior. |
+| `<sds-popover>` | Enhances a direct child button and rich Popover surface with delayed hover and focus behavior. |
+| `<sds-tabs>` | Coordinates a tab list and one panel per tab. |
+| `<sds-tooltip>` | Enhances a direct child trigger and short description with accessible tooltip behavior. |
+| `<sds-toast>` | A timed or persistent notification. |
 
 There are intentionally no custom elements for buttons, links, inputs, tags,
 dialogs, panels, or disclosures. Native HTML supplies their semantics.
-
 ## JavaScript and CSS
 
 - [Package imports](./imports.md)
