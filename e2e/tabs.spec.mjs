@@ -1,5 +1,106 @@
 import { expect, test } from '@playwright/test'
 
+test('tabs synchronize orientation through attributes, properties, and resets', async ({ page }) => {
+  await page.goto('/')
+  await page.evaluate(() => {
+    const fixture = document.createElement('div')
+    fixture.innerHTML = `
+      <sds-tabs id="api-tabs" orientation="horizontal">
+        <div aria-label="API orientation">
+          <button type="button" value="one">One</button>
+          <button type="button" value="two">Two</button>
+        </div>
+        <section>First panel</section>
+        <section>Second panel</section>
+      </sds-tabs>
+    `
+    document.body.append(fixture)
+  })
+  const tabs = page.locator('#api-tabs')
+  const list = tabs.getByRole('tablist')
+  const first = tabs.getByRole('tab', { name: 'One', exact: true })
+  await expect(list).toHaveAttribute('aria-orientation', 'horizontal')
+
+  await tabs.evaluate(element => element.setAttribute('orientation', 'vertical'))
+  await expect(list).toHaveAttribute('aria-orientation', 'vertical')
+  await first.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(tabs).toHaveAttribute('value', 'two')
+
+  await tabs.evaluate(element => { element.orientation = 'horizontal'; element.value = 'one' })
+  await expect(list).toHaveAttribute('aria-orientation', 'horizontal')
+  await first.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(tabs).toHaveAttribute('value', 'one')
+  await page.keyboard.press('ArrowRight')
+  await expect(tabs).toHaveAttribute('value', 'two')
+
+  await tabs.evaluate(element => { element.orientation = 'vertical'; element.value = 'one' })
+  await tabs.evaluate(element => element.setAttribute('orientation', 'horizontal'))
+  await expect(list).toHaveAttribute('aria-orientation', 'horizontal')
+  await first.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(tabs).toHaveAttribute('value', 'one')
+
+  await tabs.evaluate(element => { element.orientation = 'vertical'; element.removeAttribute('orientation') })
+  await expect(list).toHaveAttribute('aria-orientation', 'horizontal')
+  expect(await tabs.evaluate(element => element.orientation)).toBe('horizontal')
+  await page.keyboard.press('ArrowRight')
+  await expect(tabs).toHaveAttribute('value', 'two')
+})
+
+test('detached tabs reset orientation without overriding authored tablist orientation', async ({ page }) => {
+  await page.goto('/')
+  await page.evaluate(() => {
+    const fixture = document.createElement('div')
+    fixture.innerHTML = `
+      <sds-tabs id="reset-tabs" orientation="vertical">
+        <div aria-label="Reset orientation">
+          <button type="button" value="one">One</button>
+          <button type="button" value="two">Two</button>
+        </div>
+        <section>First panel</section>
+        <section>Second panel</section>
+      </sds-tabs>
+      <sds-tabs id="authored-tabs">
+        <div aria-label="Authored orientation" aria-orientation="vertical">
+          <button type="button" value="one">One</button>
+          <button type="button" value="two">Two</button>
+        </div>
+        <section>First panel</section>
+        <section>Second panel</section>
+      </sds-tabs>
+    `
+    document.body.append(fixture)
+  })
+  const tabs = page.locator('#reset-tabs')
+  await expect(tabs.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical')
+  await tabs.evaluate(element => {
+    const parent = element.parentElement
+    element.remove()
+    element.removeAttribute('orientation')
+    parent.append(element)
+  })
+  expect(await tabs.evaluate(element => element.orientation)).toBe('horizontal')
+  await expect(tabs.getByRole('tablist')).toHaveAttribute('aria-orientation', 'horizontal')
+  await tabs.getByRole('tab', { name: 'One', exact: true }).focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(tabs).toHaveAttribute('value', 'one')
+  await page.keyboard.press('ArrowRight')
+  await expect(tabs).toHaveAttribute('value', 'two')
+
+  const authored = page.locator('#authored-tabs')
+  await authored.evaluate(element => {
+    const parent = element.parentElement
+    element.remove()
+    parent.append(element)
+  })
+  await expect(authored.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical')
+  await authored.getByRole('tab', { name: 'One', exact: true }).focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(authored).toHaveAttribute('value', 'two')
+})
+
 test('the selected folder tab covers the divider without vertical scrolling', async ({
   page,
 }) => {

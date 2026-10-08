@@ -80,3 +80,19 @@ The package check enforces these gzip limits on built browser assets:
 These are regression budgets, not installed-package sizes. CSS-only pages
 omit JavaScript, and ordinary pages omit `brand.css`. SDS Lite has no runtime,
 peer, or optional dependencies.
+
+The default CDN setup has a combined budget of 35,000 bytes gzipped
+(`sds.css` plus `auto.js`). "Lightweight" refers to these project budgets,
+not a universal industry threshold. Run `npm run build` followed by
+`npm run check:package` in the repository to report current raw and gzip
+sizes, remaining budget, and the compressed NPM archive size.
+
+NPM applications bundle the root or `/auto` entry and its imported modules;
+the small entry file alone is not the JavaScript payload. Tree shaking and
+minification depend on the consuming bundler. The NPM archive also contains
+documentation, types, and editor metadata that browsers do not download.
+Gzip measurements exclude HTTP headers and reflect local compression, not
+a guarantee of the CDN's negotiated transfer encoding. Optional `brand.css`
+also references `package/assets/sei-wordmark.svg`, a separate image request.
+Theme fonts are supplied by the host application and are not included in
+these budgets.

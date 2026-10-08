@@ -1,5 +1,5 @@
 import '@cmu-sei/sds-lite/react'
-import type { SdsTabsChangeDetail } from '@cmu-sei/sds-lite'
+import type { SdsTabsChangeDetail, SdsTooltipSize } from '@cmu-sei/sds-lite'
 import type { SdsTabsProps as SdsVueTabsProps } from '@cmu-sei/sds-lite/vue'
 
 const handleChange = (event: CustomEvent<SdsTabsChangeDetail>) => {
@@ -30,3 +30,8 @@ const vueTabs: SdsVueTabsProps = {
 
 void tabs
 void vueTabs
+
+const tooltipSize: SdsTooltipSize = 'auto'
+const tooltip = document.createElement('sds-tooltip')
+tooltip.size = tooltipSize
+void tooltip

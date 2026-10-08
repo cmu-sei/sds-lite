@@ -386,7 +386,7 @@ test('native recipes render and preserve platform behavior', async ({
     )
   expect(caretDisplay).toBe('none')
 
-  const pagination = page.getByRole('navigation', { name: 'Project pages' })
+  const pagination = page.getByRole('navigation', { name: 'Project pages', exact: true })
   const currentPage = pagination.locator('[aria-current="page"]')
   await expect(currentPage).toHaveText('1')
   await expect(currentPage).toHaveCSS(
@@ -538,6 +538,104 @@ test('native recipes render and preserve platform behavior', async ({
   await expect(skipLink).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
 })
 
+test('every generated recipe and pattern snapshot matches its displayed example', async ({ page }) => {
+  await page.goto('/')
+  const audit = await page.evaluate(() => [...document.querySelectorAll('[data-example-tools]')].map(tools => {
+    const snippet = tools.nextElementSibling
+    const example = snippet.nextElementSibling
+    const clone = example.cloneNode(true)
+    for (const element of [clone, ...clone.querySelectorAll('*')]) {
+      element.removeAttribute('data-copy-layout')
+      element.removeAttribute('data-copy-example')
+    }
+    for (const control of clone.querySelectorAll('[data-copy-target]')) {
+      const target = control.getAttribute('data-copy-target')
+      if (target) clone.querySelector(`#${CSS.escape(target)}`)?.remove()
+      control.remove()
+    }
+    const actual = snippet.querySelector('code').textContent
+    return { name: tools.querySelector('strong').textContent, matches: actual === clone.outerHTML, expected: clone.outerHTML, actual }
+  }))
+  expect(audit).toHaveLength(await page.locator('[data-copy-example], #composition > article, #forms > article, #content > article, #prose > article, #navigation > article, #loading > article, #actions > article, #feedback > article, #structure > article').count())
+  for (const result of audit) expect(result.actual, result.name).toBe(result.expected)
+  expect(await page.locator('#copy-cluster-markup code').textContent()).toBe(await page.locator('#cluster-example').evaluate(element => element.outerHTML))
+})
+
+test('every layout and standalone page export preserves its displayed markup', async ({ page }) => {
+  await page.goto('/')
+  const audit = await page.evaluate(() => [...document.querySelectorAll('[data-copy-layout]')].map(example => {
+    const name = example.getAttribute('data-copy-layout')
+    const clone = example.cloneNode(true)
+    for (const element of [clone, ...clone.querySelectorAll('*')]) {
+      element.removeAttribute('data-copy-layout')
+      element.removeAttribute('data-copy-example')
+    }
+    const content = clone.querySelector(`#${clone.dataset.sdsVariant}-page-content`)
+    if (content) content.id = 'page-content'
+    for (const link of clone.querySelectorAll('a[href="#composition"]')) link.setAttribute('href', '#page-content')
+    const main = clone.querySelector('.sds-app-main, .sds-brochure-main')
+    if (main) {
+      const semanticMain = document.createElement('main')
+      for (const attribute of main.attributes) semanticMain.setAttribute(attribute.name, attribute.value)
+      semanticMain.append(...main.childNodes)
+      main.replaceWith(semanticMain)
+    }
+    const snippets = [...document.querySelectorAll('#layouts > article details')]
+    const findMarkup = label => snippets.find(details => details.querySelector(':scope > summary')?.textContent === label)?.querySelector('code')?.textContent
+    const layout = findMarkup(`${name} layout HTML`)
+    const pageMarkup = findMarkup(`${name} page HTML`)
+    const pageDocument = new DOMParser().parseFromString(pageMarkup, 'text/html')
+    return {
+      name,
+      expected: clone.outerHTML,
+      layout,
+      page: pageDocument.body.firstElementChild?.outerHTML,
+      theme: pageDocument.body.dataset.sdsTheme,
+      expectedTheme: example.dataset.sdsTheme,
+      stylesheetCount: pageDocument.head.querySelectorAll('link[rel="stylesheet"]').length,
+      scriptCount: pageDocument.head.querySelectorAll('script[type="module"]').length,
+    }
+  }))
+  expect(audit).toHaveLength(4)
+  for (const result of audit) {
+    expect(result.layout, `${result.name} layout`).toBe(result.expected)
+    expect(result.page, `${result.name} page`).toBe(result.expected)
+    expect(result.theme).toBe(result.expectedTheme)
+    expect(result.stylesheetCount).toBe(2)
+    expect(result.scriptCount).toBe(1)
+  }
+})
+
+test('every copy control writes its complete displayed code to the clipboard', async ({ page }) => {
+  await page.goto('/')
+  await page.evaluate(() => {
+    window.copiedSnippets = []
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async value => { window.copiedSnippets.push(value) } },
+    })
+  })
+  const audit = await page.evaluate(async () => {
+    const results = []
+    for (const button of document.querySelectorAll('[data-copy-target]')) {
+      const target = document.getElementById(button.dataset.copyTarget)
+      const expected = target?.textContent
+      const before = window.copiedSnippets.length
+      button.click()
+      await Promise.resolve()
+      results.push({ target: button.dataset.copyTarget, expected, actual: window.copiedSnippets[before] })
+    }
+    return results
+  })
+  expect(audit).toHaveLength(await page.locator('[data-copy-target]').count())
+  expect(audit.length).toBeGreaterThan(40)
+  for (const result of audit) {
+    expect(result.expected, result.target).toBeTruthy()
+    expect(result.actual, result.target).toBe(result.expected)
+  }
+  await expect(page.locator('#copy-status')).toHaveText('Example copied to clipboard.')
+})
+
 test('API disclosures copy their example markup and announce success', async ({
   page,
 }) => {
@@ -569,3 +667,174 @@ test('API disclosures copy their example markup and announce success', async ({
     '<button class="sds-button" data-sds-variant="tonal" data-sds-tone="danger">',
   )
 })
+
+for (const [name, variant, theme] of [
+  ['application', 'application', 'forge'],
+  ['simple application', 'simple', 'forge'],
+  ['documentation site', 'documentation', 'forge'],
+  ['brochure', 'brochure', 'plaid'],
+]) {
+  test(`copyable ${name} page includes setup, theme, and working layout semantics`, async ({ page }) => {
+    await page.goto('/#layouts')
+    await page.evaluate(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.copiedMarkup = value } },
+      })
+    })
+    await expect(page.locator(`#layouts [data-sds-variant="${variant}"]`)).toHaveAttribute('data-sds-theme', theme)
+    const target = await page.getByRole('button', { name: `Copy ${name} page`, exact: true }).getAttribute('data-copy-target')
+    const copy = page.locator(`[data-copy-target="${target}"]`)
+    await copy.click()
+    await expect(copy).toHaveText('Copied')
+    const markup = await page.evaluate(() => window.copiedMarkup)
+    expect(markup).toMatch(/^<!doctype html>/)
+    expect(markup).toContain('/dist/sds.css')
+    expect(markup).toContain('/dist/brand.css')
+    expect(markup).toContain('/dist/auto.js')
+    expect(markup).not.toContain('data-copy-')
+    expect(markup).not.toContain('#composition')
+    await page.getByRole('button', { name: `Copy ${name} layout`, exact: true }).click()
+    const layoutMarkup = await page.evaluate(() => window.copiedMarkup)
+    expect(layoutMarkup).not.toContain('<!doctype')
+    expect(layoutMarkup).toContain(`data-sds-theme="${theme}"`)
+    await page.route('https://cdn.jsdelivr.net/**', async (route) => {
+      const file = new URL(route.request().url()).pathname.split('/dist/')[1]
+      await route.fulfill({ path: `dist/${file}` })
+    })
+    await page.setContent(markup)
+    await expect(page.locator('main')).toHaveCount(1)
+    await expect(page.locator('#page-content')).toBeVisible()
+    await expect(page.locator('.sds-app')).toHaveCSS('display', 'flex')
+    if (variant === 'application') {
+      const createReview = page.getByRole('button', { name: 'Create review', exact: true })
+      await expect(createReview).toHaveAttribute('data-sds-density', 'compact')
+      await expect(createReview).toHaveCSS('min-height', '32px')
+    }
+    if (variant === 'simple') {
+      const save = page.locator('.sds-page-header').getByRole('button', { name: 'Save', exact: true })
+      await expect(save).toHaveAttribute('data-sds-density', 'compact')
+      await expect(save).toHaveCSS('min-height', '32px')
+      const account = page.getByRole('button', { name: 'Alex Morgan', exact: true })
+      await expect(account).toHaveAttribute('data-sds-variant', 'text')
+      await expect(account).toHaveAttribute('data-sds-density', 'compact')
+      await expect(account.locator('.sds-avatar')).toHaveText('AM')
+      await expect(account.locator('.sds-avatar')).toHaveAttribute('data-sds-size', 'xs')
+      await expect(account.locator('.sds-avatar')).toHaveAttribute('aria-hidden', 'true')
+    }
+    expect(await page.evaluate(() => {
+      const ids = [...document.querySelectorAll('[id]')].map((element) => element.id)
+      return ids.length === new Set(ids).size && [...document.querySelectorAll('[popovertarget]')].every((button) => document.getElementById(button.getAttribute('popovertarget')))
+    })).toBe(true)
+    if (variant === 'documentation') {
+      await expect(page.getByRole('navigation', { name: 'Documentation pages', exact: true })).toBeVisible()
+      await expect(page.getByRole('navigation', { name: 'On this page', exact: true })).toBeVisible()
+      for (const link of await page.getByRole('navigation', { name: 'On this page', exact: true }).getByRole('link').all()) {
+        const href = await link.getAttribute('href')
+        await link.click()
+        await expect(page.locator(href)).toBeInViewport()
+      }
+      const search = page.getByRole('search', { name: 'Documentation search' })
+      await page.getByRole('button', { name: 'Search documentation', exact: true }).click()
+      await expect(page.getByRole('dialog', { name: 'Search documentation', exact: true })).toBeVisible()
+      await search.getByRole('searchbox').fill('installation')
+      expect(await search.locator('form').evaluate(form => ({ action: form.getAttribute('action'), query: new FormData(form).get('q') }))).toEqual({ action: '/search', query: 'installation' })
+      await page.getByRole('button', { name: 'Close documentation search', exact: true }).click()
+      await expect(page.getByRole('dialog', { name: 'Search documentation', exact: true })).not.toBeVisible()
+      await expect(page.locator('.sds-docs-masthead .sds-sei-wordmark')).toBeVisible()
+      await expect(page.getByRole('navigation', { name: 'Documentation footer', exact: true }).getByRole('link')).toHaveCount(3)
+    }
+    await page.setViewportSize({ width: 390, height: 844 })
+    if (variant === 'documentation') {
+      await expect(page.locator('#documentation-preview-sidebar')).not.toBeVisible()
+      await page.getByRole('button', { name: 'Open documentation navigation' }).click()
+      await expect(page.locator('#documentation-preview-sidebar')).toBeVisible()
+      await expect(page.getByRole('navigation', { name: 'Documentation sections', exact: true })).toBeVisible()
+      await expect(page.getByRole('navigation', { name: 'On this page', exact: true })).toBeVisible()
+      await expect(page.getByRole('navigation', { name: 'On this page', exact: true }).getByRole('link')).toHaveCount(3)
+      await page.getByRole('button', { name: 'Close documentation navigation' }).click()
+      await expect(page.locator('#documentation-preview-sidebar')).not.toBeVisible()
+    }
+    if (variant === 'application') {
+      await page.getByRole('button', { name: 'Open preview navigation' }).click()
+      await expect(page.locator('#application-preview-sidebar')).toBeVisible()
+      await page.getByRole('button', { name: 'Close preview navigation' }).click()
+      await expect(page.locator('#application-preview-sidebar')).not.toBeVisible()
+    }
+    if (variant === 'brochure') {
+      await expect(page.getByRole('navigation', { name: 'Brochure preview', exact: true })).not.toBeVisible()
+      await page.getByRole('button', { name: 'Open brochure navigation' }).click()
+      await expect(page.locator('#brochure-preview-navigation')).toBeVisible()
+      const links = page.getByRole('navigation', { name: 'Brochure pages', exact: true }).getByRole('link')
+      await expect(links).toHaveText(['Home', 'Research'])
+      await expect(links.first()).toHaveAttribute('aria-current', 'page')
+      for (const link of await links.all()) await expect(link).toHaveAttribute('href', '#page-content')
+      await page.getByRole('button', { name: 'Close brochure navigation' }).click()
+      await expect(page.locator('#brochure-preview-navigation')).not.toBeVisible()
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+  })
+}
+
+for (const pattern of ['dashboard', 'directory', 'settings', 'article']) {
+  test(`a copied ${pattern} pattern composes into a standalone page`, async ({ page }) => {
+    await page.goto('/#patterns')
+    const layout = await page.locator('#layouts summary').filter({ hasText: /^Simple application page HTML$/ }).locator('..').locator('code').textContent()
+    const copy = page.getByRole('button', { name: `Copy ${pattern} markup`, exact: true })
+    await page.evaluate(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.copiedMarkup = value } },
+      })
+    })
+    await copy.click()
+    const markup = await page.evaluate(() => window.copiedMarkup)
+    expect(markup).not.toContain('data-copy-')
+    await page.route('https://cdn.jsdelivr.net/**', async (route) => {
+      const file = new URL(route.request().url()).pathname.split('/dist/')[1]
+      await route.fulfill({ path: `dist/${file}` })
+    })
+    await page.setContent(layout)
+    await page.locator('#page-content').evaluate((content, markup) => { content.innerHTML = markup }, markup)
+    await expect(page.locator('#page-content')).toBeVisible()
+    for (const width of [1280, 390]) {
+      await page.setViewportSize({ width, height: 844 })
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    }
+    if (pattern === 'dashboard') {
+      const footer = page.locator('#page-content .sds-table tfoot')
+      await expect(footer.getByRole('navigation', { name: 'Recent project pages' })).toBeVisible()
+      await expect(footer.locator('.sds-pagination-status')).toHaveText('Showing 1-10 of 24 projects')
+      await expect(footer.getByRole('combobox', { name: 'Rows per page' })).toHaveValue('10')
+    }
+    if (pattern === 'settings') {
+      await expect(page.getByRole('textbox', { name: 'Description', exact: true })).toHaveAccessibleDescription("Briefly describe the project's purpose and scope.")
+      const input = page.getByRole('textbox', { name: 'Project name', exact: true })
+      await input.fill('Updated project')
+      await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+      await expect(input).toHaveValue('Project Atlas')
+      await expect(page.getByRole('checkbox')).toBeChecked()
+    }
+    if (pattern === 'directory') {
+      const search = page.getByRole('combobox', { name: 'Search projects' })
+      await search.fill('Atl')
+      await expect(page.getByRole('option', { name: 'Atlas', exact: true })).toBeVisible()
+      await expect(page.getByRole('option', { name: 'Orion', exact: true })).not.toBeVisible()
+      await search.press('ArrowDown')
+      await search.press('Enter')
+      await expect(search).toHaveValue('Atlas')
+      const links = page.locator('#page-content .sds-card-link')
+      await expect(links).toHaveText(['Project Atlas', 'Project Orion'])
+      const primary = links.first()
+      const card = page.locator('#page-content .sds-card').first()
+      await card.scrollIntoViewIfNeeded()
+      expect(await card.evaluate(element => {
+        const rect = element.getBoundingClientRect()
+        return document.elementFromPoint(rect.left + 12, rect.top + 12) === element.querySelector('.sds-card-link')
+      })).toBe(true)
+      await page.route('**/projects/atlas', route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Project Atlas</title>' }))
+      await primary.press('Enter')
+      await expect(page).toHaveURL(/\/projects\/atlas$/)
+    }
+  })
+}

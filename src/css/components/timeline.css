@@ -108,20 +108,22 @@
   }
 
   :where(.sds-timeline-item h3) {
+    margin: 0;
     color: var(--sds-color-text-default);
     font-size: 0.875rem;
     font-weight: 600;
+    line-height: 1.25rem;
+  }
+
+  :where(.sds-timeline-item p) {
+    margin: 0;
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   :where(.sds-timeline-item h3 + p) {
     margin-block-start: var(--sds-space-xs);
-    color: var(--sds-color-text-muted);
-  }
-
-  :where(.sds-timeline-item p) {
-    color: var(--sds-color-text-muted);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
   }
 
   :where(.sds-timeline-item time) {

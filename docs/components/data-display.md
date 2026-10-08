@@ -122,14 +122,37 @@ hovering avatars does not change their stacking order.
 </article>
 ```
 
+For a clickable card, add `.sds-card-link` to its primary link:
+
+```html
+<article class="sds-card sds-stack" data-sds-gap="md">
+  <h2 class="sds-text-h3">
+    <a class="sds-link sds-card-link" href="/projects/atlas">Project Atlas</a>
+  </h2>
+  <p>Security research and analysis.</p>
+  <button class="sds-button" type="button">Archive</button>
+</article>
+```
+
+The link covers the card without extra markup or JavaScript. Hover raises the
+shadow, and keyboard focus outlines the card. Other links, buttons, and native
+form controls remain independently operable without positioning classes.
+
 ### Options
 
-`.sds-card` and `.sds-card-label` have no variants. Compose typography and spacing explicitly.
+`.sds-card`, `.sds-card-label`, and `.sds-card-link` have no variants. Compose
+typography and spacing explicitly. Only cards containing a `.sds-card-link[href]`
+receive the clickable-card behavior.
 
 ### Accessibility
 
 Use `<article>` for independently meaningful content, `<section>` for a titled
 region in the page outline, or `<div>` for a purely visual group.
+
+Use one primary card link with descriptive text. Keep its wrappers unpositioned
+so the link target spans the card. Do not wrap other interactive controls inside
+the link. The overlay makes ordinary card text harder to select; for form-heavy
+or text-heavy cards, prefer individual links and controls.
 
 ### Related
 
@@ -286,13 +309,27 @@ Use native structure, a caption, and scoped headers:
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-size` on table | `sm`, `md`, `lg` | `md` |
+| `data-sds-density` on table | `compact` | Comfortable when omitted |
 | `data-sds-standalone` on table | Presence | No raised shadow |
 | `data-sds-row-highlight` on table | Presence | No hover surface |
 | `data-sds-sticky` on cells | `start`, `end` | Normal cell |
 
 Apply the same `data-sds-sticky` value to the header and every cell in that
-column. Table size changes header, body, and footer row density together. Use
-`.sds-table-container` whenever content can exceed the viewport.
+column. Table size changes body-row padding: `sm` uses 4px, `md` uses 8px,
+and `lg` uses 16px. Headers and footers retain their standard spacing.
+`data-sds-density="compact"` overrides body-row padding to 4px at any size.
+Row headers share the body cells' typography and surface.
+Use `.sds-table-container` whenever content can exceed the viewport.
+For a standalone table, add `data-sds-standalone` to the table inside that
+container. The container shares the standard card's border, corners, surface,
+and raised shadow, with no extra padding around the cells. Its frame includes
+the native caption and remains intact when columns scroll horizontally.
+
+Inside a spanning `<tfoot>` cell, `.sds-table-footer` places a
+`.sds-pagination-status` count on the left, native `.sds-pagination` navigation
+in the center, and an optional rows-per-page form on the right. The footer
+wraps on narrow viewports. Applications supply the result count, page URLs,
+and query handling; the recipe does not fetch or paginate data.
 
 ### Accessibility
 

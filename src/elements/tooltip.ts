@@ -11,9 +11,7 @@ import {
   reflectNumberAttribute,
   reflectStringAttribute,
 } from './internals.js'
-import type { SdsPlacement } from '../generated/interface.js'
-
-type SdsTooltipSize = 'sm' | 'md' | 'lg' | 'xl' | 'auto'
+import type { SdsPlacement, SdsTooltipSize } from '../generated/interface.js'
 
 const HTMLElementBase: typeof HTMLElement =
   typeof HTMLElement === 'undefined'

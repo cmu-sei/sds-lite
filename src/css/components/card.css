@@ -5,10 +5,49 @@
       calc(1.25rem + 1vw),
       var(--sds-space-2xl)
     );
+  }
+
+  :where(.sds-card, .sds-table-container:has(> .sds-table[data-sds-standalone])) {
     border: 1px solid var(--sds-color-border-default);
     border-radius: var(--sds-radius-container);
     background: var(--sds-color-surface-default);
     box-shadow: var(--sds-shadow-raised);
+  }
+
+  :where(.sds-card:has(.sds-card-link[href])) {
+    position: relative;
+    isolation: isolate;
+    transition: box-shadow var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  :where(.sds-card-link[href])::before {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border-radius: var(--sds-radius-container);
+    content: "";
+  }
+
+  :where(.sds-card:has(.sds-card-link[href]) :is(a[href], button, input, select, textarea, summary, label, [tabindex]):not(.sds-card-link)) {
+    position: relative;
+    z-index: 2;
+  }
+
+  :where(.sds-card:has(.sds-card-link[href]:focus-visible)) {
+    outline: 2px solid var(--sds-color-focus-ring);
+    outline-offset: 2px;
+    box-shadow: var(--sds-shadow-lg);
+  }
+
+  :where(.sds-card-link[href]:focus-visible) {
+    outline: none;
+    box-shadow: none;
+  }
+
+  @media (hover: hover) {
+    :where(.sds-card:has(.sds-card-link[href]):hover) {
+      box-shadow: var(--sds-shadow-lg);
+    }
   }
 
   :where(.sds-card-label) {

@@ -184,7 +184,11 @@ test('recipes consume semantic color overrides', async ({ page }) => {
     'rgb(1, 2, 3)',
   )
   await expect(fixture.locator('.sds-table')).toHaveCSS(
-    'outline-color',
+    'border-left-color',
+    'rgb(1, 2, 3)',
+  )
+  await expect(fixture.locator('.sds-table caption')).toHaveCSS(
+    'border-top-color',
     'rgb(1, 2, 3)',
   )
   await expect(fixture.locator('.sds-table caption')).toHaveCSS(

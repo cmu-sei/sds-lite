@@ -280,6 +280,13 @@ test('HTML examples use option values supported by their recipe', async () => {
       for (const tag of openingTags(example)) {
         const attributes = staticAttributes(tag.attributes)
         const classes = (attributes.get('class') ?? '').split(/\s+/)
+        for (const className of classes) {
+          if (!className.startsWith('sds-')) continue
+          assert.ok(
+            classRecipes.has(className),
+            `${file} uses unknown public class ${className}`,
+          )
+        }
         const recipes = classes
           .map((className) => classRecipes.get(className))
           .filter(Boolean)

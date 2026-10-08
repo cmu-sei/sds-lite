@@ -819,7 +819,7 @@ function le() {
 //#endregion
 //#region src/elements/tabs.ts
 var ue = "sds-change", de = typeof HTMLElement > "u" ? class {} : HTMLElement, fe = class extends de {
-	static observedAttributes = ["value"];
+	static observedAttributes = ["value", "orientation"];
 	tabs = [];
 	panels = /* @__PURE__ */ new Map();
 	connection = new S();
@@ -841,7 +841,7 @@ var ue = "sds-change", de = typeof HTMLElement > "u" ? class {} : HTMLElement, f
 		return this.getAttribute("orientation") ?? "horizontal";
 	}
 	set orientation(e) {
-		y(this, "orientation", e), this.syncOrientation();
+		y(this, "orientation", e);
 	}
 	get size() {
 		return this.getAttribute("size") ?? "md";
@@ -875,7 +875,7 @@ var ue = "sds-change", de = typeof HTMLElement > "u" ? class {} : HTMLElement, f
 			console.warn("<sds-tabs> requires one panel for every tab.");
 			return;
 		}
-		n.classList.add("sds-tab-list"), n.setAttribute("role", "tablist"), this.syncOrientation(n), !n.hasAttribute("aria-label") && !n.hasAttribute("aria-labelledby") && console.warn("<sds-tabs> requires an accessible name on its tab list.");
+		n.classList.add("sds-tab-list"), n.setAttribute("role", "tablist"), this.hasAttribute("orientation") && this.syncOrientation(n), !n.hasAttribute("aria-label") && !n.hasAttribute("aria-labelledby") && console.warn("<sds-tabs> requires an accessible name on its tab list.");
 		let i = new Set(r);
 		for (let [e, t] of this.tabs.entries()) {
 			t instanceof HTMLButtonElement && _(t);
@@ -900,7 +900,12 @@ var ue = "sds-change", de = typeof HTMLElement > "u" ? class {} : HTMLElement, f
 		this.connection.disconnect();
 	}
 	attributeChangedCallback(e, t, n) {
-		if (e !== "value" || t === n || this.reflectingValue || !this.isConnected || n === null) return;
+		if (t === n) return;
+		if (e === "orientation") {
+			this.syncOrientation();
+			return;
+		}
+		if (!this.isConnected || e !== "value" || this.reflectingValue || n === null) return;
 		let r = this.tabs.findIndex((e) => this.tabValue(e) === n && !this.isDisabled(e));
 		if (r >= 0) {
 			this.select(r, !1, !1);
@@ -914,7 +919,7 @@ var ue = "sds-change", de = typeof HTMLElement > "u" ? class {} : HTMLElement, f
 		return e instanceof HTMLButtonElement && e.disabled || e.getAttribute("aria-disabled") === "true";
 	}
 	syncOrientation(e) {
-		this.hasAttribute("orientation") && (e ?? g(this).find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")))?.setAttribute("aria-orientation", this.orientation);
+		(e ?? g(this).find((e) => e.matches(".sds-tab-list, [role=\"tablist\"]")))?.setAttribute("aria-orientation", this.orientation);
 	}
 	tabValue(e) {
 		return e.getAttribute("value") ?? e.id;

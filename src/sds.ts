@@ -35,6 +35,7 @@ export type {
   SdsTabsVariant,
   SdsToggleDetail,
   SdsTone,
+  SdsTooltipSize,
   SdsWidth,
 } from './generated/interface.js'
 

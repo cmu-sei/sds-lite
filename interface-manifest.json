@@ -1,6 +1,6 @@
 {
   "$schema": "./interface-manifest.schema.json",
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "globalAttributes": [
     {
       "name": "data-sds-root",
@@ -200,6 +200,11 @@
         "data-sds-shape": ["icon"],
         "data-sds-block": []
       },
+      "omissionDefaults": {
+        "data-sds-variant": "filled for text buttons; text for icon buttons",
+        "data-sds-density": "comfortable",
+        "data-sds-shape": "text"
+      },
       "defaults": {
         "data-sds-variant": "filled for text buttons; text for icon buttons",
         "data-sds-tone": "info",
@@ -220,6 +225,7 @@
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
         "data-sds-size": ["xs", "sm", "md", "lg", "xl"]
       },
+      "omissionDefaults": {"data-sds-variant": "primary", "data-sds-size": "inherited"},
       "defaults": {
         "data-sds-variant": "primary",
         "data-sds-tone": "info",
@@ -238,6 +244,7 @@
       "optionTargets": {
         "data-sds-tone": ".sds-field > small, .sds-field > label small"
       },
+      "omissionDefaults": {"data-sds-tone": "muted help; inherited label color"},
       "defaults": {
         "data-sds-orientation": "vertical",
         "data-sds-tone": "muted help; inherited label color"
@@ -304,6 +311,7 @@
       "optionTargets": {
         "data-sds-value": ".sds-combobox-list > li"
       },
+      "omissionDefaults": {"data-sds-value": "displayed value"},
       "defaults": {
         "data-sds-value": "displayed value"
       }
@@ -368,6 +376,7 @@
         "data-sds-variant": ["light", "light-border", "dark"],
         "data-sds-size": ["sm", "md"]
       },
+      "omissionDefaults": {"data-sds-variant": "solid"},
       "defaults": {
         "data-sds-tone": "neutral",
         "data-sds-variant": "solid",
@@ -386,6 +395,7 @@
       "optionTargets": {
         "data-sds-tone": "button.sds-tag"
       },
+      "omissionDefaults": {"data-sds-tone": "neutral"},
       "defaults": {
         "data-sds-size": "sm",
         "data-sds-tone": "neutral"
@@ -399,6 +409,7 @@
       "options": {
         "data-sds-tone": ["danger"]
       },
+      "omissionDefaults": {"data-sds-tone": "info"},
       "defaults": {
         "data-sds-tone": "info"
       }
@@ -418,6 +429,7 @@
       "optionTargets": {
         "data-sds-callout-close": ".sds-callout [data-sds-callout-close]"
       },
+      "omissionDefaults": {"data-sds-variant": "subtle"},
       "defaults": {
         "data-sds-tone": "neutral",
         "data-sds-variant": "subtle",
@@ -442,6 +454,7 @@
         "data-sds-toast-open": "[data-sds-toast-open]",
         "data-sds-toast-close": "sds-toast [data-sds-toast-close]"
       },
+      "omissionDefaults": {"data-sds-toast-open": "no target"},
       "defaults": {
         "data-sds-toast-open": "no target",
         "data-sds-toast-close": false
@@ -522,6 +535,7 @@
         "data-sds-tone": ".sds-avatar",
         "data-sds-density": ".sds-avatar-group"
       },
+      "omissionDefaults": {"data-sds-density": "comfortable"},
       "defaults": {
         "data-sds-size": "md",
         "data-sds-shape": "circle",
@@ -533,8 +547,8 @@
     {
       "name": "card",
       "category": "Content and data",
-      "classes": ["sds-card", "sds-card-label"],
-      "description": "Raised content container and muted label.",
+      "classes": ["sds-card", "sds-card-label", "sds-card-link"],
+      "description": "Raised content container, muted label, and optional stretched primary link.",
       "options": {}
     },
     {
@@ -582,6 +596,7 @@
         "data-sds-orientation": ".sds-timeline",
         "data-sds-tone": ".sds-timeline-item"
       },
+      "omissionDefaults": {"data-sds-tone": "unaccented"},
       "defaults": {
         "data-sds-orientation": "vertical",
         "data-sds-tone": "unaccented"
@@ -590,22 +605,26 @@
     {
       "name": "table",
       "category": "Content and data",
-      "classes": ["sds-table", "sds-table-container"],
+      "classes": ["sds-table", "sds-table-container", "sds-table-footer"],
       "description": "Application data table and overflow container.",
       "options": {
         "data-sds-size": ["sm", "md", "lg"],
+        "data-sds-density": ["compact"],
         "data-sds-standalone": [],
         "data-sds-row-highlight": [],
         "data-sds-sticky": ["start", "end"]
       },
       "optionTargets": {
         "data-sds-size": ".sds-table",
+        "data-sds-density": ".sds-table",
         "data-sds-standalone": ".sds-table",
         "data-sds-row-highlight": ".sds-table",
         "data-sds-sticky": ".sds-table th, .sds-table td"
       },
+      "omissionDefaults": {"data-sds-density": "comfortable", "data-sds-sticky": "none"},
       "defaults": {
         "data-sds-size": "md",
+        "data-sds-density": "comfortable",
         "data-sds-standalone": false,
         "data-sds-row-highlight": false,
         "data-sds-sticky": "none"
@@ -621,6 +640,7 @@
         "data-sds-min-column-width": ["sm", "md", "lg", "xl", "2xl"],
         "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"]
       },
+      "omissionDefaults": {"data-sds-columns": "automatic"},
       "defaults": {
         "data-sds-columns": "automatic",
         "data-sds-min-column-width": "md",
@@ -636,6 +656,7 @@
         "data-sds-gap": ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
         "data-sds-stack-at": ["sm", "md", "lg", "xl"]
       },
+      "omissionDefaults": {"data-sds-stack-at": "none"},
       "defaults": {
         "data-sds-gap": "lg",
         "data-sds-stack-at": "none"
@@ -774,6 +795,7 @@
       "optionTargets": {
         "data-sds-tone": ".sds-dropdown-menu button, .sds-dropdown-menu a"
       },
+      "omissionDefaults": {"data-sds-tone": "neutral"},
       "defaults": {
         "data-sds-tone": "neutral"
       }
@@ -822,6 +844,10 @@
         "sds-app-layout",
         "sds-app-main",
         "sds-app-mobile-header",
+        "sds-docs-layout",
+        "sds-docs-masthead",
+        "sds-docs-navigation",
+        "sds-docs-toc",
         "sds-sei-wordmark",
         "sds-brochure-brand",
         "sds-brochure-container",
@@ -838,9 +864,9 @@
         "sds-brochure-navigation",
         "sds-cmu-wordmark"
       ],
-      "description": "SEI application, simple, and brochure shells.",
+      "description": "SEI application, simple, documentation, and brochure shells.",
       "options": {
-        "data-sds-variant": ["application", "simple", "brochure"]
+        "data-sds-variant": ["application", "simple", "documentation", "brochure"]
       },
       "optionTargets": {
         "data-sds-variant": ".sds-app"
@@ -848,6 +874,64 @@
       "defaults": {
         "data-sds-variant": "application"
       }
+    }
+  ],
+  "compositions": [
+    {
+      "name": "Dashboard", "kind": "pattern",
+      "recipes": ["stack", "page", "heading", "text", "button", "grid", "card", "datapoint", "table", "link", "cluster", "avatar", "badge", "pagination", "prose", "form-control"],
+      "customElements": [], "stylesheets": ["sds.css"], "assets": [], "requiresSetup": false,
+      "parts": [{"selector": ".sds-section-header", "minimum": 1}, {"selector": ".sds-table-container > .sds-table", "minimum": 1}, {"selector": ".sds-table-footer > .sds-pagination", "minimum": 1}],
+      "applicationResponsibilities": ["Supply dashboard records and metrics.", "Implement filtering, pagination, page-size handling, and action destinations."]
+    },
+    {
+      "name": "Directory", "kind": "pattern",
+      "recipes": ["stack", "page", "heading", "text", "button", "form", "field", "form-control", "combobox-parts", "grid", "card", "badge", "link", "pagination"],
+      "customElements": ["sds-combobox"], "stylesheets": ["sds.css"], "assets": [], "requiresSetup": true,
+      "parts": [{"selector": "search.sds-form", "minimum": 1}, {"selector": "sds-combobox > input", "minimum": 1}, {"selector": "a.sds-card-link[href]", "minimum": 1}],
+      "applicationResponsibilities": ["Supply search results, project destinations, and pagination.", "Synchronize application-owned record identity after selection and query edits."]
+    },
+    {
+      "name": "Settings", "kind": "pattern",
+      "recipes": ["form", "card", "stack", "heading", "text", "fieldset", "field", "form-control", "choice", "action-group", "button"],
+      "customElements": [], "stylesheets": ["sds.css"], "assets": [], "requiresSetup": false,
+      "parts": [{"selector": "form.sds-form", "minimum": 1}, {"selector": "label[for]", "minimum": 1}, {"selector": ".sds-action-group", "minimum": 1}],
+      "applicationResponsibilities": ["Configure form endpoints and validation.", "Implement save, cancel, and persistence behavior."]
+    },
+    {
+      "name": "Article", "kind": "pattern",
+      "recipes": ["prose", "stack", "page", "heading", "text", "link"],
+      "customElements": [], "stylesheets": ["sds.css"], "assets": [], "requiresSetup": false,
+      "parts": [{"selector": ".sds-prose", "minimum": 1}],
+      "applicationResponsibilities": ["Supply article content, heading hierarchy, and link destinations."]
+    },
+    {
+      "name": "Application", "kind": "layout",
+      "recipes": ["application-shell", "button", "sidebar", "page", "heading", "stack"],
+      "customElements": [], "stylesheets": ["sds.css", "brand.css"], "assets": ["package/assets/sei-wordmark.svg"], "requiresSetup": true,
+      "parts": [{"selector": ".sds-app-layout > .sds-sidebar[popover]", "minimum": 1}, {"selector": ".sds-app-body > .sds-app-main", "minimum": 1}, {"selector": ".sds-sidebar-close[popovertarget]", "minimum": 1}],
+      "applicationResponsibilities": ["Replace page content and navigation destinations.", "Preserve unique IDs, accessible names, brand assets, and required legal content."]
+    },
+    {
+      "name": "Simple application", "kind": "layout",
+      "recipes": ["application-shell", "button", "avatar", "page", "heading", "stack"],
+      "customElements": [], "stylesheets": ["sds.css", "brand.css"], "assets": ["package/assets/sei-wordmark.svg"], "requiresSetup": false,
+      "parts": [{"selector": ".sds-app-header", "minimum": 1}, {"selector": ".sds-app-body > .sds-app-main", "minimum": 1}, {"selector": ".sds-app-footer", "minimum": 1}],
+      "applicationResponsibilities": ["Replace page content and implement application actions.", "Preserve brand assets and required legal content."]
+    },
+    {
+      "name": "Documentation site", "kind": "layout",
+      "recipes": ["application-shell", "cluster", "button", "sidebar", "link", "prose", "stack", "heading", "dialog", "form", "field", "form-control"],
+      "customElements": [], "stylesheets": ["sds.css", "brand.css"], "assets": ["package/assets/sei-wordmark.svg"], "requiresSetup": true,
+      "parts": [{"selector": ".sds-docs-masthead", "minimum": 1}, {"selector": ".sds-app-header > .sds-docs-navigation", "minimum": 1}, {"selector": ".sds-sidebar[popover] > .sds-docs-toc", "minimum": 1}, {"selector": ".sds-docs-layout > .sds-prose", "minimum": 1}, {"selector": ".sds-docs-layout > .sds-docs-toc", "minimum": 1}, {"selector": "dialog.sds-dialog", "minimum": 1}],
+      "applicationResponsibilities": ["Supply search results and navigation destinations.", "Keep desktop and mobile navigation and table-of-contents links synchronized with heading IDs.", "Preserve brand assets, accessible names, and required legal content."]
+    },
+    {
+      "name": "Brochure", "kind": "layout",
+      "recipes": ["application-shell", "button", "sidebar", "stack", "heading", "link"],
+      "customElements": [], "stylesheets": ["sds.css", "brand.css"], "assets": ["package/assets/sei-wordmark.svg"], "requiresSetup": true,
+      "parts": [{"selector": ".sds-brochure-masthead", "minimum": 1}, {"selector": ".sds-brochure-navigation", "minimum": 1}, {"selector": ".sds-sidebar[popover]", "minimum": 1}, {"selector": ".sds-brochure-footer-main", "minimum": 1}],
+      "applicationResponsibilities": ["Supply public content and navigation destinations.", "Keep desktop and mobile navigation synchronized.", "Preserve unique IDs, accessible names, brand assets, and required legal content."]
     }
   ],
   "customElements": [
@@ -867,7 +951,7 @@
       ],
       "members": [],
       "events": [
-        {"name": "sds-select", "type": "CustomEvent<SdsComboboxSelectDetail>", "description": "Dispatched when an option is selected; detail.value is data-sds-value or the displayed value, and detail.option is the selected li."}
+        {"name": "sds-select", "type": "CustomEvent<SdsComboboxSelectDetail>", "detail": {"option": "HTMLLIElement", "value": "string"}, "description": "Dispatched when an option is selected; detail.value is data-sds-value or the displayed value, and detail.option is the selected li."}
       ]
     },
     {
@@ -896,7 +980,7 @@
         {"name": "hide", "kind": "method", "description": "Closes the menu."}
       ],
       "events": [
-        {"name": "sds-toggle", "type": "CustomEvent<SdsToggleDetail>", "description": "Dispatched after the open state changes."}
+        {"name": "sds-toggle", "type": "CustomEvent<SdsToggleDetail>", "detail": {"open": "boolean"}, "description": "Dispatched after the open state changes."}
       ]
     },
     {
@@ -923,7 +1007,7 @@
         {"name": "hide", "kind": "method", "description": "Closes the popover."}
       ],
       "events": [
-        {"name": "sds-toggle", "type": "CustomEvent<SdsToggleDetail>", "description": "Dispatched after the open state changes."}
+        {"name": "sds-toggle", "type": "CustomEvent<SdsToggleDetail>", "detail": {"open": "boolean"}, "description": "Dispatched after the open state changes."}
       ]
     },
     {
@@ -952,7 +1036,7 @@
         {"name": "variant", "kind": "field", "type": "SdsTabsVariant", "description": "Reflects the variant attribute."}
       ],
       "events": [
-        {"name": "sds-change", "type": "CustomEvent<SdsTabsChangeDetail>", "description": "Dispatched when user interaction selects a new tab."}
+        {"name": "sds-change", "type": "CustomEvent<SdsTabsChangeDetail>", "detail": {"index": "number", "value": "string"}, "description": "Dispatched when user interaction selects a new tab."}
       ]
     },
     {
@@ -1010,8 +1094,8 @@
         }
       ],
       "events": [
-        {"name": "sds-open", "type": "CustomEvent<void>", "description": "Dispatched when show() opens the toast."},
-        {"name": "sds-close", "type": "CustomEvent<{ reason: SdsToastCloseReason }>", "description": "Dispatched when the toast closes."}
+        {"name": "sds-open", "type": "CustomEvent<void>", "detail": {}, "description": "Dispatched when show() opens the toast."},
+        {"name": "sds-close", "type": "CustomEvent<{ reason: SdsToastCloseReason }>", "detail": {"reason": "SdsToastCloseReason"}, "description": "Dispatched when the toast closes."}
       ]
     }
   ]

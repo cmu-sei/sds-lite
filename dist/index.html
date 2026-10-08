@@ -8,8 +8,8 @@
       content="Interactive SDS Lite playground with copy-ready NPM and CDN examples for every component."
     />
     <title>SDS Lite Interactive Playground</title>
-    <script type="module" crossorigin src="./assets/index-kfXUowLe.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BTWaXify.css">
+    <script type="module" crossorigin src="./assets/index-8iPJAkEK.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C-KeS6Fp.css">
   </head>
   <body class="sds-document" data-sds-root>
     <a class="sds-skip-link" data-sds-size="sm" href="#top">Skip to main content</a>
@@ -58,11 +58,13 @@
             <ul>
               <li><a href="#overview">Overview</a></li>
               <li><a href="#getting-started">Getting started</a></li>
+              <li><a href="#layouts">Layouts</a></li>
+              <li><a href="#patterns">Page patterns</a></li>
               <li><a href="#actions">Actions</a></li>
               <li><a href="#forms">Forms</a></li>
               <li><a href="#feedback">Feedback</a></li>
               <li><a href="#content">Content</a></li>
-              <li><a href="#composition">Composition</a></li>
+              <li><a href="#composition">Layout recipes</a></li>
               <li><a href="#prose">Prose</a></li>
               <li><a href="#navigation">Navigation</a></li>
               <li><a href="#structure">Overlays</a></li>
@@ -95,14 +97,14 @@
         <main id="top" class="sds-app-main">
         <header class="sds-page-header">
           <div>
-            <p class="sds-eyebrow">Live component reference</p>
+            <p class="sds-eyebrow">Layouts / Patterns / Recipes</p>
             <h1 class="sds-text-h3">SDS Lite playground</h1>
           </div>
           <div class="sds-action-group">
             <a class="sds-button" data-sds-density="compact" data-sds-variant="text" href="./docs/README.md">
               Documentation
             </a>
-            <a class="sds-button" href="#getting-started" data-sds-density="compact" data-sds-variant="filled">Get started</a>
+            <a class="sds-button" href="#layouts" data-sds-density="compact" data-sds-variant="filled">Page starters</a>
           </div>
         </header>
 
@@ -117,7 +119,7 @@
               </p>
             </div>
             <div class="sds-cluster" data-sds-stack-at="sm" data-sds-gap="sm">
-              <a class="sds-button" href="#actions">Explore components</a>
+              <a class="sds-button" href="#layouts">Choose a layout</a>
               <a class="sds-button" data-sds-variant="text" href="#getting-started">
                 Install SDS Lite
               </a>
@@ -126,15 +128,15 @@
 
           <section id="getting-started">
             <div class="sds-section-header">
-              <div>
+              <div class="sds-stack" data-sds-gap="sm">
                 <p class="sds-eyebrow">Start here</p>
                 <h2 class="sds-text-h3">Get started</h2>
                 <p>
                   Add the stylesheet, choose a setup path, and start with
                   semantic HTML.
                 </p>
+                <a class="sds-link" data-sds-variant="cta" href="./docs/getting-started.md">Read the quick start</a>
               </div>
-              <a class="sds-link" data-sds-variant="cta" href="./docs/getting-started.md">Read the quick start</a>
             </div>
             <details class="sds-disclosure">
               <summary>Installation options: NPM or CDN</summary>
@@ -197,6 +199,269 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </details>
             <p class="sds-sr-only" id="copy-status" aria-live="polite"></p>
+          </section>
+
+          <section id="layouts" aria-labelledby="layouts-title">
+            <div class="sds-section-header">
+              <div class="sds-stack" data-sds-gap="sm">
+                <p class="sds-eyebrow">Layouts</p>
+                <h2 class="sds-text-h3" id="layouts-title">Page starters</h2>
+                <a class="sds-link" data-sds-variant="cta" href="#patterns">Page patterns</a>
+              </div>
+            </div>
+          </section>
+
+          <section id="patterns" aria-labelledby="patterns-title">
+            <div class="sds-section-header">
+              <div class="sds-stack" data-sds-gap="sm">
+                <p class="sds-eyebrow">Patterns</p>
+                <h2 class="sds-text-h3" id="patterns-title">Dashboard, directory, settings, and article</h2>
+                <a class="sds-link" data-sds-variant="cta" href="#actions">Component recipes</a>
+              </div>
+            </div>
+            <article class="sds-stack" data-sds-gap="md" data-pattern="Dashboard">
+              <div class="sds-stack" data-sds-gap="lg" data-copy-example="dashboard">
+                <header class="sds-section-header">
+                  <div class="sds-stack" data-sds-gap="xs">
+                    <h3 class="sds-text-h3">Project overview</h3>
+                    <p class="sds-text-body" data-sds-size="sm">Project activity and upcoming reviews</p>
+                  </div>
+                  <a class="sds-button" data-sds-density="compact" href="/projects/new">Create project</a>
+                </header>
+                <div class="sds-grid" data-sds-columns="3" data-sds-min-column-width="sm">
+                  <div class="sds-card sds-datapoint" data-sds-size="lg"><span>Active projects</span><strong>24</strong></div>
+                  <div class="sds-card sds-datapoint" data-sds-size="lg" data-sds-tone="success"><span>Completed reviews</span><strong>18</strong></div>
+                  <div class="sds-card sds-datapoint" data-sds-size="lg" data-sds-tone="warning"><span>Awaiting review</span><strong>6</strong></div>
+                </div>
+                <div class="sds-table-container">
+                  <table class="sds-table" data-sds-row-highlight data-sds-standalone>
+                    <caption>Recent projects</caption>
+                    <thead><tr><th scope="col">Project</th><th scope="col">Description</th><th scope="col">Owner</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/atlas">Atlas</a></th>
+                        <td>Security research and analysis</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">AC</span><span>Avery Chen</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Active</span></div><span class="sds-card-label">Research</span></div></td>
+                        <td><a class="sds-link" href="/projects/atlas" aria-label="View Atlas">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/orion">Orion</a></th>
+                        <td>Engineering tools and workflows</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">BM</span><span>Blair Morgan</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="warning" data-sds-variant="light-border">In review</span></div><span class="sds-card-label">Engineering</span></div></td>
+                        <td><a class="sds-link" href="/projects/orion" aria-label="View Orion">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/vega">Vega</a></th>
+                        <td>Incident response readiness</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">CM</span><span>Casey Martinez</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Active</span></div><span class="sds-card-label">Operations</span></div></td>
+                        <td><a class="sds-link" href="/projects/vega" aria-label="View Vega">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/lyra">Lyra</a></th>
+                        <td>Secure development training</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">JK</span><span>Jordan Kim</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Active</span></div><span class="sds-card-label">Education</span></div></td>
+                        <td><a class="sds-link" href="/projects/lyra" aria-label="View Lyra">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/nova">Nova</a></th>
+                        <td>Cloud assurance practices</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">RT</span><span>Riley Thompson</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="warning" data-sds-variant="light-border">In review</span></div><span class="sds-card-label">Engineering</span></div></td>
+                        <td><a class="sds-link" href="/projects/nova" aria-label="View Nova">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/polaris">Polaris</a></th>
+                        <td>Mission software modernization</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">SH</span><span>Samira Hassan</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Active</span></div><span class="sds-card-label">Engineering</span></div></td>
+                        <td><a class="sds-link" href="/projects/polaris" aria-label="View Polaris">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/cygnus">Cygnus</a></th>
+                        <td>Software risk analysis</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">AP</span><span>Alex Patel</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Active</span></div><span class="sds-card-label">Research</span></div></td>
+                        <td><a class="sds-link" href="/projects/cygnus" aria-label="View Cygnus">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/phoenix">Phoenix</a></th>
+                        <td>Vulnerability research</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">ML</span><span>Morgan Lee</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="warning" data-sds-variant="light-border">In review</span></div><span class="sds-card-label">Research</span></div></td>
+                        <td><a class="sds-link" href="/projects/phoenix" aria-label="View Phoenix">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/aurora">Aurora</a></th>
+                        <td>Software quality measurement</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">JC</span><span>Jamie Carter</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Active</span></div><span class="sds-card-label">Engineering</span></div></td>
+                        <td><a class="sds-link" href="/projects/aurora" aria-label="View Aurora">View</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row"><a class="sds-link" href="/projects/horizon">Horizon</a></th>
+                        <td>Supply chain security</td>
+                        <td><div class="sds-cluster" data-sds-gap="sm"><span class="sds-avatar" data-sds-size="sm" aria-hidden="true">CW</span><span>Chris Walker</span></div></td>
+                        <td><div class="sds-stack" data-sds-gap="xs"><div><span class="sds-badge" data-sds-tone="success" data-sds-variant="light-border">Active</span></div><span class="sds-card-label">Operations</span></div></td>
+                        <td><a class="sds-link" href="/projects/horizon" aria-label="View Horizon">View</a></td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="5">
+                          <div class="sds-table-footer">
+                            <p class="sds-pagination-status">Showing <strong>1-10</strong> of <strong>24</strong> projects</p>
+                          <nav class="sds-pagination" aria-label="Recent project pages">
+                            <ul>
+                              <li>
+                                <a role="link" aria-disabled="true" tabindex="-1" aria-label="Previous page">
+                                  <svg aria-hidden="true" viewBox="0 0 8 13">
+                                    <path d="M7.35 1.13 2.73 6.75l4.62 4.65-1.23 1.23L.87 7.38a.86.86 0 0 1 0-1.23L6.12.9l1.23 1.23Z"></path>
+                                  </svg>
+                                </a>
+                              </li>
+                              <li><a href="?page=1" aria-label="Page 1" aria-current="page">1</a></li>
+                              <li><a href="?page=2" aria-label="Page 2">2</a></li>
+                              <li><a href="?page=3" aria-label="Page 3">3</a></li>
+                              <li>
+                                <a href="?page=2" aria-label="Next page">
+                                  <svg aria-hidden="true" viewBox="0 0 8 13">
+                                    <path d="m.62 1.13 1.23-1.23 5.25 5.25a.86.86 0 0 1 0 1.23l-5.25 5.25-1.23-1.23 4.62-4.65L.62 1.13Z"></path>
+                                  </svg>
+                                </a>
+                              </li>
+                            </ul>
+                          </nav>
+                            <form action="/projects" method="get">
+                              <input type="hidden" name="page" value="1" />
+                              <label class="sds-sr-only" for="dashboard-page-size">Rows per page</label>
+                              <select class="sds-select" data-sds-size="sm" id="dashboard-page-size" name="pageSize">
+                                <option value="10">10 rows</option>
+                                <option value="25">25 rows</option>
+                                <option value="50">50 rows</option>
+                              </select>
+                              <button class="sds-button" type="submit" data-sds-density="compact" data-sds-variant="text">Apply</button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </article>
+            <article class="sds-stack" data-sds-gap="md" data-pattern="Directory">
+              <section class="sds-stack" data-sds-gap="lg" aria-label="Project directory" data-copy-example="directory">
+                <header class="sds-section-header">
+                  <div class="sds-stack" data-sds-gap="xs">
+                    <h3 class="sds-text-h3">Projects</h3>
+                    <p class="sds-text-body" data-sds-size="sm">Research and engineering workspaces</p>
+                  </div>
+                  <a class="sds-button" data-sds-density="compact" href="/projects/new">Create project</a>
+                </header>
+                <search class="sds-form" aria-label="Project search">
+                  <div class="sds-field">
+                    <label for="directory-search">Search projects</label>
+                    <sds-combobox filter="automatic">
+                      <input class="sds-input" id="directory-search" name="q" type="search" placeholder="Search projects" autocomplete="off"
+                        role="combobox" aria-autocomplete="list" aria-controls="directory-options" aria-expanded="false" />
+                      <ul id="directory-options" class="sds-combobox-list" role="listbox" popover="manual" hidden>
+                        <li id="directory-atlas" role="option" aria-selected="false">Atlas</li>
+                        <li id="directory-orion" role="option" aria-selected="false">Orion</li>
+                      </ul>
+                      <output data-empty-message="No matching projects."></output>
+                    </sds-combobox>
+                  </div>
+                </search>
+                <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="md">
+                  <article class="sds-card sds-stack" data-sds-gap="lg" data-sds-padding="xl">
+                    <div class="sds-stack" data-sds-gap="sm">
+                      <div class="sds-stack" data-sds-gap="xs">
+                        <div class="sds-section-header">
+                          <span class="sds-card-label">Research</span>
+                          <span class="sds-badge" data-sds-tone="success">Active</span>
+                        </div>
+                        <h4 class="sds-text-h3" data-sds-size="lg"><a class="sds-link sds-card-link" href="/projects/atlas">Project Atlas</a></h4>
+                      </div>
+                      <p class="sds-text-body">Security research and analysis.</p>
+                    </div>
+                    <p class="sds-text-body" data-sds-size="sm">Owner: Avery Chen</p>
+                  </article>
+                  <article class="sds-card sds-stack" data-sds-gap="lg" data-sds-padding="xl">
+                    <div class="sds-stack" data-sds-gap="sm">
+                      <div class="sds-stack" data-sds-gap="xs">
+                        <div class="sds-section-header">
+                          <span class="sds-card-label">Engineering</span>
+                          <span class="sds-badge" data-sds-tone="warning">In review</span>
+                        </div>
+                        <h4 class="sds-text-h3" data-sds-size="lg"><a class="sds-link sds-card-link" href="/projects/orion">Project Orion</a></h4>
+                      </div>
+                      <p class="sds-text-body">Engineering tools and workflows.</p>
+                    </div>
+                    <p class="sds-text-body" data-sds-size="sm">Owner: Blair Morgan</p>
+                  </article>
+                </div>
+                <nav class="sds-pagination" aria-label="Directory pages" data-sds-margin-block-start="lg">
+                  <ul>
+                    <li>
+                      <a role="link" aria-disabled="true" tabindex="-1" aria-label="Previous page">
+                        <svg aria-hidden="true" viewBox="0 0 8 13">
+                          <path d="M7.35 1.13 2.73 6.75l4.62 4.65-1.23 1.23L.87 7.38a.86.86 0 0 1 0-1.23L6.12.9l1.23 1.23Z"></path>
+                        </svg>
+                      </a>
+                    </li>
+                    <li><a href="?page=1" aria-label="Page 1" aria-current="page">1</a></li>
+                    <li><a href="?page=2" aria-label="Page 2">2</a></li>
+                    <li><a href="?page=3" aria-label="Page 3">3</a></li>
+                    <li><span aria-hidden="true">&hellip;</span></li>
+                    <li><a href="?page=8" aria-label="Page 8">8</a></li>
+                    <li>
+                      <a href="?page=2" aria-label="Next page">
+                        <svg aria-hidden="true" viewBox="0 0 8 13">
+                          <path d="m.62 1.13 1.23-1.23 5.25 5.25a.86.86 0 0 1 0 1.23l-5.25 5.25-1.23-1.23 4.62-4.65L.62 1.13Z"></path>
+                        </svg>
+                      </a>
+                    </li>
+                  </ul>
+                  <p class="sds-pagination-status sds-text-body" data-sds-size="sm">Showing 1-2 of 16 projects</p>
+                </nav>
+              </section>
+            </article>
+            <article class="sds-stack" data-sds-gap="md" data-pattern="Settings">
+              <form class="sds-form sds-card" action="/settings" method="post" data-sds-padding="xl" data-copy-example="settings">
+                <header class="sds-stack" data-sds-gap="xs">
+                  <h3 class="sds-text-h3" data-sds-size="sm">Project settings</h3>
+                  <p class="sds-text-body" data-sds-size="sm">Manage project details and review notifications</p>
+                </header>
+                <fieldset class="sds-fieldset sds-stack" data-sds-gap="lg" data-sds-padding="lg">
+                  <legend>Project details</legend>
+                  <div class="sds-field"><label for="settings-name">Project name</label><input class="sds-input" id="settings-name" name="name" type="text" value="Project Atlas" required /></div>
+                  <div class="sds-field"><label for="settings-description">Description</label><textarea class="sds-input" id="settings-description" name="description" rows="3" aria-describedby="settings-description-help">Security research and analysis.</textarea><small id="settings-description-help">Briefly describe the project's purpose and scope.</small></div>
+                </fieldset>
+                <fieldset class="sds-fieldset sds-stack" data-sds-gap="sm" data-sds-padding="lg">
+                  <legend>Notifications</legend>
+                  <label class="sds-choice"><input class="sds-checkbox" type="checkbox" name="notifications" checked /><span>Email me when a review is ready</span></label>
+                </fieldset>
+                <div class="sds-action-group"><button class="sds-button" type="submit" data-sds-density="compact">Save settings</button><button class="sds-button" type="reset" data-sds-density="compact" data-sds-variant="text">Cancel</button></div>
+              </form>
+            </article>
+            <article class="sds-stack" data-sds-gap="md" data-pattern="Article">
+              <article class="sds-prose" data-copy-example="article">
+                <header class="sds-stack" data-sds-gap="sm" data-sds-margin-block-end="lg">
+                  <p class="sds-eyebrow">Research</p>
+                  <h3 class="sds-text-h2">Building trustworthy systems</h3>
+                  <p class="sds-text-body" data-sds-size="sm"><time datetime="2026-10-08">October 8, 2026</time> / Software Engineering Institute</p>
+                </header>
+                <p>Reliable software starts with clear requirements and repeatable engineering practices.</p>
+                <h4 class="sds-text-h3">From research to practice</h4>
+                <p>Define the problem, evaluate the evidence, and share the results with your team.</p>
+                <ul><li>Document the risks and assumptions.</li><li>Validate changes with realistic scenarios.</li><li>Capture lessons for the next iteration.</li></ul>
+                <a class="sds-link" data-sds-variant="cta" href="https://sei.cmu.edu/research-development/">Explore SEI research</a>
+              </article>
+            </article>
           </section>
 
           <section id="actions" aria-labelledby="actions-title">
@@ -515,8 +780,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <h3 class="sds-text-h3">Required project name</h3>
                   <pre id="copy-field-markup" tabindex="0"><code>&lt;div class="sds-field"&gt;
   &lt;label for="project-name"&gt;Project name&lt;/label&gt;
-  &lt;input id="project-name" name="project-name" required&gt;
-  &lt;small&gt;Use a short, recognizable name.&lt;/small&gt;
+  &lt;input class="sds-input" id="project-name" name="project-name" required aria-describedby="project-name-help"&gt;
+  &lt;small id="project-name-help"&gt;Use a short, recognizable name.&lt;/small&gt;
 &lt;/div&gt;</code></pre>
                   <button class="sds-button" type="button" data-copy-target="copy-field-markup">Copy field markup</button>
                 </div>
@@ -1383,7 +1648,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             </article>
 
             <div class="sds-table-container">
-              <table class="sds-table" data-sds-row-highlight data-sds-standalone>
+              <table class="sds-table" data-sds-density="compact" data-sds-row-highlight data-sds-standalone>
                 <caption>Current projects</caption>
                 <thead>
                   <tr>
@@ -1530,13 +1795,14 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <button class="sds-button" type="button" data-sds-variant="outlined">Import project</button>
                 </div>
                 <div class="sds-prose">
-                  <pre id="copy-cluster-markup" tabindex="0"><code>&lt;div class="sds-cluster" data-sds-gap="sm"&gt;
-  &lt;button type="button"&gt;All projects&lt;/button&gt;
-  &lt;button type="button"&gt;Research&lt;/button&gt;
-  &lt;button type="button"&gt;Engineering&lt;/button&gt;
+                  <pre id="copy-cluster-markup" tabindex="0"><code>&lt;div id="cluster-example" class="sds-cluster" data-sds-gap="sm" aria-label="Project filters"&gt;
+  &lt;button class="sds-button" type="button" data-sds-variant="tonal"&gt;All projects&lt;/button&gt;
+  &lt;button class="sds-button" type="button" data-sds-variant="text"&gt;Research&lt;/button&gt;
+  &lt;button class="sds-button" type="button" data-sds-variant="text"&gt;Engineering&lt;/button&gt;
+  &lt;button class="sds-button" type="button" data-sds-variant="text"&gt;Operations&lt;/button&gt;
 &lt;/div&gt;</code></pre>
                 </div>
-                <button class="sds-button" type="button" data-copy-target="copy-cluster-markup">Copy Cluster markup</button>
+                <button class="sds-button" type="button" data-copy-target="copy-cluster-markup" data-copy-source="cluster-example">Copy Cluster markup</button>
               </div>
               <div class="sds-stack" data-sds-gap="md">
                 <h4 class="sds-text-h4">Large composition gaps</h4>
@@ -1620,14 +1886,13 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </div>
             </article>
 
-            <article class="sds-card sds-stack">
+            <article id="layout-examples" class="sds-stack">
               <div>
                 <h3 class="sds-text-h3">Application shell previews</h3>
-                <p>Expand a complete shell only when you need to inspect its responsive chrome.</p>
               </div>
               <details class="sds-disclosure">
                 <summary>Application shell preview</summary>
-              <div class="sds-app" data-sds-variant="application">
+              <div class="sds-app" data-sds-theme="forge" data-sds-variant="application" data-copy-layout="Application">
                 <header class="sds-app-mobile-header">
                   <button class="sds-button" type="button"
                     data-sds-shape="icon"
@@ -1680,11 +1945,11 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <div class="sds-app-body">
                     <div class="sds-app-main">
                       <header class="sds-page-header">
-                        <h4 class="sds-text-h4">Project overview</h4>
-                        <button class="sds-button" type="button">Create review</button>
+                        <h4 class="sds-text-h3" data-sds-size="sm">Project overview</h4>
+                        <button class="sds-button" type="button" data-sds-density="compact">Create review</button>
                       </header>
                       <div class="sds-page">
-                        <div class="sds-card">Full application content</div>
+                        <section id="application-page-content" class="sds-stack" data-sds-gap="lg"><h4 class="sds-text-h4">Project Atlas</h4><p>Project activity and reviews.</p></section>
                       </div>
                     </div>
                     <footer class="sds-app-footer">
@@ -1718,22 +1983,25 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
               <details class="sds-disclosure">
                 <summary>Simple application shell preview</summary>
-              <div class="sds-app" data-sds-variant="simple">
+              <div class="sds-app" data-sds-theme="forge" data-sds-variant="simple" data-copy-layout="Simple application">
                 <header class="sds-app-header">
                   <a class="sds-app-brand" href="#composition">
                     <span class="sds-app-brand-prefix">SEI</span>
                     SDS Lite
                   </a>
-                  <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text">Alex Morgan</button>
+                  <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text">
+                    <span class="sds-avatar" data-sds-size="xs" data-sds-tone="info" aria-hidden="true">AM</span>
+                    Alex Morgan
+                  </button>
                 </header>
                 <div class="sds-app-body">
                   <div class="sds-app-main">
                     <header class="sds-page-header">
-                      <h4 class="sds-text-h4">Project settings</h4>
-                      <button class="sds-button" type="button">Save</button>
+                      <h4 class="sds-text-h3" data-sds-size="sm">Project settings</h4>
+                      <button class="sds-button" type="button" data-sds-density="compact">Save</button>
                     </header>
                     <div class="sds-page">
-                      <div class="sds-card">Simple application content</div>
+                      <section id="simple-page-content" class="sds-stack" data-sds-gap="lg"><h4 class="sds-text-h4">Project Atlas</h4><p>Project details and preferences.</p></section>
                     </div>
                   </div>
                   <footer class="sds-app-footer">
@@ -1767,8 +2035,141 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </details>
 
               <details class="sds-disclosure">
+                <summary>Documentation site shell preview</summary>
+                <div class="sds-app" data-sds-theme="forge" data-sds-variant="documentation" data-copy-layout="Documentation site">
+                  <div class="sds-docs-masthead">
+                    <a href="https://sei.cmu.edu" aria-label="Software Engineering Institute"><span class="sds-sei-wordmark" aria-hidden="true"></span></a>
+                    <div class="sds-cluster" data-sds-gap="sm">
+                      <a class="sds-button" data-sds-shape="icon" data-sds-size="sm" data-sds-density="compact" data-sds-variant="text" href="https://github.com/cmu-sei/sds-docs-template" aria-label="GitHub" title="GitHub">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 19c-4.3 1.3-4.3-2.5-6-3m12 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 19 4.77 5.07 5.07 0 0 0 18.91 1S17.73.65 15 2.48a13.38 13.38 0 0 0-7 0C5.27.65 4.09 1 4.09 1A5.07 5.07 0 0 0 4 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 8 18.13V22" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                      </a>
+                      <button class="sds-button" type="button" data-sds-shape="icon" data-sds-size="sm" data-sds-density="compact" data-sds-variant="text" commandfor="documentation-search-dialog" command="show-modal" aria-label="Search documentation" title="Search documentation">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <header class="sds-app-header">
+                    <button class="sds-button" type="button" data-sds-shape="icon" popovertarget="documentation-preview-sidebar" aria-label="Open documentation navigation">
+                      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg>
+                    </button>
+                    <a class="sds-app-brand" href="#composition">
+                      <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M14.5625 2.625C15.125 2.875 15.5 3.40625 15.5 4C15.5 12 9.59375 16 7.96875 16C6.40625 16 0.5 12.0625 0.5 4C0.5 3.40625 0.84375 2.875 1.40625 2.625L7.40625 0.125C7.5625 0.0625 7.8125 0.03125 8 0.03125C8.15625 0.03125 8.40625 0.0625 8.5625 0.125L14.5625 2.625ZM11 6.25C11 6.03125 10.8125 5.5 10.25 5.5C10.0312 5.5 9.8125 5.5625 9.65625 5.75L7.1875 8.625L6.25 7.71875C6.125 7.5625 5.9375 7.5 5.75 7.5C5.3125 7.5 5 7.84375 5 8.25C5 8.46875 5.0625 8.65625 5.21875 8.78125L6.71875 10.2812C6.84375 10.4062 7.03125 10.5 7.25 10.5C7.3125 10.5 7.59375 10.5 7.8125 10.25L10.8125 6.75C10.9375 6.625 11 6.4375 11 6.25Z" fill="currentColor"></path></svg>
+                      <span>Documentation Site</span>
+                    </a>
+                    <nav class="sds-docs-navigation" aria-label="Documentation sections">
+                      <ul>
+                        <li><a href="#composition" aria-current="page">Guides</a></li>
+                        <li><a href="#documentation-reference">Reference</a></li>
+                      </ul>
+                    </nav>
+                  </header>
+                  <div class="sds-app-layout">
+                    <aside id="documentation-preview-sidebar" class="sds-sidebar" popover="auto" aria-label="Documentation navigation">
+                      <header>
+                        <strong><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 3h16v18H4zM8 7h8M8 11h8M8 15h5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>Atlas guides</strong>
+                        <button class="sds-sidebar-close sds-button" type="button" data-sds-shape="icon" data-sds-density="compact" data-sds-variant="text" popovertarget="documentation-preview-sidebar" popovertargetaction="hide" aria-label="Close documentation navigation">&times;</button>
+                      </header>
+                      <nav class="sds-docs-navigation" aria-label="Documentation sections">
+                        <ul>
+                          <li><a href="#composition" aria-current="location">Guides</a></li>
+                          <li><a href="#documentation-reference">Reference</a></li>
+                          <li><a href="mailto:atlas-support@example.com">Contact support</a></li>
+                        </ul>
+                      </nav>
+                      <nav aria-label="Documentation pages">
+                        <ul>
+                          <li>
+                            <details open>
+                              <summary><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 4h6l3 2 3-2h6v15h-6l-3 2-3-2H3zM12 6v15" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path></svg>Getting started</summary>
+                              <ul>
+                                <li><a href="#composition" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>Introduction</a></li>
+                                <li>
+                                  <details open>
+                                    <summary><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l2 4h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path></svg>Setup</summary>
+                                    <ul>
+                                      <li><a href="#documentation-installation"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>Installation</a></li>
+                                      <li><a href="#documentation-configuration"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h9m4 0h3M4 17h3m4 0h9M13 4v6M7 14v6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg>Configuration</a></li>
+                                    </ul>
+                                  </details>
+                                </li>
+                              </ul>
+                            </details>
+                          </li>
+                          <li><a href="#documentation-reference"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>API reference</a></li>
+                        </ul>
+                      </nav>
+                      <nav class="sds-docs-toc" aria-label="On this page">
+                        <strong>On this page</strong>
+                        <ul>
+                          <li><a href="#documentation-installation">Installation</a></li>
+                          <li><a href="#documentation-configuration">Configuration</a></li>
+                          <li><a href="#documentation-reference">API reference</a></li>
+                        </ul>
+                      </nav>
+                      <footer><a class="sds-link" href="mailto:atlas-support@example.com">Contact support</a></footer>
+                    </aside>
+                    <div class="sds-app-body">
+                      <div class="sds-app-main sds-docs-layout">
+                        <article id="documentation-page-content" class="sds-prose sds-stack" data-sds-gap="lg">
+                          <header>
+                            <h4 class="sds-text-h2">Introduction</h4>
+                            <p>Build and manage projects with Atlas. Start with installation, then configure your workspace.</p>
+                          </header>
+                          <section aria-labelledby="documentation-installation">
+                            <h5 id="documentation-installation" class="sds-text-h3">Installation</h5>
+                            <p>Install the current Atlas release for your operating system and sign in with your organization account.</p>
+                            <ol><li>Download Atlas from your organization portal.</li><li>Open Atlas and create a workspace.</li><li>Invite your project team.</li></ol>
+                          </section>
+                          <section aria-labelledby="documentation-configuration">
+                            <h5 id="documentation-configuration" class="sds-text-h3">Configuration</h5>
+                            <p>Choose a project name, set your review schedule, and assign team roles before publishing your first project.</p>
+                          </section>
+                          <section aria-labelledby="documentation-reference">
+                            <h5 id="documentation-reference" class="sds-text-h3">API reference</h5>
+                            <p>Use the <code>/projects</code> endpoint to retrieve the projects available in your workspace.</p>
+                          </section>
+                        </article>
+                        <nav class="sds-docs-toc" aria-label="On this page">
+                          <strong>On this page</strong>
+                          <ul>
+                            <li><a href="#documentation-installation">Installation</a></li>
+                            <li><a href="#documentation-configuration">Configuration</a></li>
+                            <li><a href="#documentation-reference">API reference</a></li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                  <footer class="sds-app-footer">
+                    <div class="sds-app-footer-top" aria-hidden="true">
+                      <svg viewBox="0 0 16 16"><path d="M14.5625 2.625C15.125 2.875 15.5 3.40625 15.5 4C15.5 12 9.59375 16 7.96875 16C6.40625 16 0.5 12.0625 0.5 4C0.5 3.40625 0.84375 2.875 1.40625 2.625L7.40625 0.125C7.5625 0.0625 7.8125 0.03125 8 0.03125C8.15625 0.03125 8.40625 0.0625 8.5625 0.125L14.5625 2.625ZM11 6.25C11 6.03125 10.8125 5.5 10.25 5.5C10.0312 5.5 9.8125 5.5625 9.65625 5.75L7.1875 8.625L6.25 7.71875C6.125 7.5625 5.9375 7.5 5.75 7.5C5.3125 7.5 5 7.84375 5 8.25C5 8.46875 5.0625 8.65625 5.21875 8.78125L6.71875 10.2812C6.84375 10.4062 7.03125 10.5 7.25 10.5C7.3125 10.5 7.59375 10.5 7.8125 10.25L10.8125 6.75C10.9375 6.625 11 6.4375 11 6.25Z" fill="currentColor"></path></svg>
+                    </div>
+                    <div class="sds-app-footer-content">
+                      <div class="sds-app-footer-brand"><a href="https://sei.cmu.edu" aria-label="Software Engineering Institute"><span class="sds-sei-wordmark" aria-hidden="true"></span></a></div>
+                      <nav class="sds-app-footer-middle" aria-label="Documentation footer">
+                        <ul><li><a href="https://sei.cmu.edu/contact-us/">Contact Us</a></li><li><a href="https://sei.cmu.edu/locations/">Office Locations</a></li><li><a href="https://www.cmu.edu/">www.cmu.edu</a></li></ul>
+                      </nav>
+                      <div class="sds-app-footer-legal"><p>&copy; <time datetime="2026">2026</time> Carnegie Mellon University</p><p><a href="https://sei.cmu.edu/legal/">Legal</a> | <a href="https://sei.cmu.edu/legal/privacy-notice/">Privacy Policy</a></p></div>
+                    </div>
+                  </footer>
+                  <dialog id="documentation-search-dialog" class="sds-dialog" closedby="any" aria-labelledby="documentation-search-title">
+                    <div class="sds-dialog-header">
+                      <h2 id="documentation-search-title" class="sds-text-h3">Search documentation</h2>
+                      <button class="sds-button" type="button" data-sds-shape="icon" commandfor="documentation-search-dialog" command="request-close" aria-label="Close documentation search">&times;</button>
+                    </div>
+                    <search aria-label="Documentation search">
+                      <form class="sds-form" action="/search" method="get">
+                        <div class="sds-field"><label for="documentation-search-input">Search</label><input id="documentation-search-input" class="sds-input" type="search" name="q" placeholder="Search documentation" required></div>
+                        <button class="sds-button" type="submit">Search</button>
+                      </form>
+                    </search>
+                  </dialog>
+                </div>
+              </details>
+
+              <details class="sds-disclosure">
                 <summary>Brochure site shell preview</summary>
-              <div id="brochure-preview-top" class="sds-app" data-sds-variant="brochure">
+              <div id="brochure-preview-top" class="sds-app" data-sds-theme="plaid" data-sds-variant="brochure" data-copy-layout="Brochure">
                 <div>
                   <header class="sds-brochure-header">
                     <div class="sds-brochure-masthead">
@@ -1781,7 +2182,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     <div class="sds-brochure-navigation sds-brochure-container">
                       <a class="sds-brochure-brand" href="https://sei.cmu.edu/">
                         Software Engineering Institute
-                        <small>CERT Coordination Center</small>
+                        <small>Organization</small>
                       </a>
                       <nav aria-label="Brochure preview">
                         <ul>
@@ -1789,10 +2190,25 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                           <li><a href="#composition">Research</a></li>
                         </ul>
                       </nav>
+                      <button class="sds-button" type="button" data-sds-shape="icon" popovertarget="brochure-preview-navigation" aria-label="Open brochure navigation">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg>
+                      </button>
                     </div>
                   </header>
+                  <aside id="brochure-preview-navigation" class="sds-sidebar" popover="auto" aria-label="Brochure navigation">
+                    <header>
+                      <strong>Software Engineering Institute</strong>
+                      <button class="sds-sidebar-close sds-button" type="button" data-sds-shape="icon" data-sds-density="compact" data-sds-variant="text" popovertarget="brochure-preview-navigation" popovertargetaction="hide" aria-label="Close brochure navigation">&times;</button>
+                    </header>
+                    <nav aria-label="Brochure pages">
+                      <ul>
+                        <li><a href="#composition" aria-current="page">Home</a></li>
+                        <li><a href="#composition">Research</a></li>
+                      </ul>
+                    </nav>
+                  </aside>
                   <div class="sds-brochure-main sds-brochure-container">
-                    <h4 class="sds-text-h4">Public-facing content</h4>
+                    <section id="brochure-page-content" class="sds-stack" data-sds-gap="lg"><h4 class="sds-text-h4">Software Engineering Institute</h4><p>Research and resources for trustworthy software.</p></section>
                   </div>
                 </div>
                 <footer>
@@ -1909,7 +2325,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   </nav>
                   <footer><small>Updated a moment ago</small></footer>
                 </aside>
-                <div class="sds-stack" data-sds-gap="sm">
+                <div class="sds-stack" data-sds-gap="sm" data-sds-padding="xl">
                   <p class="sds-eyebrow">Reviews</p>
                   <h3 class="sds-text-h3">Open reviews</h3>
                   <p>
@@ -1923,14 +2339,14 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
             <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
               <article class="sds-card sds-stack">
-                <h3 class="sds-text-h3">Divided list with markers</h3>
+                <h3 class="sds-text-h3" data-sds-size="sm">Divided list with markers</h3>
                 <ul class="sds-list" data-sds-divided>
                   <li class="sds-list-item">
                     <span class="sds-list-marker">
                       <span class="sds-badge" data-sds-tone="success">1</span>
                     </span>
                     <div>
-                      <h3 class="sds-text-h3">Application review</h3>
+                      <h3>Application review</h3>
                       <p>Track review work as it moves forward.</p>
                     </div>
                   </li>
@@ -1939,7 +2355,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       <span class="sds-badge" data-sds-tone="info">2</span>
                     </span>
                     <div>
-                      <h3 class="sds-text-h3">Supporting material</h3>
+                      <h3>Supporting material</h3>
                       <p>Collect documentation and decision notes.</p>
                       <span class="sds-badge" data-sds-tone="success">Complete</span>
                     </div>
@@ -1949,7 +2365,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       <span class="sds-badge" data-sds-tone="warning">3</span>
                     </span>
                     <div>
-                      <h3 class="sds-text-h3">Stakeholder follow-up</h3>
+                      <h3>Stakeholder follow-up</h3>
                       <p>Confirm the approval date before closing the record.</p>
                     </div>
                   </li>
@@ -1957,18 +2373,18 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               </article>
 
               <article class="sds-card sds-stack">
-                <h3 class="sds-text-h3">Simple list</h3>
+                <h3 class="sds-text-h3" data-sds-size="sm">Simple list</h3>
                 <ul class="sds-list">
                   <li class="sds-list-item">
-                    <h3 class="sds-text-h3">Primary reviewer</h3>
+                    <h3>Primary reviewer</h3>
                     <p>Owns technical validation and reviewer handoff.</p>
                   </li>
                   <li class="sds-list-item">
-                    <h3 class="sds-text-h3">Backup reviewer</h3>
+                    <h3>Backup reviewer</h3>
                     <p>Reviews escalations when the primary is unavailable.</p>
                   </li>
                   <li class="sds-list-item">
-                    <h3 class="sds-text-h3">Audit team</h3>
+                    <h3>Audit team</h3>
                     <p>Checks supporting evidence before release.</p>
                   </li>
                 </ul>
@@ -1977,54 +2393,54 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
             <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
               <article class="sds-card sds-stack">
-                <h3 class="sds-text-h3">Timeline tones and current step</h3>
+                <h3 class="sds-text-h3" data-sds-size="sm">Timeline tones and current step</h3>
                 <ol class="sds-timeline" data-sds-orientation="vertical">
                   <li class="sds-timeline-item" data-sds-tone="neutral">
-                    <h3 class="sds-text-h3">Created</h3>
+                    <h3>Created</h3>
                     <p>The project record was created.</p>
                     <time datetime="2026-09-16T08:00:00-04:00">8:00 AM</time>
                   </li>
                   <li class="sds-timeline-item" data-sds-tone="accent">
-                    <h3 class="sds-text-h3">Submitted</h3>
+                    <h3>Submitted</h3>
                     <p>The review package entered the queue.</p>
                     <time datetime="2026-09-16T09:00:00-04:00">9:00 AM</time>
                   </li>
                   <li class="sds-timeline-item" data-sds-tone="info">
-                    <h3 class="sds-text-h3">Assigned</h3>
+                    <h3>Assigned</h3>
                     <p>A reviewer accepted the package.</p>
                   </li>
                   <li class="sds-timeline-item" data-sds-tone="success" aria-current="step">
-                    <h3 class="sds-text-h3">Security review</h3>
+                    <h3>Security review</h3>
                     <p>The security team is reviewing the package.</p>
                     <time datetime="2026-09-16T10:30:00-04:00">Now</time>
                   </li>
                   <li class="sds-timeline-item" data-sds-tone="warning">
-                    <h3 class="sds-text-h3">Final approval</h3>
+                    <h3>Final approval</h3>
                     <p>Waiting for the review to finish.</p>
                   </li>
                   <li class="sds-timeline-item" data-sds-tone="danger">
-                    <h3 class="sds-text-h3">Escalation</h3>
+                    <h3>Escalation</h3>
                     <p>Shown when an event needs urgent attention.</p>
                   </li>
                 </ol>
               </article>
 
               <article class="sds-card sds-stack">
-                <h3 class="sds-text-h3">Horizontal timeline with a custom marker</h3>
+                <h3 class="sds-text-h3" data-sds-size="sm">Horizontal timeline with a custom marker</h3>
                 <ol class="sds-timeline" data-sds-orientation="horizontal" aria-label="Release progress" tabindex="0">
                   <li class="sds-timeline-item" data-sds-tone="success">
-                    <h3 class="sds-text-h3">Build</h3>
+                    <h3>Build</h3>
                     <p>Checks passed.</p>
                   </li>
                   <li class="sds-timeline-item">
                     <span class="sds-timeline-marker" aria-hidden="true">
                       <span class="sds-badge" data-sds-tone="info">QA</span>
                     </span>
-                    <h3 class="sds-text-h3">Quality review</h3>
+                    <h3>Quality review</h3>
                     <p>Review in progress.</p>
                   </li>
                   <li class="sds-timeline-item">
-                    <h3 class="sds-text-h3">Release</h3>
+                    <h3>Release</h3>
                     <p>Ready after approval.</p>
                   </li>
                 </ol>
@@ -2151,16 +2567,16 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
             <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="xl" data-sds-gap="xl">
               <article class="sds-card sds-stack" data-sds-gap="2xl">
-                <h3 class="sds-text-h3">Prose sizes</h3>
+                <h3 class="sds-text-h3" data-sds-size="sm">Prose sizes</h3>
                 <div class="sds-prose" data-sds-size="sm">
-                  <h2 class="sds-text-h2">Small prose</h2>
+                  <h4>Small prose</h4>
                   <p>
                     Compact typography is useful for narrow documentation
                     panels and supporting content.
                   </p>
                 </div>
                 <div class="sds-prose" data-sds-size="lg">
-                  <h2 class="sds-text-h2">Large prose</h2>
+                  <h4>Large prose</h4>
                   <p>
                     Editorial typography provides a relaxed reading size and
                     a narrower line length for feature articles.
@@ -2168,7 +2584,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 </div>
               </article>
               <article id="default-prose-tones" class="sds-card sds-stack">
-                <h3 class="sds-text-h3">Prose tones</h3>
+                <h3 class="sds-text-h3" data-sds-size="sm">Prose tones</h3>
                 <p>Prose defaults to neutral when <code>data-sds-tone</code> is omitted.</p>
                 <div class="sds-cluster" >
                   <div class="sds-prose"><a href="#prose">Default · neutral</a></div>
@@ -2418,7 +2834,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <div class="sds-prose">
                   <h3 class="sds-text-h3">Dropdown menu</h3>
                   <pre id="copy-dropdown-markup" tabindex="0"><code>&lt;sds-dropdown width="sm"&gt;
-  &lt;button type="button" aria-haspopup="menu" aria-controls="menu"
+  &lt;button class="sds-button" type="button" aria-haspopup="menu" aria-controls="menu"
     aria-expanded="false" popovertarget="menu"&gt;Actions&lt;/button&gt;
   &lt;menu id="menu" class="sds-dropdown-menu" popover="auto"
     role="menu" aria-orientation="vertical"&gt;

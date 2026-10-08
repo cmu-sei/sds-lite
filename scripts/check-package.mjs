@@ -59,6 +59,7 @@ try {
 
 const files = new Set(report.files.map((file) => file.path))
 const errors = []
+const assetSizes = []
 if (report.entryCount > maximumFileCount) {
   errors.push(
     `package contains ${report.entryCount} files; limit is ${maximumFileCount}`,
@@ -70,7 +71,9 @@ if (report.unpackedSize > maximumUnpackedSize) {
   )
 }
 for (const [filename, limit] of Object.entries(maximumCompressedSizes)) {
-  const compressedSize = gzipSync(readFileSync(filename)).length
+  const contents = readFileSync(filename)
+  const compressedSize = gzipSync(contents).length
+  assetSizes.push({ filename, rawSize: contents.length, compressedSize, limit })
   if (compressedSize > limit) {
     errors.push(`${filename} is ${compressedSize} bytes gzipped; limit is ${limit}`)
   }
@@ -97,3 +100,13 @@ if (errors.length > 0) fail(errors.join('\n'))
 console.log(
   `${report.name}@${report.version}: ${report.entryCount} files, ${report.unpackedSize} bytes unpacked`,
 )
+console.log(`NPM archive: ${report.size} bytes compressed`)
+for (const { filename, rawSize, compressedSize, limit } of assetSizes) {
+  console.log(
+    `${filename}: ${rawSize} bytes raw, ${compressedSize} bytes gzip; ${limit - compressedSize} bytes below budget`,
+  )
+}
+const defaultPayload = assetSizes
+  .filter(({ filename }) => ['dist/sds.css', 'dist/auto.js'].includes(filename))
+  .reduce((total, { compressedSize }) => total + compressedSize, 0)
+console.log(`Default CDN payload: ${defaultPayload} bytes gzip (CSS + automatic setup)`)

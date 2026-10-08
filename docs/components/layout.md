@@ -286,6 +286,12 @@ This layout stacks at viewport widths of `64rem` or less.
 Label navigation and mark the current page with `aria-current="page"`.
 Do not add `popover` to a contained standalone sidebar.
 
+Use native `details` and `summary` for expandable groups, with a child `ul`
+inside each `details`. The default application sidebar uses full-width 40px
+rows and a 4px current-item edge indicator. Documentation tree styling is
+selected by the surrounding `.sds-app[data-sds-variant="documentation"]`,
+not applied to standalone or application sidebars.
+
 ### More examples
 
 Override desktop width:
@@ -358,6 +364,7 @@ import '@cmu-sei/sds-lite/brand.css'
 |---|---|
 | `application` or omitted | Tool-like UI with persistent desktop and popover mobile sidebar |
 | `simple` | Application framing without a sidebar |
+| `documentation` | Forge documentation with global navigation, nested sidebar, reading column, and table of contents |
 | `brochure` | Public Plaid site with CMU/SEI masthead and footer |
 
 ### Accessibility
@@ -365,6 +372,54 @@ import '@cmu-sei/sds-lite/brand.css'
 Label navigation and icon controls, use a main landmark and skip link, and
 mark the current page. Preserve required brand and legal content. Mobile
 sidebar behavior also needs [JavaScript setup](../installation/npm.md#recommended-setup).
+
+### Shared mobile navigation
+
+All sidebar-based starters use the same `.sds-sidebar` with `popover="auto"`,
+a matching `popovertarget` opener, and a close button with
+`popovertargetaction="hide"`. Native Popover handles Escape and outside clicks;
+the sidebar enhancer supplies exit motion. No template-specific script is needed.
+
+At `64rem` and below, panels are flush to the viewport top and fill its height.
+Application navigation opens from the left at two-thirds viewport width.
+Documentation and Brochure open from the right, share a `28rem` maximum width,
+and leave a small strip visible on narrower screens. Their header, close control,
+scrolling, backdrop, and entry/exit rules are shared; navigation density remains
+appropriate to each template. Theme selection remains independent of layout.
+
+Documentation's top mobile links and Brochure's mobile links use the same
+primary-navigation styling: 16px text, 48px minimum rows, padding, hover
+background, and current-item marker. Brochure does not add separate row
+dividers or chevrons. Documentation's supporting tree remains compact.
+
+### Documentation site
+
+Use `data-sds-variant="documentation" data-sds-theme="forge"` on `.sds-app`.
+Its sidebar uses 14px text, 32px rows, first-level child guide lines, and rounded
+hover backgrounds. Deeper child groups are indented without additional lines.
+Current items use brand-colored text and a thin marker on their first-level
+tree guide, without a filled background. Optional decorative SVG icons go
+before the label, occupy a fixed 16px slot, and use `aria-hidden="true"`.
+The `.sds-docs-masthead` holds SEI branding and utility actions above the
+global `.sds-app-header`, which stays visible at all sizes. A native sidebar
+popover provides right-side mobile navigation, including up to three levels of
+links. The panel enters and exits on the right; application sidebars keep their
+left-side behavior.
+Compose `.sds-docs-layout` inside `.sds-app-main` with a `.sds-prose` article
+and `.sds-docs-toc` navigation. The table of contents occupies the right column
+on desktop. On smaller screens, include `.sds-docs-navigation` and
+`.sds-docs-toc` directly inside the sidebar to keep section and in-page links
+available in the mobile menu. These sidebar regions are hidden on desktop.
+The mobile header keeps the site title on the left and the sidebar menu button
+on the right. The drawer title is 20px, primary links are 16px with 48px rows,
+and supporting tree and in-page links retain compact 14px text.
+
+`.sds-docs-navigation` styles global navigation links. Author the table of
+contents links to match article heading IDs; SDS does not generate them.
+Search opens an SDS dialog containing a native GET form, with results supplied
+by your application. The public SEI footer spans the shell below its columns.
+The [playground starter](../../index.html#layouts) includes complete copyable
+page and layout markup, required brand assets, and automatic sidebar behavior.
 
 ### Application shell
 
@@ -497,6 +552,11 @@ image URL.
 ```
 
 ### Brochure shell
+
+At `64rem` and below, the top navigation moves into a native popover opened by
+a right-aligned hamburger button. Its panel enters and exits on the right.
+Desktop navigation stays inline. Application menus remain left-aligned and
+open from the left.
 
 The brochure shell uses Plaid-style serif headings and square corners. Add
 `data-sds-theme="plaid"` when the shell should also use the complete Plaid
