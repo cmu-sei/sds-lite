@@ -169,13 +169,13 @@ test('brochure footer links have no underlines and dark-footer links turn white 
   }
 })
 
-test('brochure footer disclosures use compact rows and right-aligned chevrons', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-  await page.getByText('Brochure site shell preview', { exact: true }).click()
-  const navigation = page.locator('[data-copy-layout="Brochure"]').getByRole('navigation', { name: 'SEI footer', exact: true })
-  for (const width of [1440, 700, 390, 320]) {
+for (const width of [1440, 700, 390, 320]) {
+  test(`brochure footer disclosures use compact rows and right-aligned chevrons at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/')
+    await page.getByText('Brochure site shell preview', { exact: true }).click()
+    const navigation = page.locator('[data-copy-layout="Brochure"]').getByRole('navigation', { name: 'SEI footer', exact: true })
     const disclosures = navigation.locator('details')
     for (const disclosure of await disclosures.all()) {
       const summary = disclosure.locator('summary')
@@ -201,11 +201,12 @@ test('brochure footer disclosures use compact rows and right-aligned chevrons', 
     }
     await expect(disclosures.first()).toHaveCSS('border-bottom-width', width >= 1024 ? '0px' : '1px')
     await expect(disclosures.last()).toHaveCSS('border-bottom-width', '0px')
-  }
-  await page.setViewportSize({ width: 1440, height: 1000 })
-  await expect(navigation).toHaveCSS('grid-template-columns', /\S+ \S+ \S+/)
-  for (const link of await navigation.getByRole('link').all()) await expect(link).toBeVisible()
-})
+    if (width >= 1024) {
+      await expect(navigation).toHaveCSS('grid-template-columns', /\S+ \S+ \S+/)
+    }
+    for (const link of await navigation.getByRole('link').all()) await expect(link).toBeVisible()
+  })
+}
 
 test('playground introductions keep CTAs left-aligned and compact examples use their own typography', async ({ page }) => {
   await page.goto('/')
