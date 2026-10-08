@@ -1,6 +1,6 @@
 {
   "name": "@cmu-sei/sds-lite",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "SDS Lite: the dependency-free, framework-neutral core of the SEI Design System.",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://github.com/cmu-sei/sds-lite#readme",
