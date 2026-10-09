@@ -16,11 +16,11 @@ No account, token, or build step is required. Add these two tags to the page:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.5.0/dist/sds.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/sds.css"
 >
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.5.0/dist/auto.js"
+  src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/auto.js"
 ></script>
 ```
 
