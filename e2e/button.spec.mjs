@@ -1,5 +1,42 @@
 import { expect, test } from '@playwright/test'
 
+for (const theme of ['forge', 'plaid']) {
+  for (const scheme of ['light', 'dark']) {
+    for (const variant of ['subtle', 'outline', 'bold']) {
+      test(`callout close buttons match their tone in ${theme} ${scheme} ${variant}`, async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: 'reduce' })
+        await page.goto('/')
+        await page.locator('[data-sds-root]').evaluate((root, settings) => {
+          root.dataset.sdsTheme = settings.theme
+          root.dataset.sdsColorScheme = settings.scheme
+          const fixture = document.createElement('div')
+          fixture.id = 'callout-close-tones'
+          fixture.innerHTML = ['default', 'neutral', 'accent', 'info', 'success', 'warning', 'danger'].map(tone =>
+            `<div class="sds-callout" ${tone === 'default' ? '' : `data-sds-tone="${tone}"`} data-sds-variant="${settings.variant}">
+              <strong>${tone}</strong>
+              <button class="sds-button" type="button" data-sds-shape="icon" data-sds-callout-close aria-label="Dismiss ${tone}">&times;</button>
+            </div>`,
+          ).join('')
+          root.prepend(fixture)
+        }, { theme, scheme, variant })
+        for (const callout of await page.locator('#callout-close-tones .sds-callout').all()) {
+          const close = callout.locator('[data-sds-callout-close]')
+          const matchesCallout = () => callout.evaluate(element =>
+            getComputedStyle(element.querySelector('button')).color === getComputedStyle(element).color,
+          )
+          await expect.poll(matchesCallout).toBe(true)
+          await close.hover()
+          await expect.poll(matchesCallout).toBe(true)
+          await page.mouse.down()
+          await expect.poll(matchesCallout).toBe(true)
+          await page.mouse.up()
+          await page.mouse.move(0, 0)
+        }
+      })
+    }
+  }
+}
+
 test('icon buttons are quiet by default and filled variants opt in', async ({
   page,
 }) => {

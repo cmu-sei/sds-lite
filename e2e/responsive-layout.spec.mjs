@@ -15,6 +15,180 @@ const clusterStackWidths = {
   xl: 1024,
 }
 
+for (const width of [1440, 390]) {
+  for (const name of ['Application', 'Simple application', 'Documentation site', 'Brochure']) {
+    test(`${name} uses full-height document flow and a scrolling footer at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 })
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.goto('/')
+      const markup = await page.locator(`[data-copy-layout="${name}"]`).evaluate(element => element.outerHTML)
+      await page.setContent(`<!doctype html><html><head>
+        <link rel="stylesheet" href="http://127.0.0.1:4173/src/style.css?direct">
+        <link rel="stylesheet" href="http://127.0.0.1:4173/src/brand.css?direct">
+      </head><body class="sds-document" data-sds-root>${markup}</body></html>`)
+      await page.waitForLoadState('networkidle')
+      await page.evaluate(() => document.fonts.ready)
+      const shell = page.locator('[data-copy-layout]')
+      expect(await shell.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(800)
+      if (name === 'Documentation site' && width > 1024) {
+        await shell.locator('.sds-app-main').evaluate(element => element.style.minHeight = '700px')
+        await page.evaluate(() => window.scrollTo(0, 100))
+        await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(100)
+        const headerBottom = await shell.locator(':scope > .sds-app-header').evaluate(element => element.getBoundingClientRect().bottom)
+        expect(await shell.locator('.sds-sidebar').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(headerBottom, 0)
+        expect(await shell.locator('.sds-app-main > .sds-app-toc').evaluate(element => element.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom)
+        await page.evaluate(() => window.scrollTo(0, 0))
+      }
+      await shell.locator('.sds-app-main').evaluate(element => element.style.minHeight = '1800px')
+      await expect(shell.locator('.sds-app-main')).toHaveCSS('min-height', '1800px')
+      const footer = shell.locator('.sds-app-footer')
+      const footerTop = await footer.evaluate(element => element.getBoundingClientRect().top)
+      expect(footerTop).toBeGreaterThanOrEqual(800)
+      await page.evaluate(() => window.scrollTo(0, 300))
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(300)
+      expect(await footer.evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(footerTop - 300, 0)
+      if (name === 'Documentation site') {
+        expect(await shell.locator(':scope > .sds-app-masthead').evaluate(element => element.getBoundingClientRect().bottom)).toBeLessThan(0)
+        expect(await shell.locator(':scope > .sds-app-header').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(0, 0)
+        const headerBottom = await shell.locator(':scope > .sds-app-header').evaluate(element => element.getBoundingClientRect().bottom)
+        if (width > 1024) {
+          expect(await shell.locator('.sds-sidebar').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(headerBottom, 0)
+          expect(await shell.locator('.sds-app-main > .sds-app-toc').evaluate(element => element.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom)
+        }
+        await page.evaluate(() => { location.hash = 'documentation-installation' })
+        await expect.poll(() => shell.locator('#documentation-installation').evaluate(element => element.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom)
+      }
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+      await expect(footer).toBeInViewport()
+    })
+  }
+}
+
+for (const width of [1440, 390]) {
+  for (const name of ['Application', 'Simple application', 'Documentation site', 'Brochure']) {
+    test(`shared ${name} shell preserves unique presentation and nested isolation at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.goto('/')
+      const markup = await page.locator(`[data-copy-layout="${name}"]`).evaluate(element => element.outerHTML)
+      await page.setContent(`<!doctype html><html><head>
+        <link rel="stylesheet" href="http://127.0.0.1:4173/src/style.css?direct">
+        <link rel="stylesheet" href="http://127.0.0.1:4173/src/brand.css?direct">
+      </head><body class="sds-document" data-sds-root>${markup}</body></html>`)
+      const shell = page.locator('[data-copy-layout]')
+      await page.waitForLoadState('networkidle')
+      await page.evaluate(() => document.fonts.ready)
+      await expect(shell).toHaveCSS('display', 'flex')
+      const presentation = () => shell.evaluate(element => {
+        const origin = element.getBoundingClientRect()
+        return [...element.querySelectorAll('*')].filter(node => !node.childElementCount && node.textContent.trim()).map(node => {
+          const style = getComputedStyle(node)
+          const rect = node.getBoundingClientRect()
+          return {
+            text: node.textContent,
+            rect: [rect.x - origin.x, rect.y - origin.y, rect.width, rect.height],
+            style: Object.fromEntries(['display', 'color', 'background-color', 'font-family', 'font-size', 'font-weight', 'line-height', 'padding', 'margin', 'border-width', 'border-color', 'border-radius', 'gap', 'box-shadow'].map(property => [property, style.getPropertyValue(property)])),
+          }
+        })
+      })
+      const original = await presentation()
+      for (const variant of ['application', 'simple', 'documentation', 'brochure']) {
+        await shell.evaluate((element, variant) => {
+          const outer = document.createElement('div')
+          outer.className = 'sds-app'
+          outer.dataset.sdsVariant = variant
+          const layout = document.createElement('div')
+          layout.className = 'sds-app-layout'
+          const body = document.createElement('div')
+          body.className = 'sds-app-body'
+          element.replaceWith(outer)
+          outer.append(layout)
+          layout.append(body)
+          body.append(element)
+        }, variant)
+        expect(await presentation(), `inside ${variant}`).toEqual(original)
+        await shell.evaluate(element => document.body.replaceChildren(element))
+      }
+    })
+  }
+}
+
+test('one authored shell scaffold supports all variants without DOM enhancement', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/')
+  await page.setContent(`<!doctype html><html><head>
+    <link rel="stylesheet" href="http://127.0.0.1:4173/src/style.css?direct">
+    <link rel="stylesheet" href="http://127.0.0.1:4173/src/brand.css?direct">
+  </head><body class="sds-document" data-sds-root>
+    <div class="sds-app" data-sds-variant="application">
+      <header class="sds-app-header">Project Atlas</header>
+      <div class="sds-app-layout"><div class="sds-app-body"><main class="sds-app-main">Project content</main></div></div>
+      <footer class="sds-app-footer">Legal information</footer>
+    </div>
+  </body></html>`)
+  const shell = page.locator('.sds-app')
+  const scaffold = await shell.innerHTML()
+  for (const variant of ['application', 'simple', 'documentation', 'brochure']) {
+    await shell.evaluate((element, variant) => element.dataset.sdsVariant = variant, variant)
+    await expect(shell).toHaveCSS('display', 'flex')
+    await expect(shell.locator('.sds-app-header')).toHaveCSS('display', variant === 'application' ? 'none' : variant === 'brochure' ? 'block' : 'flex')
+    await expect(shell).toHaveCSS('overflow', 'visible')
+    await expect(shell.locator('.sds-app-body')).toHaveCSS('overflow', 'visible')
+    expect(await shell.innerHTML()).toEqual(scaffold)
+  }
+})
+
+for (const theme of ['forge', 'plaid']) {
+  test(`unthemed nested shells preserve ${theme} theme tokens`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/')
+    await page.setContent(`<!doctype html><html><head>
+      <link rel="stylesheet" href="http://127.0.0.1:4173/src/style.css?direct">
+      <link rel="stylesheet" href="http://127.0.0.1:4173/src/brand.css?direct">
+    </head><body class="sds-document" data-sds-root data-sds-theme="${theme}">
+      <div class="sds-app" data-sds-variant="simple" id="nested-shell">
+        <header class="sds-app-header">Project Atlas</header>
+        <div class="sds-app-layout"><div class="sds-app-body"><main class="sds-app-main">
+          <h2 class="sds-text-h2">Project settings</h2>
+          <button class="sds-button" type="button">Save</button>
+          <div class="sds-card">Project details</div>
+        </main></div></div>
+      </div>
+    </body></html>`)
+    await page.waitForLoadState('networkidle')
+    const shell = page.locator('#nested-shell')
+    const presentation = () => shell.evaluate(element => ({
+      headingFont: getComputedStyle(element.querySelector('h2')).fontFamily,
+      controlRadius: getComputedStyle(element.querySelector('button')).borderRadius,
+      containerRadius: getComputedStyle(element.querySelector('.sds-card')).borderRadius,
+    }))
+    for (const variant of ['application', 'simple', 'documentation', 'brochure']) {
+      await shell.evaluate((element, variant) => element.dataset.sdsVariant = variant, variant)
+      await expect(shell.locator('.sds-card')).toHaveCSS('border-radius', theme === 'plaid' || variant === 'brochure' ? '0px' : '8px')
+      await expect(shell.locator('.sds-button')).toHaveCSS('border-radius', theme === 'plaid' || variant === 'brochure' ? '0px' : '4px')
+      const standalone = await presentation()
+      await shell.evaluate(element => {
+        const outer = document.createElement('div')
+        outer.className = 'sds-app'
+        outer.dataset.sdsVariant = 'brochure'
+        element.replaceWith(outer)
+        outer.append(element)
+      })
+      await expect.poll(presentation, { message: `${variant} inside brochure` }).toEqual(standalone)
+      await shell.evaluate(element => document.body.replaceChildren(element))
+    }
+    await shell.evaluate(element => {
+      element.dataset.sdsVariant = 'simple'
+      document.body.style.setProperty('--sds-font-heading', 'monospace')
+      document.body.style.setProperty('--sds-radius-control', '13px')
+      document.body.style.setProperty('--sds-radius-container', '17px')
+    })
+    await expect(shell.locator('h2')).toHaveCSS('font-family', 'monospace')
+    await expect(shell.locator('.sds-button')).toHaveCSS('border-radius', '13px')
+    await expect(shell.locator('.sds-card')).toHaveCSS('border-radius', '17px')
+  })
+}
+
 test('settings pattern uses a card surface and consistently styled form controls', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/#patterns')
@@ -148,12 +322,12 @@ test('brochure footer links have no underlines and dark-footer links turn white 
   await page.goto('/')
   await page.getByText('Brochure site shell preview', { exact: true }).click()
   const footer = page.locator('[data-copy-layout="Brochure"] > footer')
-  const mutedColor = await footer.locator('.sds-brochure-footer-main').evaluate(element => getComputedStyle(element).color)
+  const mutedColor = await footer.locator('.sds-app-footer-main').evaluate(element => getComputedStyle(element).color)
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 })
     const decorations = await footer.locator('a').evaluateAll(links => links.map(link => getComputedStyle(link).textDecorationLine))
     expect(decorations.every(decoration => decoration === 'none')).toBe(true)
-    for (const selector of ['.sds-brochure-footer-about address a', '.sds-brochure-footer-navigation a', '.sds-brochure-footer-legal ul a', '.sds-brochure-footer-legal p a']) {
+    for (const selector of ['.sds-app-footer-about address a', '.sds-app-footer-navigation a', '.sds-app-footer-legal ul a', '.sds-app-footer-legal p a']) {
       const link = footer.locator(selector).first()
       await expect(link).toHaveCSS('color', mutedColor)
       await link.hover()
@@ -162,7 +336,7 @@ test('brochure footer links have no underlines and dark-footer links turn white 
       await expect(link).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
       await page.mouse.move(0, 0)
     }
-    const action = footer.locator('.sds-brochure-footer-links a').first()
+    const action = footer.locator('.sds-app-footer-links a').first()
     await action.hover()
     await expect(action).toHaveCSS('text-decoration-line', 'none')
     await page.mouse.move(0, 0)
@@ -366,8 +540,8 @@ for (const [name, panelId, openLabel, closeLabel, side] of [
     await page.setViewportSize({ width: 1440, height: 1000 })
     await expect(root.getByRole('button', { name: openLabel, exact: true })).not.toBeVisible()
     if (name === 'Documentation site') {
-      await expect(root.locator('.sds-sidebar > .sds-docs-navigation')).not.toBeVisible()
-      await expect(root.locator('.sds-sidebar > .sds-docs-toc')).not.toBeVisible()
+      await expect(root.locator('.sds-sidebar > .sds-app-navigation')).not.toBeVisible()
+      await expect(root.locator('.sds-sidebar > .sds-app-toc')).not.toBeVisible()
     }
     if (name === 'Brochure') await expect(root.getByRole('navigation', { name: 'Brochure preview', exact: true })).toBeVisible()
   })
@@ -489,7 +663,7 @@ test('sidebar trees align optional icons and retain guide lines through expanded
   for (const list of await sidebar.locator('details > ul').all()) {
     await expect(list).toHaveCSS('margin-left', '16px')
   }
-  await expect(sidebar.locator(':scope > .sds-docs-navigation')).not.toBeVisible()
+  await expect(sidebar.locator(':scope > .sds-app-navigation')).not.toBeVisible()
   const headingGap = await sidebar.evaluate(element => {
     const heading = element.querySelector('header strong').getBoundingClientRect()
     const firstRow = element.querySelector('nav[aria-label="Documentation pages"] > ul > li > details > summary').getBoundingClientRect()
@@ -581,8 +755,8 @@ test('documentation header matches primary tabs, site title, and compact utility
   await root.evaluate(element => { element.closest('details').open = true })
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 })
-    const current = root.locator('.sds-app-header .sds-docs-navigation [aria-current="page"]')
-    const inactive = root.locator('.sds-app-header .sds-docs-navigation a:not([aria-current])')
+    const current = root.locator('.sds-app-header .sds-app-navigation [aria-current="page"]')
+    const inactive = root.locator('.sds-app-header .sds-app-navigation a:not([aria-current])')
     const brand = root.locator('.sds-app-header > .sds-app-brand')
     await expect(current).toHaveCSS('border-bottom-width', '2px')
     await expect(current).toHaveCSS('border-bottom-color', await current.evaluate(element => getComputedStyle(element).color))
@@ -594,7 +768,7 @@ test('documentation header matches primary tabs, site title, and compact utility
     await expect(brand).toHaveCSS('font-weight', '600')
     await expect(brand.locator('svg')).toHaveCSS('width', '16px')
     await expect(brand.locator('svg')).toHaveAttribute('aria-hidden', 'true')
-    for (const action of await root.locator('.sds-docs-masthead .sds-button').all()) {
+    for (const action of await root.locator('.sds-app-masthead .sds-button').all()) {
       await expect(action).toHaveCSS('font-size', '20px')
       await expect(action.locator('svg')).toHaveCSS('width', '20px')
       await expect(action).toHaveAttribute('data-sds-size', 'sm')
@@ -607,8 +781,8 @@ test('documentation header matches primary tabs, site title, and compact utility
       return tab.bottom <= header.bottom && header.bottom - tab.bottom <= 1
     })).toBe(true)
     else {
-      await expect(root.locator('.sds-app-header .sds-docs-navigation')).not.toBeVisible()
-      await expect(root.locator('.sds-docs-layout > .sds-docs-toc')).not.toBeVisible()
+      await expect(root.locator('.sds-app-header .sds-app-navigation')).not.toBeVisible()
+      await expect(root.locator('.sds-app-content > .sds-app-toc')).not.toBeVisible()
       const menu = root.getByRole('button', { name: 'Open documentation navigation' })
       await expect(menu).toBeVisible()
       const titleBounds = await brand.boundingBox()
@@ -679,6 +853,7 @@ test('documentation sidebars use compact text without header or footer separator
     for (const layout of layouts) layout.closest('details').open = true
   })
   for (const sidebar of await page.locator('[data-copy-layout="Documentation site"] .sds-sidebar').all()) {
+    await expect(sidebar).toBeVisible()
     await expect(sidebar).toHaveCSS('font-size', '14px')
     await expect(sidebar.locator(':scope > header')).toHaveCSS('border-bottom-width', '0px')
     await expect(sidebar.locator(':scope > footer')).toHaveCSS('border-top-width', '0px')
@@ -855,7 +1030,7 @@ test('brochure navigation underlines stay inside the header', async ({ page }) =
       await expect(page.getByRole('button', { name: 'Open brochure navigation', exact: true })).toBeVisible()
       continue
     }
-    const bounds = await page.locator('.sds-brochure-header').evaluate((header) => ({
+    const bounds = await page.locator('[data-copy-layout="Brochure"] > .sds-app-header').evaluate((header) => ({
       bottom: header.getBoundingClientRect().bottom,
       links: [...header.querySelectorAll('nav a')].map((link) => ({
         bottom: link.getBoundingClientRect().bottom,
@@ -1014,7 +1189,7 @@ test('page pattern actions are compact and directory search uses the combobox re
   }
 })
 
-test('sidebar marks the section currently visible in its scroll container', async ({
+test('sidebar marks the section currently visible in the viewport', async ({
   page,
 }) => {
   await page.goto('/')
@@ -1736,7 +1911,7 @@ test('section anchors remain visible below the sticky page header', async ({
   }
 })
 
-test('section anchors do not move the application shell', async ({ page }) => {
+test('section anchors scroll the page without moving the desktop sidebar', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
 
@@ -1746,6 +1921,6 @@ test('section anchors do not move the application shell', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Loading', exact: true }).click()
 
-  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
   expect((await sidebar.boundingBox())?.y).toBe(0)
 })

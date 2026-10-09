@@ -353,7 +353,7 @@ test('CSS reference lists every public foundation property', async () => {
   const properties = matches(foundation, /(--sds-[a-z0-9-]+)\s*:/g)
 
   for (const property of properties) {
-    if (property.startsWith('--sds-typography-')) continue
+    if (property.startsWith('--sds-typography-') || property.startsWith('--sds-app-theme-')) continue
     const primitiveFamily = /^--sds-(gray|purple|blue|red|green|orange)-\d+$/.test(
       property,
     )

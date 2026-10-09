@@ -11,14 +11,8 @@
     block-size: 100dvh;
     margin: 0;
     padding: 0;
-    overflow: auto;
-    border: 1px solid var(--sds-color-border-default);
-    border-inline-start: 1px solid var(--sds-color-border-default);
     border-radius: var(--sds-radius-container) 0 0
       var(--sds-radius-container);
-    color: light-dark(var(--sds-gray-900), var(--sds-gray-25));
-    background: var(--sds-color-surface-raised);
-    box-shadow: var(--sds-shadow-xl);
     transform: translateX(100%);
     will-change: transform;
     overscroll-behavior: contain;
@@ -160,10 +154,7 @@
     position: sticky;
     z-index: 1;
     inset-block-start: 0;
-    display: flex;
-    gap: var(--sds-space-lg);
     align-items: center;
-    justify-content: space-between;
     background: color-mix(
       in srgb,
       var(--sds-color-surface-raised) 50%,
@@ -186,12 +177,6 @@
       transparent
     );
     backdrop-filter: blur(4px);
-  }
-
-  :where(.sds-panel > header h2) {
-    font-size: 1.5rem;
-    font-weight: 300;
-    line-height: 1.75rem;
   }
 
   @starting-style {

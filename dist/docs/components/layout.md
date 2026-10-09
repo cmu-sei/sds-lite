@@ -367,6 +367,48 @@ import '@cmu-sei/sds-lite/brand.css'
 | `documentation` | Forge documentation with global navigation, nested sidebar, reading column, and table of contents |
 | `brochure` | Public Plaid site with CMU/SEI masthead and footer |
 
+### Shared scaffold
+
+All four starters use the same shell regions. Change `data-sds-variant` to
+select their presentation; select palette tokens separately with
+`data-sds-theme`. Supply only the regions your page needs:
+
+```html
+<div class="sds-app" data-sds-variant="simple">
+  <header class="sds-app-header">
+    <a class="sds-app-brand" href="/">Project Atlas</a>
+  </header>
+  <div class="sds-app-layout">
+    <div class="sds-app-body">
+      <main class="sds-app-main">Page content</main>
+    </div>
+  </div>
+  <footer class="sds-app-footer">Legal information</footer>
+</div>
+```
+
+An optional `.sds-sidebar` precedes `.sds-app-body` inside `.sds-app-layout`.
+Without it, the layout has one column. Application headers are mobile-only;
+the other variants keep their headers visible. All variants use document flow
+and stretch to at least the viewport height. Longer pages grow naturally;
+footers follow the content rather than remaining pinned in view. Documentation's
+masthead scrolls away while its white navigation header stays sticky.
+
+Optional `.sds-app-masthead`, `.sds-app-navigation`, `.sds-app-content`, and
+`.sds-app-toc` regions supply branding, global links, reading columns, and
+in-page navigation. Brochure groups its brand and navigation in
+`.sds-app-header-content` and centers bands with `.sds-app-container`.
+Footer regions share the `.sds-app-footer-*` vocabulary. A footer inside
+`.sds-app-body` follows its content column; a root footer spans the shell.
+
+Variants style authored HTML, not generate content or accessibility
+relationships. Keep navigation labels, unique popover IDs, heading-linked
+TOCs, and required brand/legal content in server-rendered markup. No new
+JavaScript or framework wrapper is required. Shell styles use native CSS
+`@scope` and reset variant-specific heading and radius tokens to the inherited
+theme so nested layouts retain their own presentation. Explicit token overrides
+authored on a shell still apply.
+
 ### Accessibility
 
 Label navigation and icon controls, use a main landmark and skip link, and
@@ -400,21 +442,21 @@ hover backgrounds. Deeper child groups are indented without additional lines.
 Current items use brand-colored text and a thin marker on their first-level
 tree guide, without a filled background. Optional decorative SVG icons go
 before the label, occupy a fixed 16px slot, and use `aria-hidden="true"`.
-The `.sds-docs-masthead` holds SEI branding and utility actions above the
+The `.sds-app-masthead` holds SEI branding and utility actions above the
 global `.sds-app-header`, which stays visible at all sizes. A native sidebar
 popover provides right-side mobile navigation, including up to three levels of
 links. The panel enters and exits on the right; application sidebars keep their
 left-side behavior.
-Compose `.sds-docs-layout` inside `.sds-app-main` with a `.sds-prose` article
-and `.sds-docs-toc` navigation. The table of contents occupies the right column
-on desktop. On smaller screens, include `.sds-docs-navigation` and
-`.sds-docs-toc` directly inside the sidebar to keep section and in-page links
+Compose `.sds-app-content` inside `.sds-app-main` with a `.sds-prose` article
+and `.sds-app-toc` navigation. The table of contents occupies the right column
+on desktop. On smaller screens, include `.sds-app-navigation` and
+`.sds-app-toc` directly inside the sidebar to keep section and in-page links
 available in the mobile menu. These sidebar regions are hidden on desktop.
 The mobile header keeps the site title on the left and the sidebar menu button
 on the right. The drawer title is 20px, primary links are 16px with 48px rows,
 and supporting tree and in-page links retain compact 14px text.
 
-`.sds-docs-navigation` styles global navigation links. Author the table of
+`.sds-app-navigation` styles global navigation links. Author the table of
 contents links to match article heading IDs; SDS does not generate them.
 Search opens an SDS dialog containing a native GET form, with results supplied
 by your application. The public SEI footer spans the shell below its columns.
@@ -425,7 +467,7 @@ page and layout markup, required brand assets, and automatic sidebar behavior.
 
 ```html
 <div class="sds-app">
-  <header class="sds-app-mobile-header">
+  <header class="sds-app-header">
     <button class="sds-button"
       type="button"
       data-sds-shape="icon"
@@ -517,8 +559,8 @@ page and layout markup, required brand assets, and automatic sidebar behavior.
 </div>
 ```
 
-The desktop sidebar and mobile header remain fixed while `.sds-app-body`
-scrolls. `popover="auto"` lets the same sidebar become a light-dismiss mobile
+The page scrolls naturally, with a sticky viewport-height desktop sidebar.
+`popover="auto"` lets the same sidebar become a light-dismiss mobile
 surface. Match `popovertarget` to the sidebar `id`. Mark the current page with
 `aria-current="page"`. The sidebar animates when opened and disappears
 with the matching exit motion when explicitly closed. An already-closed
@@ -542,11 +584,13 @@ image URL.
       <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text">Alex Morgan</button>
     </div>
   </header>
-  <div class="sds-app-body">
-    <main class="sds-app-main">
-      <header class="sds-page-header"><h1>Settings</h1></header>
-      <div class="sds-page">Page content</div>
-    </main>
+  <div class="sds-app-layout">
+    <div class="sds-app-body">
+      <main class="sds-app-main">
+        <header class="sds-page-header"><h1>Settings</h1></header>
+        <div class="sds-page">Page content</div>
+      </main>
+    </div>
   </div>
 </div>
 ```
@@ -560,8 +604,8 @@ open from the left.
 
 The brochure shell uses Plaid-style serif headings and square corners. Add
 `data-sds-theme="plaid"` when the shell should also use the complete Plaid
-color palette. It composes `.sds-brochure-header`, `.sds-brochure-masthead`,
-`.sds-brochure-navigation`, `.sds-brochure-main`, and the brochure footer
+color palette. It composes `.sds-app-header`, `.sds-app-masthead`,
+`.sds-app-header-content`, `.sds-app-main`, and the brochure footer
 regions. Preserve the canonical CMU/SEI links, sponsorship language, legal
 navigation, `.sds-cmu-wordmark`, and `.sds-sei-wordmark` from the SEI Design
 System. Customize the organization subtitle, primary navigation, and page

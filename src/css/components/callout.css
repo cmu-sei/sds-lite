@@ -98,8 +98,12 @@
   }
 
   :where(.sds-callout [data-sds-callout-close]) {
+    --sds-button-ghost-hover-background: color-mix(in srgb, currentColor 12%, transparent);
+    --sds-button-ghost-active: color-mix(in srgb, currentColor 20%, transparent);
+
     position: absolute;
     inset-block-start: var(--sds-space-sm);
     inset-inline-end: var(--sds-space-sm);
+    color: inherit;
   }
 }

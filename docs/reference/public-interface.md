@@ -188,30 +188,23 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-app-header` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-app-layout` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-app-main` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-app-mobile-header` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-docs-layout` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-docs-masthead` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-docs-navigation` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-docs-toc` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-content` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-masthead` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-navigation` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-toc` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-sei-wordmark` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-container` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-about` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-actions` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-links` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-main` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-footer-navigation` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-header-content` | SEI application, simple, documentation, and brochure shells. |
 
 ### Brochure shell
 
 | Class | Purpose |
 |---|---|
-| `.sds-brochure-brand` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-container` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-footer-about` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-footer-actions` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-footer-content` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-footer-legal` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-footer-links` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-footer-main` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-footer-navigation` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-header` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-main` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-masthead` | SEI application, simple, documentation, and brochure shells. |
-| `.sds-brochure-navigation` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-cmu-wordmark` | SEI application, simple, documentation, and brochure shells. |
 ## Custom elements
 

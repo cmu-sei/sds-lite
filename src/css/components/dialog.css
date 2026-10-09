@@ -6,12 +6,8 @@
     max-inline-size: 36rem;
     max-block-size: calc(100dvh - 4rem);
     padding: var(--sds-space-xl);
-    overflow: auto;
-    border: 1px solid var(--sds-color-border-default);
     border-radius: var(--sds-radius-container);
-    color: light-dark(var(--sds-gray-900), var(--sds-gray-25));
-    background: var(--sds-color-surface-raised);
-    box-shadow: var(--sds-shadow-xl);
+    margin-block: var(--sds-space-sm) auto;
     opacity: 0;
     transform: scale(0.9);
     transition:
@@ -19,10 +15,6 @@
       transform var(--sds-duration-fast) var(--sds-easing-exit),
       display var(--sds-duration-fast) allow-discrete,
       overlay var(--sds-duration-fast) allow-discrete;
-  }
-
-  :where(.sds-dialog) {
-    margin-block: var(--sds-space-sm) auto;
   }
 
   :where(.sds-dialog[data-sds-width="sm"]) {
@@ -52,40 +44,12 @@
   }
 
   :where(.sds-dialog-header) {
-    display: flex;
-    gap: var(--sds-space-lg);
     align-items: flex-start;
-    justify-content: space-between;
   }
 
   :where(.sds-dialog-header p) {
     margin-block-start: var(--sds-space-sm);
     color: var(--sds-color-text-muted);
-  }
-
-  :where(.sds-dialog-header h2) {
-    font-size: 1.5rem;
-    font-weight: 300;
-    line-height: 1.75rem;
-  }
-
-  :where(.sds-dialog-footer, .sds-panel > footer) {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sds-space-sm);
-    justify-content: flex-end;
-  }
-
-  :where(
-    .sds-dialog-footer,
-    .sds-panel > footer
-  )
-      > :is(button, .sds-button):is(
-        :not([data-sds-variant]),
-        [data-sds-variant="filled"]
-      )
-  {
-    order: 1;
   }
 
   @starting-style {

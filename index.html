@@ -12,7 +12,7 @@
   <body class="sds-document" data-sds-root>
     <a class="sds-skip-link" data-sds-size="sm" href="#top">Skip to main content</a>
     <div class="sds-app">
-      <header class="sds-app-mobile-header">
+      <header class="sds-app-header">
         <button class="sds-button" type="button"
           data-sds-shape="icon"
           popovertarget="catalog-sidebar"
@@ -1891,7 +1891,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <details class="sds-disclosure">
                 <summary>Application shell preview</summary>
               <div class="sds-app" data-sds-theme="forge" data-sds-variant="application" data-copy-layout="Application">
-                <header class="sds-app-mobile-header">
+                <header class="sds-app-header">
                   <button class="sds-button" type="button"
                     data-sds-shape="icon"
                     popovertarget="application-preview-sidebar"
@@ -1992,42 +1992,44 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                     Alex Morgan
                   </button>
                 </header>
-                <div class="sds-app-body">
-                  <div class="sds-app-main">
-                    <header class="sds-page-header">
-                      <h4 class="sds-text-h3" data-sds-size="sm">Project settings</h4>
-                      <button class="sds-button" type="button" data-sds-density="compact">Save</button>
-                    </header>
-                    <div class="sds-page">
-                      <section id="simple-page-content" class="sds-stack" data-sds-gap="lg"><h4 class="sds-text-h4">Project Atlas</h4><p>Project details and preferences.</p></section>
+                <div class="sds-app-layout">
+                  <div class="sds-app-body">
+                    <div class="sds-app-main">
+                      <header class="sds-page-header">
+                        <h4 class="sds-text-h3" data-sds-size="sm">Project settings</h4>
+                        <button class="sds-button" type="button" data-sds-density="compact">Save</button>
+                      </header>
+                      <div class="sds-page">
+                        <section id="simple-page-content" class="sds-stack" data-sds-gap="lg"><h4 class="sds-text-h4">Project Atlas</h4><p>Project details and preferences.</p></section>
+                      </div>
                     </div>
+                    <footer class="sds-app-footer">
+                      <div class="sds-app-footer-top">Application-specific links</div>
+                      <div class="sds-app-footer-content">
+                        <div class="sds-app-footer-brand">
+                          <a
+                            href="https://sei.cmu.edu"
+                            aria-label="Software Engineering Institute"
+                          >
+                            <span class="sds-sei-wordmark" aria-hidden="true"></span>
+                          </a>
+                        </div>
+                        <div class="sds-app-footer-middle">Application information</div>
+                        <div class="sds-app-footer-legal">
+                          <p>&copy; <time datetime="2026">2026</time> Carnegie Mellon University</p>
+                          <p>Proprietary. SEI Internal Use Only</p>
+                        </div>
+                      </div>
+                    </footer>
+                    <aside
+                      class="sds-app-action-bar"
+                      aria-label="Preview actions"
+                    >
+                      <strong>Unsaved changes</strong>
+                      <button class="sds-button" type="button" data-sds-variant="outlined">Discard</button>
+                      <button class="sds-button" type="button">Save</button>
+                    </aside>
                   </div>
-                  <footer class="sds-app-footer">
-                    <div class="sds-app-footer-top">Application-specific links</div>
-                    <div class="sds-app-footer-content">
-                      <div class="sds-app-footer-brand">
-                        <a
-                          href="https://sei.cmu.edu"
-                          aria-label="Software Engineering Institute"
-                        >
-                          <span class="sds-sei-wordmark" aria-hidden="true"></span>
-                        </a>
-                      </div>
-                      <div class="sds-app-footer-middle">Application information</div>
-                      <div class="sds-app-footer-legal">
-                        <p>&copy; <time datetime="2026">2026</time> Carnegie Mellon University</p>
-                        <p>Proprietary. SEI Internal Use Only</p>
-                      </div>
-                    </div>
-                  </footer>
-                  <aside
-                    class="sds-app-action-bar"
-                    aria-label="Preview actions"
-                  >
-                    <strong>Unsaved changes</strong>
-                    <button class="sds-button" type="button" data-sds-variant="outlined">Discard</button>
-                    <button class="sds-button" type="button">Save</button>
-                  </aside>
                 </div>
               </div>
               </details>
@@ -2035,7 +2037,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <details class="sds-disclosure">
                 <summary>Documentation site shell preview</summary>
                 <div class="sds-app" data-sds-theme="forge" data-sds-variant="documentation" data-copy-layout="Documentation site">
-                  <div class="sds-docs-masthead">
+                  <div class="sds-app-masthead">
                     <a href="https://sei.cmu.edu" aria-label="Software Engineering Institute"><span class="sds-sei-wordmark" aria-hidden="true"></span></a>
                     <div class="sds-cluster" data-sds-gap="sm">
                       <a class="sds-button" data-sds-shape="icon" data-sds-size="sm" data-sds-density="compact" data-sds-variant="text" href="https://github.com/cmu-sei/sds-docs-template" aria-label="GitHub" title="GitHub">
@@ -2054,7 +2056,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M14.5625 2.625C15.125 2.875 15.5 3.40625 15.5 4C15.5 12 9.59375 16 7.96875 16C6.40625 16 0.5 12.0625 0.5 4C0.5 3.40625 0.84375 2.875 1.40625 2.625L7.40625 0.125C7.5625 0.0625 7.8125 0.03125 8 0.03125C8.15625 0.03125 8.40625 0.0625 8.5625 0.125L14.5625 2.625ZM11 6.25C11 6.03125 10.8125 5.5 10.25 5.5C10.0312 5.5 9.8125 5.5625 9.65625 5.75L7.1875 8.625L6.25 7.71875C6.125 7.5625 5.9375 7.5 5.75 7.5C5.3125 7.5 5 7.84375 5 8.25C5 8.46875 5.0625 8.65625 5.21875 8.78125L6.71875 10.2812C6.84375 10.4062 7.03125 10.5 7.25 10.5C7.3125 10.5 7.59375 10.5 7.8125 10.25L10.8125 6.75C10.9375 6.625 11 6.4375 11 6.25Z" fill="currentColor"></path></svg>
                       <span>Documentation Site</span>
                     </a>
-                    <nav class="sds-docs-navigation" aria-label="Documentation sections">
+                    <nav class="sds-app-navigation" aria-label="Documentation sections">
                       <ul>
                         <li><a href="#composition" aria-current="page">Guides</a></li>
                         <li><a href="#documentation-reference">Reference</a></li>
@@ -2067,7 +2069,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                         <strong><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 3h16v18H4zM8 7h8M8 11h8M8 15h5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>Atlas guides</strong>
                         <button class="sds-sidebar-close sds-button" type="button" data-sds-shape="icon" data-sds-density="compact" data-sds-variant="text" popovertarget="documentation-preview-sidebar" popovertargetaction="hide" aria-label="Close documentation navigation">&times;</button>
                       </header>
-                      <nav class="sds-docs-navigation" aria-label="Documentation sections">
+                      <nav class="sds-app-navigation" aria-label="Documentation sections">
                         <ul>
                           <li><a href="#composition" aria-current="location">Guides</a></li>
                           <li><a href="#documentation-reference">Reference</a></li>
@@ -2096,7 +2098,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                           <li><a href="#documentation-reference"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>API reference</a></li>
                         </ul>
                       </nav>
-                      <nav class="sds-docs-toc" aria-label="On this page">
+                      <nav class="sds-app-toc" aria-label="On this page">
                         <strong>On this page</strong>
                         <ul>
                           <li><a href="#documentation-installation">Installation</a></li>
@@ -2107,7 +2109,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       <footer><a class="sds-link" href="mailto:atlas-support@example.com">Contact support</a></footer>
                     </aside>
                     <div class="sds-app-body">
-                      <div class="sds-app-main sds-docs-layout">
+                      <div class="sds-app-main sds-app-content">
                         <article id="documentation-page-content" class="sds-prose sds-stack" data-sds-gap="lg">
                           <header>
                             <h4 class="sds-text-h2">Introduction</h4>
@@ -2127,7 +2129,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                             <p>Use the <code>/projects</code> endpoint to retrieve the projects available in your workspace.</p>
                           </section>
                         </article>
-                        <nav class="sds-docs-toc" aria-label="On this page">
+                        <nav class="sds-app-toc" aria-label="On this page">
                           <strong>On this page</strong>
                           <ul>
                             <li><a href="#documentation-installation">Installation</a></li>
@@ -2168,31 +2170,31 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
               <details class="sds-disclosure">
                 <summary>Brochure site shell preview</summary>
               <div id="brochure-preview-top" class="sds-app" data-sds-theme="plaid" data-sds-variant="brochure" data-copy-layout="Brochure">
-                <div>
-                  <header class="sds-brochure-header">
-                    <div class="sds-brochure-masthead">
-                      <div class="sds-brochure-container">
-                        <a href="https://www.cmu.edu/" target="_self" aria-label="Carnegie Mellon University">
-                          <span class="sds-cmu-wordmark" aria-hidden="true"></span>
-                        </a>
-                      </div>
-                    </div>
-                    <div class="sds-brochure-navigation sds-brochure-container">
-                      <a class="sds-brochure-brand" href="https://sei.cmu.edu/">
-                        Software Engineering Institute
-                        <small>Organization</small>
+                <header class="sds-app-header">
+                  <div class="sds-app-masthead">
+                    <div class="sds-app-container">
+                      <a href="https://www.cmu.edu/" target="_self" aria-label="Carnegie Mellon University">
+                        <span class="sds-cmu-wordmark" aria-hidden="true"></span>
                       </a>
-                      <nav aria-label="Brochure preview">
-                        <ul>
-                          <li><a href="#composition" aria-current="page">Home</a></li>
-                          <li><a href="#composition">Research</a></li>
-                        </ul>
-                      </nav>
-                      <button class="sds-button" type="button" data-sds-shape="icon" popovertarget="brochure-preview-navigation" aria-label="Open brochure navigation">
-                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg>
-                      </button>
                     </div>
-                  </header>
+                  </div>
+                  <div class="sds-app-header-content sds-app-container">
+                    <a class="sds-app-brand" href="https://sei.cmu.edu/">
+                      Software Engineering Institute
+                      <small>Organization</small>
+                    </a>
+                    <nav class="sds-app-navigation" aria-label="Brochure preview">
+                      <ul>
+                        <li><a href="#composition" aria-current="page">Home</a></li>
+                        <li><a href="#composition">Research</a></li>
+                      </ul>
+                    </nav>
+                    <button class="sds-button" type="button" data-sds-shape="icon" popovertarget="brochure-preview-navigation" aria-label="Open brochure navigation">
+                      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg>
+                    </button>
+                  </div>
+                </header>
+                <div class="sds-app-layout">
                   <aside id="brochure-preview-navigation" class="sds-sidebar" popover="auto" aria-label="Brochure navigation">
                     <header>
                       <strong>Software Engineering Institute</strong>
@@ -2205,13 +2207,15 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       </ul>
                     </nav>
                   </aside>
-                  <div class="sds-brochure-main sds-brochure-container">
-                    <section id="brochure-page-content" class="sds-stack" data-sds-gap="lg"><h4 class="sds-text-h4">Software Engineering Institute</h4><p>Research and resources for trustworthy software.</p></section>
+                  <div class="sds-app-body">
+                    <div class="sds-app-main sds-app-container">
+                      <section id="brochure-page-content" class="sds-stack" data-sds-gap="lg"><h4 class="sds-text-h4">Software Engineering Institute</h4><p>Research and resources for trustworthy software.</p></section>
+                    </div>
                   </div>
                 </div>
-                <footer>
-                  <div class="sds-brochure-footer-links">
-                    <ul class="sds-brochure-container sds-brochure-footer-actions">
+                <footer class="sds-app-footer">
+                  <div class="sds-app-footer-links">
+                    <ul class="sds-app-container sds-app-footer-actions">
                       <li>
                         <a class="sds-link" data-sds-variant="cta" data-sds-tone="danger" href="https://www.kb.cert.org/vuls/report/">
                           Report a Vulnerability
@@ -2229,9 +2233,9 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       </li>
                     </ul>
                   </div>
-                  <div class="sds-brochure-footer-main">
-                    <div class="sds-brochure-container sds-brochure-footer-content">
-                      <div class="sds-brochure-footer-about">
+                  <div class="sds-app-footer-main">
+                    <div class="sds-app-container sds-app-footer-content">
+                      <div class="sds-app-footer-about">
                         <a href="https://sei.cmu.edu/" aria-label="Software Engineering Institute">
                           <span class="sds-sei-wordmark" aria-hidden="true"></span>
                         </a>
@@ -2247,7 +2251,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                           <a href="tel:+14122685800">412-268-5800</a>
                         </address>
                       </div>
-                      <nav class="sds-brochure-footer-navigation" aria-label="SEI footer">
+                      <nav class="sds-app-footer-navigation" aria-label="SEI footer">
                         <details open>
                           <summary>SEI</summary>
                           <ul>
@@ -2278,8 +2282,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       </nav>
                     </div>
                   </div>
-                  <div class="sds-brochure-footer-legal">
-                    <div class="sds-brochure-container">
+                  <div class="sds-app-footer-legal">
+                    <div class="sds-app-container">
                       <p>&copy; <time datetime="2026">2026</time> <a href="https://www.cmu.edu/">Carnegie Mellon University</a></p>
                       <ul>
                         <li><a href="https://sei.cmu.edu/contact-us/" target="_blank" rel="noopener noreferrer nofollow">Contact Us</a></li>

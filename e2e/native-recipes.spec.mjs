@@ -48,6 +48,32 @@ for (const order of ['sds-first', 'host-first']) {
   })
 }
 
+test('list and timeline content share typography while explicit text utilities take precedence', async ({ page }) => {
+  await page.setContent(`<!doctype html><html><body data-sds-root>
+    <ul class="sds-list">
+      <li class="sds-list-item"><h3>List title</h3><p>List description</p></li>
+      <li class="sds-list-item"><h3 class="sds-text-h3" data-sds-size="sm">Large list title</h3></li>
+    </ul>
+    <ol class="sds-timeline">
+      <li class="sds-timeline-item"><h3>Timeline title</h3><p>Timeline description</p><time>Today</time></li>
+      <li class="sds-timeline-item"><h3 class="sds-text-h3" data-sds-size="sm">Large timeline title</h3></li>
+    </ol>
+  </body></html>`)
+  for (const path of ['src/css/tokens.css', 'src/css/components/typography.css', 'src/css/components/list.css', 'src/css/components/timeline.css']) {
+    await page.addStyleTag({ path })
+  }
+  for (const recipe of ['list', 'timeline']) {
+    const item = page.locator(`.sds-${recipe}-item`).first()
+    await expect(item.locator('h3')).toHaveCSS('font-size', '14px')
+    await expect(item.locator('h3')).toHaveCSS('line-height', '20px')
+    await expect(item.locator('h3')).toHaveCSS('margin', '0px')
+    await expect(item.locator('p')).toHaveCSS('font-size', '14px')
+    await expect(item.locator('p')).toHaveCSS('line-height', '20px')
+    await expect(item.locator('p')).toHaveCSS('margin-top', '4px')
+    await expect(page.locator(`.sds-${recipe}-item .sds-text-h3`)).toHaveCSS('font-size', '20px')
+  }
+})
+
 test('host shadow DOM stays isolated while semantic tokens can be shared', async ({ page }) => {
   await page.setContent('<main data-sds-root><div id="host-component"></div><button class="sds-button">SDS action</button></main>')
   await page.locator('#host-component').evaluate((element) => {
@@ -573,7 +599,7 @@ test('every layout and standalone page export preserves its displayed markup', a
     const content = clone.querySelector(`#${clone.dataset.sdsVariant}-page-content`)
     if (content) content.id = 'page-content'
     for (const link of clone.querySelectorAll('a[href="#composition"]')) link.setAttribute('href', '#page-content')
-    const main = clone.querySelector('.sds-app-main, .sds-brochure-main')
+    const main = clone.querySelector('.sds-app-main, .sds-app-main')
     if (main) {
       const semanticMain = document.createElement('main')
       for (const attribute of main.attributes) semanticMain.setAttribute(attribute.name, attribute.value)
@@ -741,7 +767,7 @@ for (const [name, variant, theme] of [
       expect(await search.locator('form').evaluate(form => ({ action: form.getAttribute('action'), query: new FormData(form).get('q') }))).toEqual({ action: '/search', query: 'installation' })
       await page.getByRole('button', { name: 'Close documentation search', exact: true }).click()
       await expect(page.getByRole('dialog', { name: 'Search documentation', exact: true })).not.toBeVisible()
-      await expect(page.locator('.sds-docs-masthead .sds-sei-wordmark')).toBeVisible()
+      await expect(page.locator('.sds-app-masthead .sds-sei-wordmark')).toBeVisible()
       await expect(page.getByRole('navigation', { name: 'Documentation footer', exact: true }).getByRole('link')).toHaveCount(3)
     }
     await page.setViewportSize({ width: 390, height: 844 })

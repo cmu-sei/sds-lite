@@ -1,16 +1,22 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-test('the playground has no detectable accessibility violations', async ({
-  page,
-}) => {
-  test.setTimeout(20_000)
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-  await page.waitForTimeout(50)
+for (const state of ['closed', 'open']) {
+  test(`the playground has no detectable accessibility violations with toasts ${state}`, async ({ page }) => {
+    test.setTimeout(20_000)
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/')
 
-  const analyze = () =>
-    new AxeBuilder({ page })
+    const toast = page.locator('#toast-success')
+    if (state === 'open') {
+      await toast.evaluate(element => element.setAttribute('persistent', ''))
+      await page.getByRole('button', { name: 'Show success' }).click()
+      await expect(toast).toBeVisible()
+    } else {
+      await expect(toast).toBeHidden()
+    }
+
+    const { violations } = await new AxeBuilder({ page })
       .withTags([
         'best-practice',
         'wcag2a',
@@ -21,21 +27,17 @@ test('the playground has no detectable accessibility violations', async ({
       ])
       .analyze()
 
-  const closedResults = await analyze()
-  await page.getByRole('button', { name: 'Show success' }).click()
-  await page.waitForTimeout(50)
-  const openResults = await analyze()
-  const violations = [...closedResults.violations, ...openResults.violations]
-
-  expect(
-    violations,
-    violations
-      .map(
-        (violation) =>
-          `${violation.id}: ${violation.nodes
-            .map((node) => node.target.join(' '))
-            .join(', ')}`,
-      )
-      .join('\n'),
-  ).toEqual([])
-})
+    await expect(toast)[state === 'open' ? 'toBeVisible' : 'toBeHidden']()
+    expect(
+      violations,
+      violations
+        .map(
+          (violation) =>
+            `${violation.id}: ${violation.nodes
+              .map((node) => node.target.join(' '))
+              .join(', ')}`,
+        )
+        .join('\n'),
+    ).toEqual([])
+  })
+}

@@ -1,4 +1,36 @@
 @layer sds.components {
+  :where(.sds-dialog, .sds-panel) {
+    overflow: auto;
+    border: 1px solid var(--sds-color-border-default);
+    color: light-dark(var(--sds-gray-900), var(--sds-gray-25));
+    background: var(--sds-color-surface-raised);
+    box-shadow: var(--sds-shadow-xl);
+  }
+
+  :where(.sds-dialog-header, .sds-panel > header) {
+    display: flex;
+    gap: var(--sds-space-lg);
+    justify-content: space-between;
+  }
+
+  :where(.sds-dialog-header h2, .sds-panel > header h2) {
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1.75rem;
+  }
+
+  :where(.sds-dialog-footer, .sds-panel > footer) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-sm);
+    justify-content: flex-end;
+  }
+
+  :where(.sds-dialog-footer, .sds-panel > footer)
+    > :is(button, .sds-button):is(:not([data-sds-variant]), [data-sds-variant="filled"]) {
+    order: 1;
+  }
+
   :where(.sds-dialog, .sds-panel)::backdrop {
     background: var(--sds-color-overlay);
     opacity: 0;

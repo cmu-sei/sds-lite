@@ -90,12 +90,14 @@
     list-style: none;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav :is(a, button, summary) > svg,
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > header > :is(a, strong) > svg) {
+  @scope (.sds-app) to (.sds-app) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav :is(a, button, summary) > svg,
+    :scope[data-sds-variant="documentation"] .sds-sidebar > header > :is(a, strong) > svg) {
     display: block;
     inline-size: 1rem;
     block-size: 1rem;
     flex: 0 0 auto;
+  }
   }
 
   :where(.sds-sidebar > nav details > summary)::-webkit-details-marker {
@@ -180,18 +182,27 @@
   }
 
   @media (min-width: 64.001rem) {
+    @scope (.sds-app) to (.sds-app) {
     :where(
-      .sds-app[data-sds-variant="documentation"] .sds-sidebar[popover],
-      .sds-app[data-sds-variant="application"] .sds-sidebar[popover],
-      .sds-app:not([data-sds-variant]) .sds-sidebar[popover]
+      :scope[data-sds-variant="documentation"] .sds-sidebar[popover],
+      :scope[data-sds-variant="application"] .sds-sidebar[popover],
+      :scope:not([data-sds-variant]) .sds-sidebar[popover]
     ) {
-      position: relative;
+      position: sticky;
       inset: auto;
+      inset-block-start: var(--sds-app-header-height, 0px);
+      align-self: start;
       display: flex;
       inline-size: auto;
       max-inline-size: none;
-      block-size: 100%;
+      block-size: calc(100dvh - var(--sds-app-header-height, 0px));
       margin: 0;
+    }
+
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar[popover]) {
+      block-size: auto;
+      max-block-size: calc(100dvh - var(--sds-app-header-height, 0px));
+    }
     }
   }
 
@@ -278,38 +289,39 @@
     }
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar) {
+  @scope (.sds-app) to (.sds-app) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar) {
     border-inline-end: 0;
     font-size: 0.875rem;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > :is(.sds-docs-navigation, .sds-docs-toc)) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > :is(.sds-app-navigation, .sds-app-toc)) {
     display: none;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header,
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > footer) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > header,
+    :scope[data-sds-variant="documentation"] .sds-sidebar > footer) {
     padding: var(--sds-space-md) var(--sds-space-xl);
     border-block: 0;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header > :is(a, strong)) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > header > :is(a, strong)) {
     display: flex;
     gap: var(--sds-space-sm);
     align-items: center;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > header) {
     padding-block-end: var(--sds-space-xs);
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav > ul) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav > ul) {
     padding-block-start: 0;
     padding-inline: var(--sds-space-lg);
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav li > :is(a, button),
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav li > details > summary) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav li > :is(a, button),
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav li > details > summary) {
     position: relative;
     min-block-size: 2rem;
     align-items: center;
@@ -319,35 +331,35 @@
     font-size: inherit;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > summary)::after {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details > summary)::after {
     margin-block-start: 0;
     transform: rotate(-45deg);
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details[open] > summary)::after {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details[open] > summary)::after {
     transform: rotate(45deg);
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > ul) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details > ul) {
     margin-inline-start: var(--sds-space-lg);
     padding-inline: var(--sds-space-sm) 0;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav > ul > li > details > ul) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav > ul > li > details > ul) {
     border-inline-start: 2px solid var(--sds-color-border-default);
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary) {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary) {
     color: var(--sds-color-brand);
     background: transparent;
     font-weight: 400;
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary)::before {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary)::before {
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
@@ -356,24 +368,24 @@
     content: "";
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > :is(a, button)[aria-current],
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > details:not([open]):has([aria-current="page"]) > summary,
-    .sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc [aria-current])::before {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > :is(a, button)[aria-current],
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > details:not([open]):has([aria-current="page"]) > summary,
+    :scope[data-sds-variant="documentation"] .sds-sidebar > .sds-app-toc [aria-current])::before {
     inset-inline-start: calc(-1 * (var(--sds-space-sm) + 2px));
   }
 
-  :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav details details > ul > li > :is(a, button)[aria-current])::before {
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details details > ul > li > :is(a, button)[aria-current])::before {
     inset-inline-start: calc(-1 * (var(--sds-space-lg) + 2 * var(--sds-space-sm) + 2px));
   }
 
   @media (min-width: 64.001rem) {
-    :where(.sds-app[data-sds-variant="brochure"] .sds-sidebar[popover]) {
+    :where(:scope[data-sds-variant="brochure"] .sds-sidebar[popover]) {
       display: none;
     }
   }
 
   @media (max-width: 64rem) {
-    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar[popover]) {
+    :where(:scope:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar[popover]) {
       --sds-sidebar-drawer-inset: 0 0 0 auto;
       --sds-sidebar-drawer-offset: 100%;
       --sds-sidebar-drawer-width: min(28rem, calc(100vw - var(--sds-space-md)));
@@ -384,13 +396,13 @@
       overscroll-behavior: contain;
     }
 
-    :where(.sds-app[data-sds-variant="brochure"] .sds-sidebar[popover]) {
+    :where(:scope[data-sds-variant="brochure"] .sds-sidebar[popover]) {
       border: 1px solid var(--sds-color-border-default);
       border-block-end: 0;
       font-family: var(--sds-font-body);
     }
 
-    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar > header) {
+    :where(:scope:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar > header) {
       position: sticky;
       z-index: 2;
       inset-block-start: 0;
@@ -402,13 +414,13 @@
       background: var(--sds-color-surface-default);
     }
 
-    :where(.sds-app[data-sds-variant="brochure"] .sds-sidebar > header > strong) {
+    :where(:scope[data-sds-variant="brochure"] .sds-sidebar > header > strong) {
       font-size: 1.5rem;
       font-weight: 300;
       line-height: 2rem;
     }
 
-    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar-close) {
+    :where(:scope:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar-close) {
       position: static;
       color: var(--sds-color-text-muted);
       font-size: 1.5rem;
@@ -416,29 +428,29 @@
       line-height: 1;
     }
 
-    :where(.sds-app:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar > nav) {
+    :where(:scope:is([data-sds-variant="brochure"], [data-sds-variant="documentation"]) .sds-sidebar > nav) {
       flex: 0 0 auto;
       overflow: visible;
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > header > strong) {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > header > strong) {
       font-size: 1.25rem;
       line-height: 1.75rem;
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > :is(.sds-docs-navigation, .sds-docs-toc)) {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > :is(.sds-app-navigation, .sds-app-toc)) {
       display: block;
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav > ul) {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav > ul) {
       padding-block-end: 0;
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav + nav) {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav + nav) {
       margin-block-start: var(--sds-space-lg);
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > nav + nav)::before {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav + nav)::before {
       display: block;
       block-size: 1px;
       margin: 0 var(--sds-space-xl) var(--sds-space-lg);
@@ -446,13 +458,13 @@
       content: "";
     }
 
-    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav > ul) {
+    :where(:scope:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav > ul) {
       display: grid;
       gap: 0;
       padding: 0;
     }
 
-    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav li > a) {
+    :where(:scope:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav li > a) {
       position: relative;
       min-block-size: 3rem;
       align-items: center;
@@ -466,11 +478,11 @@
       line-height: 1.5rem;
     }
 
-    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav [aria-current]) {
+    :where(:scope:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav [aria-current]) {
       background: transparent;
     }
 
-    :where(.sds-app:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav [aria-current])::before {
+    :where(:scope:is([data-sds-variant="documentation"], [data-sds-variant="brochure"]) .sds-sidebar > header + nav [aria-current])::before {
       position: absolute;
       inset-block: 0;
       inset-inline-start: 0;
@@ -479,25 +491,26 @@
       content: "";
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc) {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > .sds-app-toc) {
       margin: var(--sds-space-lg) var(--sds-space-xl);
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc)::before {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > .sds-app-toc)::before {
       margin-inline: 0;
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc > strong) {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > .sds-app-toc > strong) {
       display: block;
       line-height: 1.25rem;
     }
 
-    :where(.sds-app[data-sds-variant="documentation"] .sds-sidebar > .sds-docs-toc > ul) {
+    :where(:scope[data-sds-variant="documentation"] .sds-sidebar > .sds-app-toc > ul) {
       margin-block-start: var(--sds-space-sm);
       padding: 0;
       padding-inline-start: var(--sds-space-sm);
       border-inline-start: 2px solid var(--sds-color-border-default);
     }
 
+  }
   }
 }

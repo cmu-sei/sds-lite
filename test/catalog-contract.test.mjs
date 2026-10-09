@@ -25,6 +25,23 @@ const tones = new Set([
   'danger',
 ])
 
+test('layout starters use one shell vocabulary with optional regions', () => {
+  for (const shell of document.querySelectorAll('[data-copy-layout]')) {
+    assert.ok(shell.querySelector(':scope > .sds-app-header'), `${shell.dataset.copyLayout} needs a shared root header`)
+    assert.ok(shell.querySelector(':scope > .sds-app-layout > .sds-app-body > .sds-app-main'), `${shell.dataset.copyLayout} needs the shared content scaffold`)
+    for (const className of ['sds-app-header', 'sds-app-body', 'sds-app-main', 'sds-app-footer']) {
+      assert.ok(shell.querySelector(`.${className}`), `${shell.dataset.copyLayout} needs .${className}`)
+    }
+    for (const element of shell.querySelectorAll('[class]')) {
+      assert.equal(
+        [...element.classList].some(className => /^sds-(docs|brochure)-/.test(className)),
+        false,
+        `${shell.dataset.copyLayout} uses layout-specific region names: ${element.className}`,
+      )
+    }
+  }
+})
+
 test('catalog examples use the current tone vocabulary', () => {
   for (const element of document.querySelectorAll('[data-sds-tone]')) {
     assert.ok(

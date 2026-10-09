@@ -122,7 +122,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| application-shell | `.sds-app`<br>`.sds-app-action-bar`<br>`.sds-app-body`<br>`.sds-app-brand`<br>`.sds-app-brand-prefix`<br>`.sds-app-footer`<br>`.sds-app-footer-brand`<br>`.sds-app-footer-content`<br>`.sds-app-footer-legal`<br>`.sds-app-footer-middle`<br>`.sds-app-footer-top`<br>`.sds-app-header`<br>`.sds-app-layout`<br>`.sds-app-main`<br>`.sds-app-mobile-header`<br>`.sds-docs-layout`<br>`.sds-docs-masthead`<br>`.sds-docs-navigation`<br>`.sds-docs-toc`<br>`.sds-sei-wordmark`<br>`.sds-brochure-brand`<br>`.sds-brochure-container`<br>`.sds-brochure-footer-about`<br>`.sds-brochure-footer-actions`<br>`.sds-brochure-footer-content`<br>`.sds-brochure-footer-legal`<br>`.sds-brochure-footer-links`<br>`.sds-brochure-footer-main`<br>`.sds-brochure-footer-navigation`<br>`.sds-brochure-header`<br>`.sds-brochure-main`<br>`.sds-brochure-masthead`<br>`.sds-brochure-navigation`<br>`.sds-cmu-wordmark` |  | `data-sds-variant`: `application`, `simple`, `documentation`, `brochure` (on `.sds-app`) (default: `application`) | SEI application, simple, documentation, and brochure shells. |
+| application-shell | `.sds-app`<br>`.sds-app-action-bar`<br>`.sds-app-body`<br>`.sds-app-brand`<br>`.sds-app-brand-prefix`<br>`.sds-app-footer`<br>`.sds-app-footer-brand`<br>`.sds-app-footer-content`<br>`.sds-app-footer-legal`<br>`.sds-app-footer-middle`<br>`.sds-app-footer-top`<br>`.sds-app-header`<br>`.sds-app-layout`<br>`.sds-app-main`<br>`.sds-app-content`<br>`.sds-app-masthead`<br>`.sds-app-navigation`<br>`.sds-app-toc`<br>`.sds-sei-wordmark`<br>`.sds-app-container`<br>`.sds-app-footer-about`<br>`.sds-app-footer-actions`<br>`.sds-app-footer-links`<br>`.sds-app-footer-main`<br>`.sds-app-footer-navigation`<br>`.sds-app-header-content`<br>`.sds-cmu-wordmark` |  | `data-sds-variant`: `application`, `simple`, `documentation`, `brochure` (on `.sds-app`) (default: `application`) | SEI application, simple, documentation, and brochure shells. |
 
 ## Compositions
 
@@ -221,8 +221,9 @@ Assets: `package/assets/sei-wordmark.svg`.
 
 | Required part | Minimum count |
 |---|---|
+| `.sds-app-header` | 1 |
 | `.sds-app-layout > .sds-sidebar[popover]` | 1 |
-| `.sds-app-body > .sds-app-main` | 1 |
+| `.sds-app-layout > .sds-app-body > .sds-app-main` | 1 |
 | `.sds-sidebar-close[popovertarget]` | 1 |
 
 Application responsibilities:
@@ -243,7 +244,7 @@ Assets: `package/assets/sei-wordmark.svg`.
 | Required part | Minimum count |
 |---|---|
 | `.sds-app-header` | 1 |
-| `.sds-app-body > .sds-app-main` | 1 |
+| `.sds-app-layout > .sds-app-body > .sds-app-main` | 1 |
 | `.sds-app-footer` | 1 |
 
 Application responsibilities:
@@ -263,11 +264,12 @@ Assets: `package/assets/sei-wordmark.svg`.
 
 | Required part | Minimum count |
 |---|---|
-| `.sds-docs-masthead` | 1 |
-| `.sds-app-header > .sds-docs-navigation` | 1 |
-| `.sds-sidebar[popover] > .sds-docs-toc` | 1 |
-| `.sds-docs-layout > .sds-prose` | 1 |
-| `.sds-docs-layout > .sds-docs-toc` | 1 |
+| `.sds-app-masthead` | 1 |
+| `.sds-app-header > .sds-app-navigation` | 1 |
+| `.sds-app-layout > .sds-app-body > .sds-app-main` | 1 |
+| `.sds-sidebar[popover] > .sds-app-toc` | 1 |
+| `.sds-app-content > .sds-prose` | 1 |
+| `.sds-app-content > .sds-app-toc` | 1 |
 | `dialog.sds-dialog` | 1 |
 
 Application responsibilities:
@@ -288,10 +290,13 @@ Assets: `package/assets/sei-wordmark.svg`.
 
 | Required part | Minimum count |
 |---|---|
-| `.sds-brochure-masthead` | 1 |
-| `.sds-brochure-navigation` | 1 |
+| `.sds-app-header` | 1 |
+| `.sds-app-masthead` | 1 |
+| `.sds-app-header-content` | 1 |
+| `.sds-app-layout > .sds-app-body > .sds-app-main` | 1 |
 | `.sds-sidebar[popover]` | 1 |
-| `.sds-brochure-footer-main` | 1 |
+| `.sds-app-footer` | 1 |
+| `.sds-app-footer-main` | 1 |
 
 Application responsibilities:
 

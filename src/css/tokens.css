@@ -94,6 +94,8 @@
     --sds-radius-full: 999px;
     --sds-radius-control: var(--sds-radius-sm);
     --sds-radius-container: var(--sds-radius-lg);
+    --sds-app-theme-radius-control: var(--sds-radius-sm);
+    --sds-app-theme-radius-container: var(--sds-radius-lg);
 
     --sds-shadow-raised: 0 1px 3px rgb(0 0 0 / 10%);
     --sds-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 5%);
@@ -120,6 +122,7 @@
       "Source Serif", ui-serif, Georgia, Cambria, "Times New Roman", serif;
     --sds-font-body: var(--sds-font-sans);
     --sds-font-heading: var(--sds-font-sans);
+    --sds-app-theme-font-heading: var(--sds-font-sans);
     --sds-typography-heading-weight: 600;
 
     --sds-color-text-default: light-dark(
@@ -453,9 +456,12 @@
     --sds-gray-900: #1e1d1b;
     --sds-gray-950: #141211;
     --sds-font-heading: var(--sds-font-serif);
+    --sds-app-theme-font-heading: var(--sds-font-serif);
     --sds-typography-heading-weight: 400;
     --sds-radius-control: 0;
     --sds-radius-container: 0;
+    --sds-app-theme-radius-control: 0;
+    --sds-app-theme-radius-container: 0;
   }
 
   :where([data-sds-color-scheme="dark"]) {
