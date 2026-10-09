@@ -38,7 +38,7 @@ Add this version-pinned link to `<head>`:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.4.0/dist/sds.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.5.0/dist/sds.css"
 >
 ```
 
