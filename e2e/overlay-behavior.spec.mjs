@@ -50,6 +50,40 @@ test.beforeEach(async ({ page }) => {
   await page.waitForTimeout(50)
 })
 
+test('modal and panel shared styling preserves their distinct surfaces', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 800 })
+    for (const selector of ['#catalog-dialog', '#panel-right-md']) {
+      const surface = page.locator(selector)
+      await surface.evaluate(element => element.showModal())
+      await expect(surface).toBeVisible()
+      await expect(surface).toHaveCSS('border-top-width', '1px')
+      await expect(surface).toHaveCSS('overflow', 'auto')
+      await expect(surface).toHaveCSS('display', selector === '#catalog-dialog' ? 'grid' : 'flex')
+      const heading = surface.locator('.sds-dialog-header h2, :scope > header h2')
+      const originalHeading = await heading.evaluate(element => ({
+        className: element.className,
+        fontSize: getComputedStyle(element).fontSize,
+        fontWeight: getComputedStyle(element).fontWeight,
+      }))
+      await heading.evaluate(element => element.className = '')
+      await expect(heading).toHaveCSS('font-size', '24px')
+      await expect(heading).toHaveCSS('font-weight', '300')
+      await expect(heading).toHaveCSS('line-height', '28px')
+      await heading.evaluate((element, className) => element.className = className, originalHeading.className)
+      await expect(heading).toHaveCSS('font-size', originalHeading.fontSize)
+      await expect(heading).toHaveCSS('font-weight', originalHeading.fontWeight)
+      const footer = surface.locator('.sds-dialog-footer, :scope > footer')
+      await expect(footer).toHaveCSS('display', 'flex')
+      await expect(footer).toHaveCSS('justify-content', 'flex-end')
+      await expect(footer.locator('.sds-button:not([data-sds-variant]), .sds-button[data-sds-variant="filled"]')).toHaveCSS('order', '1')
+      await surface.evaluate(element => element.close())
+      await expect(surface).toBeHidden()
+    }
+  }
+})
+
 for (const selector of [
   '#catalog-dialog',
   '#panel-left-sm',

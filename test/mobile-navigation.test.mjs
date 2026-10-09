@@ -3,10 +3,10 @@ import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import test from 'node:test'
 
-const applicationCss = await readFile(
+const applicationCss = (await readFile(
   'src/css/components/application.css',
   'utf8',
-)
+)).replaceAll(':scope', '.sds-app')
 const buttonCss = await readFile('src/css/components/button.css', 'utf8')
 const catalogHtml = await readFile('index.html', 'utf8')
 const sidebarCss = await readFile('src/css/components/sidebar.css', 'utf8')
@@ -32,11 +32,11 @@ const documentation = (
 test('mobile menu triggers appear before the application brand', () => {
   assert.match(
     applicationCss,
-    /\.sds-app-mobile-header\s*>\s*\[popovertarget\][^}]*\{[^}]*order:\s*-1/s,
+    /\.sds-app-header\s*>\s*\[popovertarget\][^}]*\{[^}]*order:\s*-1/s,
   )
   assert.match(
     applicationCss,
-    /:where\(\.sds-app-mobile-header\)[^}]*\{[^}]*justify-content:\s*flex-start/s,
+    /:where\(\.sds-app:is\(\[data-sds-variant="application"\], :not\(\[data-sds-variant\]\)\) > \.sds-app-header\)[^}]*\{[^}]*justify-content:\s*flex-start/s,
   )
 })
 

@@ -140,9 +140,9 @@ test('the default stylesheet omits specialized brand shells', async () => {
   const brand = await readFile('dist/brand.css', 'utf8')
 
   assert.doesNotMatch(stylesheet, /\.sds-app-header/)
-  assert.doesNotMatch(stylesheet, /\.sds-brochure/)
+  assert.doesNotMatch(stylesheet, /\.sds-app-footer-main/)
   assert.match(brand, /\.sds-app-header/)
-  assert.match(brand, /\.sds-brochure/)
+  assert.match(brand, /\.sds-app-footer-main/)
 })
 
 test('brand styles share one external wordmark asset', async () => {

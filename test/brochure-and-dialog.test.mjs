@@ -4,11 +4,12 @@ import test from 'node:test'
 
 import { Window } from 'happy-dom'
 
-const applicationCss = await readFile(
+const applicationCss = (await readFile(
   'src/css/components/application.css',
   'utf8',
-)
-const dialogCss = await readFile('src/css/components/dialog.css', 'utf8')
+)).replaceAll(':scope', '.sds-app')
+const brochureCss = applicationCss.slice(applicationCss.indexOf('@scope (.sds-app[data-sds-variant="brochure"])'))
+const overlayCss = await readFile('src/css/components/overlay.css', 'utf8')
 const panelCss = await readFile('src/css/components/panel.css', 'utf8')
 const demo = await readFile('index.html', 'utf8')
 
@@ -46,26 +47,26 @@ test('brochure chrome includes the official header and legal footer content', ()
 })
 
 test('brochure uses the public site colors and spacing', () => {
-  const brochureRule = applicationCss.match(
-    /:where\(\.sds-app\[data-sds-variant="brochure"\]\)\s*\{([^}]*)\}/s,
+  const brochureRule = brochureCss.match(
+    /:where\(\.sds-app\)\s*\{([^}]*)\}/s,
   )
   const wordmarkRule = applicationCss.match(
     /:where\(\.sds-cmu-wordmark\)\s*\{([^}]*)\}/s,
   )
-  const mainRule = applicationCss.match(
-    /:where\(\.sds-brochure-main\)\s*\{([^}]*)\}/s,
+  const mainRule = brochureCss.match(
+    /:where\(\.sds-app-main\)\s*\{([^}]*)\}/s,
   )
-  const footerLinksRule = applicationCss.match(
-    /:where\(\.sds-brochure-footer-links\)\s*\{([^}]*)\}/s,
+  const footerLinksRule = brochureCss.match(
+    /:where\(\.sds-app-footer-links\)\s*\{([^}]*)\}/s,
   )
-  const footerLinkRule = applicationCss.match(
-    /:where\(\.sds-brochure-footer-links \.sds-link\)\s*\{([^}]*)\}/s,
+  const footerLinkRule = brochureCss.match(
+    /:where\(\.sds-app-footer-links \.sds-link\)\s*\{([^}]*)\}/s,
   )
-  const footerLinkArrowRule = applicationCss.match(
-    /:where\(\.sds-brochure-footer-links \.sds-link\)::after\s*\{([^}]*)\}/s,
+  const footerLinkArrowRule = brochureCss.match(
+    /:where\(\.sds-app-footer-links \.sds-link\)::after\s*\{([^}]*)\}/s,
   )
-  const footerActionsRule = applicationCss.match(
-    /:where\(\.sds-brochure-footer-actions\)\s*\{([^}]*)\}/s,
+  const footerActionsRule = brochureCss.match(
+    /:where\(\.sds-app-footer-actions\)\s*\{([^}]*)\}/s,
   )
 
   assert.ok(brochureRule)
@@ -107,7 +108,7 @@ test('brochure uses the public site colors and spacing', () => {
 
 test('modal and panel actions share one right-aligned layout', () => {
   assert.match(
-    dialogCss,
+    overlayCss,
     /:where\(\s*\.sds-dialog-footer,\s*\.sds-panel\s*>\s*footer\s*\)\s*\{[^}]*justify-content:\s*flex-end/s,
   )
   const panelFooterRule = panelCss.match(
@@ -116,7 +117,7 @@ test('modal and panel actions share one right-aligned layout', () => {
   assert.ok(panelFooterRule)
   assert.doesNotMatch(panelFooterRule[1], /display:\s*flex/)
   assert.match(
-    dialogCss,
+    overlayCss,
     /:where\(\s*\.sds-dialog-footer,\s*\.sds-panel\s*>\s*footer\s*\)[^}]*>\s*:is\(button,\s*\.sds-button\)/s,
   )
 })

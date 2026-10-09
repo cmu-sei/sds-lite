@@ -8,8 +8,13 @@
       --sds-tone-on-strong,
       var(--sds-color-info-on-strong)
     );
+    --sds-tab-label: var(--sds-tab-accent);
 
     display: block;
+  }
+
+  :where(sds-tabs[tone="warning"]) {
+    --sds-tab-label: var(--sds-tone-text, var(--sds-color-warning-text));
   }
 
   :where(.sds-tab-list) {
@@ -43,7 +48,7 @@
 
   @media (hover: hover) {
     :where(.sds-tab:not(:disabled, [aria-disabled="true"]):hover) {
-      color: var(--sds-tab-accent);
+      color: var(--sds-tab-label);
     }
 
     :where(
@@ -81,7 +86,7 @@
     sds-tabs:not([variant]) .sds-tab[aria-selected="true"],
     sds-tabs[variant="folder"] .sds-tab[aria-selected="true"]
   ) {
-    color: var(--sds-tab-accent);
+    color: var(--sds-tab-label);
     background: var(--sds-color-surface-default);
     border-block-end-color: transparent;
     box-shadow:
@@ -105,8 +110,8 @@
   }
 
   :where(sds-tabs[variant="underline"] .sds-tab[aria-selected="true"]) {
-    color: var(--sds-tab-accent);
-    border-block-end-color: var(--sds-tab-accent);
+    color: var(--sds-tab-label);
+    border-block-end-color: var(--sds-tab-label);
   }
 
   :where(sds-tabs[size="lg"] .sds-tab) {

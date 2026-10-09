@@ -26,6 +26,51 @@ function contrast(first, second) {
   return (lighter + 0.05) / (darker + 0.05)
 }
 
+test('busy button labels retain readable contrast in every theme and scheme', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const button = page.locator('.sds-button[aria-busy="true"]').first()
+  for (const theme of themes) {
+    for (const scheme of schemes) {
+      await page.locator('[data-sds-root]').evaluate((root, settings) => {
+        root.dataset.sdsTheme = settings.theme
+        root.dataset.sdsColorScheme = settings.scheme
+      }, { theme, scheme })
+      await expect(button).toHaveCSS('opacity', '1')
+      const colors = await button.evaluate(element => {
+        const style = getComputedStyle(element)
+        return { foreground: style.color, background: style.backgroundColor }
+      })
+      expect(contrast(colors.foreground, colors.background), `${theme} ${scheme}`).toBeGreaterThanOrEqual(4.5)
+      await expect(button).toHaveCSS('pointer-events', 'none')
+    }
+  }
+})
+
+test('selected warning tab labels retain readable contrast in every theme and scheme', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const tab = page.locator('#warning-tab-1')
+  for (const theme of themes) {
+    for (const scheme of schemes) {
+      await page.locator('[data-sds-root]').evaluate((root, settings) => {
+        root.dataset.sdsTheme = settings.theme
+        root.dataset.sdsColorScheme = settings.scheme
+      }, { theme, scheme })
+      for (const variant of ['folder', 'underline', 'block']) {
+        await tab.evaluate((element, variant) => element.closest('sds-tabs').setAttribute('variant', variant), variant)
+        await expect.poll(async () => {
+          const colors = await tab.evaluate(element => {
+            const style = getComputedStyle(element)
+            return { foreground: style.color, background: style.backgroundColor === 'rgba(0, 0, 0, 0)' ? getComputedStyle(element.closest('sds-tabs')).backgroundColor : style.backgroundColor }
+          })
+          return contrast(colors.foreground, colors.background)
+        }, { message: `${theme} ${scheme} ${variant}` }).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  }
+})
+
 test('form-control boundaries meet non-text contrast in every theme and scheme', async ({
   page,
 }) => {

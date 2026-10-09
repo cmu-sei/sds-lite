@@ -125,7 +125,7 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
     for (const link of clone.querySelectorAll<HTMLAnchorElement>('a[href="#composition"]')) {
       link.setAttribute('href', '#page-content')
     }
-    const main = clone.querySelector('.sds-app-main, .sds-brochure-main')
+    const main = clone.querySelector('.sds-app-main')
     if (main) {
       const semanticMain = document.createElement('main')
       for (const attribute of main.attributes) semanticMain.setAttribute(attribute.name, attribute.value)
@@ -238,7 +238,6 @@ for (const recipe of document.querySelectorAll<HTMLElement>(
 const sectionNavigation = document.querySelector<HTMLElement>(
   '.sds-sidebar > nav',
 )
-const sectionScroller = document.querySelector<HTMLElement>('.sds-app-body')
 const sectionLinks = Array.from(
   sectionNavigation?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]') ?? [],
 ).flatMap((link) => {
@@ -246,7 +245,7 @@ const sectionLinks = Array.from(
   return section ? [{ link, section }] : []
 })
 
-if (sectionNavigation && sectionScroller && sectionLinks.length > 0) {
+if (sectionNavigation && sectionLinks.length > 0) {
   const setCurrentSection = (current: HTMLElement) => {
     for (const { link, section } of sectionLinks) {
       if (section === current) link.setAttribute('aria-current', 'location')
@@ -274,7 +273,7 @@ if (sectionNavigation && sectionScroller && sectionLinks.length > 0) {
       )[0]
       if (current) setCurrentSection(current)
     },
-    { root: sectionScroller, rootMargin: '-12% 0px -75% 0px' },
+    { rootMargin: '-12% 0px -75% 0px' },
   )
 
   for (const { section } of sectionLinks) sectionObserver.observe(section)

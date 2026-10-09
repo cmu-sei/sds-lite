@@ -211,13 +211,13 @@ test('empty results appear as a positioned dropdown outside clipped containers',
       escapesField: outputRect.bottom > fieldRect.bottom || outputRect.top < fieldRect.top,
     }
   })
-  expect(geometry.topGap).toBeLessThan(8)
-  expect(geometry.leftGap).toBeLessThan(8)
-  expect(geometry.outputWidth).toBeGreaterThanOrEqual(geometry.inputWidth)
-  expect(geometry.escapesField).toBe(true)
-  await page.evaluate(() => {
-    document.querySelector('.sds-app-body')?.scrollBy(0, 50)
-  })
+    expect(geometry.topGap).toBeLessThan(8)
+    expect(geometry.leftGap).toBeLessThan(8)
+    expect(geometry.outputWidth).toBeGreaterThanOrEqual(geometry.inputWidth)
+    expect(geometry.escapesField).toBe(true)
+    const scrollPosition = await page.evaluate(() => window.scrollY)
+    await page.evaluate(() => window.scrollBy(0, 50))
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(scrollPosition)
   await expect.poll(() => status.evaluate((output) => {
     const inputRect = document.querySelector('#project-combobox').getBoundingClientRect()
     const outputRect = output.getBoundingClientRect()
@@ -463,6 +463,9 @@ test('keeps the accessible list synchronized with option changes and disabled st
 test('open suggestions have no detectable accessibility violations', async ({ page }) => {
   await page.goto('/')
   await page.locator('#project-combobox').fill('or')
+  await page.locator('.sds-tab[aria-selected="true"]').evaluateAll(async elements => {
+    await Promise.all(elements.flatMap(element => element.getAnimations().map(animation => animation.finished)))
+  })
   const results = await new AxeBuilder({ page }).withTags([
     'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa',
   ]).analyze()
@@ -502,9 +505,9 @@ test('suggestions escape an overflowing container and follow scrolling', async (
     const fieldRect = element.parentElement.parentElement.getBoundingClientRect()
     return listRect.bottom > fieldRect.bottom || listRect.top < fieldRect.top
   })).toBe(true)
-  await page.evaluate(() => {
-    document.querySelector('.sds-app-body')?.scrollBy(0, 50)
-  })
+  const scrollPosition = await page.evaluate(() => window.scrollY)
+  await page.evaluate(() => window.scrollBy(0, 50))
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(scrollPosition)
   await expect.poll(() => list.evaluate((element) => {
     const inputRect = document.querySelector('#project-combobox').getBoundingClientRect()
     const listRect = element.getBoundingClientRect()
