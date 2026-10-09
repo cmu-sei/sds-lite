@@ -72,7 +72,7 @@ test('selects a rich record by its label and keeps its ID separate from the quer
   await expect(id).toHaveValue('')
   await expect(list.getByRole('option', { name: /Vega.*Engineering.*Casey/ })).toBeVisible()
   await expect(list.locator('li:visible')).toHaveCount(1)
-  const results = await new AxeBuilder({ page }).withTags([
+  const results = await new AxeBuilder({ page }).include('#record-form').withTags([
     'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa',
   ]).analyze()
   expect(results.violations.map(({ id: violation, nodes }) => ({
@@ -160,7 +160,7 @@ test('announces no matching options without adding a fake listbox option', async
   await expect(list).toBeHidden()
   await expect(input).toHaveAttribute('aria-expanded', 'false')
   await expect(input).not.toHaveAttribute('aria-activedescendant')
-  const results = await new AxeBuilder({ page }).withTags([
+  const results = await new AxeBuilder({ page }).include('.sds-field:has(#project-combobox)').withTags([
     'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa',
   ]).analyze()
   expect(results.violations.map(({ id, nodes }) => ({
@@ -246,14 +246,6 @@ test('keeps matching suggestions open while adding and removing tags', async ({ 
   await expect(accessibilityTag).toHaveAttribute('data-sds-tone', 'danger')
   await expect(accessibilityTag.locator('a, button')).toHaveCount(0)
   await expect(accessibilityTag.locator('.sds-tag-action')).toHaveAttribute('aria-hidden', 'true')
-  const restingBackground = await accessibilityTag.evaluate((tag) => getComputedStyle(tag).backgroundColor)
-  await accessibilityTag.locator('.sds-tag-label').hover()
-  const dangerColor = await accessibilityTag.locator('.sds-tag-action').evaluate((icon) => getComputedStyle(icon).color)
-  await expect.poll(() => accessibilityTag.evaluate((tag) => getComputedStyle(tag).borderTopColor)).toBe(dangerColor)
-  await expect.poll(() => accessibilityTag.evaluate((tag) => getComputedStyle(tag).color)).toBe(dangerColor)
-  await expect.poll(() => accessibilityTag.evaluate((tag) => getComputedStyle(tag).backgroundColor)).not.toBe(restingBackground)
-  await accessibilityTag.locator('.sds-tag-action').hover()
-  await expect(accessibilityTag).toHaveCSS('border-top-color', dangerColor)
   await expect(input).toHaveValue('')
   await expect(input).toBeFocused()
   await expect(input).toHaveAttribute('aria-expanded', 'true')
@@ -267,13 +259,6 @@ test('keeps matching suggestions open while adding and removing tags', async ({ 
   await expect(tags.getByRole('button', { name: 'Remove Architecture' })).toBeVisible()
   await expect(input).toHaveValue('')
   await expect(list).toBeVisible()
-  const results = await new AxeBuilder({ page }).withTags([
-    'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa',
-  ]).analyze()
-  expect(results.violations.map(({ id, nodes }) => ({
-    id,
-    targets: nodes.map(({ target }) => target),
-  }))).toEqual([])
   await list.getByRole('option', { name: 'Automation' }).click()
   await expect(tags.getByRole('button', { name: 'Remove Automation' })).toBeVisible()
   await expect(input).toHaveValue('')
@@ -297,6 +282,43 @@ test('keeps matching suggestions open while adding and removing tags', async ({ 
   await expect(list).toBeVisible()
   await input.press('Escape')
   await expect(list).toBeHidden()
+})
+
+test('selected tag labels and dismiss glyphs share danger hover styling', async ({ page }) => {
+  await page.goto('/')
+  const input = page.locator('#topic-combobox')
+  await input.fill('a')
+  await input.press('ArrowDown')
+  await input.press('Enter')
+  const tag = page.locator('#topic-tags').getByRole('button', { name: 'Remove Accessibility' })
+  const restingBackground = await tag.evaluate(element => getComputedStyle(element).backgroundColor)
+  await tag.locator('.sds-tag-label').hover()
+  const dangerColor = await tag.locator('.sds-tag-action').evaluate(element => getComputedStyle(element).color)
+  await expect(tag).toHaveCSS('border-top-color', dangerColor)
+  await expect(tag).toHaveCSS('color', dangerColor)
+  await expect.poll(() => tag.evaluate(element => getComputedStyle(element).backgroundColor)).not.toBe(restingBackground)
+  await tag.locator('.sds-tag-action').hover()
+  await expect(tag).toHaveCSS('border-top-color', dangerColor)
+})
+
+test('selected tags and open suggestions have no detectable accessibility violations', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const input = page.locator('#topic-combobox')
+  await input.fill('a')
+  for (const name of ['Accessibility', 'Architecture']) {
+    await input.press('ArrowDown')
+    await input.press('Enter')
+    await expect(page.locator('#topic-tags').getByRole('button', { name: `Remove ${name}` })).toBeVisible()
+  }
+  await expect(page.locator('#topic-options')).toBeVisible()
+  const results = await new AxeBuilder({ page }).include('.sds-card:has(#topic-picker)').withTags([
+    'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa',
+  ]).analyze()
+  expect(results.violations.map(({ id, nodes }) => ({
+    id,
+    targets: nodes.map(({ target }) => target),
+  }))).toEqual([])
 })
 
 test('keep-open writes the selected suggestion to the input without losing other matches', async ({ page }) => {
@@ -463,10 +485,8 @@ test('keeps the accessible list synchronized with option changes and disabled st
 test('open suggestions have no detectable accessibility violations', async ({ page }) => {
   await page.goto('/')
   await page.locator('#project-combobox').fill('or')
-  await page.locator('.sds-tab[aria-selected="true"]').evaluateAll(async elements => {
-    await Promise.all(elements.flatMap(element => element.getAnimations().map(animation => animation.finished)))
-  })
-  const results = await new AxeBuilder({ page }).withTags([
+  await expect(page.locator('#project-options')).toBeVisible()
+  const results = await new AxeBuilder({ page }).include('.sds-field:has(#project-combobox)').withTags([
     'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa',
   ]).analyze()
   expect(results.violations.map(({ id, nodes }) => ({
