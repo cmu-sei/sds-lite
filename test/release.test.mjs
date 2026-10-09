@@ -815,10 +815,11 @@ test('hotfix preparation isolates stable code, preserves beta history, and refre
   assert.equal(JSON.parse(git('show', 'HEAD:package.json')).version, '1.2.3')
   assert.equal(git('rev-list', '--count', 'hotfix/v1.2.4..HEAD'), '1')
   assert.match(await readFile(join(remote, 'environment'), 'utf8'), /VERSION=1.2.4/)
-  for (const filename of ['ci.yml', 'release-package.yml']) {
+  for (const filename of ['ci.yml', 'release-package.yml', 'pages.yml']) {
     assert.equal(git('show', `HEAD:.github/workflows/${filename}`),
       git('show', `main:.github/workflows/${filename}`))
   }
+  assert.equal(git('show', 'HEAD:scripts/pages-release.mjs'), git('show', 'main:scripts/pages-release.mjs'))
   assert.equal(JSON.parse(git('show', 'HEAD:package-lock.json')).packages['node_modules/playwright'].version, '1.60.0')
   const base = git('rev-parse', 'hotfix/v1.2.4')
   git('switch', 'main')
@@ -859,7 +860,7 @@ test('supported stable tag completes real release preparation and package valida
   const unrelatedTags = execute('git', ['tag', '--list']).split('\n').filter((tag) => tag && tag !== 'v0.2.0')
   if (unrelatedTags.length) execute('git', ['tag', '--delete', ...unrelatedTags])
   for (const filename of ['prepare-hotfix', 'prepare-release', 'release-version', 'resolve-release-version',
-    'validate-release', 'validate-release-pr', 'cancel-release', 'abandon-release', 'release-artifact', 'format-release-notes', 'pull-request']) {
+    'validate-release', 'validate-release-pr', 'cancel-release', 'abandon-release', 'release-artifact', 'format-release-notes', 'pull-request', 'pages-release']) {
     await cp(new URL(`../scripts/${filename}.mjs`, import.meta.url), join(directory, `scripts/${filename}.mjs`))
   }
   await cp(new URL('../.github/workflows/', import.meta.url), join(directory, '.github/workflows'), { recursive: true })

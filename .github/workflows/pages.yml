@@ -1,0 +1,208 @@
+name: Automatic - Deploy Playground
+
+on:
+  workflow_run:
+    workflows: [Automatic - Publish Release]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published latest stable tag to deploy (for example v1.2.3)
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: playground-pages
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  build:
+    name: Build released playground
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+      packages: read
+      pages: read
+    outputs:
+      deploy: ${{ steps.release.outputs.deploy }}
+      tag: ${{ steps.release.outputs.tag }}
+      sha: ${{ steps.release.outputs.sha }}
+      artifact-name: ${{ steps.pages-artifact.outputs.name }}
+
+    steps:
+      - name: Check out trusted Pages tooling
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: '@cmu-sei'
+
+      - name: Use the pinned npm version
+        run: npm install --global npm@11.6.4
+
+      - name: Preserve trusted Pages tooling
+        run: |
+          mkdir -p "$RUNNER_TEMP/pages-tools" pages-handoff
+          cp scripts/pages-release.mjs scripts/release-version.mjs "$RUNNER_TEMP/pages-tools/"
+          cp test/pages.test.mjs "$RUNNER_TEMP/pages-tools/"
+          cp scripts/build-pages.mjs scripts/check-pages.mjs "$RUNNER_TEMP/"
+
+      - name: Download the completed release handoff
+        if: github.event_name == 'workflow_run'
+        id: handoff
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: pages-release
+          path: pages-handoff
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify stable publication and release identity
+        id: release
+        if: github.event_name == 'workflow_dispatch' || steps.handoff.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_TAG: ${{ inputs.tag }}
+        run: node "$RUNNER_TEMP/pages-tools/pages-release.mjs" verify pages-handoff/pages-release.json
+
+      - name: Summarize a missing handoff
+        if: github.event_name == 'workflow_run' && steps.handoff.outcome != 'success'
+        run: echo 'No stable Pages handoff; beta/non-release runs are skipped. For a failed stable handoff, retry Pages manually with the published latest tag.' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save the verified Pages identity
+        if: steps.release.outputs.deploy == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: verified-pages-release
+          path: pages-handoff/pages-release.json
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Check out the immutable release commit
+        if: steps.release.outputs.deploy == 'true'
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ steps.release.outputs.sha }}
+          persist-credentials: false
+
+      - name: Install released dependencies without lifecycle scripts
+        if: steps.release.outputs.deploy == 'true'
+        run: npm ci --ignore-scripts
+
+      - name: Configure Pages
+        if: steps.release.outputs.deploy == 'true'
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - name: Build only the playground
+        if: steps.release.outputs.deploy == 'true'
+        env:
+          PAGES_TAG: ${{ steps.release.outputs.tag }}
+          SDS_PAGES_INTEGRATION: '1'
+        run: |
+          cp "$RUNNER_TEMP/build-pages.mjs" scripts/build-pages.mjs
+          cp "$RUNNER_TEMP/check-pages.mjs" scripts/check-pages.mjs
+          cp "$RUNNER_TEMP/pages-tools/pages-release.mjs" scripts/pages-release.mjs
+          cp "$RUNNER_TEMP/pages-tools/release-version.mjs" scripts/release-version.mjs
+          mkdir -p test
+          cp "$RUNNER_TEMP/pages-tools/pages.test.mjs" test/pages.test.mjs
+          node --test --test-name-pattern='isolated Pages build' test/pages.test.mjs
+          git diff --exit-code -- dist package.json package-lock.json
+
+      - name: Install Chromium
+        if: steps.release.outputs.deploy == 'true'
+        run: npm exec -- playwright install --with-deps chromium
+
+      - name: Smoke test the built project site
+        if: steps.release.outputs.deploy == 'true'
+        run: node scripts/check-pages.mjs
+
+      - name: Select the build attempt artifact
+        if: steps.release.outputs.deploy == 'true'
+        id: pages-artifact
+        env:
+          ARTIFACT_NAME: github-pages-${{ github.run_attempt }}
+        run: echo "name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Upload only the playground
+        if: steps.release.outputs.deploy == 'true'
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          name: github-pages-${{ github.run_attempt }}
+          path: pages-dist
+
+  deploy:
+    name: Deploy released playground
+    needs: build
+    if: needs.build.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      actions: read
+      packages: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Check out trusted verification tooling
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: '@cmu-sei'
+
+      - name: Use the pinned npm version
+        run: npm install --global npm@11.6.4
+
+      - name: Download the verified release identity
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: verified-pages-release
+          path: pages-handoff
+
+      - name: Recheck latest after any deployment approval
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/pages-release.mjs verify pages-handoff/pages-release.json
+
+      - name: Deploy to GitHub Pages
+        if: steps.release.outputs.deploy == 'true'
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        with:
+          artifact_name: ${{ needs.build.outputs.artifact-name }}
+
+      - name: Summarize deployment
+        if: steps.release.outputs.deploy == 'true'
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
+        run: echo "Deployed $RELEASE_TAG to $PAGE_URL" >> "$GITHUB_STEP_SUMMARY"

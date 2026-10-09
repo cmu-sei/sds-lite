@@ -117,6 +117,58 @@ a token requirement.
 The temporary `release/v<version>` branch is deleted after publication. Hotfix
 base branches remain for audit; do not use them for feature work.
 
+## Playground on GitHub Pages
+
+After successful stable publication (including hotfixes), **Automatic - Deploy
+Playground** deploys the exact released playground to
+<https://cmu-sei.github.io/sds-lite/>. Betas do not update this site. The Pages
+workflow must be on `main` before the release finishes.
+
+Pages builds only the application into untracked `pages-dist/`. It does not run
+the combined package build, change `dist/`, change package exports, repack, or
+publish a package. Documentation links in the generated Pages HTML point to the
+matching tag on GitHub so Markdown is rendered; source and bundled documentation
+remain unchanged. Illustrative links such as `/projects/atlas` are not real
+playground routes. `release.json` under the site URL identifies the deployed tag.
+
+The publisher's independent, nonblocking handoff records the stable version and
+reviewed SHA only after package publication succeeds. The Pages workflow checks
+that handoff's repository, upstream run and attempt, public release, immutable
+tag SHA, package metadata, and registry `latest`. Stale releases are skipped.
+Deployments queue separately from publication and recheck `latest` after any
+Pages environment approval. If publication advances during deployment, its next
+Pages run brings the site forward. No Pages failure rolls back or blocks a
+published package; the previously deployed site remains available.
+
+The build-isolation integration test is opt-in (`SDS_PAGES_INTEGRATION=1`) and
+runs only in the Pages workflow, never as a package-publication build gate.
+Each Pages build attempt uploads a uniquely named site artifact. Deployment uses
+that build's artifact-name output, so a deploy-only retry reuses the original
+artifact and a full workflow rerun selects the new build's artifact.
+
+### Retry Pages without republishing
+
+1. Open **Actions > Automatic - Deploy Playground > Run workflow**.
+2. Select `main` and enter the exact published stable tag, such as `v1.2.3`.
+3. Run it, approve the `github-pages` environment if configured, and check the
+   deployment URL and `release.json` in the completed run.
+
+Only the package's current `latest` version can deploy. This manual path also
+bootstraps an existing stable release or recovers a missing/expired handoff.
+Never rerun package publication solely to repair Pages, change registry tags for
+a Pages rollback, or move a published Git tag. Resolve authentication, missing
+Pages configuration, or failed smoke tests before retrying. Rerun the full Pages
+workflow if deployment artifacts have expired.
+
+For local checks (on a stable-version checkout):
+
+```sh
+node --test test/pages.test.mjs
+SDS_PAGES_INTEGRATION=1 node --test --test-name-pattern='isolated Pages build' test/pages.test.mjs
+npm exec -- playwright install chromium
+node scripts/check-pages.mjs
+```
+
 ## Complete a workflow-changing publication
 
 GitHub requires workflow-write authorization for release targets whose workflow
@@ -338,6 +390,26 @@ immutable tag, package checksum, correct `latest` value, and unchanged `beta`
 value. Local tests alone cannot verify GitHub permissions, deployment policies,
 registry access, or the complete approval and publication transaction.
 
+### GitHub Pages setup
+
+1. Merge the Pages workflow and tooling into `main` before preparing the next
+   stable release. Hotfix preparation copies the current tooling and workflows.
+2. Open **Settings > Pages > Build and deployment** and select **GitHub Actions**
+   as the source. No `gh-pages` branch, personal token, or additional dependency
+   is required.
+3. Configure **Settings > Environments > github-pages** to permit deployments
+   from `main`, since Pages uses trusted default-branch tooling and separately
+   checks out the verified release SHA for its build. Required reviewers are
+   optional. Leave the package environments and branch protections unchanged.
+4. Confirm repository Actions policy permits the commit-pinned official Pages
+   actions, and the GitHub Package grants this repository read access. The Pages
+   verifier uses the short-lived `GITHUB_TOKEN` with `packages: read`; deployment
+   alone receives `pages: write` and `id-token: write`.
+5. Complete a stable release, or use the Pages-only retry with the existing
+   published `latest` tag. Confirm desktop/mobile behavior, documentation links,
+   and the deployed version. Local checks do not prove live environment policies,
+   Pages availability, or registry token access.
+
 ## Technical reference for maintainers
 
 | Workflow | Purpose |
@@ -347,6 +419,7 @@ registry access, or the complete approval and publication transaction.
 | **Release - Create Release PR** | Prepares a stable/beta release; also implements the shared hotfix preparation logic. |
 | **Release - Hotfix Latest** | Starts hotfix preparation with one merged fix PR input. |
 | **Automatic - Publish Release** | Tests and publishes after merge, subject to environment protections. |
+| **Automatic - Deploy Playground** | Independently deploys the verified latest stable playground to GitHub Pages; supports Pages-only retries. |
 | **Recovery - Discard Unmerged Release** | Closes an unmerged release PR and removes its draft and temporary branch. |
 | **Recovery - Cancel Unpublished Release** | Blocks publication and opens a reviewed revert PR after merge. |
 
