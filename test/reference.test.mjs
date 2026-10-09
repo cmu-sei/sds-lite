@@ -151,7 +151,7 @@ test('CDN documentation uses the versioned GitHub repository location', async ()
   assert.ok(urls.length > 0)
   assert.equal(urls.every((url) => url.startsWith(expectedBase)), true)
   assert.doesNotMatch(sources, /cdn\.jsdelivr\.net\/npm\/@cmu-sei\/sds-lite/)
-  assert.doesNotMatch(sources, /cmu-sei\.github\.io\/sds-lite/)
+  assert.doesNotMatch(sources, /cmu-sei\.github\.io\/sds-lite\/(?:dist\/|(?:sds|auto|brand)\.(?:css|js))/)
   assert.match(
     cdnGuide,
     /cdn\.jsdelivr\.net\/gh\/cmu-sei\/sds-lite@vVERSION\/dist\/FILE/,

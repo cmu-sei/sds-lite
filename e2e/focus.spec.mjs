@@ -121,9 +121,13 @@ test('dropdown menu items retain hover treatment and show the shared focus ring'
 
   const trigger = page.getByRole('button', { name: 'Secondary menu' })
   const items = page.locator('#secondary-menu [role="menuitem"]')
+  await trigger.scrollIntoViewIfNeeded()
+  await expect(trigger).toBeInViewport({ ratio: 1 })
   await trigger.focus()
   await trigger.press('ArrowDown')
 
+  await expect(items.first()).toBeFocused()
+  await expect(items.nth(1)).toBeInViewport({ ratio: 1 })
   await items.nth(1).hover()
   await expect(items.nth(1)).toHaveCSS(
     'background-color',

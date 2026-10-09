@@ -159,7 +159,7 @@ export async function prepareHotfix({ env = process.env, execute = run, cwd = pr
     'scripts/prepare-hotfix.mjs', 'scripts/prepare-release.mjs', 'scripts/release-version.mjs',
     'scripts/resolve-release-version.mjs', 'scripts/validate-release.mjs', 'scripts/validate-release-pr.mjs',
     'scripts/cancel-release.mjs', 'scripts/abandon-release.mjs', 'scripts/release-artifact.mjs',
-    'scripts/format-release-notes.mjs', 'scripts/pull-request.mjs',
+    'scripts/format-release-notes.mjs', 'scripts/pull-request.mjs', 'scripts/pages-release.mjs',
     'test/release.test.mjs', '.github/workflows', '.github/RELEASING.md'])
   applyHotfix(hotfix.fixCommit, run, { diff, commits: pullRequest.commits })
   await appendFile(env.GITHUB_ENV, [
