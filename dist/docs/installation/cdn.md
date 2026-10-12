@@ -27,11 +27,11 @@ attributes and `sds-document` class on the outer `<main>`.
     <title>My SDS Lite application</title>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/sds.css"
+      href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.1/dist/sds.css"
     >
     <script
       type="module"
-      src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/auto.js"
+      src="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.1/dist/auto.js"
     ></script>
   </head>
   <body
@@ -78,7 +78,7 @@ behavior:
 <script type="module">
   import {
     notify,
-  } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/auto.js'
+  } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.1/dist/auto.js'
 
   document.querySelector('#save').addEventListener('click', () => {
     notify('Your changes were saved.', {
@@ -97,7 +97,7 @@ hydration). For a plain HTML page, omit the `auto.js` tag and use:
 
 ```html
 <script type="module">
-  import { setupSds } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/sds.js'
+  import { setupSds } from 'https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.1/dist/sds.js'
 
   setupSds()
 </script>
@@ -112,7 +112,7 @@ per-element CDN entries to choose or coordinate.
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/brand.css"
+  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.1/dist/brand.css"
 >
 ```
 
