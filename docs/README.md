@@ -11,6 +11,7 @@ dependencies required.
 | Install SDS Lite | [NPM](./installation/npm.md) or [account-free CDN](./installation/cdn.md) |
 | Find a specific feature | [Feature index](./components/README.md#feature-index) |
 | Keep Tailwind, Bootstrap, or Material | [Combine design systems](./guides/theming.md#combine-design-systems) |
+| Choose SDS or host page typography | [Styling boundaries](./guides/theming.md#choose-a-styling-boundary) |
 | Change colors, fonts, or themes | [Theming](./guides/theming.md) |
 | Fix something that is not working | [Troubleshooting by symptom](./troubleshooting.md) |
 

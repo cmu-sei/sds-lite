@@ -10,9 +10,19 @@ const window = new Window({ url: 'https://example.test/' })
 window.document.write(catalogSource)
 const { document } = window
 
-test('theme roots do not opt native elements into foundations', async () => {
+test('theme roots own inherited typography while documents own page presentation', async () => {
   const foundations = await readFile('src/css/foundations.css', 'utf8')
-  assert.doesNotMatch(foundations, /\[data-sds-root\]/)
+  const root = foundations.match(/:where\(\[data-sds-root\]\)\s*\{([^}]+)\}/)[1]
+  const document = foundations.match(/:where\(\.sds-document\)\s*\{([^}]+)\}/)[1]
+  assert.match(root, /font-family: var\(--sds-font-body\)/)
+  assert.match(root, /font-size: 1rem/)
+  assert.match(root, /line-height: 1\.5/)
+  assert.match(root, /color: var\(--sds-color-text-default\)/)
+  assert.doesNotMatch(root, /background:|margin:|min-block-size:/)
+  assert.match(document, /background: var\(--sds-color-background\)/)
+  assert.match(document, /margin: 0/)
+  assert.match(document, /min-block-size: 100vh/)
+  assert.doesNotMatch(document, /font-family:|font-size:|line-height:|(?:^|\s)color:/)
   assert.match(foundations, /\.sds-fieldset/)
   assert.match(foundations, /\.sds-button/)
 })

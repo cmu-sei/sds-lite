@@ -1,15 +1,18 @@
 @layer sds.base {
 
-  :where(.sds-document) {
-    min-block-size: 100vh;
-    margin: 0;
+  :where([data-sds-root]) {
     color: var(--sds-color-text-default);
-    background: var(--sds-color-background);
     font-family: var(--sds-font-body);
     font-size: 1rem;
     line-height: 1.5;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+  }
+
+  :where(.sds-document) {
+    min-block-size: 100vh;
+    margin: 0;
+    background: var(--sds-color-background);
   }
 
   :where([class^="sds-"], [class*=" sds-"], [class*="\9 sds-"], [class*="\a sds-"], [class*="\c sds-"], [class*="\d sds-"]),

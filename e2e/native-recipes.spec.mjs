@@ -1,6 +1,50 @@
 import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 
+test('copied README examples use consistent standalone typography', async ({ page }) => {
+  const readme = await readFile('README.md', 'utf8')
+  const examples = Array.from(readme.matchAll(/```html\n([\s\S]*?)```/g), (match) => match[1])
+  const starter = examples.find((example) => example.startsWith('<main'))
+  const card = examples.find((example) => example.startsWith('<article'))
+  const tabs = examples.find((example) => example.startsWith('<sds-tabs>'))
+  await page.setContent(`<!doctype html>${starter.replace('</main>', `${card}${tabs}</main>`)}`)
+  await page.addStyleTag({ path: 'dist/sds.css' })
+  await page.addScriptTag({ path: 'dist/auto.js', type: 'module' })
+  await expect(page.locator('sds-tabs .sds-tab')).toHaveCount(2)
+
+  await expect(page.locator('main')).toHaveCSS('font-family', /sans-serif/)
+  const bodyFont = await page.locator('main').evaluate((element) => getComputedStyle(element).fontFamily)
+  for (const element of await page.locator('h1, h2, p, button, sds-tabs section').all()) {
+    await expect(element).toHaveCSS('font-family', bodyFont)
+  }
+})
+
+for (const file of ['docs/getting-started.md', 'docs/installation/cdn.md']) {
+  test(`copied standalone starter uses SDS typography (${file})`, async ({ page }) => {
+    const source = await readFile(file, 'utf8')
+    const examples = Array.from(source.matchAll(/```html\n([\s\S]*?)```/g), (match) => match[1])
+    const starter = examples.find((example) => example.startsWith('<!doctype') || example.startsWith('<main'))
+    await page.route('https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@*/dist/**', async (route) => {
+      const stylesheet = route.request().url().endsWith('/sds.css')
+      await route.fulfill({
+        path: stylesheet ? 'dist/sds.css' : 'dist/auto.js',
+        contentType: stylesheet ? 'text/css' : 'text/javascript',
+      })
+    })
+    await page.setContent(starter.startsWith('<!doctype') ? starter : `<!doctype html>${starter}`)
+    if (file === 'docs/getting-started.md') await page.addStyleTag({ path: 'dist/sds.css' })
+    const root = page.locator('.sds-document')
+    await expect(root).toHaveCSS('font-family', /sans-serif/)
+    const bodyFont = await root.evaluate((element) => getComputedStyle(element).fontFamily)
+    for (const element of await page.locator('h1, p, label, input, small, button').all()) {
+      await expect(element).toHaveCSS('font-family', bodyFont)
+    }
+    if (file === 'docs/installation/cdn.md') {
+      await page.waitForFunction(() => Boolean(customElements.get('sds-tabs')))
+    }
+  })
+}
+
 for (const order of ['sds-first', 'host-first']) {
   test(`shared Tailwind layer order preserves recipes and utilities (${order})`, async ({ page }) => {
     const stylesheet = await readFile('dist/sds.css', 'utf8')
@@ -129,7 +173,109 @@ test('nested typography themes use the nearest theme boundary', async ({ page })
   }
 })
 
-test('theme roots leave unmarked native elements and their states unchanged', async ({ page }) => {
+test('theme roots apply body typography without page presentation and allow host overrides', async ({ page }) => {
+  await page.setContent(`<!doctype html><body style="font-family: monospace; font-size: 18px; line-height: 2; color: rgb(100, 0, 0)">
+    <p id="host-text">Host text</p>
+    <main data-sds-root id="root">
+      <p>Root text</p><button class="sds-button">Root action</button>
+      <section data-sds-root data-sds-theme="plaid" id="nested" style="--sds-font-body: Georgia">
+        <h2 class="sds-text-h3">Plaid heading</h2><p>Nested text</p>
+        <button class="sds-button">Nested action</button>
+      </section>
+    </main>
+  </body>`)
+  for (const path of ['src/css/tokens.css', 'src/css/foundations.css', 'src/css/components/typography.css']) {
+    await page.addStyleTag({ path })
+  }
+  await expect(page.locator('#host-text')).toHaveCSS('font-family', 'monospace')
+  await expect(page.locator('#host-text')).toHaveCSS('font-size', '18px')
+  await expect(page.locator('#host-text')).toHaveCSS('line-height', '36px')
+  await expect(page.locator('#host-text')).toHaveCSS('color', 'rgb(100, 0, 0)')
+  const root = page.locator('#root')
+  await expect(root).toHaveCSS('font-family', /sans-serif/)
+  await expect(root).toHaveCSS('font-size', '16px')
+  await expect(root).toHaveCSS('line-height', '24px')
+  await expect(root).toHaveCSS('color', 'rgb(27, 28, 29)')
+  await expect(root).toHaveCSS('min-height', '0px')
+  await expect(root).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+  const bodyFont = await root.evaluate((element) => getComputedStyle(element).fontFamily)
+  for (const selector of ['#root > p', '#root > button']) {
+    await expect(page.locator(selector)).toHaveCSS('font-family', bodyFont)
+  }
+  for (const selector of ['#nested', '#nested p', '#nested button']) {
+    await expect(page.locator(selector)).toHaveCSS('font-family', 'Georgia')
+  }
+  await expect(page.locator('#nested h2')).toHaveCSS('font-family', /Source Serif/)
+  await root.evaluate((element) => element.classList.add('sds-document'))
+  await expect(root).toHaveCSS('font-family', bodyFont)
+  await expect(root).toHaveCSS('min-height', `${page.viewportSize().height}px`)
+  await expect(root).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+  await page.addStyleTag({ content: '@layer sds.utilities { .host-type { font-family: monospace; font-size: 18px; line-height: 2; color: rgb(100, 0, 0); } }' })
+  await root.evaluate((element) => element.classList.add('host-type'))
+  await expect(root).toHaveCSS('font-family', 'monospace')
+  await expect(root).toHaveCSS('font-size', '18px')
+  await expect(root).toHaveCSS('line-height', '36px')
+  await expect(root).toHaveCSS('color', 'rgb(100, 0, 0)')
+  await page.addStyleTag({ content: '#root { font-family: inherit; font-size: inherit; line-height: inherit; color: inherit; }' })
+  await expect(root).toHaveCSS('font-family', 'monospace')
+  await expect(root).toHaveCSS('font-size', '18px')
+  await expect(root).toHaveCSS('line-height', '36px')
+  await expect(root).toHaveCSS('color', 'rgb(100, 0, 0)')
+})
+
+for (const theme of ['forge', 'plaid']) {
+  for (const scheme of ['light', 'dark']) {
+    test(`built roots resolve independent typography without page styling (${theme} ${scheme})`, async ({ page }) => {
+      const nestedTheme = theme === 'forge' ? 'plaid' : 'forge'
+      const nestedScheme = scheme === 'light' ? 'dark' : 'light'
+      await page.setContent(`<!doctype html><body style="font-family: monospace; color: rgb(100, 0, 0)">
+        <p id="host-text">Host text</p>
+        <main id="outer" data-sds-root data-sds-theme="${theme}" data-sds-color-scheme="${scheme}">
+          <h2 class="sds-text-h3">Outer heading</h2><p>Outer text</p>
+          <button class="sds-button">Outer action</button>
+          <section id="inner" data-sds-root data-sds-theme="${nestedTheme}" data-sds-color-scheme="${nestedScheme}">
+            <h2 class="sds-text-h3">Inner heading</h2><p>Inner text</p>
+            <button class="sds-button">Inner action</button>
+          </section>
+        </main>
+        <aside class="sds-document"><p id="document-text">Document without a root</p></aside>
+      </body>`)
+      await page.addStyleTag({ path: 'dist/sds.css' })
+      for (const selector of ['#host-text', '#document-text']) {
+        await expect(page.locator(selector)).toHaveCSS('font-family', 'monospace')
+        await expect(page.locator(selector)).toHaveCSS('color', 'rgb(100, 0, 0)')
+      }
+      for (const [selector, rootScheme] of [['#outer', scheme], ['#inner', nestedScheme]]) {
+        const root = page.locator(selector)
+        const tokens = await root.evaluate((element) => {
+          const probe = document.createElement('span')
+          probe.style.fontFamily = 'var(--sds-font-body)'
+          probe.style.color = 'var(--sds-color-text-default)'
+          element.append(probe)
+          const bodyFont = getComputedStyle(probe).fontFamily
+          const color = getComputedStyle(probe).color
+          probe.style.fontFamily = 'var(--sds-font-heading)'
+          const headingFont = getComputedStyle(probe).fontFamily
+          probe.remove()
+          return { bodyFont, headingFont, color }
+        })
+        await expect(root).toHaveCSS('color-scheme', rootScheme)
+        await expect(root).toHaveCSS('font-family', tokens.bodyFont)
+        await expect(root).toHaveCSS('color', tokens.color)
+        await expect(root).toHaveCSS('font-size', '16px')
+        await expect(root).toHaveCSS('line-height', '24px')
+        await expect(root).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+        await expect(root).toHaveCSS('min-height', '0px')
+        await expect(root.locator(':scope > h2')).toHaveCSS('font-family', tokens.headingFont)
+        await expect(root.locator(':scope > p')).toHaveCSS('font-family', tokens.bodyFont)
+        await expect(root.locator(':scope > p')).toHaveCSS('color', tokens.color)
+        await expect(root.locator(':scope > button')).toHaveCSS('font-family', tokens.bodyFont)
+      }
+    })
+  }
+}
+
+test('theme roots preserve native styling beyond inherited typography', async ({ page }) => {
   await page.setContent(`
     <main data-sds-root>
       <h1>Semantic heading</h1><h3>Another heading</h3><p>Plain text</p>
@@ -142,6 +288,8 @@ test('theme roots leave unmarked native elements and their states unchanged', as
       <progress value="1" max="2"></progress><meter value="0.5"></meter>
     </main>
   `)
+  await page.addStyleTag({ path: 'src/css/tokens.css' })
+  await page.addStyleTag({ path: 'src/css/foundations.css' })
   await page.locator('input').first().focus()
   const snapshot = () => page.locator('main, main *').evaluateAll((elements) => {
     const properties = [

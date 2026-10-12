@@ -13,7 +13,7 @@ classes, options, custom-element attributes, properties, methods, and events.
 
 | Interface | Values or purpose |
 |---|---|
-| `data-sds-root` | Establish theme tokens and color scheme without styling native elements |
+| `data-sds-root` | Establish theme tokens, color scheme, and inherited body typography without applying control recipes |
 | `data-sds-theme` | `forge`, `plaid` |
 | `data-sds-color-scheme` | `light`, `dark`, `system` |
 | `data-sds-variant` | Recipe-specific visual treatment |
@@ -154,7 +154,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 
 | Class | Purpose |
 |---|---|
-| `.sds-document` | Opt-in standalone page typography, background, and margin reset. |
+| `.sds-document` | Opt-in standalone page background, margin reset, and viewport minimum height; typography belongs to the SDS root. |
 | `.sds-text-h1` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-h2` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-h3` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |

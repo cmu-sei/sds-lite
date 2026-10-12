@@ -46,28 +46,27 @@ of separate CSS imports.
 
 ### 2. Write semantic HTML
 
-Add `data-sds-root` to the element that contains your interface:
+Add `data-sds-root` to the element that contains your interface. For a standalone
+page, also add `sds-document`:
 
 ```html
-<main data-sds-root>
+<main data-sds-root class="sds-document">
   <h1 class="sds-text-h3">Project Atlas</h1>
   <p>Your project is ready.</p>
   <button class="sds-button" type="button">Open project</button>
 </main>
 ```
 
-The root supplies the theme; recipe classes opt elements into SDS appearance.
+`data-sds-root` supplies the theme and inherited body typography.
+`sds-document` adds page background, zero margin, and minimum viewport height;
+omit it for embedded regions. Recipe classes still opt controls into SDS appearance.
+See [which root to use](./docs/guides/theming.md#choose-a-styling-boundary) for
+host typography overrides and font-loading requirements.
 
-## The four rules
+## Add components
 
-1. Load `sds.css`.
-2. Load `/auto` for SDS custom elements or dialog, panel, and mobile-sidebar compatibility behavior.
-3. Put `data-sds-root` around the interface.
-4. Write semantic HTML with explicit recipe classes where SDS styling is wanted.
-
-Unmarked HTML retains browser or application styling. Use `.sds-text-h3`,
-`.sds-link`, `.sds-button`, and form-control classes for SDS appearance, or
-compose larger recipes:
+Place recipe markup inside the root above. Classes opt elements into SDS
+appearance; unmarked elements retain inherited or browser styles:
 
 ```html
 <article class="sds-card">
@@ -79,9 +78,6 @@ compose larger recipes:
 
 Heading levels express document structure, not visual size. Choose a style from
 `.sds-text-h1` through `.sds-text-h6` independently of the heading level.
-Lead, body, and caption styles share the same SEI typography scale.
-`.sds-document` opts into
-page typography and background; `.sds-prose` opts into document typography.
 
 ## Interactive behavior
 
@@ -99,34 +95,21 @@ relationships, state, or positioning:
 </sds-tabs>
 ```
 
-The `/auto` entry sets up every SDS custom element on the page. SDS Lite adds
-the missing classes, IDs, relationships, state, positioning, and keyboard
-behavior. It also supplies native dialog and panel command handling,
-backdrop dismissal, draggable panels, and mobile-sidebar compatibility behavior.
+The `/auto` entry adds the required classes, IDs, ARIA relationships, and
+keyboard behavior. It also supplies dialog, panel, and mobile-sidebar
+compatibility behavior. Omit the script for CSS-only pages that need none of
+these behaviors.
 
 For searchable choices, `<sds-combobox>` enhances a native text input and
 suggestion list. See the [form guide](./docs/components/forms.md#combobox)
 for automatic filtering, application-supplied results, and SSR markup.
 
-## JavaScript when you need control
+## Call JavaScript
 
-Most browser applications should use `/auto`. Applications that control when
-custom elements are registered can instead use the root JavaScript interface:
-
-```js
-import '@cmu-sei/sds-lite/sds.css'
-import { setupSds } from '@cmu-sei/sds-lite'
-
-setupSds()
-```
-
-Call `setupSds()` after the DOM is available. Do not load `/auto` when calling
-`setupSds()` yourself.
-
-The root interface also provides notifications:
+With automatic setup, import functions from the same entry:
 
 ```js
-import { notify } from '@cmu-sei/sds-lite'
+import { notify } from '@cmu-sei/sds-lite/auto'
 
 notify('Your project was saved.', {
   title: 'Saved',
@@ -134,9 +117,9 @@ notify('Your project was saved.', {
 })
 ```
 
-`notify()` sets up its own toast behavior and does not require `/auto` or a
-separate `setupSds()` call. If your application already imports `/auto`,
-you can import `notify` from that entry instead.
+For manual setup, use `setupSds()` from the root entry instead of `/auto`.
+See [package imports](./docs/reference/imports.md) for entry selection and
+[server rendering](./docs/guides/server-rendering.md) for hydration timing.
 
 ## Options and themes
 
@@ -163,24 +146,6 @@ stylesheet:
 ```js
 import '@cmu-sei/sds-lite/brand.css'
 ```
-
-## Server rendering
-
-Every JavaScript entry is safe to import without browser globals. Most
-hydrating applications can render the same simple HTML shown above, hydrate,
-and then set up behavior from the framework's post-hydration client lifecycle:
-
-```js
-import { setupSds } from '@cmu-sei/sds-lite'
-
-// Run after the framework has hydrated this subtree.
-setupSds()
-```
-
-Static and client-only applications can use `/auto`. Applications that want
-their initial server markup to include the enhanced accessibility state can
-instead author the complete markup described in the
-[server-rendering guide](./docs/guides/server-rendering.md).
 
 ## Browser support
 
