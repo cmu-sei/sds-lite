@@ -4,7 +4,7 @@
   "globalAttributes": [
     {
       "name": "data-sds-root",
-      "description": "Establishes SDS Lite theme tokens and color scheme without styling native elements.",
+      "description": "Establishes SDS Lite theme tokens, color scheme, and inherited body typography without applying control recipes.",
       "type": "boolean"
     },
     {
@@ -149,7 +149,7 @@
       "category": "Layout and composition",
       "classes": ["sds-document"],
       "elements": ["body"],
-      "description": "Opt-in standalone page typography, background, and margin reset.",
+      "description": "Opt-in standalone page background, margin reset, and viewport minimum height; typography belongs to the SDS root.",
       "options": {}
     },
     {

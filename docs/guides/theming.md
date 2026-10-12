@@ -2,6 +2,65 @@
 
 [Documentation](../README.md) / Guides / Theming
 
+## Choose a styling boundary
+
+An SDS root is a themed region with inherited body typography. Page
+presentation is a separate opt-in so embedded regions do not become page-sized.
+
+| Interface | What it changes | Use it when | Omit it when |
+|---|---|---|---|
+| `data-sds-root` | Theme tokens, color scheme, and inherited body font, size, line height, and text color | Establishing an SDS region or an independent nested theme | Already inside the intended SDS root |
+| `.sds-document` | Background, zero margin, and viewport minimum height; no typography changes | SDS owns the page | The host owns the background or embedded-region sizing |
+| `.sds-prose` | Typography and spacing for semantic article content | Rendering articles or other long-form content | Styling application controls or preserving host article styles |
+
+For a standalone page, put both on `<body>`:
+
+```html
+<body data-sds-root class="sds-document">
+  <main class="sds-page">...</main>
+</body>
+```
+
+For an embedded region, use `data-sds-root` alone. Text inherits the root's
+body font; SDS controls inherit it too. Recipe classes such as `.sds-button`
+still supply control appearance. Unmarked headings keep native sizing and
+weight; explicit heading recipes use the theme's heading font. Add a nested
+root only for an independent theme and inherited typography.
+
+Roots do not paint a background. For embedded regions, match
+`data-sds-color-scheme` to the host surface or override text and background
+colors together to maintain contrast.
+
+Heading levels still express structure:
+`.sds-text-h1` through `.sds-text-h6` choose appearance independently.
+Typography utilities switch scales at `48rem`; `data-sds-size="sm"` or
+`"lg"` fixes the scale.
+
+SDS Lite references `"Open Sans"` and `"Source Serif"` but does not download
+fonts. Load them in the host application when exact typography is required;
+otherwise system fallbacks are used.
+
+### Preserve host typography
+
+Adding a root intentionally changes inherited typography, even without
+`sds-document`. To keep the surrounding application's defaults, apply
+`class="host-typography"` to the root and load this application CSS:
+
+```css
+.host-typography {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+```
+
+Unlayered application CSS or later-layer utilities override root defaults.
+For a specific font, set `--sds-font-body` on the root instead. Explicit
+heading recipes still use `--sds-font-heading`; override that token too when
+headings should match the application. Tailwind can be used with or without
+`sds-document`: typography ownership and layer ordering are separate choices.
+
 ## Theme and color scheme
 
 Set theme and scheme on an SDS root:
@@ -27,17 +86,6 @@ and rounded controls. Plaid uses serif headings and square corners.
 Importing the stylesheet does not change the host document's color scheme.
 An explicit SDS root defaults to light; recipes outside a root inherit the
 host's scheme.
-
-A theme root supplies design values, not automatic element styling. Use
-explicit recipe classes such as `.sds-button`, `.sds-input`, and `.sds-text-h3`
-to apply SDS appearance. Add `.sds-document` for page presentation or
-`.sds-prose` for document typography. Choose `.sds-text-h1` through
-`.sds-text-h6` independently of semantic heading level. Typography utilities
-switch scales at `48rem`; `data-sds-size="sm"` or `"lg"` fixes the scale.
-
-SDS Lite references `"Open Sans"` and `"Source Serif"` but does not download
-fonts. Load them in the host application when exact typography is required;
-otherwise system fallbacks are used.
 
 ## Override semantic tokens
 

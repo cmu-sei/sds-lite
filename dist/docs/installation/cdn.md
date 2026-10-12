@@ -2,11 +2,9 @@
 
 [Documentation](../README.md) / [Installation](../getting-started.md) / CDN
 
-CDN installation works in a plain HTML file with no package manager, build
-tool, or local server configuration. jsDelivr serves the committed `dist/`
-directory directly from protected release tags in the official
-[`cmu-sei/sds-lite`](https://github.com/cmu-sei/sds-lite) repository. It does
-not read packages from GitHub Packages.
+Use the CDN for plain HTML or playgrounds without an account, token, or build
+step. jsDelivr serves release files from
+[`cmu-sei/sds-lite`](https://github.com/cmu-sei/sds-lite), not GitHub Packages.
 
 The URL format is:
 
@@ -14,15 +12,11 @@ The URL format is:
 https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@vVERSION/dist/FILE
 ```
 
-For example, release `v0.6.0` provides `dist/sds.css` at:
-
-```text
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/sds.css
-```
-
 ## Complete starter page
 
-Save this as `index.html` and open it through any web server:
+Serve this complete HTML document through a web server. In an HTML playground, use the
+stylesheet and script tags plus the contents of `<body>`; put its root
+attributes and `sds-document` class on the outer `<main>`.
 
 ```html
 <!doctype html>
@@ -43,12 +37,13 @@ Save this as `index.html` and open it through any web server:
   <body
     data-sds-root
     data-sds-color-scheme="system"
+    class="sds-document"
   >
     <main class="sds-page">
       <header class="sds-section-header">
         <div>
           <p class="sds-eyebrow">Welcome</p>
-          <h1>My application</h1>
+          <h1 class="sds-text-h3">My application</h1>
           <p>SDS Lite is ready.</p>
         </div>
         <button class="sds-button" type="button">Get started</button>
@@ -58,36 +53,20 @@ Save this as `index.html` and open it through any web server:
 </html>
 ```
 
-For searchable choices, start with the
-[plain combobox markup](../components/forms.md#combobox). A
-[`sds-select` handler](../components/forms.md#rich-suggestions-and-record-ids)
-can store an ID or tag and clear the search; the same HTML and JavaScript
-work with the CDN tags above or NPM imports.
+This starter lets SDS own the page's typography and background. For an
+existing application, choose the appropriate
+[styling boundary](../guides/theming.md#choose-a-styling-boundary).
 
 ## Always pin the release tag
 
-Use the exact protected Git tag for the release:
-
-```text
-https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/sds.css
-```
-
-An exact version prevents a future release from changing a deployed page
-without your review. Do not use `main`, a branch name, or an unversioned URL in
-production. Upgrade the `vX.Y.Z` tag deliberately after testing the new
-release.
+Keep the exact `vX.Y.Z` tag shown in the starter. Do not use `main`, a branch,
+or an unversioned URL in production: deployed pages must not change without
+review. Upgrade all SDS assets to the same release after testing.
 
 ## CSS-only page
 
-If the page uses only CSS recipes and native controls, and does not rely on
-SDS dialog, panel, or mobile-sidebar compatibility behavior, omit the script:
-
-```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@v0.6.0/dist/sds.css"
->
-```
+Omit the script when using only CSS recipes and native controls. Keep it for
+SDS custom elements or dialog, panel, and mobile-sidebar compatibility behavior.
 
 ## Import JavaScript functions
 

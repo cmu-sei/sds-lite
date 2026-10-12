@@ -7,6 +7,7 @@ Find the symptom, apply the smallest fix, then follow the linked recipe if neede
 | Symptom | Check |
 |---|---|
 | Button or input is unstyled | [CSS and recipe classes](#button-is-unstyled) |
+| Body text, buttons, or tabs use a serif font | [Page typography](#text-uses-the-wrong-font) |
 | Tailwind or Bootstrap changes SDS controls | [Cascade layers](#tailwind-or-bootstrap-overrides-my-controls) |
 | Tabs or a menu do not respond | [Behavior setup and markup](#tabs-or-a-menu-do-not-respond) |
 | SSR hydration mismatch | [Registration timing](#hydration-reports-a-mismatch) |
@@ -34,6 +35,17 @@ attribute alone does not style a control.
 ```
 
 More: [installation](./installation/npm.md#verify-the-setup).
+
+## Text uses the wrong font
+
+**Cause:** The text is outside an SDS root, application CSS overrides the
+root's typography, or the intended font files are not loaded.
+
+**Fix:** Place SDS content inside `data-sds-root` and inspect its computed
+`font-family`. Adjust application overrides if necessary. `sds-document`
+only controls page presentation, not fonts. SDS does not download fonts;
+without them it uses system fallbacks.
+See [styling boundaries](./guides/theming.md#choose-a-styling-boundary).
 
 ## Tailwind or Bootstrap overrides my controls
 

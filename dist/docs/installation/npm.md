@@ -52,7 +52,7 @@ import '@cmu-sei/sds-lite/sds.css'
 import '@cmu-sei/sds-lite/auto'
 ```
 
-Then scope SDS Lite to your application:
+Then add a theme boundary inside your application:
 
 ```html
 <div data-sds-root>
@@ -60,16 +60,14 @@ Then scope SDS Lite to your application:
 </div>
 ```
 
-`sds.css` includes foundations, common recipes, layout primitives, prose, tokens,
-and spacing utilities. `/auto` sets up comboboxes, dialogs, panels, dropdowns, popovers, tabs,
-tooltips, toasts, and mobile sidebars. It also exports `notify()` for
-application notifications.
+The root supplies SDS body typography without changing page background or
+minimum height. If SDS owns the whole page, also add `class="sds-document"`.
+See [styling boundaries](../guides/theming.md#choose-a-styling-boundary) to
+preserve host typography with application CSS.
 
-For searchable choices, start with the
-[plain combobox markup](../components/forms.md#combobox). Add the
-[record ID or tag handler](../components/forms.md#rich-suggestions-and-record-ids)
-only when your application needs it; clearing the search after selection is
-one line of application code.
+`sds.css` includes common recipes, layouts, prose, and tokens. `/auto` supplies
+interactive behavior and exports `notify()`. See
+[package imports](../reference/imports.md) for manual setup and entry selection.
 
 ## Where imports belong
 
@@ -155,19 +153,10 @@ includes the official wordmark asset and specialized shell recipes.
 
 ## Verify the setup
 
-Render this smoke test:
-
-```html
-<main data-sds-root>
-  <h1>SDS Lite is ready</h1>
-  <button class="sds-button" type="button">Test button</button>
-</main>
-```
-
-If the button is unstyled, confirm that the CSS import is included in the
-browser build and that the button has `class="sds-button"`. A theme root
-does not style native elements by itself. With another design system, check
-the [cascade setup](../guides/theming.md#combine-design-systems). If a custom
-element does not respond, confirm that `/auto` is loaded in the browser.
+The **Continue** button above should have SDS styling; text inside the root
+uses SDS body typography unless overridden. If styling or behavior does not work,
+use [troubleshooting](../troubleshooting.md). When keeping another design
+system, follow the [cascade setup](../guides/theming.md#combine-design-systems)
+before importing either stylesheet.
 
 [Browse component recipes →](../components/README.md)

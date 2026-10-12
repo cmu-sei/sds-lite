@@ -12,7 +12,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Attribute | Values | Default | Purpose |
 |---|---|---|---|
-| `data-sds-root` | Presence |  | Establishes SDS Lite theme tokens and color scheme without styling native elements. |
+| `data-sds-root` | Presence |  | Establishes SDS Lite theme tokens, color scheme, and inherited body typography without applying control recipes. |
 | `data-sds-theme` | `forge`, `plaid` | forge | Selects an SDS Lite theme. |
 | `data-sds-color-scheme` | `light`, `dark`, `system` | light | Selects a light, dark, or system color scheme. |
 | `data-sds-column-span` | `full` |  | Lets a direct grid child span the full grid width. |
@@ -35,7 +35,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| document | `.sds-document` | `<body>` |  | Opt-in standalone page typography, background, and margin reset. |
+| document | `.sds-document` | `<body>` |  | Opt-in standalone page background, margin reset, and viewport minimum height; typography belongs to the SDS root. |
 
 ## Content and data display
 
