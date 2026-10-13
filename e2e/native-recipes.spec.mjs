@@ -1,6 +1,29 @@
 import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 
+test('copied final migration examples style native controls', async ({ page }) => {
+  const source = await readFile('docs/migration/index.md', 'utf8')
+  const examples = Array.from(source.matchAll(/```html\s*\n([\s\S]*?)```/g), (match) => match[1])
+  await page.setContent(`<!doctype html><main data-sds-root>${examples.join('\n')}</main>`)
+  await page.addStyleTag({ path: 'dist/sds.css' })
+  await page.addScriptTag({ path: 'dist/auto.js', type: 'module' })
+  await expect(page.locator('sds-tabs .sds-tab')).toHaveCount(3)
+
+  const bodyFont = await page.locator('main').evaluate((element) => getComputedStyle(element).fontFamily)
+  for (const button of await page.locator('button:not(sds-tabs button)').all()) {
+    await expect(button).toHaveClass('sds-button')
+    await expect(button).toHaveCSS('box-sizing', 'border-box')
+    await expect(button).toHaveCSS('font-family', bodyFont)
+  }
+
+  const closeButton = page.locator('sds-toast [data-sds-toast-close]')
+  await expect(closeButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+  await expect(closeButton).toHaveCSS('width', '32px')
+  await expect(closeButton).toHaveCSS('height', '32px')
+  await closeButton.click()
+  await expect(page.locator('sds-toast')).not.toHaveAttribute('open')
+})
+
 test('copied README examples use consistent standalone typography', async ({ page }) => {
   const readme = await readFile('README.md', 'utf8')
   const examples = Array.from(readme.matchAll(/```html\n([\s\S]*?)```/g), (match) => match[1])

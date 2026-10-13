@@ -84,34 +84,35 @@ provide the namespace:
 </sds-tabs>
 
 <sds-dropdown hide-caret>
-  <button type="button">Actions</button>
-  <menu><li><button type="button">Rename</button></li></menu>
+  <button class="sds-button" type="button">Actions</button>
+  <menu><li><button class="sds-button" type="button">Rename</button></li></menu>
 </sds-dropdown>
 
 <sds-popover placement="block-end" offset="8" width="lg">
-  <button type="button">Details</button>
+  <button class="sds-button" type="button">Details</button>
   <section>Project details</section>
 </sds-popover>
 
 <sds-tooltip placement="block-start" offset="6">
-  <button type="button">Help</button>
+  <button class="sds-button" type="button">Help</button>
   <span>Helpful context.</span>
 </sds-tooltip>
 
 <sds-toast open tone="success" duration="5000" persistent>
   <strong>Saved</strong>
   <span>Your changes are available.</span>
-  <button type="button" data-sds-toast-close aria-label="Dismiss">&times;</button>
+  <button class="sds-button" type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Dismiss">&times;</button>
 </sds-toast>
 ```
 
 Behavior hooks on descendants remain namespaced:
 
 ```html
-<button type="button" data-sds-toast-open="saved-toast">Show notification</button>
-<button type="button" data-sds-toast-close>Dismiss</button>
-<button type="button" data-sds-callout-close>Dismiss callout</button>
+<button class="sds-button" type="button" data-sds-toast-open="saved-toast">Show notification</button>
+<button class="sds-button" type="button" data-sds-toast-close>Dismiss</button>
+<button class="sds-button" type="button" data-sds-callout-close>Dismiss callout</button>
 <button
+  class="sds-button"
   type="button"
   commandfor="confirm-dialog"
   command="close"

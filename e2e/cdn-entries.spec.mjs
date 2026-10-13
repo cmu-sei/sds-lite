@@ -63,5 +63,15 @@ for (const entry of ['auto', 'manual']) {
 
     await page.getByRole('button', { name: 'Save' }).click()
     await expect(page.locator('sds-toast')).toContainText('Saved')
+
+    const closeButton = page.getByRole('button', {
+      name: 'Dismiss notification',
+    })
+    await expect(closeButton).toHaveClass('sds-button')
+    await expect(closeButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(closeButton).toHaveCSS('width', '32px')
+    await expect(closeButton).toHaveCSS('height', '32px')
+    await closeButton.click()
+    await expect(page.locator('sds-toast')).toHaveCount(0)
   })
 }

@@ -45,4 +45,10 @@ test('notify is self-contained', () => {
   assert.equal(toast.parentElement?.localName, 'section')
   assert.equal(toast.parentElement?.getAttribute('aria-label'), 'Notifications')
   assert.equal(toast.parentElement?.parentElement, document.body)
+
+  const closeButton = toast.querySelector('[data-sds-toast-close]')
+  assert.ok(closeButton instanceof HTMLButtonElement)
+  assert.equal(closeButton.className, 'sds-button')
+  assert.equal(closeButton.getAttribute('data-sds-shape'), 'icon')
+  assert.equal(closeButton.getAttribute('aria-label'), 'Dismiss notification')
 })
