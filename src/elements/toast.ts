@@ -272,6 +272,7 @@ export function notify(
   body.textContent = message
   const closeButton = document.createElement('button')
   closeButton.type = 'button'
+  closeButton.className = 'sds-button'
   closeButton.setAttribute('data-sds-shape', 'icon')
   closeButton.setAttribute('data-sds-toast-close', '')
   closeButton.setAttribute('aria-label', 'Dismiss notification')

@@ -1127,7 +1127,7 @@ function be(e, t = {}) {
 	let o = document.createElement("span");
 	o.textContent = e;
 	let s = document.createElement("button");
-	return s.type = "button", s.setAttribute("data-sds-shape", "icon"), s.setAttribute("data-sds-toast-close", ""), s.setAttribute("aria-label", "Dismiss notification"), s.textContent = "×", i.append(a, o, s), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), _e), { once: !0 }), r.append(i), i.show(), i;
+	return s.type = "button", s.className = "sds-button", s.setAttribute("data-sds-shape", "icon"), s.setAttribute("data-sds-toast-close", ""), s.setAttribute("aria-label", "Dismiss notification"), s.textContent = "×", i.append(a, o, s), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), _e), { once: !0 }), r.append(i), i.show(), i;
 }
 //#endregion
 //#region src/sds.ts

@@ -106,7 +106,7 @@ function f(e, t = {}) {
 	let s = document.createElement("span");
 	s.textContent = e;
 	let c = document.createElement("button");
-	return c.type = "button", c.setAttribute("data-sds-shape", "icon"), c.setAttribute("data-sds-toast-close", ""), c.setAttribute("aria-label", "Dismiss notification"), c.textContent = "×", i.append(a, s, c), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), o), { once: !0 }), r.append(i), i.show(), i;
+	return c.type = "button", c.className = "sds-button", c.setAttribute("data-sds-shape", "icon"), c.setAttribute("data-sds-toast-close", ""), c.setAttribute("aria-label", "Dismiss notification"), c.textContent = "×", i.append(a, s, c), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), o), { once: !0 }), r.append(i), i.show(), i;
 }
 //#endregion
 export { c as SdsToastElement, f as notify, d as registerSdsToast };

@@ -64,6 +64,29 @@ async function markdownFiles(directory) {
   return files.flat()
 }
 
+test('final migration examples explicitly style native buttons outside tabs', async () => {
+  const window = new Window()
+  try {
+    const source = await readFile('docs/migration/index.md', 'utf8')
+    let buttonCount = 0
+    for (const match of source.matchAll(/```html\s*\n([\s\S]*?)```/g)) {
+      const template = window.document.createElement('template')
+      template.innerHTML = match[1]
+      for (const button of template.content.querySelectorAll('button')) {
+        if (button.closest('sds-tabs')) continue
+        buttonCount += 1
+        assert.ok(
+          button.classList.contains('sds-button'),
+          `Migration example has an unstyled button: ${button.outerHTML}`,
+        )
+      }
+    }
+    assert.ok(buttonCount > 0, 'migration guide must contain native button examples')
+  } finally {
+    await window.happyDOM.close()
+  }
+})
+
 test('every example Cancel button uses the text variant', async () => {
   let exampleCount = 0
   for (const file of ['index.html', ...(await markdownFiles('docs'))]) {
