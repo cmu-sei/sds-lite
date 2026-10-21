@@ -52,3 +52,38 @@ test('notify is self-contained', () => {
   assert.equal(closeButton.getAttribute('data-sds-shape'), 'icon')
   assert.equal(closeButton.getAttribute('aria-label'), 'Dismiss notification')
 })
+
+test('notify localizes generated names without replacing authored toaster names', () => {
+  const container = document.createElement('div')
+  document.body.append(container)
+  const toast = notify('Enregistre', {
+    container,
+    title: 'Projet enregistre',
+    dismissLabel: 'Fermer',
+    regionLabel: 'Messages du projet',
+    persistent: true,
+  })
+  assert.equal(toast.querySelector('strong').textContent, 'Projet enregistre')
+  assert.equal(toast.querySelector('button').getAttribute('aria-label'), 'Fermer')
+  assert.equal(toast.parentElement.getAttribute('aria-label'), 'Messages du projet')
+
+  const next = notify('Autre message', { container, regionLabel: 'Other name', persistent: true })
+  assert.equal(next.parentElement.getAttribute('aria-label'), 'Messages du projet')
+  assert.equal(next.querySelector('button').getAttribute('aria-label'), 'Dismiss notification')
+
+  const authored = document.createElement('section')
+  authored.className = 'sds-toaster'
+  authored.setAttribute('aria-labelledby', 'project-heading')
+  container.replaceChildren(authored)
+  const named = notify('Saved', { container, regionLabel: 'Ignored', persistent: true })
+  assert.equal(named.parentElement.getAttribute('aria-labelledby'), 'project-heading')
+  assert.equal(named.parentElement.hasAttribute('aria-label'), false)
+})
+
+test('notify rejects empty translated accessibility labels', () => {
+  for (const key of ['dismissLabel', 'regionLabel']) {
+    for (const value of ['', '   ', null, 42]) {
+      assert.throws(() => notify('Saved', { [key]: value }), TypeError)
+    }
+  }
+})

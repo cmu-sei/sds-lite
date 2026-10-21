@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File queue and upload states</title>
+  <link rel="stylesheet" href="../../dist/sds.css">
+  <script type="module" src="../../dist/package/auto.js"></script>
+</head>
+<body class="sds-document" data-sds-root>
+  <main class="sds-page"><article class="sds-card sds-stack" id="file-upload-recipe">
+              <h1 class="sds-text-h3">File queue and upload states</h1>
+              <form id="file-upload-example" class="sds-stack" action="/api/uploads" method="post" enctype="multipart/form-data">
+                <div class="sds-field">
+                  <label for="queue-files">PDF attachments</label>
+                  <div class="sds-file-upload" data-sds-size="lg">
+                    <div class="sds-file-upload-surface">
+                      <input id="queue-files" class="sds-file-input" type="file" name="attachment" accept=".pdf,application/pdf" multiple aria-describedby="queue-help queue-endpoint-help">
+                      <span class="sds-file-upload-action" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" aria-hidden="true">
+                          <path d="M8 10.5V1.75m0 0L4.75 5M8 1.75 11.25 5M3 8.5v3.75c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+                        </svg>
+                        Upload files
+                      </span>
+                      <strong>Click to upload or drag and drop files here</strong>
+                      <small id="queue-help">Each PDF must be smaller than 10 MB.</small>
+                    </div>
+                  </div>
+                  <small id="queue-endpoint-help">Configure a real /api/uploads endpoint before uploading. The playground has no upload server.</small>
+                </div>
+                <!-- html-validate-disable-next no-redundant-role -- Preserve WebKit list semantics without markers. -->
+                <ul class="sds-file-list" role="list" aria-label="Queued files"></ul>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Upload queued files</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text" data-sds-tone="danger">Clear file queue</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article></main>
+  <script type="module" src="./file-upload.js"></script>
+</body>
+</html>

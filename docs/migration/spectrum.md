@@ -21,6 +21,10 @@ npx sds-lite-migrate --from spectrum src/editor.html
 | `pending` | `aria-busy="true"` and `disabled` |
 | `icon-only label="Help"` | `data-sds-shape="icon" aria-label="Help"` |
 
+These button mappings apply to `<sp-button>`; omitted variant/treatment
+defaults to `accent`/`fill`. `treatment="outline"` overrides the variant's
+filled or tonal treatment without changing its tone.
+
 Spectrum documents native anchors as the preferred replacement for deprecated
 `href` behavior on `<sp-button>`. The migrator follows that guidance:
 
@@ -54,9 +58,10 @@ invalid, quiet, or growth behavior. Static sizes `s`, `m`, and `l` map to
 - `static-color` depends on the surrounding surface and is left unchanged.
 - Review slotted Spectrum icons. Their `slot` attributes and icon package
   imports are not automatically rewritten.
+- A button's `label` is copied to `aria-label` only with `icon-only`; otherwise
+  it is removed. Check the accessible name of every converted button.
 - Buttons with dynamic variant/treatment/size/href state are left unchanged.
 - Action groups, action buttons, picker/select, checkboxes, radios, switches,
   number fields, and complex validation need manual structure and behavior.
 - Remove Spectrum registrations, packages, theme, and scale styles only after
   no Spectrum elements remain.
-

@@ -28,7 +28,8 @@ uses tone and variant for the same two decisions.
 | `loading` | `aria-busy="true"` and `disabled` |
 
 A button with a static `href` becomes an anchor; an action remains a native
-button.
+button. Omitted `variant` and `appearance` default to `neutral` and `accent`
+in the migrator, producing a filled, neutral SDS Lite button.
 
 ```html
 <!-- Before -->
@@ -64,6 +65,9 @@ are retained.
 - Confirm event names and form serialization after replacing form-associated
   custom elements with native controls.
 - Dynamic mapping props and spreads are warned about and left unchanged.
+- Other component props, button slot content, and event handlers can survive
+  conversion without native equivalents; inspect them even if no warning is
+  emitted. A migrated disabled link uses `aria-disabled`, which does not
+  itself block navigation.
 - Remove Web Awesome imports, registration, styles, and icon dependencies only
   after all remaining `<wa-*>` elements have been addressed.
-

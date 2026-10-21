@@ -115,6 +115,7 @@ test('catalog sections follow a coherent task progression', () => {
     [
       'overview',
       'getting-started',
+      'recipes',
       'layouts',
       'patterns',
       'actions',
@@ -143,9 +144,9 @@ test('component disclosures group API options beside copyable examples', () => {
     ['loading', 'Loading API and example'],
   ])
 
-  for (const section of document.querySelectorAll(
-    'main#top > .sds-page > section[id]:not(#overview):not(#getting-started):not(#layouts):not(#patterns)',
-  )) {
+  for (const [id, summary] of summaries) {
+    const section = document.getElementById(id)
+    assert.ok(section, `${id} is missing its component section`)
     const reference = section.querySelector(
       ':scope > details.sds-card.sds-disclosure',
     )
@@ -153,7 +154,7 @@ test('component disclosures group API options beside copyable examples', () => {
     assert.equal(reference.hasAttribute('open'), false)
     assert.equal(
       reference.querySelector(':scope > summary')?.textContent,
-      summaries.get(section.id),
+      summary,
     )
     assert.ok(reference.querySelector(':scope > .sds-grid'))
     assert.equal(reference.querySelectorAll('details').length, 0)
@@ -164,6 +165,16 @@ test('component disclosures group API options beside copyable examples', () => {
         `${section.id} example ${example.id} has no copy action`,
       )
     }
+  }
+})
+
+test('the application recipe index links to all six working workflows', () => {
+  const targets = [...document.querySelectorAll('#recipes .sds-card-link')]
+    .map(link => document.getElementById(link.hash.slice(1)))
+  assert.equal(targets.length, 6)
+  assert.equal(new Set(targets).size, 6)
+  for (const target of targets) {
+    assert.ok(target?.hasAttribute('data-recipe-script'))
   }
 })
 

@@ -36,6 +36,12 @@ Heading levels still express structure:
 Typography utilities switch scales at `48rem`; `data-sds-size="sm"` or
 `"lg"` fixes the scale.
 
+Compact UI titles use `.sds-text-title` instead: a viewport-independent
+`1.25rem` / `1.75rem` size and line height (20px / 28px at a 16px root font
+size), with medium-weight Forge or regular-weight Plaid styling shared with
+dialog and panel defaults. This does not change the existing SEI heading scale.
+See [UI titles](../components/prose.md#ui-titles).
+
 SDS Lite references `"Open Sans"` and `"Source Serif"` but does not download
 fonts. Load them in the host application when exact typography is required;
 otherwise system fallbacks are used.
@@ -77,12 +83,16 @@ Set theme and scheme on an SDS root:
 
 | Interface | Values | Default |
 |---|---|---|
-| `data-sds-root` | Presence | Required scope |
+| `data-sds-root` | Presence | No SDS typography root |
 | `data-sds-theme` | `forge`, `plaid` | Forge appearance |
 | `data-sds-color-scheme` | `light`, `dark`, `system` | `light` |
 
 Nested SDS roots may use independent themes. Forge uses sans-serif headings
 and rounded controls. Plaid uses serif headings and square corners.
+Floating menus, popovers, combobox surfaces, and toasts use
+`--sds-radius-floating`, which follows the theme's container radius; tooltips
+follow its control radius. Pill-shaped tags and avatars remain intentional
+shape exceptions.
 Importing the stylesheet does not change the host document's color scheme.
 An explicit SDS root defaults to light; recipes outside a root inherit the
 host's scheme.
@@ -227,7 +237,7 @@ themes.
 - Do not depend on `--sds-tone-*`, `--sds-avatar-*`, `--sds-button-*`,
   `--sds-prose-*`, `--sds-tab-*`, `--sds-timeline-*`,
   `--sds-datapoint-*`, `--sds-floating-*`, `--sds-grid-*`, `--sds-tag-*`, or
-  `--sds-typography-*`;
+  `--sds-typography-*` (except the public `--sds-typography-heading-weight`);
   they are implementation details.
 - Treat undocumented selectors and custom properties as private.
 

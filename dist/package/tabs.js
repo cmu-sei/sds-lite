@@ -136,13 +136,15 @@ var o = "sds-change", s = typeof HTMLElement > "u" ? class {} : HTMLElement, c =
 		if (!(document.activeElement instanceof HTMLElement)) return;
 		let t = this.tabs.indexOf(document.activeElement);
 		if (t < 0) return;
-		let n = this.orientation === "vertical" || e.currentTarget instanceof HTMLElement && e.currentTarget.getAttribute("aria-orientation") === "vertical", r = n ? "ArrowDown" : "ArrowRight", i = n ? "ArrowUp" : "ArrowLeft", a = this.tabs.filter((e) => !this.isDisabled(e));
-		if (a.length === 0) return;
-		let o = a.indexOf(this.tabs[t]), s = null;
-		if (e.key === r ? s = a[(o + 1) % a.length] : e.key === i ? s = a[(o - 1 + a.length) % a.length] : e.key === "Home" ? s = a[0] : e.key === "End" && (s = a[a.length - 1]), !s) return;
+		let n = e.currentTarget;
+		if (!(n instanceof HTMLElement)) return;
+		let r = this.orientation === "vertical" || n.getAttribute("aria-orientation") === "vertical", i = window.getComputedStyle(n).direction === "rtl", a = r ? "ArrowDown" : i ? "ArrowLeft" : "ArrowRight", o = r ? "ArrowUp" : i ? "ArrowRight" : "ArrowLeft", s = this.tabs.filter((e) => !this.isDisabled(e));
+		if (s.length === 0) return;
+		let c = s.indexOf(this.tabs[t]), l = null;
+		if (e.key === a ? l = s[(c + 1) % s.length] : e.key === o ? l = s[(c - 1 + s.length) % s.length] : e.key === "Home" ? l = s[0] : e.key === "End" && (l = s[s.length - 1]), !l) return;
 		e.preventDefault();
-		let c = this.tabs.indexOf(s);
-		this.activation === "manual" || s instanceof HTMLAnchorElement ? s.focus() : this.select(c, !0);
+		let u = this.tabs.indexOf(l);
+		this.activation === "manual" || l instanceof HTMLAnchorElement ? l.focus() : this.select(u, !0);
 	};
 };
 function l() {

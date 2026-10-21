@@ -259,6 +259,9 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 })
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/#patterns')
+    const recipe = page.locator('#recipes .sds-card').first()
+    await recipe.hover()
+    await expect(recipe.locator('.sds-card-link')).toHaveCSS('text-decoration-line', 'none')
     const card = page.locator('[data-copy-example="directory"] .sds-card').first()
     const primary = card.getByRole('link', { name: 'Project Atlas', exact: true })
     await card.evaluate(element => {
@@ -288,16 +291,22 @@ for (const width of [1440, 390]) {
       element.parentElement.append(staticCard)
     })
     await card.scrollIntoViewIfNeeded()
+    await page.mouse.move(0, 0)
+    await expect.poll(() => card.evaluate(element => element.matches(':hover'))).toBe(false)
     const restingShadow = await card.evaluate(element => getComputedStyle(element).boxShadow)
     await card.hover({ position: { x: 12, y: 12 } })
     await expect(card).not.toHaveCSS('box-shadow', restingShadow)
+    await expect(primary).toHaveCSS('text-decoration-line', 'none')
     expect(await card.evaluate(element => {
       const rect = element.getBoundingClientRect()
       return document.elementFromPoint(rect.left + 12, rect.top + 12) === element.querySelector('.sds-card-link')
     })).toBe(true)
     await card.getByRole('button', { name: 'Archive project' }).click()
     await expect(card).toHaveAttribute('data-archive-clicks', '1')
-    await card.getByRole('link', { name: 'Project activity', exact: true }).click()
+    const activity = card.getByRole('link', { name: 'Project activity', exact: true })
+    await activity.hover()
+    await expect(activity).toHaveCSS('text-decoration-line', 'underline')
+    await activity.click()
     await expect(card).toHaveAttribute('data-activity-clicks', '1')
     await card.getByText('Notify owner', { exact: true }).click()
     await expect(card.getByRole('checkbox', { name: 'Notify owner' })).toBeChecked()
@@ -307,6 +316,7 @@ for (const width of [1440, 390]) {
     await expect(card).toHaveCSS('outline-style', 'solid')
     await expect(card).toHaveCSS('outline-width', '2px')
     await expect(primary).toHaveCSS('box-shadow', 'none')
+    await expect(primary).toHaveCSS('text-decoration-line', 'none')
     const staticCard = page.locator('[data-copy-example="directory"] .sds-card').filter({ hasNot: page.locator('.sds-card-link') }).first()
     const staticShadow = await staticCard.evaluate(element => getComputedStyle(element).boxShadow)
     await staticCard.hover()
@@ -631,7 +641,9 @@ test('simple shell keeps its avatar account control beside the brand on mobile',
 
 test('persistent sidebar example keeps content inset from its navigation', async ({ page }) => {
   await page.goto('/#composition')
-  const layout = page.getByRole('heading', { name: 'Persistent sidebar', exact: true }).locator('..').locator('.sds-sidebar-layout')
+  const layout = page.locator('[data-example-container]').filter({
+    has: page.getByRole('heading', { name: 'Persistent sidebar', exact: true }),
+  }).locator('.sds-sidebar-layout')
   const content = layout.locator(':scope > .sds-stack')
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 })
@@ -664,12 +676,11 @@ test('sidebar trees align optional icons and retain guide lines through expanded
     await expect(list).toHaveCSS('margin-left', '16px')
   }
   await expect(sidebar.locator(':scope > .sds-app-navigation')).not.toBeVisible()
-  const headingGap = await sidebar.evaluate(element => {
+  await expect.poll(() => sidebar.evaluate(element => {
     const heading = element.querySelector('header strong').getBoundingClientRect()
     const firstRow = element.querySelector('nav[aria-label="Documentation pages"] > ul > li > details > summary').getBoundingClientRect()
     return firstRow.top - heading.bottom
-  })
-  expect(headingGap).toBeCloseTo(4, 0)
+  })).toBeCloseTo(4, 0)
   for (const icon of await sidebar.locator('nav svg').all()) {
     await expect(icon).toHaveCSS('width', '16px')
     await expect(icon).toHaveCSS('height', '16px')
@@ -1120,8 +1131,8 @@ test('patterns use bounded SDS recipes and keep copying outside the previews', a
       const tools = element.querySelector('[data-example-tools]')
       const source = element.querySelector('[data-example-source]')
       const preview = element.querySelector('[data-copy-example]')
-      return Boolean(tools.compareDocumentPosition(source) & Node.DOCUMENT_POSITION_FOLLOWING) &&
-        Boolean(source.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING)
+      return Boolean(tools.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+        Boolean(preview.compareDocumentPosition(source) & Node.DOCUMENT_POSITION_FOLLOWING)
     })).toBe(true)
   }
   for (const badge of await directory.locator('.sds-card .sds-badge').all()) {
@@ -1719,7 +1730,7 @@ test('the playground keeps deliberate page, section, and card rhythm', async ({
   }
 })
 
-test('card and toaster spacing scales fluidly between responsive bounds', async ({
+test('card insets stay fixed while toaster edge spacing scales fluidly', async ({
   page,
 }) => {
   const spacingAt = async (width) => {
@@ -1737,8 +1748,8 @@ test('card and toaster spacing scales fluidly between responsive bounds', async 
   }
 
   expect(await spacingAt(390)).toEqual({ card: '24px', toaster: '16px' })
-  expect(await spacingAt(800)).toEqual({ card: '28px', toaster: '20px' })
-  expect(await spacingAt(1440)).toEqual({ card: '32px', toaster: '24px' })
+  expect(await spacingAt(800)).toEqual({ card: '24px', toaster: '20px' })
+  expect(await spacingAt(1440)).toEqual({ card: '24px', toaster: '24px' })
 })
 
 test('badges keep their intrinsic height inside grids', async ({ page }) => {
@@ -1785,13 +1796,13 @@ test('catalog compositions group related options and reflow before crowding', as
   expect(formFieldRows[2]).toBeGreaterThan(formFieldRows[0])
 
   const calloutToneGroups = page.locator(
-    '#callout-variants > .sds-grid > section',
+    '#callout-variants > [data-example-preview] > .sds-grid > section',
   )
   await expect(calloutToneGroups).toHaveCount(6)
   for (const group of await calloutToneGroups.all()) {
     await expect(group.locator('.sds-callout')).toHaveCount(3)
   }
-  const calloutGrid = page.locator('#callout-variants > .sds-grid')
+  const calloutGrid = page.locator('#callout-variants > [data-example-preview] > .sds-grid')
   await expect
     .poll(() =>
       calloutGrid.evaluate(
@@ -1803,7 +1814,7 @@ test('catalog compositions group related options and reflow before crowding', as
 
   await expect(
     page.locator('#actions > details.sds-card').first(),
-  ).toHaveCSS('padding-top', '32px')
+  ).toHaveCSS('padding-top', '24px')
 
   await page.setViewportSize({ width: 800, height: 900 })
   const setupCards = await page
@@ -1892,7 +1903,7 @@ test('closed toasts never paint during initial rendering', async ({ page }) => {
   await expect(toast).toBeHidden()
 })
 
-test('section anchors remain visible below the sticky page header', async ({
+test('section anchors remain visible below the application navigation', async ({
   page,
 }) => {
   for (const viewport of [
@@ -1902,12 +1913,41 @@ test('section anchors remain visible below the sticky page header', async ({
     await page.setViewportSize(viewport)
     await page.goto('/#navigation')
 
-    const header = await page.locator('main#top > .sds-page-header').boundingBox()
+    const headerBottom = await page.locator('body > .sds-app > .sds-app-header')
+      .evaluate(element => element.getBoundingClientRect().bottom)
     const heading = await page.locator('#navigation-title').boundingBox()
 
-    expect(header).not.toBeNull()
     expect(heading).not.toBeNull()
-    expect(heading.y).toBeGreaterThanOrEqual(header.y + header.height)
+    expect(heading.y).toBeGreaterThanOrEqual(headerBottom)
+  }
+})
+
+test('mobile application navigation stays pinned while page titles scroll away at every viewport', async ({ page }) => {
+  for (const width of [390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 844 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/')
+    const shellHeader = page.locator('body > .sds-app > .sds-app-header')
+    const menu = shellHeader.getByRole('button', { name: 'Open navigation', exact: true })
+    const pageHeader = page.locator('main#top > .sds-page-header')
+    await page.evaluate(() => window.scrollTo(0, 1000))
+    await expect.poll(() => pageHeader.evaluate(element => element.getBoundingClientRect().bottom))
+      .toBeLessThan(0)
+    if (width > 1024) {
+      await expect(shellHeader).toBeHidden()
+      continue
+    }
+    await expect.poll(() => shellHeader.evaluate(element => element.getBoundingClientRect().top))
+      .toBeCloseTo(0, 1)
+    await expect(menu).toBeInViewport()
+    await menu.focus()
+    await menu.press('Enter')
+    const sidebar = page.locator('#catalog-sidebar')
+    await expect(sidebar).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(sidebar).toBeHidden()
+    await expect(menu).toBeFocused()
+    await expect(menu).toBeInViewport()
   }
 })
 

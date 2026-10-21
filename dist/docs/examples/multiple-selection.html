@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multiple-selection form</title>
+  <link rel="stylesheet" href="../../sds.css">
+  <script type="module" src="../../auto.js"></script>
+</head>
+<body class="sds-document" data-sds-root>
+  <main class="sds-page"><article class="sds-card sds-stack" id="multiple-selection-recipe">
+              <h1 class="sds-text-h3">Multiple-selection form</h1>
+              <form id="multiple-selection-example" class="sds-stack">
+                <div class="sds-field">
+                  <label for="multiple-topic-query">Add topics</label>
+                  <sds-combobox keep-open="">
+                    <input class="sds-input" id="multiple-topic-query" type="search" autocomplete="off" aria-describedby="multiple-topic-help">
+                    <ul hidden>
+                      <li data-sds-value="research">Research</li>
+                      <li data-sds-value="engineering">Engineering</li>
+                      <li data-sds-value="accessibility">Accessibility</li>
+                    </ul>
+                    <output></output>
+                  </sds-combobox>
+                  <small id="multiple-topic-help">Choose at least one topic. Remove a tag to make it available again.</small>
+                </div>
+                <div class="sds-cluster" data-sds-gap="sm" data-selected-topics=""><input type="hidden" name="topic" value="research"></div>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Show topic IDs</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text">Reset topics</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article></main>
+  <script type="module" src="./multiple-selection.js"></script>
+</body>
+</html>

@@ -63,8 +63,8 @@ For client-rendered markup, provide a named tab list and one panel per tab:
 ```html
 <sds-tabs>
   <div aria-label="Project settings">
-    <button class="sds-button">Profile</button>
-    <button class="sds-button" aria-selected="true">Security</button>
+    <button class="sds-button" value="profile">Profile</button>
+    <button class="sds-button" value="security" aria-selected="true">Security</button>
   </div>
   <section>Profile settings</section>
   <section>Security settings</section>
@@ -72,8 +72,8 @@ For client-rendered markup, provide a named tab list and one panel per tab:
 ```
 
 SDS Lite supplies missing classes, roles, IDs, relationships, tab order, and
-panel visibility. `aria-selected="true"` chooses the initial enabled tab; the
-first enabled tab is used when it is omitted.
+panel visibility. A valid host `value` chooses the initial enabled tab,
+followed by `aria-selected="true"`, then the first enabled tab.
 
 ### Options
 
@@ -86,7 +86,7 @@ first enabled tab is used when it is omitted.
 | `orientation` | `horizontal`, `vertical` | `horizontal` |
 | `value` | Selected tab value | Selected tab's `value` or `id` |
 | `value` on a tab button | Any string | Tab `id` |
-| `aria-selected="true"` | Initial selection | First enabled tab |
+| `aria-selected="true"` | Initial selection when no valid host `value` is provided | First enabled tab |
 | `disabled` | Disabled button tab | Enabled |
 | `aria-disabled="true"` | Disabled tab | Enabled |
 
@@ -104,8 +104,12 @@ document.querySelector('sds-tabs')?.addEventListener('sds-change', (event) => {
 ### Accessibility
 
 Name the tab list and provide one panel per tab. Automatic activation selects
-on focus; manual activation waits for click, Enter, or Space. Horizontal tabs
+during arrow-key navigation; manual activation moves focus and waits for
+click, Enter, or Space on a button. Horizontal tabs
 use Left/Right, vertical tabs Up/Down, and Home/End reach the first/last enabled tab.
+Horizontal arrows follow the tablist's computed direction: Left advances in RTL
+and Right advances in LTR, even when individual tab labels use a different
+text direction. Vertical arrows and Home/End do not reverse in RTL.
 
 ### More examples
 
@@ -121,8 +125,10 @@ const tabs = document.querySelector('sds-tabs')
 tabs.value = 'security'
 ```
 
-Setting an unknown or disabled value throws `RangeError`. Programmatic changes
-do not dispatch `sds-change`, matching native form-control behavior.
+Assigning an unknown or disabled `.value` while connected throws `RangeError`.
+Invalid `value` attributes warn instead; initial markup falls back to the
+selection rules above. Programmatic changes do not dispatch `sds-change`,
+matching native form-control behavior.
 
 Route-backed tabs may use `<a class="sds-tab" role="tab" href="...">`. Arrow
 keys move focus; activating a link navigates. Render the requested route with
@@ -184,7 +190,9 @@ placeholder:
 ```
 
 Client-rendered applications may use buttons instead of links when changing
-pages does not change the URL.
+pages does not change the URL. Use `type="button"` and native `disabled` for
+unavailable actions. Links and buttons share typography, dimensions, pointer
+cursors, hover treatment, and keyboard-focus indicators.
 
 Previous and next controls use compact, accessible icon links. The current
 page uses the established subtle blue surface and border rather than a
@@ -239,7 +247,7 @@ dropdown.addEventListener('sds-toggle', (event) => {
 Dropdowns support:
 
 - Enter, Space, Arrow Down, or Arrow Up to open and focus an item;
-- Arrow keys, Home, and End to navigate enabled items;
+- Up/Down, Home, and End to navigate items, skipping native disabled buttons;
 - Escape to close and return focus;
 - close after activation;
 - synchronized `aria-expanded`;
@@ -248,8 +256,8 @@ Dropdowns support:
 Use `aria-disabled="true"` on unavailable menu items. Unlike a native disabled
 button, an ARIA-disabled menu item remains in the arrow-key sequence; SDS Lite
 prevents its activation. The trigger and menu must be direct children. SDS Lite defaults an omitted
-trigger `type` to `button`; an explicit type is preserved. Invalid
-or ambiguous structures are not enhanced and produce a console warning.
+trigger `type` to `button`; an explicit type is preserved. Missing a direct
+button or identifiable menu prevents enhancement and produces a console warning.
 
 ### More examples
 

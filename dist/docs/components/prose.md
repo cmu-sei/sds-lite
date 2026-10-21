@@ -2,7 +2,38 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Prose
 
-Find: [heading and text utilities](#explicit-typography) or [article typography](#document-typography).
+Find: [UI titles](#ui-titles), [heading and text utilities](#explicit-typography),
+or [article typography](#document-typography).
+
+## UI titles
+
+Use `.sds-text-title` for compact application titles in dialogs, panels, and
+popovers. Choose the heading element for document structure:
+
+```html
+<h2 class="sds-text-title">Edit project</h2>
+```
+
+### Options
+
+The style uses the theme's heading font, sentence case, zero margins and letter
+spacing, and a fixed `1.25rem` / `1.75rem` size and line height. Its weight is
+500 in Forge and 400 in Plaid. It does not scale at a viewport breakpoint or
+accept `data-sds-size`; use the SEI heading utilities below for editorial scales.
+Do not combine multiple typography classes on one element.
+
+Customize `--sds-type-title-size`, `--sds-type-title-leading`, and
+`--sds-type-title-weight` to change this role consistently, including unclassed
+dialog and panel header headings.
+
+### Accessibility
+
+Choose the heading level for document structure, independently of visual size.
+The compact title role does not change semantics or accessible names.
+
+### Related
+
+[Dialogs and panels](./overlays.md#dialog), [explicit typography](#explicit-typography).
 
 ## Explicit typography
 

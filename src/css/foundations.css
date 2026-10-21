@@ -29,7 +29,7 @@
     font: inherit;
   }
 
-  :where(.sds-button, .sds-input, .sds-select, .sds-checkbox, .sds-radio, .sds-range, .sds-file-input, .sds-link, .sds-tab, .sds-skip-link, a.sds-tag, button.sds-tag, .sds-tag-action, .sds-choice > input, .sds-switch input, .sds-dropdown-menu [role="menuitem"], .sds-pagination a, .sds-disclosure > summary):focus-visible {
+  :where(.sds-button, .sds-input, .sds-select, .sds-checkbox, .sds-radio, .sds-range, .sds-file-input, .sds-link, .sds-tab, .sds-skip-link, a.sds-tag, button.sds-tag, .sds-tag-action, .sds-choice > input, .sds-switch input, .sds-dropdown-menu [role="menuitem"], .sds-pagination :is(a, button), .sds-disclosure > summary):focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
   }
@@ -60,7 +60,7 @@
   }
 
   @media (forced-colors: active) {
-    :where(.sds-button, .sds-input, .sds-select, .sds-checkbox, .sds-radio, .sds-range, .sds-file-input, .sds-link, .sds-tab, .sds-skip-link, a.sds-tag, button.sds-tag, .sds-tag-action, .sds-choice > input, .sds-switch input, .sds-dropdown-menu [role="menuitem"], .sds-pagination a, .sds-disclosure > summary):focus-visible {
+    :where(.sds-button, .sds-input, .sds-select, .sds-checkbox, .sds-radio, .sds-range, .sds-file-input, .sds-link, .sds-tab, .sds-skip-link, a.sds-tag, button.sds-tag, .sds-tag-action, .sds-choice > input, .sds-switch input, .sds-dropdown-menu [role="menuitem"], .sds-pagination :is(a, button), .sds-disclosure > summary):focus-visible {
       outline: 2px solid Highlight;
       outline-offset: 2px;
       box-shadow: none;
@@ -69,6 +69,46 @@
 }
 
 @layer sds.components {
+  :where(.sds-link, .sds-tab, .sds-tag-action, .sds-dropdown-menu *):is(:disabled, [aria-disabled="true"]) {
+    cursor: not-allowed;
+  }
+
+  :where(.sds-button, .sds-input, .sds-select, .sds-input-group) {
+    --sds-control-height: var(--sds-control-height-md);
+    --sds-control-font-size: var(--sds-type-body-size);
+    --sds-control-leading: var(--sds-type-body-leading);
+  }
+
+  :where(.sds-button[data-sds-size="xs"]) {
+    --sds-control-height: var(--sds-control-height-xs);
+    --sds-control-font-size: 0.75rem;
+    --sds-control-leading: 1rem;
+  }
+
+  :where(
+    :is(.sds-button, .sds-input, .sds-select, .sds-input-group)[data-sds-size="sm"],
+    .sds-input-group:not([data-sds-size]):has(> :is(.sds-input, .sds-select)[data-sds-size="sm"])
+  ) {
+    --sds-control-height: var(--sds-control-height-sm);
+    --sds-control-font-size: var(--sds-type-body-size-sm);
+    --sds-control-leading: var(--sds-type-body-leading-sm);
+  }
+
+  :where(
+    :is(.sds-button, .sds-input, .sds-select, .sds-input-group)[data-sds-size="lg"],
+    .sds-input-group:not([data-sds-size]):has(> :is(.sds-input, .sds-select)[data-sds-size="lg"])
+  ) {
+    --sds-control-height: var(--sds-control-height-lg);
+    --sds-control-font-size: 1.125rem;
+    --sds-control-leading: 1.75rem;
+  }
+
+  :where(.sds-button[data-sds-size="xl"]) {
+    --sds-control-height: var(--sds-control-height-xl);
+    --sds-control-font-size: 1.25rem;
+    --sds-control-leading: 1.75rem;
+  }
+
   :where(.sds-button, .sds-input, .sds-select, .sds-checkbox, .sds-radio):focus-visible {
     border-color: var(--sds-color-focus-border);
   }

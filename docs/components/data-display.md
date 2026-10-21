@@ -10,11 +10,9 @@ Find: [avatar](#avatar), [card](#card), [metric](#datapoint), [list](#list),
 Use an image when a portrait is available:
 
 ```html
-<img
-  class="sds-avatar"
-  src="/people/alex-morgan.jpg"
-  alt="Alex Morgan"
->
+<span class="sds-avatar">
+  <img src="/people/alex-morgan.jpg" alt="Alex Morgan">
+</span>
 ```
 
 ### Options
@@ -25,6 +23,9 @@ Use an image when a portrait is available:
 | `data-sds-shape` | `circle`, `square`, `portrait` | `circle` |
 | `data-sds-variant` | `subtle`, `solid`, `outline` | `subtle` |
 | `data-sds-tone` | Any semantic tone | Neutral |
+
+Put the image inside the avatar wrapper to retain the recipe's size.
+An image with `.sds-avatar` directly fills its containing width and height.
 
 ### Accessibility
 
@@ -73,8 +74,8 @@ An avatar group is a list of people, not a generated image collection:
       <button
         class="sds-avatar sds-button"
         type="button"
-        aria-label="View 4 more reviewers"
-      >+4</button>
+        aria-label="View 2 more reviewers"
+      >+2</button>
       <menu>
         <li>
           <a href="/people/casey-kim">
@@ -114,6 +115,11 @@ hovering avatars does not change their stacking order.
 
 ## Card
 
+Cards share `--sds-surface-inset` (24px) with dialog padding and panel regions.
+This inset does not change with viewport width. Use the existing spacing
+attributes, such as `data-sds-padding="lg"` or `"2xl"`, for intentional compact
+or spacious cards.
+
 ```html
 <article class="sds-card">
   <p class="sds-card-label">Open findings</p>
@@ -134,8 +140,9 @@ For a clickable card, add `.sds-card-link` to its primary link:
 </article>
 ```
 
-The link covers the card without extra markup or JavaScript. Hover raises the
-shadow, and keyboard focus outlines the card. Other links, buttons, and native
+The link covers the card without extra markup or JavaScript. The primary card
+link stays un-underlined; hover raises the shadow, and keyboard focus outlines
+the card. Other links retain their normal underline behavior. Buttons and native
 form controls remain independently operable without positioning classes.
 
 ### Options
@@ -175,8 +182,8 @@ context:
 
 ### Options
 
-`data-sds-size` accepts `sm`, `md`, `lg`, or `xl`; `data-sds-tone` accepts all
-semantic tones. See the [recipe reference](../reference/recipes.md) for defaults.
+`data-sds-size` accepts `sm`, `md`, `lg`, or `xl`, defaulting to `md`;
+`data-sds-tone` accepts all semantic tones and defaults to `neutral`.
 Use smaller sizes for several metrics and `xl` for a primary summary metric.
 
 ### Accessibility
@@ -315,9 +322,9 @@ Use native structure, a caption, and scoped headers:
 | `data-sds-sticky` on cells | `start`, `end` | Normal cell |
 
 Apply the same `data-sds-sticky` value to the header and every cell in that
-column. Table size changes body-row padding: `sm` uses 4px, `md` uses 8px,
+column. Table size changes body-row vertical padding: `sm` uses 4px, `md` uses 8px,
 and `lg` uses 16px. Headers and footers retain their standard spacing.
-`data-sds-density="compact"` overrides body-row padding to 4px at any size.
+`data-sds-density="compact"` overrides body-row vertical padding to 4px at any size.
 Row headers share the body cells' typography and surface.
 Use `.sds-table-container` whenever content can exceed the viewport.
 For a standalone table, add `data-sds-standalone` to the table inside that
@@ -330,6 +337,33 @@ Inside a spanning `<tfoot>` cell, `.sds-table-footer` places a
 in the center, and an optional rows-per-page form on the right. The footer
 wraps on narrow viewports. Applications supply the result count, page URLs,
 and query handling; the recipe does not fetch or paginate data.
+
+For an advanced table, use a `.sds-card` with `data-sds-padding="none"` as the
+outer frame. Place `.sds-table-toolbar` first, the table in its own
+`.sds-table-container`, and `.sds-table-footer` after that scroll container.
+Keep the table's caption and scoped column headers; omit
+`data-sds-standalone` because the card supplies the frame.
+On narrow screens only the table scrolls horizontally; filters, selection
+actions, and pagination remain within the frame and wrap as needed.
+Give the scroll container `tabindex="0"`, `role="region"`, and an accessible
+name so keyboard users can focus and scroll it.
+
+The toolbar aligns compact filter controls on the left and search, sorting,
+and overflow actions on the right, wrapping when space is constrained.
+Toolbar buttons and selects share 14px regular text and 32px control heights.
+Table icon actions use 16px icons while retaining 32px click targets.
+Advanced table column headers use 4px vertical padding; the footer uses 12px
+to give pagination controls more breathing room.
+Pagination buttons use the native pagination recipe without `.sds-button`,
+keeping its 34px click targets instead of inheriting full-size button heights.
+Use `.sds-table-selection` for a contextual selection strip and native
+`hidden` when nothing is selected. Native row headers align with their
+column headers; selected checkbox rows receive a subtle selected surface.
+
+The [advanced task table](../examples/table-selection.html) combines
+25 records, assignee avatars, status badges, row menus, a detail dialog,
+search and filters, sort order, page sizes, real CSV export, and page-scoped
+selection. It supplies application JavaScript, not a new data-grid runtime.
 
 ### Accessibility
 

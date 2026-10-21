@@ -43,6 +43,9 @@
 
   :where(.sds-tab:disabled, .sds-tab[aria-disabled="true"]) {
     opacity: 0.5;
+  }
+
+  :where(.sds-tab[aria-disabled="true"]) {
     pointer-events: none;
   }
 

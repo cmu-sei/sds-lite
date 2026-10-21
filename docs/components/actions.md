@@ -2,7 +2,7 @@
 
 [Documentation](../README.md) / [Components](./README.md) / Actions
 
-Find: [button](#button), [action group](#action-group), or [link](#link).
+Find: [button](#button), [toggles](#toggle-buttons), [action group](#action-group), or [link](#link).
 
 ## Button
 
@@ -17,7 +17,7 @@ Use a native button for an action:
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-variant` | `filled`, `tonal`, `outlined`, `text` | `filled`; icon buttons use `text` |
-| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | Info; icon buttons use `neutral` |
+| `data-sds-tone` | `neutral`, `accent`, `info`, `success`, `warning`, `danger` | `info`; icon buttons use `neutral` |
 | `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | `md` |
 | `data-sds-density` | `compact` | Comfortable |
 | `data-sds-shape` | `icon` | Text button |
@@ -25,6 +25,12 @@ Use a native button for an action:
 | `disabled` | Native button state | Enabled |
 | `aria-disabled="true"` | Link or custom disabled state | Enabled |
 | `aria-busy="true"` | Action is processing | Not busy |
+
+Comfortable single-line button heights are 24px, 32px, 40px, 48px, and 56px
+for `xs` through `xl`, assuming a 16px root font size. The `sm`, `md`, and
+`lg` heights match text inputs, selects, and input wrappers. Content can grow
+beyond these minimums when labels wrap. Compact and icon buttons retain their
+separate density scales; use compact actions in tables and toolbars.
 
 ### Accessibility
 
@@ -94,9 +100,9 @@ variant. Toolbar and menu-like actions commonly combine it with `text`:
 </button>
 ```
 
-Compact secondary buttons use a translucent (20%) tone-colored border,
-matching SEI action buttons; standard secondary buttons retain their solid
-neutral border. A disabled compact secondary uses a 10% neutral border.
+Use `data-sds-variant="tonal"` for a subtle tone-colored surface, or
+`data-sds-variant="outlined"` for a transparent surface with a tone-colored
+border. Compact density changes sizing, not the variant's border treatment.
 
 Buttons can contain leading media without an additional SDS marker:
 
@@ -111,12 +117,48 @@ Buttons can contain leading media without an additional SDS marker:
 
 [Action group](#action-group), [link](#link), [dialog actions](./overlays.md#dialog).
 
+## Toggle buttons
+
+Use a button with `aria-pressed` for an independent immediate on/off action:
+
+```html
+<button class="sds-button" type="button" data-sds-variant="outlined" aria-pressed="false">
+  Show archived
+</button>
+<button class="sds-tag" type="button" aria-pressed="true">Favorites</button>
+```
+
+### Options
+
+Use ordinary button or tag options. `aria-pressed="true"` adds a subtle
+neutral surface, light border, and soft inset shadow without a heavy
+underline or saturated action color. Native `disabled`
+prevents activation. SDS styles state; application code changes it:
+
+```js
+button.addEventListener('click', () => {
+  button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true'))
+})
+```
+
+### Accessibility
+
+Keep the accessible label stable as state changes; assistive technology
+announces pressed state. Independent toggles may have several active values.
+Use native radios for exclusive selection and inputs for submitted values.
+Do not add `role="toolbar"` unless you also implement toolbar keyboard behavior.
+
+### Related
+
+[Working toggles](../examples/selection.html),
+[segmented controls](./forms.md#segmented-controls), [tag](./feedback.md#tag).
+
 ## Action group
 
 `.sds-action-group` wraps related controls with consistent responsive spacing:
 
 ```html
-<div class="sds-action-group" aria-label="Project actions">
+<div class="sds-action-group" role="group" aria-label="Project actions">
   <button class="sds-button" type="button">Save</button>
   <button class="sds-button" type="button" data-sds-variant="text">Cancel</button>
 </div>
@@ -149,12 +191,14 @@ Use `.sds-link` to opt a link into SDS appearance and apply link options:
 | Option | Values | Default |
 |---|---|---|
 | `data-sds-variant` | `secondary`, `tertiary`, `inline`, `cta` | Primary link |
-| `data-sds-tone` | All semantic tones | Action blue |
-| `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | Inherited |
+| `data-sds-tone` | All semantic tones | `info` |
+| `data-sds-size` | `xs`, `sm`, `md`, `lg`, `xl` | Inherited; `cta` uses `0.875rem` |
 | `aria-disabled="true"` | Disabled appearance | Enabled |
 
-An unsized link inherits its surrounding text size. An explicit
-`data-sds-size="md"` establishes the standard `1rem` size.
+An unsized link inherits its surrounding text size except for `cta`.
+An explicit `data-sds-size="md"` establishes the standard `1rem` size.
+The `secondary` and `tertiary` variants use muted and default text colors,
+respectively, overriding `data-sds-tone`.
 
 ### Accessibility
 

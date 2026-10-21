@@ -5,7 +5,7 @@
     inline-size: calc(100% - 1rem);
     max-inline-size: 36rem;
     max-block-size: calc(100dvh - 4rem);
-    padding: var(--sds-space-xl);
+    padding: var(--sds-surface-inset);
     border-radius: var(--sds-radius-container);
     margin-block: var(--sds-space-sm) auto;
     opacity: 0;
@@ -41,15 +41,6 @@
 
   :where(.sds-dialog:not([open])) {
     display: none;
-  }
-
-  :where(.sds-dialog-header) {
-    align-items: flex-start;
-  }
-
-  :where(.sds-dialog-header p) {
-    margin-block-start: var(--sds-space-sm);
-    color: var(--sds-color-text-muted);
   }
 
   @starting-style {

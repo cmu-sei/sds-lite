@@ -1,0 +1,37 @@
+@layer sds.utilities {
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="none"]) {
+    --sds-layout-gap: var(--sds-space-0);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="xs"]) {
+    --sds-layout-gap: var(--sds-space-xs);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="sm"]) {
+    --sds-layout-gap: var(--sds-space-sm);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="md"]) {
+    --sds-layout-gap: var(--sds-space-md);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="lg"]) {
+    --sds-layout-gap: var(--sds-space-lg);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="xl"]) {
+    --sds-layout-gap: var(--sds-space-xl);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="2xl"]) {
+    --sds-layout-gap: var(--sds-space-2xl);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="3xl"]) {
+    --sds-layout-gap: var(--sds-space-3xl);
+  }
+
+  :where(:is(.sds-stack, .sds-cluster, .sds-grid)[data-sds-gap="4xl"]) {
+    --sds-layout-gap: var(--sds-space-4xl);
+  }
+}

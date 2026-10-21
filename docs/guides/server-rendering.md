@@ -71,9 +71,10 @@ Render:
 - required roles and tab order.
 
 When markup is complete, behavior modules update state and temporary
-positioning without moving, wrapping, cloning, replacing, or generating
-application nodes. `notify()` is the intentional exception: it creates a
-transient toast in the browser.
+positioning without restructuring application nodes. Panels additionally
+receive one decorative, `aria-hidden` drag handle during setup; that handle
+is implementation-owned and should not be authored by the application.
+`notify()` intentionally creates a transient toast in the browser.
 
 ### Fully authored tabs
 

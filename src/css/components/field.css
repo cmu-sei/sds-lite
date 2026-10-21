@@ -1,6 +1,7 @@
 @layer sds.components {
   :where(.sds-field) {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--sds-space-sm);
   }
 
@@ -10,8 +11,8 @@
 
   :where(.sds-field > small) {
     color: var(--sds-color-text-muted);
-    font-size: 0.875rem;
-    font-style: italic;
+    font-size: var(--sds-type-body-size-sm);
+    line-height: var(--sds-type-body-leading-sm);
   }
 
   :where(.sds-field[data-sds-orientation="horizontal"]) {
@@ -27,7 +28,6 @@
   :where(.sds-field > label small) {
     margin-inline-start: var(--sds-space-xs);
     font-size: 0.75rem;
-    font-style: italic;
   }
 
   :where(

@@ -21,6 +21,7 @@ responsive, but mobile browser and assistive-technology support is not claimed.
 | `HTMLDialogElement` | Dialogs and panels |
 | CSS cascade layers | Predictable application overrides |
 | CSS container queries | Cluster layouts that stack within narrow containers |
+| CSS `@scope` | Application shells and nested sidebar variants |
 | `:where()` and `:has()` | Low-specificity recipes and relationship styling |
 | `light-dark()` and `color-mix()` | Themes, schemes, and semantic colors |
 

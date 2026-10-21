@@ -116,10 +116,7 @@ test('modal and panel actions share one right-aligned layout', () => {
   )
   assert.ok(panelFooterRule)
   assert.doesNotMatch(panelFooterRule[1], /display:\s*flex/)
-  assert.match(
-    overlayCss,
-    /:where\(\s*\.sds-dialog-footer,\s*\.sds-panel\s*>\s*footer\s*\)[^}]*>\s*:is\(button,\s*\.sds-button\)/s,
-  )
+  assert.doesNotMatch(overlayCss, /(?:^|[;{])\s*order\s*:/)
 })
 
 test('commands inside a dialog infer the nearest dialog target', async () => {

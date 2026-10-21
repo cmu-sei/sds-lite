@@ -91,14 +91,15 @@ function d() {
 function f(e, t = {}) {
 	if (typeof document > "u") throw Error("notify() can only be called in a browser.");
 	if (t.duration !== void 0 && (!Number.isFinite(t.duration) || t.duration <= 0)) throw RangeError("notify() duration must be a positive number.");
+	for (let e of [t.dismissLabel, t.regionLabel]) if (e !== void 0 && (typeof e != "string" || !e.trim())) throw TypeError("notify() accessibility labels must be nonempty strings.");
 	d();
 	let n = t.container ?? document, r = t.container?.matches(".sds-toaster, sds-toaster") ?? !1 ? t.container : n.querySelector(".sds-toaster, sds-toaster");
 	if (!r) {
-		r = document.createElement("section"), r.className = "sds-toaster", r.setAttribute("aria-label", "Notifications");
+		r = document.createElement("section"), r.className = "sds-toaster", r.setAttribute("aria-label", t.regionLabel ?? "Notifications");
 		let e = t.container ?? document.querySelector("[data-sds-root]");
 		e || (r.dataset.sdsRoot = ""), (e ?? document.body).append(r);
 	}
-	r.localName === "div" && !r.hasAttribute("role") && r.setAttribute("role", "region"), !r.hasAttribute("aria-label") && !r.hasAttribute("aria-labelledby") && r.setAttribute("aria-label", "Notifications");
+	r.localName === "div" && !r.hasAttribute("role") && r.setAttribute("role", "region"), !r.hasAttribute("aria-label") && !r.hasAttribute("aria-labelledby") && r.setAttribute("aria-label", t.regionLabel ?? "Notifications");
 	let i = document.createElement("sds-toast");
 	i.tone = t.tone ?? "info", i.setAttribute("role", t.urgent ? "alert" : "status"), i.setAttribute("aria-atomic", "true"), t.duration !== void 0 && (i.duration = t.duration), i.persistent = t.persistent ?? !1;
 	let a = document.createElement("strong");
@@ -106,7 +107,7 @@ function f(e, t = {}) {
 	let s = document.createElement("span");
 	s.textContent = e;
 	let c = document.createElement("button");
-	return c.type = "button", c.className = "sds-button", c.setAttribute("data-sds-shape", "icon"), c.setAttribute("data-sds-toast-close", ""), c.setAttribute("aria-label", "Dismiss notification"), c.textContent = "×", i.append(a, s, c), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), o), { once: !0 }), r.append(i), i.show(), i;
+	return c.type = "button", c.className = "sds-button", c.setAttribute("data-sds-shape", "icon"), c.setAttribute("data-sds-toast-close", ""), c.setAttribute("aria-label", t.dismissLabel ?? "Dismiss notification"), c.textContent = "×", i.append(a, s, c), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), o), { once: !0 }), r.append(i), i.show(), i;
 }
 //#endregion
 export { c as SdsToastElement, f as notify, d as registerSdsToast };

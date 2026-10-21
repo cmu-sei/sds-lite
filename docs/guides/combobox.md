@@ -105,7 +105,8 @@ not input events; the application owns selected records, tags, and submission.
 - The list closes when no other matches remain, on Escape, or when focus leaves.
 
 Related: [tag recipe](../components/feedback.md#tag),
-[runnable multiple-selection example](../../index.html#forms).
+[complete multiple-selection form](../examples/multiple-selection.html),
+[submission, reset, and removal behavior](./composition-patterns.md#multiple-selection-form).
 
 ## Application-supplied results
 

@@ -4,6 +4,14 @@ import path from 'node:path'
 import test from 'node:test'
 import { Window } from 'happy-dom'
 
+test('application recipe setup functions can be imported during server rendering', async () => {
+  for (const name of ['selection', 'table-selection', 'multiple-selection', 'input-actions', 'date-range', 'file-upload']) {
+    const exports = Object.values(await import(`../docs/examples/${name}.js?ssr`))
+    assert.equal(exports.length, 1, name)
+    assert.equal(typeof exports[0], 'function', name)
+  }
+})
+
 test('authored copy snippets use public classes and self-contained native relationships', async () => {
   const window = new Window()
   try {

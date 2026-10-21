@@ -1,6 +1,7 @@
 @layer sds.utilities {
   :where(.sds-grid) {
-    --sds-grid-gap: var(--sds-space-lg);
+    --sds-layout-gap: var(--sds-space-lg);
+    --sds-grid-gap: var(--sds-layout-gap);
     --sds-grid-min-column-width: 14rem;
 
     display: grid;
@@ -96,35 +97,4 @@
     );
   }
 
-  :where(.sds-grid[data-sds-gap="none"]) {
-    --sds-grid-gap: var(--sds-space-0);
-  }
-
-  :where(.sds-grid[data-sds-gap="xs"]) {
-    --sds-grid-gap: var(--sds-space-xs);
-  }
-
-  :where(.sds-grid[data-sds-gap="sm"]) {
-    --sds-grid-gap: var(--sds-space-sm);
-  }
-
-  :where(.sds-grid[data-sds-gap="md"]) {
-    --sds-grid-gap: var(--sds-space-md);
-  }
-
-  :where(.sds-grid[data-sds-gap="xl"]) {
-    --sds-grid-gap: var(--sds-space-xl);
-  }
-
-  :where(.sds-grid[data-sds-gap="2xl"]) {
-    --sds-grid-gap: var(--sds-space-2xl);
-  }
-
-  :where(.sds-grid[data-sds-gap="3xl"]) {
-    --sds-grid-gap: var(--sds-space-3xl);
-  }
-
-  :where(.sds-grid[data-sds-gap="4xl"]) {
-    --sds-grid-gap: var(--sds-space-4xl);
-  }
 }

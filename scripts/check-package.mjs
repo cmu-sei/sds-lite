@@ -15,6 +15,8 @@ const requiredFiles = [
   'dist/package/sds.js',
   'dist/sds.css',
   'scripts/migrate.mjs',
+  ...['selection', 'table-selection', 'multiple-selection', 'input-actions', 'date-range', 'file-upload']
+    .flatMap(name => [`docs/examples/${name}.html`, `docs/examples/${name}.js`]),
 ]
 const forbiddenPrefixes = [
   '.github/',

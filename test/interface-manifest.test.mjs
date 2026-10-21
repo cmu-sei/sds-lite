@@ -222,6 +222,7 @@ test('recipe omission defaults use audited implementation values', () => {
     ['timeline:data-sds-tone', 'unaccented'],
     ['table:data-sds-density', 'comfortable'],
     ['table:data-sds-sticky', 'none'],
+    ['sidebar:data-sds-density', 'comfortable'],
     ['grid:data-sds-columns', 'automatic'],
     ['cluster:data-sds-stack-at', 'none'],
     ['dialog:data-sds-return-value', ''],

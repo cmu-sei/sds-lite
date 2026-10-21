@@ -24,6 +24,8 @@ export interface SdsNotifyOptions {
   duration?: number
   persistent?: boolean
   urgent?: boolean
+  dismissLabel?: string
+  regionLabel?: string
 }
 
 export class SdsToastElement extends HTMLElementBase {
@@ -224,6 +226,12 @@ export function notify(
     throw new RangeError('notify() duration must be a positive number.')
   }
 
+  for (const label of [options.dismissLabel, options.regionLabel]) {
+    if (label !== undefined && (typeof label !== 'string' || !label.trim())) {
+      throw new TypeError('notify() accessibility labels must be nonempty strings.')
+    }
+  }
+
   registerSdsToast()
 
   const scope = options.container ?? document
@@ -236,7 +244,7 @@ export function notify(
   if (!toaster) {
     toaster = document.createElement('section')
     toaster.className = 'sds-toaster'
-    toaster.setAttribute('aria-label', 'Notifications')
+    toaster.setAttribute('aria-label', options.regionLabel ?? 'Notifications')
     const root =
       options.container ??
       document.querySelector<HTMLElement>('[data-sds-root]')
@@ -254,7 +262,7 @@ export function notify(
     !toaster.hasAttribute('aria-label') &&
     !toaster.hasAttribute('aria-labelledby')
   ) {
-    toaster.setAttribute('aria-label', 'Notifications')
+    toaster.setAttribute('aria-label', options.regionLabel ?? 'Notifications')
   }
 
   const toast = document.createElement('sds-toast')
@@ -275,7 +283,7 @@ export function notify(
   closeButton.className = 'sds-button'
   closeButton.setAttribute('data-sds-shape', 'icon')
   closeButton.setAttribute('data-sds-toast-close', '')
-  closeButton.setAttribute('aria-label', 'Dismiss notification')
+  closeButton.setAttribute('aria-label', options.dismissLabel ?? 'Dismiss notification')
   closeButton.textContent = '\u00d7'
 
   toast.append(title, body, closeButton)

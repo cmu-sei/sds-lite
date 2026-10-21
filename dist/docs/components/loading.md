@@ -31,7 +31,7 @@ completion:
 
 `progress` accepts every semantic `data-sds-tone`; the default is `info`.
 Both elements accept `data-sds-size="sm|md|lg"`, with `md` as the default.
-Meter color follows its native optimum, suboptimum, and low-value thresholds,
+Meter color follows its native `min`, `max`, `low`, `high`, and `optimum` values,
 so it intentionally does not accept an authored tone.
 
 ### Accessibility

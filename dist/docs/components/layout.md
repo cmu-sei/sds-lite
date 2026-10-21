@@ -246,9 +246,12 @@ Test reflow and zoom when adding spacing, especially around controls.
 ### Options
 
 No recipe-specific options. `.sds-page` centers content at up to `80rem`.
-`.sds-page-header` is a sticky title/action row that stacks below `40rem`;
+`.sds-page-header` is a title/action row that stacks below `40rem` and scrolls
+with the page content;
 `.sds-section-header` aligns section context and actions. Default spacing is
-4XL between sections, 2XL within sections, and 2XL card padding (XL when narrow).
+4XL between sections and 2XL within sections. Cards use
+`--sds-surface-inset`, which defaults to XL (24px at a 16px root font size)
+at every viewport width. Spacing attributes can override individual insets.
 
 ### Accessibility
 
@@ -281,14 +284,42 @@ Check that sticky headers do not obscure focused content.
 This layout stacks at viewport widths of `64rem` or less.
 `--sds-sidebar-width` defaults to `18rem`; set it on the layout.
 
+Set `data-sds-density="compact"` on `.sds-sidebar` for 32px navigation rows,
+and tighter list padding. Navigation text is 14px in either density.
+The option works for standalone,
+application, and documentation sidebars and is included in both NPM and CDN
+stylesheets. Omit it to retain the surrounding layout's default density.
+
+```html
+<aside class="sds-sidebar" data-sds-density="compact">
+  <nav aria-label="Library">
+    <ul>
+      <li><a href="/components" aria-current="page">Components</a></li>
+      <li><a href="/recipes">Recipes</a></li>
+    </ul>
+  </nav>
+</aside>
+```
+
 ### Accessibility
 
 Label navigation and mark the current page with `aria-current="page"`.
+For a current section within a page, use `aria-current="location"` instead.
+When a group is collapsed, its summary receives the current-item treatment
+if any descendant has either value. Expanding the group leaves the indicator
+on the current link. This works through nested groups using CSS alone; keep
+`aria-current` on the link, not the summary.
 Do not add `popover` to a contained standalone sidebar.
 
 Use native `details` and `summary` for expandable groups, with a child `ul`
 inside each `details`. The default application sidebar uses full-width 40px
-rows and a 4px current-item edge indicator. Documentation tree styling is
+rows and a 4px current-item edge indicator. Group summaries use 14px semibold
+text with the default text color; ordinary application and standalone items
+use 14px regular text, with semibold text for the current item. Child links
+use 24px inline-start padding, a 12px indentation step from top-level rows.
+Group headings retain sentence case and separate groups using their existing
+rows, without added gaps or dividers.
+Documentation tree styling is
 selected by the surrounding `.sds-app[data-sds-variant="documentation"]`,
 not applied to standalone or application sidebars.
 
@@ -389,7 +420,11 @@ select their presentation; select palette tokens separately with
 
 An optional `.sds-sidebar` precedes `.sds-app-body` inside `.sds-app-layout`.
 Without it, the layout has one column. Application headers are mobile-only;
-the other variants keep their headers visible. All variants use document flow
+the other variants keep their headers visible. The mobile application header
+stays pinned while scrolling so its navigation button remains accessible.
+The page title and its actions scroll away with the content; only the
+application navigation remains pinned.
+All variants use document flow
 and stretch to at least the viewport height. Longer pages grow naturally;
 footers follow the content rather than remaining pinned in view. Documentation's
 masthead scrolls away while its white navigation header stays sticky.

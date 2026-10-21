@@ -21,6 +21,10 @@ npx sds-lite-migrate --from uswds src/application.html
 | `usa-button--unstyled` | `data-sds-variant="text"` |
 | `usa-button--big` | `data-sds-size="lg"` |
 
+Button modifiers require `usa-button` on the same element. The migrator also
+rewrites `<input class="usa-button">`, but the documented SDS Lite button
+recipe targets buttons and links; review input-button markup manually.
+
 Native elements are retained:
 
 ```html
@@ -53,7 +57,7 @@ field markup.
 
 | USWDS | SDS Lite |
 |---|---|
-| `usa-alert--info`, `--success`, `--warning`, `--error` | `sds-callout` with the matching semantic tone |
+| `usa-alert--info`, `--success`, `--warning`, `--error` | `sds-callout` with tone `info`, `success`, `warning`, `danger`, respectively |
 | `usa-alert--slim` | `data-sds-size="sm"` |
 | `usa-tag` | `sds-tag` |
 | `usa-tag--big` | `data-sds-size="md"` |
@@ -61,6 +65,9 @@ field markup.
 | `usa-table--compact` | `data-sds-size="sm"` |
 
 Alerts or tables with unsupported modifiers remain unchanged with a warning.
+Alert modifiers require `usa-alert`; tag and table modifiers likewise require
+their base classes. Nested classes such as `usa-alert__heading` and
+`usa-alert__text` are retained and still need manual replacement.
 
 ## Manual work
 
@@ -73,5 +80,7 @@ Alerts or tables with unsupported modifiers remain unchanged with a warning.
   manual review.
 - Remove USWDS JavaScript initialization and styles only after all dependent
   components have been replaced.
-- Dynamic class expressions are warned about and left unchanged.
-
+- Dynamic `class`/`className` expressions are warned about and skipped.
+  Native control mappings also check Vue `:class`, but recipe mappings can
+  still rewrite static classes alongside such a binding; review mixed
+  static/dynamic classes manually.

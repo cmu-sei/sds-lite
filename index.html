@@ -41,7 +41,6 @@
               <span>SDS Lite</span>
             </a>
             <strong>Interactive playground</strong>
-            <small>Inspect, interact, and copy</small>
             <button type="button"
               class="sds-sidebar-close sds-button"
               data-sds-shape="icon"
@@ -53,28 +52,49 @@
             </button>
           </header>
           <nav aria-label="Playground sections">
-            <ul>
-              <li><a href="#overview">Overview</a></li>
-              <li><a href="#getting-started">Getting started</a></li>
-              <li><a href="#layouts">Layouts</a></li>
-              <li><a href="#patterns">Page patterns</a></li>
-              <li><a href="#actions">Actions</a></li>
-              <li><a href="#forms">Forms</a></li>
-              <li><a href="#feedback">Feedback</a></li>
-              <li><a href="#content">Content</a></li>
-              <li><a href="#composition">Layout recipes</a></li>
-              <li><a href="#prose">Prose</a></li>
-              <li><a href="#navigation">Navigation</a></li>
-              <li><a href="#structure">Overlays</a></li>
-              <li><a href="#loading">Loading</a></li>
+            <ul id="catalog-sections">
+              <li>
+                <details open>
+                  <summary>Start here</summary>
+                  <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#getting-started">Getting started</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details open>
+                  <summary>Build with SDS Lite</summary>
+                  <ul>
+                    <li><a href="#recipes">Application recipes</a></li>
+                    <li><a href="#layouts">Layouts</a></li>
+                    <li><a href="#patterns">Page patterns</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details open>
+                  <summary>Component examples</summary>
+                  <ul>
+                    <li><a href="#actions">Actions</a></li>
+                    <li><a href="#forms">Forms</a></li>
+                    <li><a href="#feedback">Feedback</a></li>
+                    <li><a href="#content">Content</a></li>
+                    <li><a href="#navigation">Navigation</a></li>
+                    <li><a href="#structure">Overlays</a></li>
+                    <li><a href="#loading">Loading</a></li>
+                    <li><a href="#composition">Layout primitives</a></li>
+                    <li><a href="#prose">Prose</a></li>
+                  </ul>
+                </details>
+              </li>
             </ul>
           </nav>
-          <footer>
-            <small>Every example is ordinary, server-renderable HTML.</small>
-            <a class="sds-link" href="./docs/README.md">Read the documentation</a>
-            <div class="sds-stack" data-sds-gap="sm">
+          <footer class="sds-stack" data-sds-gap="md">
+            <a class="sds-link" href="./docs/README.md">Documentation</a>
+            <div class="sds-grid" data-sds-columns="2" data-sds-gap="sm">
               <label class="sds-sr-only" for="theme">Theme</label>
-              <select class="sds-select" id="theme">
+              <select class="sds-select" data-sds-size="sm" id="theme">
                 <option value="forge">Forge</option>
                 <option value="plaid">Plaid</option>
               </select>
@@ -82,7 +102,7 @@
               <label class="sds-sr-only" for="color-scheme">
                 Color scheme
               </label>
-              <select class="sds-select" id="color-scheme">
+              <select class="sds-select" data-sds-size="sm" id="color-scheme">
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
                 <option value="system">System</option>
@@ -95,14 +115,14 @@
         <main id="top" class="sds-app-main">
         <header class="sds-page-header">
           <div>
-            <p class="sds-eyebrow">Layouts / Patterns / Recipes</p>
-            <h1 class="sds-text-h3">SDS Lite playground</h1>
+            <p class="sds-eyebrow">Component library</p>
+            <h1 class="sds-text-h1" data-sds-size="sm">SDS Lite playground</h1>
           </div>
           <div class="sds-action-group">
             <a class="sds-button" data-sds-density="compact" data-sds-variant="text" href="./docs/README.md">
               Documentation
             </a>
-            <a class="sds-button" href="#layouts" data-sds-density="compact" data-sds-variant="filled">Page starters</a>
+            <a class="sds-button" href="#recipes" data-sds-density="compact" data-sds-variant="filled">Find a recipe</a>
           </div>
         </header>
 
@@ -110,16 +130,25 @@
           <section id="overview" aria-labelledby="intro-title">
             <div class="sds-prose sds-stack" data-sds-gap="sm">
               <p class="sds-eyebrow">SEI Design System / SDS Lite</p>
-              <h2 class="sds-text-h1" id="intro-title">Native HTML components</h2>
+              <h2 class="sds-text-h2" data-sds-size="sm" id="intro-title">Find it. Try it. Copy it.</h2>
               <p>
-                Semantic markup, one stylesheet, and small accessible behaviors.
-                Framework-neutral by design. No runtime dependencies.
+                Browse native components, complete application recipes, and page
+                starters. Each example keeps its preview, source, and copy actions together.
               </p>
             </div>
+            <div class="sds-field">
+              <label for="playground-search">Search all examples</label>
+              <label class="sds-input-group">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.75"></circle><path d="m15.5 15.5 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"></path></svg>
+                <input class="sds-input" id="playground-search" type="search" placeholder="Try buttons, file upload, table, or dashboard" aria-controls="playground-results" />
+              </label>
+              <small id="playground-search-status" role="status"></small>
+              <ul id="playground-results" class="sds-list" aria-label="Matching examples" hidden></ul>
+            </div>
             <div class="sds-cluster" data-sds-stack-at="sm" data-sds-gap="sm">
-              <a class="sds-button" href="#layouts">Choose a layout</a>
-              <a class="sds-button" data-sds-variant="text" href="#getting-started">
-                Install SDS Lite
+              <a class="sds-button" href="#recipes">Explore application recipes</a>
+              <a class="sds-button" data-sds-variant="text" href="#actions">
+                Browse components
               </a>
             </div>
           </section>
@@ -128,7 +157,7 @@
             <div class="sds-section-header">
               <div class="sds-stack" data-sds-gap="sm">
                 <p class="sds-eyebrow">Start here</p>
-                <h2 class="sds-text-h3">Get started</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm">Get started</h2>
                 <p>
                   Add the stylesheet, choose a setup path, and start with
                   semantic HTML.
@@ -199,11 +228,47 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <p class="sds-sr-only" id="copy-status" aria-live="polite"></p>
           </section>
 
+          <section id="recipes" aria-labelledby="recipes-title">
+            <div class="sds-section-header">
+              <div class="sds-stack" data-sds-gap="sm">
+                <p class="sds-eyebrow">Complete workflows</p>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="recipes-title">Application recipes</h2>
+                <p>Working HTML + JavaScript. Open an example, try it, then copy the complete recipe.</p>
+              </div>
+            </div>
+            <div class="sds-grid" data-sds-columns="3" data-sds-min-column-width="md" data-sds-gap="md">
+              <article class="sds-card sds-stack" data-sds-gap="sm">
+                <h3 class="sds-text-h3" data-sds-size="sm"><a class="sds-link sds-card-link" href="#selection-recipes">Selection controls</a></h3>
+                <p class="sds-text-body">Segmented controls, cards, and toggles</p>
+              </article>
+              <article class="sds-card sds-stack" data-sds-gap="sm">
+                <h3 class="sds-text-h3" data-sds-size="sm"><a class="sds-link sds-card-link" href="#table-selection-recipe">Advanced data table</a></h3>
+                <p class="sds-text-body">Search, filters, selection, and bulk actions</p>
+              </article>
+              <article class="sds-card sds-stack" data-sds-gap="sm">
+                <h3 class="sds-text-h3" data-sds-size="sm"><a class="sds-link sds-card-link" href="#multiple-selection-recipe">Multiple selection</a></h3>
+                <p class="sds-text-body">Searchable choices and removable tags</p>
+              </article>
+              <article class="sds-card sds-stack" data-sds-gap="sm">
+                <h3 class="sds-text-h3" data-sds-size="sm"><a class="sds-link sds-card-link" href="#input-actions-recipe">Input actions</a></h3>
+                <p class="sds-text-body">Password reveal, clear, and copy</p>
+              </article>
+              <article class="sds-card sds-stack" data-sds-gap="sm">
+                <h3 class="sds-text-h3" data-sds-size="sm"><a class="sds-link sds-card-link" href="#date-range-recipe">Date range</a></h3>
+                <p class="sds-text-body">Presets, validation, and reset</p>
+              </article>
+              <article class="sds-card sds-stack" data-sds-gap="sm">
+                <h3 class="sds-text-h3" data-sds-size="sm"><a class="sds-link sds-card-link" href="#file-upload-recipe">File uploads</a></h3>
+                <p class="sds-text-body">Queue, progress, cancellation, and retry</p>
+              </article>
+            </div>
+          </section>
+
           <section id="layouts" aria-labelledby="layouts-title">
             <div class="sds-section-header">
               <div class="sds-stack" data-sds-gap="sm">
                 <p class="sds-eyebrow">Layouts</p>
-                <h2 class="sds-text-h3" id="layouts-title">Page starters</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="layouts-title">Page starters</h2>
                 <a class="sds-link" data-sds-variant="cta" href="#patterns">Page patterns</a>
               </div>
             </div>
@@ -213,7 +278,8 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div class="sds-stack" data-sds-gap="sm">
                 <p class="sds-eyebrow">Patterns</p>
-                <h2 class="sds-text-h3" id="patterns-title">Dashboard, directory, settings, and article</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="patterns-title">Page patterns</h2>
+                <p>Content starters for dashboards, directories, settings, and articles.</p>
                 <a class="sds-link" data-sds-variant="cta" href="#actions">Component recipes</a>
               </div>
             </div>
@@ -466,7 +532,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Actions</p>
-                <h2 class="sds-text-h3" id="actions-title">Buttons, links, and icon buttons</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="actions-title">Actions</h2>
                 <p>Every button treatment is shown in every semantic tone.</p>
               </div>
             </div>
@@ -748,7 +814,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Forms</p>
-                <h2 class="sds-text-h3" id="forms-title">Native controls and states</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="forms-title">Forms</h2>
                 <p>
                   Labels and native attributes provide semantics, validation,
                   autofill, and keyboard behavior.
@@ -1105,13 +1171,254 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                 <button class="sds-button" type="reset" data-sds-variant="tonal">Reset</button>
               </div>
             </form>
+            <article class="sds-card sds-stack" id="selection-recipes" data-recipe-script="selection" data-search-terms="segmented buttons toggle filter chips radio cards selectable cards">
+              <h3 class="sds-text-h3">Segmented controls and selectable cards</h3>
+              <form id="selection-example" class="sds-stack">
+                <fieldset class="sds-fieldset sds-stack">
+                  <legend>View</legend>
+                  <div class="sds-segmented">
+                    <label class="sds-segment"><input class="sds-radio" type="radio" name="view" value="list" checked /><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M10 4C5 4 1 10 1 10s4 6 9 6 9-6 9-6-4-6-9-6Zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" /></svg>List</label>
+                    <label class="sds-segment"><input class="sds-radio" type="radio" name="view" value="grid" /><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M2 2h6v6H2zm10 0h6v6h-6zM2 12h6v6H2zm10 0h6v6h-6z" /></svg>Grid</label>
+                    <label class="sds-segment"><input class="sds-radio" type="radio" name="view" value="map" disabled />Map (unavailable)</label>
+                  </div>
+                </fieldset>
+                <fieldset class="sds-fieldset sds-stack">
+                  <legend>Visible layers</legend>
+                  <div class="sds-segmented">
+                    <label class="sds-segment"><input class="sds-checkbox" type="checkbox" name="layer[]" value="roads" checked />Roads</label>
+                    <label class="sds-segment"><input class="sds-checkbox" type="checkbox" name="layer[]" value="places" />Places</label>
+                  </div>
+                </fieldset>
+                <fieldset class="sds-fieldset sds-stack">
+                  <legend>Project template</legend>
+                  <label class="sds-selection-card">
+                    <input class="sds-radio" type="radio" name="template" value="research" checked />
+                    <span><strong>Research</strong><br />Start with a research workflow.</span>
+                  </label>
+                  <label class="sds-selection-card">
+                    <input class="sds-radio" type="radio" name="template" value="review" />
+                    <span><strong>Review</strong><br />Start with a review checklist.</span>
+                  </label>
+                </fieldset>
+                <div class="sds-cluster" data-sds-gap="sm" role="group" aria-label="Immediate display options">
+                  <button class="sds-button" data-sds-variant="outlined" type="button" aria-pressed="false">Show archived</button>
+                  <button class="sds-tag" type="button" aria-pressed="false">Favorites</button>
+                </div>
+                <p>Native choices submit values. Toggle buttons demonstrate immediate actions, not form values.</p>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Show submitted choices</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text">Reset choices</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article>
+
+            <article class="sds-card sds-stack" id="table-selection-recipe" data-recipe-script="table-selection" data-search-terms="data table toolbar bulk batch actions select all indeterminate sorting filtering">
+              <h3 class="sds-text-h3">Advanced data table</h3>
+              <form id="table-selection-example" class="sds-stack">
+                <button type="submit" hidden>Apply filters</button>
+                <div class="sds-card" data-sds-padding="none">
+                  <div class="sds-table-toolbar">
+                    <div class="sds-cluster" data-sds-gap="xs" role="group" aria-label="Task filters">
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-sds-tone="neutral" data-task-scope="mine" aria-pressed="false">My tasks</button>
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-sds-tone="neutral" data-task-scope="unassigned" aria-pressed="false">Unassigned</button>
+                      <label class="sds-sr-only" for="selection-assignee">Assignee</label>
+                      <select id="selection-assignee" class="sds-select" data-sds-size="sm" data-assignee-filter>
+                        <option value="all">Assignee</option><option>Jamie Carter</option><option>Morgan Lee</option><option>Riley Thompson</option><option>Casey Martinez</option><option>Jordan Kim</option><option>Alex Patel</option><option>Samira Hassan</option><option>Chris Walker</option>
+                      </select>
+                      <label class="sds-sr-only" for="selection-state">Task status</label>
+                      <select id="selection-state" class="sds-select" data-sds-size="sm" data-status-filter>
+                        <option value="all">Status</option><option value="open">Open</option><option value="submitted">Submitted</option><option value="approved">Approved</option>
+                      </select>
+                    </div>
+                    <div class="sds-cluster" data-sds-gap="xs">
+                      <label class="sds-input-group" data-sds-size="sm">
+                        <span class="sds-sr-only">Search tasks</span>
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="1.8" /><path d="m15 15 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+                        <input id="selection-search" class="sds-input" type="search" placeholder="Search" />
+                      </label>
+                      <button class="sds-button" type="button" data-sds-shape="icon" data-sort-order aria-label="Reverse task sort">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 7 3-3 3 3M8 4v16m5-3 3 3 3-3m-3 3V4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" /></svg>
+                      </button>
+                      <sds-dropdown hide-caret width="sm">
+                        <button class="sds-button" type="button" data-sds-shape="icon" aria-label="Table options" popovertarget="task-table-menu" aria-controls="task-table-menu" aria-expanded="false" aria-haspopup="menu"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" /></svg></button>
+                        <menu id="task-table-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical"><li role="none"><button class="sds-button" type="reset" role="menuitem" tabindex="-1">Reset table</button></li><li role="none"><button class="sds-button" type="button" data-export-results role="menuitem" tabindex="-1">Export filtered tasks</button></li></menu>
+                      </sds-dropdown>
+                    </div>
+                  </div>
+                  <div class="sds-table-selection" hidden>
+                    <strong data-selected-count>0 selected</strong>
+                    <div class="sds-cluster" data-sds-gap="sm">
+                      <button class="sds-button" type="button" data-sds-density="compact" data-bulk-action>Mark approved</button>
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-export-selected>Export selected</button>
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-clear-selection>Clear selection</button>
+                    </div>
+                  </div>
+                  <div class="sds-table-container" tabindex="0" role="region" aria-label="Project tasks">
+                  <table class="sds-table" data-sds-row-highlight>
+                    <caption class="sds-sr-only">Project tasks</caption>
+                    <thead><tr>
+                      <th scope="col"><input class="sds-checkbox" type="checkbox" data-select-all aria-label="Select all tasks on this page" /></th>
+                      <th scope="col" aria-sort="ascending"><button class="sds-button" type="button" data-sds-variant="text" data-sds-tone="neutral" data-sds-density="compact" data-sort>Task<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 13V3m-4 4 4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></button></th>
+                      <th scope="col">Description</th><th scope="col">Assignee</th><th scope="col">Status / Priority</th><th scope="col"><span class="sds-sr-only">Actions</span></th>
+                    </tr></thead>
+                    <tbody><tr><td colspan="6">Load the example JavaScript to browse the task data.</td></tr></tbody>
+                  </table>
+                  </div>
+                  <div class="sds-table-footer">
+                      <p class="sds-pagination-status" data-table-status role="status"></p>
+                      <nav class="sds-pagination" aria-label="Task result pages"><ul></ul></nav>
+                      <div class="sds-cluster" data-sds-gap="sm">
+                        <label class="sds-sr-only" for="selection-page-size">Rows per page</label>
+                        <select id="selection-page-size" class="sds-select" data-sds-size="sm" data-page-size><option value="10">10 rows</option><option value="25">25 rows</option><option value="50">50 rows</option></select>
+                      </div>
+                  </div>
+                </div>
+                <p class="sds-text-body" data-sds-size="sm">Demo data. Changes stay on this page. Selection clears when filters or pages change.</p>
+                <p class="sds-sr-only" data-table-announcement role="status"></p>
+                <dialog id="task-details-dialog" class="sds-dialog" aria-labelledby="task-details-title">
+                  <header class="sds-dialog-header"><h3 id="task-details-title" class="sds-text-title">Task details</h3></header>
+                  <div class="sds-stack"><p data-task-description></p><p data-task-assignee></p><p data-task-status></p></div>
+                  <footer class="sds-dialog-footer"><button class="sds-button" type="button" data-close-task>Close task details</button></footer>
+                </dialog>
+              </form>
+            </article>
+
+            <article class="sds-card sds-stack" id="multiple-selection-recipe" data-recipe-script="multiple-selection" data-search-terms="multi-select multiselect combobox tags record IDs form reset">
+              <h3 class="sds-text-h3">Multiple-selection form</h3>
+              <form id="multiple-selection-example" class="sds-stack">
+                <div class="sds-field">
+                  <label for="multiple-topic-query">Add topics</label>
+                  <sds-combobox keep-open>
+                    <input class="sds-input" id="multiple-topic-query" type="search" autocomplete="off" aria-describedby="multiple-topic-help" />
+                    <ul hidden>
+                      <li data-sds-value="research">Research</li>
+                      <li data-sds-value="engineering">Engineering</li>
+                      <li data-sds-value="accessibility">Accessibility</li>
+                    </ul>
+                    <output></output>
+                  </sds-combobox>
+                  <small id="multiple-topic-help">Choose at least one topic. Remove a tag to make it available again.</small>
+                </div>
+                <div class="sds-cluster" data-sds-gap="sm" data-selected-topics><input type="hidden" name="topic" value="research" /></div>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Show topic IDs</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text">Reset topics</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article>
+
+            <article class="sds-card sds-stack" id="input-actions-recipe" data-recipe-script="input-actions" data-search-terms="password visibility reveal clear search clipboard copy input actions">
+              <h3 class="sds-text-h3">Password, clear, and copy actions</h3>
+              <form id="input-actions-example" class="sds-stack">
+                <div class="sds-field">
+                  <label for="action-password">Example password</label>
+                  <div class="sds-input-group">
+                    <input class="sds-input" id="action-password" name="password" type="password" autocomplete="new-password" />
+                    <button class="sds-button" type="button" data-reveal aria-label="Show password" aria-controls="action-password" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 12s3-6 10-6 10 6 10 6-3 6-10 6S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.7" /><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7" /></svg></button>
+                  </div>
+                </div>
+                <div class="sds-field">
+                  <label for="action-query">Search query</label>
+                  <div class="sds-input-group">
+                    <input class="sds-input" id="action-query" name="query" type="search" />
+                    <button class="sds-button" type="button" data-clear aria-label="Clear search" aria-controls="action-query"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg></button>
+                  </div>
+                </div>
+                <div class="sds-field">
+                  <label for="action-url">Project URL</label>
+                  <div class="sds-input-group">
+                    <input class="sds-input" id="action-url" type="url" readonly value="https://example.org/projects/atlas" />
+                    <button class="sds-button" type="button" data-copy-value aria-label="Copy URL"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7" /><path d="M16 8V4H4v12h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" /></svg></button>
+                  </div>
+                </div>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Show example values</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text">Reset fields</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article>
+
+            <article class="sds-card sds-stack" id="date-range-recipe" data-recipe-script="date-range" data-search-terms="date range reporting period calendar presets last seven days">
+              <h3 class="sds-text-h3">Date range and preset</h3>
+              <form id="date-range-example" class="sds-form">
+                <div class="sds-cluster" data-sds-gap="sm">
+                  <span class="sds-text-body" data-sds-size="sm">Quick range</span>
+                  <button class="sds-button" type="button" data-sds-variant="outlined" data-sds-tone="neutral" data-sds-density="compact" data-last-week>Last 7 days</button>
+                </div>
+                <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="sm" data-sds-gap="md">
+                  <div class="sds-field"><label for="range-start">Start date</label><input id="range-start" class="sds-input" type="date" name="start" aria-describedby="range-hint" required /></div>
+                  <div class="sds-field"><label for="range-end">End date</label><input id="range-end" class="sds-input" type="date" name="end" aria-describedby="range-hint range-error" required /></div>
+                </div>
+                <div class="sds-stack" data-sds-gap="xs">
+                  <p class="sds-text-body" data-sds-size="sm" id="range-hint">Both dates are included in the reporting period.</p>
+                  <p class="sds-text-body" data-sds-size="sm" id="range-error" data-date-error aria-live="polite"></p>
+                </div>
+                <div class="sds-stack" data-sds-gap="sm">
+                  <div class="sds-action-group">
+                    <button class="sds-button" type="submit" data-sds-density="compact">Apply reporting period</button>
+                    <button class="sds-button" type="reset" data-sds-variant="text" data-sds-tone="neutral" data-sds-density="compact">Reset dates</button>
+                  </div>
+                  <p class="sds-text-body" data-sds-size="sm" role="status"></p>
+                </div>
+              </form>
+            </article>
+
+            <article class="sds-card sds-stack" id="file-list-recipe" data-search-terms="file list attachments filename size metadata">
+              <h3 class="sds-text-h3">File metadata list</h3>
+              <p class="sds-text-body">Read-only file details. Use the file upload recipe for queue actions and progress.</p>
+              <!-- html-validate-disable-next no-redundant-role -- Preserve WebKit list semantics without markers. -->
+              <ul class="sds-file-list" role="list" aria-label="Example attachments">
+                <li class="sds-file-item">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8Zm0 0v5h5M9 13h6m-6 4h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                  <div class="sds-file-details">
+                    <strong>Research report.pdf</strong>
+                    <small><span>324 KB</span><span>PDF document</span></small>
+                  </div>
+                </li>
+              </ul>
+            </article>
+
+            <article class="sds-card sds-stack" id="file-upload-recipe" data-recipe-script="file-upload" data-search-terms="upload files queue progress cancel retry errors">
+              <h3 class="sds-text-h3">File queue and upload states</h3>
+              <form id="file-upload-example" class="sds-stack" action="/api/uploads" method="post" enctype="multipart/form-data">
+                <div class="sds-field">
+                  <label for="queue-files">PDF attachments</label>
+                  <div class="sds-file-upload" data-sds-size="lg">
+                    <div class="sds-file-upload-surface">
+                      <input id="queue-files" class="sds-file-input" type="file" name="attachment" accept=".pdf,application/pdf" multiple aria-describedby="queue-help queue-endpoint-help" />
+                      <span class="sds-file-upload-action" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" aria-hidden="true">
+                          <path d="M8 10.5V1.75m0 0L4.75 5M8 1.75 11.25 5M3 8.5v3.75c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+                        </svg>
+                        Upload files
+                      </span>
+                      <strong>Click to upload or drag and drop files here</strong>
+                      <small id="queue-help">Each PDF must be smaller than 10 MB.</small>
+                    </div>
+                  </div>
+                  <small id="queue-endpoint-help">Configure a real /api/uploads endpoint before uploading. The playground has no upload server.</small>
+                </div>
+                <!-- html-validate-disable-next no-redundant-role -- Preserve WebKit list semantics without markers. -->
+                <ul class="sds-file-list" role="list" aria-label="Queued files"></ul>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Upload queued files</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text" data-sds-tone="danger">Clear file queue</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article>
           </section>
 
           <section id="feedback" aria-labelledby="feedback-title">
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Feedback</p>
-                <h2 class="sds-text-h3" id="feedback-title">Badges, tags, callouts, and toasts</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="feedback-title">Feedback</h2>
                 <p>
                   Upstream treatment sets are available in every semantic tone.
                 </p>
@@ -1447,7 +1754,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Content</p>
-                <h2 class="sds-text-h3" id="content-title">Avatars, cards, datapoints, tables, and empty states</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="content-title">Content</h2>
                 <p>Present people, metrics, structured records, and zero-data states with a consistent visual rhythm.</p>
               </div>
             </div>
@@ -1712,7 +2019,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Composition</p>
-                <h2 class="sds-text-h3" id="composition-title">Layout primitives and application structure</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="composition-title">Layout primitives</h2>
                 <p>
                   Semantic HTML creates polished application layouts without
                   component JavaScript or generated markup.
@@ -2154,7 +2461,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   </footer>
                   <dialog id="documentation-search-dialog" class="sds-dialog" closedby="any" aria-labelledby="documentation-search-title">
                     <div class="sds-dialog-header">
-                      <h2 id="documentation-search-title" class="sds-text-h3">Search documentation</h2>
+                      <h2 id="documentation-search-title" class="sds-text-title">Search documentation</h2>
                       <button class="sds-button" type="button" data-sds-shape="icon" commandfor="documentation-search-dialog" command="request-close" aria-label="Close documentation search">&times;</button>
                     </div>
                     <search aria-label="Documentation search">
@@ -2454,7 +2761,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Prose</p>
-                <h2 class="sds-text-h3" id="prose-title">Long-form content</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="prose-title">Prose</h2>
                 <p>
                   Dependency-free typography for articles, documentation, and
                   generated rich text.
@@ -2605,7 +2912,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Navigation</p>
-                <h2 class="sds-text-h3" id="navigation-title">Tabs and pagination</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="navigation-title">Navigation</h2>
                 <p>
                   Breadcrumbs and pagination remain ordinary link navigation;
                   tabs add keyboard behavior where the platform needs help.
@@ -2809,7 +3116,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Structure and behavior</p>
-                <h2 class="sds-text-h3" id="structure-title">Dropdowns, floating content, disclosures, and overlays</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="structure-title">Overlays</h2>
                 <p>
                   Browser primitives provide the semantics; SDS adds a small
                   declarative enhancement layer.
@@ -2997,7 +3304,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                       Project details
                     </button>
                     <section id="project-details" class="sds-popover-content" popover="auto">
-                      <h3 class="sds-text-h3">Project Atlas</h3>
+                      <h3 class="sds-text-title">Project Atlas</h3>
                       <p>Updated five minutes ago by Alex Morgan.</p>
                       <button class="sds-button"
                         type="button"
@@ -3012,14 +3319,14 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
                   <sds-popover width="xl" placement="inline-start-end" offset="12">
                     <button class="sds-button" type="button" popovertarget="popover-xl" aria-controls="popover-xl">Extra-large popover</button>
                     <section id="popover-xl" class="sds-popover-content" popover="auto">
-                      <h3 class="sds-text-h3">Extra-large width</h3>
+                      <h3 class="sds-text-title">Extra-large width</h3>
                       <p>More room for contextual detail.</p>
                     </section>
                   </sds-popover>
                   <sds-popover width="2xl" placement="inline-end-start" offset="14">
                     <button class="sds-button" type="button" popovertarget="popover-2xl" aria-controls="popover-2xl">2XL popover</button>
                     <section id="popover-2xl" class="sds-popover-content" popover="auto">
-                      <h3 class="sds-text-h3">2XL width</h3>
+                      <h3 class="sds-text-title">2XL width</h3>
                       <p>The widest floating content surface.</p>
                     </section>
                   </sds-popover>
@@ -3058,7 +3365,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
             <div class="sds-section-header">
               <div>
                 <p class="sds-eyebrow">Loading</p>
-                <h2 class="sds-text-h3" id="loading-title">Progress, spinners, and skeletons</h2>
+                <h2 class="sds-text-h2" data-sds-size="sm" id="loading-title">Loading</h2>
                 <p>Communicate measurable work and short waits, or preserve page structure while content is loading.</p>
               </div>
             </div>
@@ -3165,7 +3472,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
       aria-labelledby="dialog-sm-title"
     >
       <div class="sds-dialog-header">
-        <h2 class="sds-text-h2" id="dialog-sm-title">Small dialog</h2>
+        <h2 class="sds-text-title" id="dialog-sm-title">Small dialog</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close small dialog">&times;</button>
       </div>
       <p>Use a small dialog for a short, focused decision.</p>
@@ -3184,7 +3491,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
     >
       <div class="sds-dialog-header">
         <div>
-          <h2 class="sds-text-h2" id="dialog-title">Native dialog</h2>
+          <h2 class="sds-text-title" id="dialog-title">Native dialog</h2>
           <p id="dialog-description">
             Escape, the backdrop, and either button can close this dialog.
           </p>
@@ -3205,7 +3512,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <dialog id="dialog-lg" class="sds-dialog" data-sds-width="lg" closedby="any" aria-labelledby="dialog-lg-title">
       <div class="sds-dialog-header">
-        <h2 class="sds-text-h2" id="dialog-lg-title">Large dialog</h2>
+        <h2 class="sds-text-title" id="dialog-lg-title">Large dialog</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close large dialog">&times;</button>
       </div>
       <p>Large dialogs provide more room for structured tasks.</p>
@@ -3214,7 +3521,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <dialog id="dialog-xl" class="sds-dialog" data-sds-width="xl" closedby="any" aria-labelledby="dialog-xl-title">
       <div class="sds-dialog-header">
-        <h2 class="sds-text-h2" id="dialog-xl-title">Extra-large dialog</h2>
+        <h2 class="sds-text-title" id="dialog-xl-title">Extra-large dialog</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close extra-large dialog">&times;</button>
       </div>
       <p>Extra-large dialogs support broad forms and comparisons.</p>
@@ -3223,7 +3530,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <dialog id="dialog-2xl" class="sds-dialog" data-sds-width="2xl" closedby="any" aria-labelledby="dialog-2xl-title">
       <div class="sds-dialog-header">
-        <h2 class="sds-text-h2" id="dialog-2xl-title">2XL dialog</h2>
+        <h2 class="sds-text-title" id="dialog-2xl-title">2XL dialog</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close 2XL dialog">&times;</button>
       </div>
       <p>The widest dialog is available for data-heavy workflows.</p>
@@ -3233,7 +3540,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
     <dialog id="panel-left-sm" class="sds-panel" data-sds-side="left" data-sds-width="sm" closedby="any" aria-labelledby="panel-left-title">
       <div class="sds-panel-handle" aria-hidden="true"></div>
       <header>
-        <h2 class="sds-text-h2" id="panel-left-title">Small left panel</h2>
+        <h2 class="sds-text-title" id="panel-left-title">Small left panel</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close panel">&times;</button>
       </header>
       <section aria-label="Panel content"><p>Small panels work well for concise navigation or filters.</p></section>
@@ -3242,7 +3549,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <dialog id="panel-right-md" class="sds-panel" data-sds-side="right" data-sds-width="md" closedby="any" aria-labelledby="panel-right-title">
       <header>
-        <h2 class="sds-text-h2" id="panel-right-title">Medium right panel</h2>
+        <h2 class="sds-text-title" id="panel-right-title">Medium right panel</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close panel">&times;</button>
       </header>
       <section aria-label="Panel content"><p>The default panel placement and size support focused tasks.</p></section>
@@ -3254,7 +3561,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <dialog id="panel-right-lg" class="sds-panel" data-sds-width="lg" closedby="any" aria-labelledby="panel-large-title">
       <header>
-        <h2 class="sds-text-h2" id="panel-large-title">Large right panel</h2>
+        <h2 class="sds-text-title" id="panel-large-title">Large right panel</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close panel">&times;</button>
       </header>
       <section aria-label="Panel content">
@@ -3280,7 +3587,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <dialog id="panel-right-xl" class="sds-panel" data-sds-width="xl" closedby="any" aria-labelledby="panel-xl-title">
       <header>
-        <h2 class="sds-text-h2" id="panel-xl-title">Extra-large right panel</h2>
+        <h2 class="sds-text-title" id="panel-xl-title">Extra-large right panel</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close extra-large panel">&times;</button>
       </header>
       <section aria-label="Panel content"><p>The widest panel supports complex, focused workflows.</p></section>
@@ -3289,7 +3596,7 @@ import '@cmu-sei/sds-lite/auto'</code></pre>
 
     <dialog id="panel-bottom" class="sds-panel" data-sds-side="bottom" closedby="any" aria-labelledby="panel-bottom-title">
       <header>
-        <h2 class="sds-text-h2" id="panel-bottom-title">Bottom panel</h2>
+        <h2 class="sds-text-title" id="panel-bottom-title">Bottom panel</h2>
         <button class="sds-button" type="button" data-sds-shape="icon" command="request-close" aria-label="Close panel">&times;</button>
       </header>
       <section aria-label="Panel content"><p>Bottom panels are useful on narrow screens and touch devices.</p></section>

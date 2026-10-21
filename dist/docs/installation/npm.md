@@ -42,6 +42,26 @@ npm install @cmu-sei/sds-lite
 
 The package has no runtime or peer dependencies.
 
+### Token-free bundled evaluation from source
+
+If you cannot use GitHub Packages credentials, build a package locally from
+a reviewed checkout instead. Use Node.js 20.19.0 or newer and the pinned npm
+11.6.4. Building uses the public development dependencies:
+
+```sh
+npm install
+npm run build
+npm run check:package
+npm pack --ignore-scripts
+```
+
+Then install the emitted `.tgz` path in the consuming application with
+`npm install /absolute/path/to/the-package.tgz`. Keep the source version or
+commit and archive checksum in your dependency review records. This is a
+local evaluation path, not a claim that SDS Lite is published on npmjs.org.
+Public-registry publication still requires package-owner configuration and
+a deliberate release-workflow change.
+
 ## Recommended setup
 
 Import the complete stylesheet and automatic behavior once from your browser
@@ -68,6 +88,11 @@ preserve host typography with application CSS.
 `sds.css` includes common recipes, layouts, prose, and tokens. `/auto` supplies
 interactive behavior and exports `notify()`. See
 [package imports](../reference/imports.md) for manual setup and entry selection.
+
+Complete application examples are included under `docs/examples/` in the
+installed package, as paired HTML and JavaScript files. See
+[composition patterns](../guides/composition-patterns.md) to run them or copy
+them into your application; these example scripts are not package API exports.
 
 ## Where imports belong
 
@@ -100,8 +125,9 @@ All JavaScript entries ship declarations. Types are inferred when importing
 exports or querying a known SDS custom element:
 
 ```ts
-import '@cmu-sei/sds-lite'
+import { setupSds } from '@cmu-sei/sds-lite'
 
+setupSds()
 const toast = document.querySelector('sds-toast')
 toast?.show()
 ```

@@ -318,12 +318,14 @@ export class SdsTabsElement extends HTMLElementBase {
     const currentIndex = this.tabs.indexOf(document.activeElement)
     if (currentIndex < 0) return
 
+    const tabList = event.currentTarget
+    if (!(tabList instanceof HTMLElement)) return
     const vertical =
       this.orientation === 'vertical' ||
-      event.currentTarget instanceof HTMLElement &&
-        event.currentTarget.getAttribute('aria-orientation') === 'vertical'
-    const nextKey = vertical ? 'ArrowDown' : 'ArrowRight'
-    const previousKey = vertical ? 'ArrowUp' : 'ArrowLeft'
+      tabList.getAttribute('aria-orientation') === 'vertical'
+    const rtl = window.getComputedStyle(tabList).direction === 'rtl'
+    const nextKey = vertical ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight'
+    const previousKey = vertical ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft'
     const enabledTabs = this.tabs.filter((tab) => !this.isDisabled(tab))
     if (enabledTabs.length === 0) return
 

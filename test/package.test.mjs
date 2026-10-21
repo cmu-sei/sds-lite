@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { access, readFile, readdir } from 'node:fs/promises'
 import test from 'node:test'
+import { build } from 'vite'
+import { generateExamples } from '../scripts/generate-examples.mjs'
 
 const packageJson = JSON.parse(await readFile('package.json', 'utf8'))
 const customElementsManifest = JSON.parse(
@@ -120,6 +122,40 @@ test('the automatic entry and root entry share behavior modules', async () => {
   assert.match(root, /from "\.\/toast\.js"/)
 })
 
+test('bundlers can tree-shake unused components from a notify-only import', async () => {
+  const result = await build({
+    configFile: false,
+    publicDir: false,
+    logLevel: 'error',
+    plugins: [{
+      name: 'notify-only-consumer',
+      resolveId(id) {
+        if (id === 'notify-only-consumer' || id.endsWith('/notify-only-consumer')) {
+          return '\0notify-only-consumer'
+        }
+      },
+      load(id) {
+        if (id === '\0notify-only-consumer') {
+          return "export { notify } from '@cmu-sei/sds-lite'"
+        }
+      },
+    }],
+    build: {
+      write: false,
+      minify: true,
+      lib: { entry: 'notify-only-consumer', formats: ['es'] },
+    },
+  })
+  const bundles = Array.isArray(result) ? result : [result]
+  const code = bundles.flatMap(bundle => bundle.output)
+    .filter(output => output.type === 'chunk')
+    .map(output => output.code)
+    .join('\n')
+
+  assert.match(code, /sds-toast/)
+  assert.doesNotMatch(code, /sds-tabs|sds-combobox|sds-dropdown|sds-tooltip|sds-popover/)
+})
+
 test('the CDN entries use stable top-level paths', async () => {
   const auto = await readFile('dist/auto.js', 'utf8')
   assert.match(auto, /sds-dropdown/)
@@ -162,6 +198,35 @@ test('the package remains dependency-free', () => {
   assert.equal(packageJson.dependencies, undefined)
   assert.equal(packageJson.peerDependencies, undefined)
   assert.equal(packageJson.optionalDependencies, undefined)
+})
+
+test('standalone recipe titles use one semantic h1 with the playground visual class', async () => {
+  for (const name of ['selection', 'table-selection', 'multiple-selection', 'input-actions', 'date-range', 'file-upload']) {
+    const markup = await readFile(`docs/examples/${name}.html`, 'utf8')
+    const title = markup.match(/<title>([^<]+)<\/title>/)?.[1]
+    assert.ok(title, `${name} has a document title`)
+    assert.equal((markup.match(/<h1\b/g) ?? []).length, 1, name)
+    assert.ok(markup.includes(`<h1 class="sds-text-h3">${title}</h1>`), name)
+  }
+})
+
+test('application recipes ship standalone HTML alongside their scripts for NPM and CDN users', async () => {
+  await generateExamples('docs/examples', true)
+  await generateExamples('dist/docs/examples', true)
+  for (const name of ['selection', 'table-selection', 'multiple-selection', 'input-actions', 'date-range', 'file-upload']) {
+    for (const directory of ['docs/examples', 'dist/docs/examples']) {
+      const markup = await readFile(`${directory}/${name}.html`, 'utf8')
+      assert.match(markup, /<!doctype html>/i)
+      assert.match(markup, /data-sds-root/)
+      assert.match(markup, new RegExp(`src="\\./${name}\\.js"`))
+      assert.doesNotMatch(markup, /data-recipe-script|data-search-terms/)
+      const stylesheet = directory.startsWith('dist/') ? '../../sds.css' : '../../dist/sds.css'
+      const behavior = directory.startsWith('dist/') ? '../../auto.js' : '../../dist/package/auto.js'
+      assert.ok(markup.includes(`href="${stylesheet}"`))
+      assert.ok(markup.includes(`src="${behavior}"`))
+      await access(`${directory}/${name}.js`)
+    }
+  }
 })
 
 test('the package identifies its public release locations', () => {

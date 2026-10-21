@@ -1,10 +1,12 @@
 @layer sds.utilities {
   :where(.sds-cluster) {
+    --sds-layout-gap: var(--sds-space-lg);
+
     display: flex;
     min-inline-size: 0;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--sds-space-lg);
+    gap: var(--sds-layout-gap);
   }
 
   :where(
@@ -17,38 +19,6 @@
   ) {
     container-name: sds-cluster;
     container-type: inline-size;
-  }
-
-  :where(.sds-cluster[data-sds-gap="none"]) {
-    gap: 0;
-  }
-
-  :where(.sds-cluster[data-sds-gap="xs"]) {
-    gap: var(--sds-space-xs);
-  }
-
-  :where(.sds-cluster[data-sds-gap="sm"]) {
-    gap: var(--sds-space-sm);
-  }
-
-  :where(.sds-cluster[data-sds-gap="md"]) {
-    gap: var(--sds-space-md);
-  }
-
-  :where(.sds-cluster[data-sds-gap="xl"]) {
-    gap: var(--sds-space-xl);
-  }
-
-  :where(.sds-cluster[data-sds-gap="2xl"]) {
-    gap: var(--sds-space-2xl);
-  }
-
-  :where(.sds-cluster[data-sds-gap="3xl"]) {
-    gap: var(--sds-space-3xl);
-  }
-
-  :where(.sds-cluster[data-sds-gap="4xl"]) {
-    gap: var(--sds-space-4xl);
   }
 
   @container sds-cluster (max-width: 30rem) {

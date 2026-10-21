@@ -256,6 +256,9 @@
 
     @media (max-width: 64rem) {
       :where(:scope:is([data-sds-variant="application"], :not([data-sds-variant])) > .sds-app-header) {
+        position: sticky;
+        z-index: 10;
+        inset-block-start: 0;
         display: flex;
       }
 

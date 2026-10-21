@@ -42,9 +42,13 @@ Accepted source names are `legacy-sds`, `bootstrap`, `uswds`, `material`,
 and missing files are errors. Files are processed in the order provided.
 
 Run the command on version-controlled files and inspect the diff afterward.
-The tool intentionally leaves unsupported or dynamic source markup unchanged.
-Use the retained-marker report as a manual migration checklist; repeated
-markers are grouped per file.
+The tool skips many recognized unsupported features and dynamic mapping
+bindings, but it is not a source-framework parser or a complete prop validator.
+Other attributes, bindings, event handlers, and child markup may survive a
+conversion without equivalent native behavior. Use the retained-marker report
+as a partial manual migration checklist; repeated markers are grouped per file.
+It does not report every leftover dependency: for example, legacy SDS rendered
+classes are not included in that report.
 
 ## Final SDS Lite conventions
 
@@ -66,7 +70,9 @@ configure their options. A theme root alone does not apply a recipe:
 ```
 
 Custom elements use ordinary host attributes because their tag names already
-provide the namespace:
+provide the namespace. These examples assume SDS Lite CSS is loaded, an ancestor
+has `data-sds-root`, and JavaScript behavior is registered with `setupSds()` or
+the `@cmu-sei/sds-lite/auto` entry point:
 
 ```html
 <sds-tabs
@@ -98,27 +104,41 @@ provide the namespace:
   <span>Helpful context.</span>
 </sds-tooltip>
 
-<sds-toast open tone="success" duration="5000" persistent>
+<sds-toast id="saved-toast" open tone="success" persistent>
   <strong>Saved</strong>
   <span>Your changes are available.</span>
   <button class="sds-button" type="button" data-sds-shape="icon" data-sds-toast-close aria-label="Dismiss">&times;</button>
 </sds-toast>
 ```
 
-Behavior hooks on descendants remain namespaced:
+Behavior hooks on descendants remain namespaced. Toast close controls belong
+inside their toast, as above; an open control targets its ID. Dialog commands
+target a native SDS Lite dialog:
 
 ```html
 <button class="sds-button" type="button" data-sds-toast-open="saved-toast">Show notification</button>
-<button class="sds-button" type="button" data-sds-toast-close>Dismiss</button>
-<button class="sds-button" type="button" data-sds-callout-close>Dismiss callout</button>
 <button
   class="sds-button"
   type="button"
   commandfor="confirm-dialog"
-  command="close"
-  data-sds-return-value="confirm"
->Confirm</button>
+  command="show-modal"
+>Review confirmation</button>
+<dialog class="sds-dialog" id="confirm-dialog" aria-label="Confirm changes">
+  <p>Apply these changes?</p>
+  <button
+    class="sds-button"
+    type="button"
+    commandfor="confirm-dialog"
+    command="close"
+    data-sds-return-value="confirm"
+  >Confirm</button>
+</dialog>
 ```
+
+`data-sds-callout-close` is an application-owned hook: `setupSds()` does not
+install a callout dismissal handler. Add your own click handler when using it.
+Likewise, `aria-disabled="true"` on a migrated link does not prevent navigation;
+application code must enforce the disabled state.
 
 Tabs use the native button `value` attribute:
 

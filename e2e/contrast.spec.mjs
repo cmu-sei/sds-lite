@@ -26,6 +26,31 @@ function contrast(first, second) {
   return (lighter + 0.05) / (darker + 0.05)
 }
 
+test('selected segments, cards, toggle buttons, and chips retain readable contrast', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const form = page.locator('#selection-example')
+  await form.getByRole('button', { name: 'Show archived', exact: true }).click()
+  await form.getByRole('button', { name: 'Favorites', exact: true }).click()
+  for (const theme of themes) {
+    for (const scheme of schemes) {
+      await page.locator('[data-sds-root]').first().evaluate((root, settings) => {
+        root.dataset.sdsTheme = settings.theme
+        root.dataset.sdsColorScheme = settings.scheme
+      }, { theme, scheme })
+      for (const selector of ['.sds-segment:has(input:checked)', '.sds-selection-card:has(input:checked)', '.sds-button[aria-pressed="true"]', '.sds-tag[aria-pressed="true"]']) {
+        await expect.poll(async () => {
+          const colors = await form.locator(selector).first().evaluate(element => {
+            const style = getComputedStyle(element)
+            return { foreground: style.color, background: style.backgroundColor }
+          })
+          return contrast(colors.foreground, colors.background)
+        }, { message: `${theme} ${scheme} ${selector}` }).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  }
+})
+
 test('busy button labels retain readable contrast in every theme and scheme', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')

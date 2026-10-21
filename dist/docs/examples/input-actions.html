@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Password, clear, and copy actions</title>
+  <link rel="stylesheet" href="../../sds.css">
+  <script type="module" src="../../auto.js"></script>
+</head>
+<body class="sds-document" data-sds-root>
+  <main class="sds-page"><article class="sds-card sds-stack" id="input-actions-recipe">
+              <h1 class="sds-text-h3">Password, clear, and copy actions</h1>
+              <form id="input-actions-example" class="sds-stack">
+                <div class="sds-field">
+                  <label for="action-password">Example password</label>
+                  <div class="sds-input-group">
+                    <input class="sds-input" id="action-password" name="password" type="password" autocomplete="new-password">
+                    <button class="sds-button" type="button" data-reveal="" aria-label="Show password" aria-controls="action-password" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 12s3-6 10-6 10 6 10 6-3 6-10 6S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.7"></path><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"></circle></svg></button>
+                  </div>
+                </div>
+                <div class="sds-field">
+                  <label for="action-query">Search query</label>
+                  <div class="sds-input-group">
+                    <input class="sds-input" id="action-query" name="query" type="search">
+                    <button class="sds-button" type="button" data-clear="" aria-label="Clear search" aria-controls="action-query"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></svg></button>
+                  </div>
+                </div>
+                <div class="sds-field">
+                  <label for="action-url">Project URL</label>
+                  <div class="sds-input-group">
+                    <input class="sds-input" id="action-url" type="url" readonly value="https://example.org/projects/atlas">
+                    <button class="sds-button" type="button" data-copy-value="" aria-label="Copy URL"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"></rect><path d="M16 8V4H4v12h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg></button>
+                  </div>
+                </div>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Show example values</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text">Reset fields</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article></main>
+  <script type="module" src="./input-actions.js"></script>
+</body>
+</html>

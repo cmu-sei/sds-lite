@@ -1,10 +1,6 @@
 @layer sds.components {
   :where(.sds-card) {
-    padding: clamp(
-      var(--sds-space-xl),
-      calc(1.25rem + 1vw),
-      var(--sds-space-2xl)
-    );
+    padding: var(--sds-surface-inset);
   }
 
   :where(.sds-card, .sds-table-container:has(> .sds-table[data-sds-standalone])) {
@@ -18,6 +14,10 @@
     position: relative;
     isolation: isolate;
     transition: box-shadow var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  :where(.sds-card-link[href]) {
+    text-decoration: none;
   }
 
   :where(.sds-card-link[href])::before {
@@ -51,7 +51,7 @@
   }
 
   :where(.sds-card-label) {
-    color: light-dark(var(--sds-gray-600), var(--sds-gray-500));
+    color: var(--sds-color-text-muted);
     font-size: 0.875rem;
     font-weight: 600;
   }

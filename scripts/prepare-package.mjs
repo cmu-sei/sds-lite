@@ -1,4 +1,5 @@
 import { cp, readFile, rm, writeFile } from 'node:fs/promises'
+import { generateExamples } from './generate-examples.mjs'
 
 const distributionDirectory = 'dist'
 const packageDirectory = `${distributionDirectory}/package`
@@ -42,3 +43,4 @@ await Promise.all(
     cp(filename, `${distributionDirectory}/${filename}`),
   ),
 )
+await generateExamples('dist/docs/examples')

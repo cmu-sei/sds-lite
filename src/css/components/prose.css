@@ -31,7 +31,7 @@
     max-inline-size: 95ch;
     color: light-dark(var(--sds-gray-900), var(--sds-white));
     font-family: var(--sds-font-body);
-    font-size: 1rem;
+    font-size: var(--sds-type-body-size);
     line-height: 1.5;
     text-rendering: optimizeLegibility;
     text-wrap: pretty;
@@ -196,48 +196,48 @@
 
   :where(.sds-prose h1:not(.sds-not-prose, .sds-not-prose *)) {
     font-family: var(--sds-font-sans);
-    font-size: 2.25rem;
+    font-size: var(--sds-type-h1-size);
     font-weight: 600;
     letter-spacing: -0.02em;
-    line-height: 42px;
+    line-height: var(--sds-type-h1-leading);
   }
 
   :where(.sds-prose h2:not(.sds-not-prose, .sds-not-prose *)) {
     font-family: var(--sds-font-sans);
-    font-size: 1.875rem;
+    font-size: var(--sds-type-h2-size);
     font-weight: 600;
     letter-spacing: -0.02em;
-    line-height: 36px;
+    line-height: var(--sds-type-h2-leading);
   }
 
   :where(.sds-prose h3:not(.sds-not-prose, .sds-not-prose *)) {
     font-family: var(--sds-font-sans);
-    font-size: 1.5rem;
+    font-size: var(--sds-type-h3-size);
     font-weight: 600;
     letter-spacing: -0.02em;
-    line-height: 32px;
+    line-height: var(--sds-type-h3-leading);
   }
 
   :where(.sds-prose h4:not(.sds-not-prose, .sds-not-prose *)) {
     font-family: var(--sds-font-sans);
-    font-size: 1.25rem;
+    font-size: var(--sds-type-h4-size);
     font-weight: 600;
     letter-spacing: -0.03px;
-    line-height: 28px;
+    line-height: var(--sds-type-h4-leading);
     text-transform: uppercase;
   }
 
   :where(.sds-prose h5:not(.sds-not-prose, .sds-not-prose *)) {
-    font-size: 0.875rem;
+    font-size: var(--sds-type-h5-size);
     font-weight: 600;
-    line-height: 20px;
+    line-height: var(--sds-type-h5-leading);
     text-transform: uppercase;
   }
 
   :where(.sds-prose h6:not(.sds-not-prose, .sds-not-prose *)) {
-    font-size: 0.875rem;
+    font-size: var(--sds-type-h6-size);
     font-weight: 600;
-    line-height: 20px;
+    line-height: var(--sds-type-h6-leading);
   }
 
   :where(
