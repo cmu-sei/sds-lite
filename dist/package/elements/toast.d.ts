@@ -9,6 +9,8 @@ export interface SdsNotifyOptions {
     duration?: number;
     persistent?: boolean;
     urgent?: boolean;
+    dismissLabel?: string;
+    regionLabel?: string;
 }
 export declare class SdsToastElement extends HTMLElementBase {
     static observedAttributes: string[];

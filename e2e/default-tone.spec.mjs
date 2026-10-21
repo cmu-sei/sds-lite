@@ -188,7 +188,7 @@ test('playground exposes omitted-tone examples for every interface', async ({
   const examples = [
     {
       name: 'regular and compact buttons',
-      selector: '#default-action-tones button',
+      selector: '#default-action-tones > [data-example-preview] button',
       count: 8,
       attribute: 'data-sds-tone',
     },

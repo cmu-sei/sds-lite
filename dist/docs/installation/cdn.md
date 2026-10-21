@@ -14,9 +14,12 @@ https://cdn.jsdelivr.net/gh/cmu-sei/sds-lite@vVERSION/dist/FILE
 
 ## Complete starter page
 
-Serve this complete HTML document through a web server. In an HTML playground, use the
-stylesheet and script tags plus the contents of `<body>`; put its root
-attributes and `sds-document` class on the outer `<main>`.
+Serve this complete HTML document through a web server. In an HTML playground,
+use the stylesheet and script tags plus the contents of `<body>`. Apply the
+root attributes and `sds-document` class to the playground's `<body>` through
+its document settings, keeping `sds-page` on `<main>`. If those settings are
+unavailable, put the root attributes on `<main>` and omit `sds-document`;
+the playground owns the body margin, background, and viewport sizing.
 
 ```html
 <!doctype html>
@@ -120,14 +123,18 @@ Use it in addition to `sds.css` for SEI application or brochure layouts.
 
 ## Content Security Policy
 
-SDS Lite does not inject external scripts or evaluate strings. Ordinary
-recipes do not require inline styles, but comboboxes, dropdowns, popovers,
-and tooltips set inline positioning, sizing, and arrow styles on floating
-surfaces; draggable panels set inline transform, transition, and handle
-styles. A strict policy must therefore permit these element style
-attributes. A Content Security Policy must also allow
+SDS Lite does not inject external scripts or evaluate strings. Floating
+surfaces and draggable panels update positioning, sizing, arrow, transform,
+transition, and handle styles through individual `element.style` properties.
+These CSSOM updates do not require allowing literal inline style attributes
+with `style-src-attr`; application-authored `style="..."` examples do.
+Test the complete page under your application's policy.
+A Content Security Policy must allow
 `https://cdn.jsdelivr.net` in `style-src` for CDN stylesheets and in
-`script-src` for CDN modules. If you use an inline module like the examples
+`script-src` for CDN modules (or their `*-src-elem` overrides, when defined).
+Allow `data:` in `img-src` for embedded checkbox indicators and
+`https://cdn.jsdelivr.net` there when using the branded wordmark asset.
+If you use an inline module like the examples
 above, authorize it with your application's nonce or move it into an external
 JavaScript file. Self-host the release files when third-party origins are not
 allowed.

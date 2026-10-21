@@ -2,21 +2,48 @@
   :where(.sds-dialog, .sds-panel) {
     overflow: auto;
     border: 1px solid var(--sds-color-border-default);
-    color: light-dark(var(--sds-gray-900), var(--sds-gray-25));
+    color: var(--sds-color-text-default);
     background: var(--sds-color-surface-raised);
-    box-shadow: var(--sds-shadow-xl);
+    box-shadow: var(--sds-shadow-modal);
   }
 
   :where(.sds-dialog-header, .sds-panel > header) {
     display: flex;
     gap: var(--sds-space-lg);
+    align-items: flex-start;
     justify-content: space-between;
   }
 
-  :where(.sds-dialog-header h2, .sds-panel > header h2) {
-    font-size: 1.5rem;
-    font-weight: 300;
-    line-height: 1.75rem;
+  :where(
+    .sds-dialog-header :is(h1, h2, h3, h4, h5, h6),
+    .sds-panel > header :is(h1, h2, h3, h4, h5, h6)
+  ) {
+    margin: 0;
+    font-family: var(--sds-font-heading);
+    font-size: var(--sds-type-title-size);
+    font-weight: var(--sds-type-title-weight);
+    line-height: var(--sds-type-title-leading);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  :where(.sds-dialog > p, .sds-dialog-header p, .sds-panel > header p) {
+    margin: 0;
+  }
+
+  :where(.sds-dialog-header p, .sds-panel > header p) {
+    margin-block-start: var(--sds-space-sm);
+    color: var(--sds-color-text-muted);
+    font-size: var(--sds-type-body-size-sm);
+    line-height: var(--sds-type-body-leading-sm);
+  }
+
+  :where(.sds-dialog, .sds-panel) > :where(main, section) > :where(:first-child) {
+    margin-block-start: 0;
+  }
+
+  :where(.sds-dialog, .sds-panel) > :where(main, section) > :where(:last-child) {
+    margin-block-end: 0;
   }
 
   :where(.sds-dialog-footer, .sds-panel > footer) {
@@ -24,11 +51,6 @@
     flex-wrap: wrap;
     gap: var(--sds-space-sm);
     justify-content: flex-end;
-  }
-
-  :where(.sds-dialog-footer, .sds-panel > footer)
-    > :is(button, .sds-button):is(:not([data-sds-variant]), [data-sds-variant="filled"]) {
-    order: 1;
   }
 
   :where(.sds-dialog, .sds-panel)::backdrop {

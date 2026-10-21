@@ -42,6 +42,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
 | heading | `.sds-text-h1`<br>`.sds-text-h2`<br>`.sds-text-h3`<br>`.sds-text-h4`<br>`.sds-text-h5`<br>`.sds-text-h6` | `<h1>`<br>`<h2>`<br>`<h3>`<br>`<h4>`<br>`<h5>`<br>`<h6>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| title | `.sds-text-title` | `<h1>`<br>`<h2>`<br>`<h3>`<br>`<h4>`<br>`<h5>`<br>`<h6>` |  | Compact sentence-case UI title, 1.25rem/1.75rem by default without viewport scaling; Forge uses medium sans-serif and Plaid uses regular serif. |
 | text | `.sds-text-lead`<br>`.sds-text-body`<br>`.sds-text-caption1`<br>`.sds-text-caption2` | `<p>`<br>`<span>`<br>`<div>`<br>`<small>`<br>`<figcaption>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
 
 ## Actions and forms
@@ -50,16 +51,18 @@ An option with an `on` target belongs on that element, not necessarily on the re
 |---|---|---|---|---|
 | fieldset | `.sds-fieldset` | `<fieldset>` |  | Explicit border and shape for a native fieldset. |
 | button | `.sds-button` | `<button>`<br>`<a>` | `data-sds-variant`: `filled`, `tonal`, `outlined`, `text` (when omitted: filled for text buttons; text for icon buttons; reset by removing the attribute)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-density`: `compact` (when omitted: comfortable; reset by removing the attribute)<br>`data-sds-shape`: `icon` (when omitted: text; reset by removing the attribute)<br>`data-sds-block` (omitted by default) | Action styling for native buttons and links. |
+| segmented | `.sds-segmented`<br>`.sds-segment` | `<div>`<br>`<label>` |  | Neutral segmented track with raised checked segments and optional decorative SVG icons. Native radios select one submitted value and checkboxes select several; checked, invalid, disabled, and focus states remain native. |
+| selection-card | `.sds-selection-card` | `<label>` |  | Whole-card native radio or checkbox selection with checked, invalid, disabled, and focus states. Do not nest additional interactive controls inside the label. |
 | link | `.sds-link` | `<a>` | `data-sds-variant`: `secondary`, `tertiary`, `inline`, `cta` (when omitted: primary; reset by removing the attribute)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg`, `xl` (when omitted: inherited; reset by removing the attribute) | Link styling with semantic tone and emphasis. |
 | field | `.sds-field` |  | `data-sds-orientation`: `horizontal`, `vertical` (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-field > small, .sds-field > label small`) (when omitted: muted help; inherited label color; reset by removing the attribute) | Label, control, help, and validation layout. |
 | form | `.sds-form` |  |  | Narrow vertical form layout. |
 | form-control | `.sds-input`<br>`.sds-select` | `<input>`<br>`<select>`<br>`<textarea>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Explicit hooks for native form controls. |
-| input-group | `.sds-input-group`<br>`.sds-input-addon` |  | `data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native form control with a visible prefix or suffix. |
+| input-group | `.sds-input-group`<br>`.sds-input-addon` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-input-group`) (default: `md`) | One continuous field surface around one native input, select, or textarea, with optional decorative SVGs, embedded actions, and sds-input-addon parts for visibly separated prefixes or suffixes. |
 | range | `.sds-range` | `<input>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native range input styling. |
 | combobox-parts | `.sds-combobox-list` |  | `data-sds-value`: string (on `.sds-combobox-list > li`) (when omitted: displayed value; reset by removing the attribute) | Suggestion list for a native text input. |
 | choice | `.sds-choice`<br>`.sds-checkbox`<br>`.sds-radio` | `<label>`<br>`<input>` |  | Checkbox or radio with label text. |
 | switch | `.sds-switch` | `<label>` | `data-sds-size`: `sm`, `md`, `lg` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`) | Native checkbox with switch appearance. |
-| file-upload | `.sds-file-input`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-file-upload, .sds-file-input`) (default: `md`) | Native file input and composed upload surface. |
+| file-upload | `.sds-file-input`<br>`.sds-file-list`<br>`.sds-file-item`<br>`.sds-file-details`<br>`.sds-file-upload`<br>`.sds-file-upload-action`<br>`.sds-file-upload-surface` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-file-upload, .sds-file-input`) (default: `md`) | Native file input, composed upload surface, and responsive file queue rows. |
 | action-group | `.sds-action-group` |  |  | Responsive layout for related actions. |
 
 ## Feedback and loading
@@ -86,7 +89,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | datapoint | `.sds-datapoint` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Label, value, and context. |
 | list | `.sds-list`<br>`.sds-list-item`<br>`.sds-list-marker` |  | `data-sds-divided` (on `.sds-list`) (omitted by default) | Structured content list. |
 | timeline | `.sds-timeline`<br>`.sds-timeline-item`<br>`.sds-timeline-marker` |  | `data-sds-orientation`: `horizontal`, `vertical` (on `.sds-timeline`) (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-timeline-item`) (when omitted: unaccented; reset by removing the attribute) | Vertical or horizontal event sequence.<br>Requires: Add tabindex="0" to a horizontal timeline so keyboard users can reach horizontally overflowed content. |
-| table | `.sds-table`<br>`.sds-table-container`<br>`.sds-table-footer` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-table`) (default: `md`)<br>`data-sds-density`: `compact` (on `.sds-table`) (when omitted: comfortable; reset by removing the attribute)<br>`data-sds-standalone` (on `.sds-table`) (omitted by default)<br>`data-sds-row-highlight` (on `.sds-table`) (omitted by default)<br>`data-sds-sticky`: `start`, `end` (on `.sds-table th, .sds-table td`) (when omitted: none; reset by removing the attribute) | Application data table and overflow container. |
+| table | `.sds-table`<br>`.sds-table-container`<br>`.sds-table-footer`<br>`.sds-table-toolbar`<br>`.sds-table-selection` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-table`) (default: `md`)<br>`data-sds-density`: `compact` (on `.sds-table`) (when omitted: comfortable; reset by removing the attribute)<br>`data-sds-standalone` (on `.sds-table`) (omitted by default)<br>`data-sds-row-highlight` (on `.sds-table`) (omitted by default)<br>`data-sds-sticky`: `start`, `end` (on `.sds-table th, .sds-table td`) (when omitted: none; reset by removing the attribute) | Application data table and overflow container. |
 
 ## Layout
 
@@ -96,7 +99,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | cluster | `.sds-cluster` |  | `data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`)<br>`data-sds-stack-at`: `sm`, `md`, `lg`, `xl` (when omitted: none; reset by removing the attribute) | Wrapping flex row for related content. |
 | stack | `.sds-stack` |  | `data-sds-gap`: `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl` (default: `lg`) | Vertical content flow with consistent spacing. |
 | page | `.sds-page`<br>`.sds-page-header`<br>`.sds-section-header`<br>`.sds-eyebrow` |  |  | Page content, headers, and section context. |
-| sidebar | `.sds-sidebar`<br>`.sds-sidebar-close`<br>`.sds-sidebar-layout` |  |  | Persistent or mobile navigation layout. |
+| sidebar | `.sds-sidebar`<br>`.sds-sidebar-close`<br>`.sds-sidebar-layout` |  | `data-sds-density`: `compact` (on `.sds-sidebar`) (when omitted: comfortable; reset by removing the attribute) | Persistent or mobile navigation layout. |
 
 ## Navigation and overlays
 
@@ -256,7 +259,7 @@ Application responsibilities:
 
 Kind: layout. Stylesheets: `sds.css`, `brand.css`. JavaScript setup: required.
 
-Recipes: `application-shell`, `cluster`, `button`, `sidebar`, `link`, `prose`, `stack`, `heading`, `dialog`, `form`, `field`, `form-control`.
+Recipes: `application-shell`, `cluster`, `button`, `sidebar`, `link`, `prose`, `stack`, `heading`, `title`, `dialog`, `form`, `field`, `form-control`.
 
 Custom elements: none.
 

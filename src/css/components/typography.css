@@ -20,6 +20,16 @@
 }
 
 @layer sds.utilities {
+  :where(.sds-text-title) {
+    margin: 0;
+    font-family: var(--sds-font-heading);
+    font-size: var(--sds-type-title-size);
+    font-weight: var(--sds-type-title-weight);
+    line-height: var(--sds-type-title-leading);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
   :where(.sds-text-h1, .sds-text-h2, .sds-text-h3, .sds-text-h4, .sds-text-h5, .sds-text-h6, .sds-text-lead, .sds-text-body, .sds-text-caption1, .sds-text-caption2) {
     margin: 0;
     font-size: var(--sds-typography-small-size);
@@ -38,45 +48,52 @@
   }
 
   :where(.sds-text-h1) {
-    --sds-typography-small-size: 1.875rem;
-    --sds-typography-small-leading: 2.375rem;
-    --sds-typography-large-size: 2.25rem;
-    --sds-typography-large-leading: 2.625rem;
+    --sds-typography-small-size: var(--sds-type-h1-size-sm);
+    --sds-typography-small-leading: var(--sds-type-h1-leading-sm);
+    --sds-typography-large-size: var(--sds-type-h1-size);
+    --sds-typography-large-leading: var(--sds-type-h1-leading);
   }
 
   :where(.sds-text-h2) {
-    --sds-typography-small-size: 1.5rem;
-    --sds-typography-small-leading: 1.75rem;
-    --sds-typography-large-size: 1.875rem;
-    --sds-typography-large-leading: 2.25rem;
+    --sds-typography-small-size: var(--sds-type-h2-size-sm);
+    --sds-typography-small-leading: var(--sds-type-h2-leading-sm);
+    --sds-typography-large-size: var(--sds-type-h2-size);
+    --sds-typography-large-leading: var(--sds-type-h2-leading);
   }
 
   :where(.sds-text-h3) {
-    --sds-typography-small-size: 1.25rem;
-    --sds-typography-small-leading: 1.625rem;
-    --sds-typography-large-size: 1.5rem;
-    --sds-typography-large-leading: 2rem;
+    --sds-typography-small-size: var(--sds-type-h3-size-sm);
+    --sds-typography-small-leading: var(--sds-type-h3-leading-sm);
+    --sds-typography-large-size: var(--sds-type-h3-size);
+    --sds-typography-large-leading: var(--sds-type-h3-leading);
   }
 
   :where(.sds-text-h4) {
-    --sds-typography-small-size: 1.125rem;
-    --sds-typography-small-leading: 1.25rem;
-    --sds-typography-large-size: 1.25rem;
-    --sds-typography-large-leading: 1.75rem;
+    --sds-typography-small-size: var(--sds-type-h4-size-sm);
+    --sds-typography-small-leading: var(--sds-type-h4-leading-sm);
+    --sds-typography-large-size: var(--sds-type-h4-size);
+    --sds-typography-large-leading: var(--sds-type-h4-leading);
     text-transform: uppercase;
   }
 
   :where(.sds-text-h5, .sds-text-h6) {
-    --sds-typography-small-size: 0.75rem;
-    --sds-typography-small-leading: 1.25rem;
-    --sds-typography-large-size: 0.875rem;
-    --sds-typography-large-leading: 1.25rem;
     font-weight: 600;
     text-transform: none;
   }
 
   :where(.sds-text-h5) {
+    --sds-typography-small-size: var(--sds-type-h5-size-sm);
+    --sds-typography-small-leading: var(--sds-type-h5-leading-sm);
+    --sds-typography-large-size: var(--sds-type-h5-size);
+    --sds-typography-large-leading: var(--sds-type-h5-leading);
     text-transform: uppercase;
+  }
+
+  :where(.sds-text-h6) {
+    --sds-typography-small-size: var(--sds-type-h6-size-sm);
+    --sds-typography-small-leading: var(--sds-type-h6-leading-sm);
+    --sds-typography-large-size: var(--sds-type-h6-size);
+    --sds-typography-large-leading: var(--sds-type-h6-leading);
   }
 
   :where(.sds-text-lead) {
@@ -89,10 +106,10 @@
   }
 
   :where(.sds-text-body) {
-    --sds-typography-small-size: 0.875rem;
-    --sds-typography-small-leading: 1.25rem;
-    --sds-typography-large-size: 1rem;
-    --sds-typography-large-leading: 1.5rem;
+    --sds-typography-small-size: var(--sds-type-body-size-sm);
+    --sds-typography-small-leading: var(--sds-type-body-leading-sm);
+    --sds-typography-large-size: var(--sds-type-body-size);
+    --sds-typography-large-leading: var(--sds-type-body-leading);
     font-weight: 400;
   }
 

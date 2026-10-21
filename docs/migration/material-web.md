@@ -44,6 +44,9 @@ An empty or self-closing `<md-filled-text-field>` or
 not use component-generated label, help, error, icon, prefix, suffix, or
 multiline features.
 
+In particular, `type="textarea"` is left unchanged for manual conversion;
+the migrator does not generate a textarea from a Material text field.
+
 ```html
 <label for="email">Email</label>
 <md-outlined-text-field id="email" type="email"></md-outlined-text-field>
@@ -65,9 +68,12 @@ becomes:
   structure.
 - `soft-disabled` deliberately remains focusable and has no direct safe native
   button mapping; the tool leaves it unchanged.
-- Dynamic appearance or semantic props are left unchanged with a warning.
+- Recognized dynamic button style/semantic props and field-shaping props are
+  warned about and skipped, not every possible binding or component prop.
+- Button icon children and their `slot` attributes are retained, while
+  `trailing-icon` is removed. Rebuild their native placement and review
+  component event handlers and other non-native attributes.
 - Material elevation, shape, typography, state layers, and design tokens are
   not translated.
 - Replace imports, custom-element registration, and Material theme styles
   after markup migration and behavior testing.
-

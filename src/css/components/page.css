@@ -1,8 +1,5 @@
 @layer sds.components {
   :where(.sds-page-header) {
-    position: sticky;
-    z-index: 5;
-    inset-block-start: 0;
     display: flex;
     flex-wrap: wrap;
     gap: var(--sds-space-xl);
@@ -62,13 +59,5 @@
       padding-inline: var(--sds-space-lg);
     }
 
-    :where(.sds-page > section) {
-      scroll-margin-block-start:
-        calc(
-          var(--sds-space-4xl) +
-          var(--sds-space-4xl) +
-          var(--sds-space-lg)
-        );
-    }
   }
 }

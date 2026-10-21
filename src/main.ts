@@ -1,8 +1,35 @@
 import './style.css'
 import './brand.css'
 import { setupSds, type SdsComboboxSelectDetail } from './sds.ts'
+import { setupSelectionExample } from '../docs/examples/selection.js'
+import { setupTableSelectionExample } from '../docs/examples/table-selection.js'
+import { setupMultipleSelectionExample } from '../docs/examples/multiple-selection.js'
+import { setupInputActionsExample } from '../docs/examples/input-actions.js'
+import { setupDateRangeExample } from '../docs/examples/date-range.js'
+import { setupFileUploadExample } from '../docs/examples/file-upload.js'
+import selectionSource from '../docs/examples/selection.js?raw'
+import tableSource from '../docs/examples/table-selection.js?raw'
+import multipleSource from '../docs/examples/multiple-selection.js?raw'
+import inputSource from '../docs/examples/input-actions.js?raw'
+import dateSource from '../docs/examples/date-range.js?raw'
+import uploadSource from '../docs/examples/file-upload.js?raw'
 
 setupSds()
+setupSelectionExample()
+setupTableSelectionExample()
+setupMultipleSelectionExample()
+setupInputActionsExample()
+setupDateRangeExample()
+setupFileUploadExample()
+
+const recipeSources: Record<string, string> = {
+  selection: selectionSource,
+  'table-selection': tableSource,
+  'multiple-selection': multipleSource,
+  'input-actions': inputSource,
+  'date-range': dateSource,
+  'file-upload': uploadSource,
+}
 
 const teamInput = document.querySelector<HTMLInputElement>('#remote-combobox')
 const teamOptions = document.querySelector<HTMLUListElement>('#team-options')
@@ -111,11 +138,28 @@ for (const button of document.querySelectorAll<HTMLElement>('[data-copy-source]'
   if (source && code) code.textContent = source.outerHTML
 }
 
+const exampleEntries: {
+  element: HTMLElement
+  title: string
+  kind: string
+  section: HTMLElement
+  terms: string
+}[] = []
+
 const addCopyExample = (example: HTMLElement, name: string, fullPage = false) => {
+  const scriptName = example.dataset.recipeScript
+  const script = scriptName ? recipeSources[scriptName] : undefined
+  if (scriptName && !script) throw new Error(`Unknown example script: ${scriptName}`)
+  const originalHeading = !fullPage && !example.hasAttribute('data-copy-example')
+    ? example.querySelector<HTMLHeadingElement>('h3, h4')
+    : null
+  if (originalHeading) originalHeading.dataset.sdsSize = 'sm'
   const clone = example.cloneNode(true) as HTMLElement
   for (const element of [clone, ...clone.querySelectorAll<HTMLElement>('*')]) {
     element.removeAttribute('data-copy-layout')
     element.removeAttribute('data-copy-example')
+    element.removeAttribute('data-recipe-script')
+    element.removeAttribute('data-search-terms')
   }
 
   if (fullPage) {
@@ -141,8 +185,10 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
 
   const details = document.createElement('details')
   details.className = 'sds-disclosure'
+  details.dataset.exampleSource = ''
+  details.dataset.sourceLabel = `${name} HTML`
   const summary = document.createElement('summary')
-  summary.textContent = `${name} HTML`
+  summary.textContent = script ? 'View HTML + JavaScript' : 'View HTML'
   const pre = document.createElement('pre')
   pre.id = `copy-example-${document.querySelectorAll('[id^="copy-example-"]').length + 1}`
   pre.tabIndex = 0
@@ -152,7 +198,7 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
   const brand = setup.match(/href="([^"]+\/sds\.css)"/)?.[1].replace('/sds.css', '/brand.css')
   code.textContent = fullPage
     ? `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${name}</title>\n${setup}\n${brand ? `<link rel="stylesheet" href="${brand}">` : ''}\n</head>\n<body class="sds-document" data-sds-root data-sds-theme="${clone.dataset.sdsTheme}">\n${markup}\n</body>\n</html>`
-    : markup
+    : `${markup}${script ? `\n<script type="module">\n${script}\n</script>` : ''}`
   pre.append(code)
   const prose = document.createElement('div')
   prose.className = 'sds-prose'
@@ -164,14 +210,42 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
   const button = document.createElement('button')
   button.type = 'button'
   button.className = 'sds-button'
+  button.dataset.sdsDensity = 'compact'
+  button.dataset.sdsVariant = 'outlined'
   button.dataset.copyTarget = pre.id
-  button.textContent = fullPage ? `Copy ${name.toLowerCase()} page` : `Copy ${name.toLowerCase()} markup`
+  button.textContent = script ? 'Copy HTML + JS' : fullPage ? 'Copy page' : 'Copy HTML'
+  button.setAttribute('aria-label', fullPage ? `Copy ${name.toLowerCase()} page`
+    : script ? `Copy ${name.toLowerCase()} HTML + JavaScript` : `Copy ${name.toLowerCase()} markup`)
   actions.append(button)
+  const tools = document.createElement('header')
+  tools.className = 'sds-section-header'
+  tools.dataset.exampleTools = ''
+  tools.tabIndex = -1
+  const heading = document.createElement('div')
+  heading.className = 'sds-stack'
+  heading.dataset.sdsGap = 'xs'
+  const kind = fullPage ? 'Page starter' : example.hasAttribute('data-copy-example')
+    ? 'Page pattern' : script ? 'Application recipe' : 'Component example'
+  const label = document.createElement('p')
+  label.className = 'sds-eyebrow'
+  label.textContent = fullPage ? `${kind} / ${clone.dataset.sdsTheme === 'plaid' ? 'Plaid' : 'Forge'}` : kind
+  const title = originalHeading ?? document.createElement('h3')
+  originalHeading?.replaceWith(document.createComment('playground example heading'))
+  if (!originalHeading) {
+    title.className = 'sds-text-h3'
+    title.dataset.sdsSize = 'sm'
+    title.textContent = name
+  }
+  heading.append(label, title)
+  tools.append(heading, actions)
+  let container: HTMLElement
   if (fullPage) {
     const layoutDetails = document.createElement('details')
     layoutDetails.className = 'sds-disclosure'
     const layoutSummary = document.createElement('summary')
-    layoutSummary.textContent = `${name} layout HTML`
+    layoutSummary.textContent = 'View layout HTML'
+    layoutDetails.dataset.sourceLabel = `${name} layout HTML`
+    layoutDetails.dataset.exampleSource = ''
     const layoutPre = document.createElement('pre')
     layoutPre.id = `${pre.id}-layout`
     layoutPre.tabIndex = 0
@@ -186,41 +260,55 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
     layoutButton.type = 'button'
     layoutButton.className = 'sds-button'
     layoutButton.dataset.sdsVariant = 'outlined'
+    layoutButton.dataset.sdsDensity = 'compact'
     layoutButton.dataset.copyTarget = layoutPre.id
-    layoutButton.textContent = `Copy ${name.toLowerCase()} layout`
+    layoutButton.textContent = 'Copy layout'
+    layoutButton.setAttribute('aria-label', `Copy ${name.toLowerCase()} layout`)
     actions.append(layoutButton)
-    const patterns = document.createElement('a')
-    patterns.className = 'sds-button'
-    patterns.dataset.sdsVariant = 'text'
-    patterns.href = '#patterns'
-    patterns.textContent = 'Page patterns'
-    actions.append(patterns)
     const preview = example.closest('details')
-    summary.textContent = `${name} page HTML`
-    const heading = document.createElement('div')
-    heading.className = 'sds-cluster'
-    heading.dataset.sdsGap = 'sm'
-    const title = document.createElement('h3')
-    title.className = 'sds-text-h3'
-    title.textContent = name
-    const theme = document.createElement('span')
-    theme.className = 'sds-badge'
-    theme.textContent = clone.dataset.sdsTheme === 'plaid' ? 'Plaid' : 'Forge'
-    heading.append(title, theme)
-    preview?.before(heading, actions, details, layoutDetails)
+    if (!preview) throw new Error(`Missing preview disclosure for ${name}.`)
+    summary.textContent = 'View page HTML'
+    details.dataset.sourceLabel = `${name} page HTML`
+    container = document.createElement('article')
+    container.className = 'sds-card sds-stack'
+    container.dataset.sdsGap = 'lg'
+    container.dataset.sdsPadding = 'md'
+    container.id = `page-starter-${clone.dataset.sdsVariant}`
+    preview.before(container)
+    container.append(tools, preview, details, layoutDetails)
   } else {
-    const tools = document.createElement('header')
-    tools.className = 'sds-section-header'
-    tools.dataset.exampleTools = ''
-    const label = document.createElement('strong')
-    label.className = 'sds-card-label'
-    label.textContent = `${name} ${example.hasAttribute('data-copy-example') ? 'pattern' : 'recipe'}`
-    button.dataset.sdsDensity = 'compact'
-    button.dataset.sdsVariant = 'outlined'
-    tools.append(label, actions)
-    details.dataset.exampleSource = ''
-    example.before(tools, details)
+    const preview = document.createElement('div')
+    preview.className = 'sds-stack'
+    preview.dataset.examplePreview = ''
+    if (example.hasAttribute('data-copy-example')) {
+      const pattern = example.closest<HTMLElement>('[data-pattern]')
+      if (!pattern) throw new Error(`Missing pattern container for ${name}.`)
+      container = pattern
+      container.classList.add('sds-card')
+      preview.append(example)
+    } else {
+      container = example
+      preview.append(...example.childNodes)
+    }
+    container.replaceChildren(tools, preview, details)
   }
+  container.dataset.exampleContainer = ''
+  const section = container.closest<HTMLElement>('main#top > .sds-page > section')
+  if (!section) throw new Error(`Missing catalog section for ${name}.`)
+  exampleEntries.push({
+    element: container,
+    title: name,
+    kind,
+    section,
+    terms: `${name} ${example.dataset.searchTerms ?? ''} ${kind}`.toLocaleLowerCase(),
+  })
+}
+
+const catalogElements = Array.from(document.querySelectorAll<HTMLElement>(
+  'main#top > .sds-page > section[id], main#top > .sds-page > section[id] > article',
+))
+for (const [index, element] of catalogElements.entries()) {
+  if (!element.id) element.id = `catalog-recipe-${index}`
 }
 
 for (const layout of document.querySelectorAll<HTMLElement>('[data-copy-layout]')) {
@@ -234,6 +322,93 @@ for (const recipe of document.querySelectorAll<HTMLElement>(
 )) {
   addCopyExample(recipe, recipe.querySelector('h3, h4')?.textContent?.trim() ?? 'Recipe')
 }
+
+const catalogSections = catalogElements.filter(element => element.matches('section'))
+for (const section of catalogSections) {
+  const examples = exampleEntries.filter(entry => entry.section === section)
+  if (examples.length < 2) continue
+  const index = document.createElement('nav')
+  index.className = 'sds-stack'
+  index.dataset.sdsGap = 'sm'
+  index.setAttribute('aria-label', `${section.querySelector('h2')?.textContent?.trim() ?? section.id} examples`)
+  index.dataset.exampleIndex = ''
+  const label = document.createElement('p')
+  label.className = 'sds-eyebrow'
+  label.textContent = 'Examples'
+  const links = document.createElement('div')
+  links.className = 'sds-cluster'
+  links.dataset.sdsGap = 'sm'
+  for (const entry of examples) {
+    const link = document.createElement('a')
+    link.className = 'sds-button'
+    link.dataset.sdsVariant = 'outlined'
+    link.dataset.sdsTone = 'neutral'
+    link.dataset.sdsDensity = 'compact'
+    link.href = `#${entry.element.id}`
+    link.textContent = entry.title
+    links.append(link)
+  }
+  index.append(label, links)
+  section.querySelector(':scope > .sds-section-header')?.after(index)
+}
+
+const aliases: Record<string, string> = {
+  actions: 'buttons links icon button',
+  forms: 'input checkbox radio switch select textarea validation',
+  navigation: 'accordion disclosure breadcrumb pagination tabs menu dropdown',
+  structure: 'drawer sheet panel modal dialog tooltip popover',
+  loading: 'skeleton spinner progress empty state no results',
+  composition: 'grid stack cluster responsive layout spacing',
+}
+const searchEntries = [
+  ...catalogSections.map(element => ({
+    element,
+    title: element.querySelector('h2')?.textContent?.trim() ?? element.id,
+    kind: 'Section',
+    section: element,
+    terms: `${element.querySelector('h2')?.textContent ?? ''} ${aliases[element.id] ?? ''}`.toLocaleLowerCase(),
+  })),
+  ...exampleEntries,
+]
+const playgroundSearch = document.querySelector<HTMLInputElement>('#playground-search')
+const searchResults = document.querySelector<HTMLUListElement>('#playground-results')
+const searchStatus = document.querySelector<HTMLElement>('#playground-search-status')
+if (!playgroundSearch || !searchResults || !searchStatus) throw new Error('Missing playground search controls.')
+playgroundSearch.addEventListener('input', () => {
+  const query = playgroundSearch.value.trim().toLocaleLowerCase()
+  const matches = query ? searchEntries.filter(entry => query.split(/\s+/).every(word => entry.terms.includes(word))) : []
+  searchResults.replaceChildren(...matches.map(entry => {
+    const item = document.createElement('li')
+    item.className = 'sds-list-item'
+    const link = document.createElement('a')
+    link.className = 'sds-link'
+    link.href = `#${entry.element.id}`
+    link.textContent = entry.title
+    const title = document.createElement('h3')
+    title.append(link)
+    const context = document.createElement('p')
+    context.textContent = `${entry.kind} / ${entry.section.querySelector('h2')?.textContent ?? ''}`
+    item.append(title, context)
+    return item
+  }))
+  searchResults.hidden = !query
+  searchStatus.textContent = query ? `${matches.length} matching components or recipes.` : ''
+})
+
+function revealCatalogTarget() {
+  const entry = searchEntries.find(entry => `#${entry.element.id}` === window.location.hash)
+  if (!entry) return
+  for (let parent = entry.element.parentElement; parent; parent = parent.parentElement) {
+    if (parent instanceof HTMLDetailsElement) parent.open = true
+  }
+  entry.element.scrollIntoView({ block: 'start', behavior: 'instant' })
+  const appHeader = document.querySelector('body > .sds-app > .sds-app-header')
+  const overlap = (appHeader?.getBoundingClientRect().bottom ?? 0) - entry.element.getBoundingClientRect().top
+  if (overlap > 0) window.scrollBy({ top: -overlap, behavior: 'instant' })
+  entry.element.querySelector<HTMLElement>(':scope > [data-example-tools]')?.focus({ preventScroll: true })
+}
+window.addEventListener('hashchange', revealCatalogTarget)
+if (window.location.hash) revealCatalogTarget()
 
 const sectionNavigation = document.querySelector<HTMLElement>(
   '.sds-sidebar > nav',
@@ -307,6 +482,10 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(
         (copyStatus.textContent =
           'The browser could not copy the example to the clipboard.')
       console.error('Could not copy the SDS Lite example.', error)
+      const source = target.closest('details')
+      if (source) source.open = true
+      const focusTarget = source?.querySelector('summary') ?? target
+      focusTarget.focus()
     }
 
     window.setTimeout(() => {

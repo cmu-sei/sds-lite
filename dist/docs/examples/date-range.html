@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Date range and preset</title>
+  <link rel="stylesheet" href="../../sds.css">
+  <script type="module" src="../../auto.js"></script>
+</head>
+<body class="sds-document" data-sds-root>
+  <main class="sds-page"><article class="sds-card sds-stack" id="date-range-recipe">
+              <h1 class="sds-text-h3">Date range and preset</h1>
+              <form id="date-range-example" class="sds-form">
+                <div class="sds-cluster" data-sds-gap="sm">
+                  <span class="sds-text-body" data-sds-size="sm">Quick range</span>
+                  <button class="sds-button" type="button" data-sds-variant="outlined" data-sds-tone="neutral" data-sds-density="compact" data-last-week="">Last 7 days</button>
+                </div>
+                <div class="sds-grid" data-sds-columns="2" data-sds-min-column-width="sm" data-sds-gap="md">
+                  <div class="sds-field"><label for="range-start">Start date</label><input id="range-start" class="sds-input" type="date" name="start" aria-describedby="range-hint" required></div>
+                  <div class="sds-field"><label for="range-end">End date</label><input id="range-end" class="sds-input" type="date" name="end" aria-describedby="range-hint range-error" required></div>
+                </div>
+                <div class="sds-stack" data-sds-gap="xs">
+                  <p class="sds-text-body" data-sds-size="sm" id="range-hint">Both dates are included in the reporting period.</p>
+                  <p class="sds-text-body" data-sds-size="sm" id="range-error" data-date-error="" aria-live="polite"></p>
+                </div>
+                <div class="sds-stack" data-sds-gap="sm">
+                  <div class="sds-action-group">
+                    <button class="sds-button" type="submit" data-sds-density="compact">Apply reporting period</button>
+                    <button class="sds-button" type="reset" data-sds-variant="text" data-sds-tone="neutral" data-sds-density="compact">Reset dates</button>
+                  </div>
+                  <p class="sds-text-body" data-sds-size="sm" role="status"></p>
+                </div>
+              </form>
+            </article></main>
+  <script type="module" src="./date-range.js"></script>
+</body>
+</html>

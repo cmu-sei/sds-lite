@@ -55,6 +55,7 @@
     flex: 1;
     overflow-y: auto;
     overscroll-behavior: contain;
+    font-size: 0.875rem;
   }
 
   :where(.sds-sidebar > nav ul) {
@@ -82,12 +83,19 @@
     color: var(--sds-color-text-muted);
     background: transparent;
     font-family: inherit;
+    font-size: inherit;
     font-weight: 400;
     line-height: inherit;
     text-align: start;
     text-decoration: none;
     cursor: pointer;
     list-style: none;
+  }
+
+  :where(.sds-sidebar > nav li > details > summary) {
+    color: var(--sds-color-text-default);
+    font-size: 0.875rem;
+    font-weight: 600;
   }
 
   @scope (.sds-app) to (.sds-app) {
@@ -129,7 +137,29 @@
   }
 
   :where(.sds-sidebar > nav details li > :is(a, button)) {
-    padding-inline-start: var(--sds-space-2xl);
+    padding-inline-start: var(--sds-space-xl);
+  }
+
+  :where(.sds-sidebar[data-sds-density="compact"]) {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  :where(.sds-sidebar[data-sds-density="compact"] > nav > ul) {
+    padding-block: var(--sds-space-xs);
+  }
+
+  :where(
+    .sds-sidebar[data-sds-density="compact"] > nav li > :is(a, button),
+    .sds-sidebar[data-sds-density="compact"] > nav li > details > summary
+  ) {
+    min-block-size: 2rem;
+    align-items: center;
+    padding-block: var(--sds-space-xs);
+  }
+
+  :where(.sds-sidebar[data-sds-density="compact"] > nav details > summary)::after {
+    margin-block-start: 0;
   }
 
   :where(
@@ -137,7 +167,7 @@
     .sds-sidebar > nav [aria-current="location"],
     .sds-sidebar
       > nav
-      details:not([open]):has([aria-current="page"])
+      details:not([open]):has([aria-current="page"], [aria-current="location"])
       > summary
   ) {
     border-inline-start-color: var(--sds-color-brand);
@@ -328,7 +358,6 @@
     padding: var(--sds-space-xs) var(--sds-space-sm);
     border-inline-start: 0;
     border-radius: var(--sds-radius-container);
-    font-size: inherit;
   }
 
   :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details > summary)::after {
@@ -351,15 +380,19 @@
 
   :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
     :scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
-    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary) {
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"], [aria-current="location"]) > summary) {
     color: var(--sds-color-brand);
     background: transparent;
+  }
+
+  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"]) {
     font-weight: 400;
   }
 
   :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="page"],
     :scope[data-sds-variant="documentation"] .sds-sidebar > nav [aria-current="location"],
-    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"]) > summary)::before {
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details:not([open]):has([aria-current="page"], [aria-current="location"]) > summary)::before {
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
@@ -369,7 +402,7 @@
   }
 
   :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > :is(a, button)[aria-current],
-    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > details:not([open]):has([aria-current="page"]) > summary,
+    :scope[data-sds-variant="documentation"] .sds-sidebar > nav details > ul > li > details:not([open]):has([aria-current="page"], [aria-current="location"]) > summary,
     :scope[data-sds-variant="documentation"] .sds-sidebar > .sds-app-toc [aria-current])::before {
     inset-inline-start: calc(-1 * (var(--sds-space-sm) + 2px));
   }

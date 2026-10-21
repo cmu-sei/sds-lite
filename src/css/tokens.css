@@ -87,6 +87,13 @@
     --sds-space-2xl: 2rem;
     --sds-space-3xl: 3rem;
     --sds-space-4xl: 4rem;
+    --sds-surface-inset: var(--sds-space-xl);
+
+    --sds-control-height-xs: 1.5rem;
+    --sds-control-height-sm: 2rem;
+    --sds-control-height-md: 2.5rem;
+    --sds-control-height-lg: 3rem;
+    --sds-control-height-xl: 3.5rem;
 
     --sds-radius-sm: 0.25rem;
     --sds-radius-md: 0.375rem;
@@ -94,6 +101,7 @@
     --sds-radius-full: 999px;
     --sds-radius-control: var(--sds-radius-sm);
     --sds-radius-container: var(--sds-radius-lg);
+    --sds-radius-floating: var(--sds-radius-container);
     --sds-app-theme-radius-control: var(--sds-radius-sm);
     --sds-app-theme-radius-container: var(--sds-radius-lg);
 
@@ -106,6 +114,8 @@
       0 20px 25px -5px rgb(0 0 0 / 10%),
       0 8px 10px -6px rgb(0 0 0 / 10%);
     --sds-shadow-overlay: 0 16px 32px rgb(0 0 0 / 24%);
+    --sds-shadow-floating: var(--sds-shadow-lg);
+    --sds-shadow-modal: var(--sds-shadow-xl);
     --sds-color-overlay: rgb(0 0 0 / 50%);
 
     --sds-duration-fast: 75ms;
@@ -124,6 +134,37 @@
     --sds-font-heading: var(--sds-font-sans);
     --sds-app-theme-font-heading: var(--sds-font-sans);
     --sds-typography-heading-weight: 600;
+    --sds-type-title-size: 1.25rem;
+    --sds-type-title-leading: 1.75rem;
+    --sds-type-title-weight: 500;
+    --sds-type-h1-size-sm: 1.875rem;
+    --sds-type-h1-leading-sm: 2.375rem;
+    --sds-type-h1-size: 2.25rem;
+    --sds-type-h1-leading: 2.625rem;
+    --sds-type-h2-size-sm: 1.5rem;
+    --sds-type-h2-leading-sm: 1.75rem;
+    --sds-type-h2-size: 1.875rem;
+    --sds-type-h2-leading: 2.25rem;
+    --sds-type-h3-size-sm: 1.25rem;
+    --sds-type-h3-leading-sm: 1.625rem;
+    --sds-type-h3-size: 1.5rem;
+    --sds-type-h3-leading: 2rem;
+    --sds-type-h4-size-sm: 1.125rem;
+    --sds-type-h4-leading-sm: 1.25rem;
+    --sds-type-h4-size: 1.25rem;
+    --sds-type-h4-leading: 1.75rem;
+    --sds-type-h5-size-sm: 0.75rem;
+    --sds-type-h5-leading-sm: 1.25rem;
+    --sds-type-h5-size: 0.875rem;
+    --sds-type-h5-leading: 1.25rem;
+    --sds-type-h6-size-sm: 0.75rem;
+    --sds-type-h6-leading-sm: 1.25rem;
+    --sds-type-h6-size: 0.875rem;
+    --sds-type-h6-leading: 1.25rem;
+    --sds-type-body-size-sm: 0.875rem;
+    --sds-type-body-leading-sm: 1.25rem;
+    --sds-type-body-size: 1rem;
+    --sds-type-body-leading: 1.5rem;
 
     --sds-color-text-default: light-dark(
       var(--sds-gray-900),
@@ -458,6 +499,7 @@
     --sds-font-heading: var(--sds-font-serif);
     --sds-app-theme-font-heading: var(--sds-font-serif);
     --sds-typography-heading-weight: 400;
+    --sds-type-title-weight: 400;
     --sds-radius-control: 0;
     --sds-radius-container: 0;
     --sds-app-theme-radius-control: 0;

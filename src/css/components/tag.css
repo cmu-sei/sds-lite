@@ -41,6 +41,29 @@
     cursor: pointer;
   }
 
+  :where(button.sds-tag)[aria-pressed="true"]:not(:disabled, [aria-disabled="true"]) {
+    border-color: var(--sds-color-border-default);
+    color: var(--sds-color-text-default);
+    background: var(--sds-color-interactive-subtle-hover);
+  }
+
+  :where(button.sds-tag)[aria-pressed="true"]:not(:focus-visible, :disabled, [aria-disabled="true"]) {
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 4%);
+  }
+
+  :where(button.sds-tag):disabled,
+  :where(button.sds-tag)[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (forced-colors: active) {
+    :where(button.sds-tag)[aria-pressed="true"]:not(:focus-visible) {
+      outline: 2px solid Highlight;
+      outline-offset: -4px;
+    }
+  }
+
   @media (hover: hover) {
     :where(a.sds-tag):hover,
     :where(.sds-tag:has(> .sds-tag-label:hover)) {
@@ -95,7 +118,7 @@
     );
   }
 
-  :where(a.sds-tag:focus-visible, button.sds-tag:focus-visible) {
+  :where(a.sds-tag, button.sds-tag):focus-visible {
     box-shadow: 0 0 0 2px var(--sds-color-focus-ring);
   }
 
@@ -221,7 +244,11 @@
 
   :where(.sds-tag:is([aria-disabled="true"], :disabled)) {
     color: var(--sds-color-text-disabled);
-    pointer-events: none;
+    cursor: not-allowed;
     opacity: 0.65;
+  }
+
+  :where(.sds-tag[aria-disabled="true"]) {
+    pointer-events: none;
   }
 }

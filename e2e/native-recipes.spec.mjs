@@ -27,7 +27,7 @@ test('copied final migration examples style native controls', async ({ page }) =
 test('copied README examples use consistent standalone typography', async ({ page }) => {
   const readme = await readFile('README.md', 'utf8')
   const examples = Array.from(readme.matchAll(/```html\n([\s\S]*?)```/g), (match) => match[1])
-  const starter = examples.find((example) => example.startsWith('<main'))
+  const starter = examples.find((example) => example.startsWith('<body'))
   const card = examples.find((example) => example.startsWith('<article'))
   const tabs = examples.find((example) => example.startsWith('<sds-tabs>'))
   await page.setContent(`<!doctype html>${starter.replace('</main>', `${card}${tabs}</main>`)}`)
@@ -35,8 +35,9 @@ test('copied README examples use consistent standalone typography', async ({ pag
   await page.addScriptTag({ path: 'dist/auto.js', type: 'module' })
   await expect(page.locator('sds-tabs .sds-tab')).toHaveCount(2)
 
-  await expect(page.locator('main')).toHaveCSS('font-family', /sans-serif/)
-  const bodyFont = await page.locator('main').evaluate((element) => getComputedStyle(element).fontFamily)
+  const root = page.locator('body.sds-document[data-sds-root]')
+  await expect(root).toHaveCSS('font-family', /sans-serif/)
+  const bodyFont = await root.evaluate((element) => getComputedStyle(element).fontFamily)
   for (const element of await page.locator('h1, h2, p, button, sds-tabs section').all()) {
     await expect(element).toHaveCSS('font-family', bodyFont)
   }
@@ -92,7 +93,7 @@ for (const order of ['sds-first', 'host-first']) {
     }
     await expect(page.locator('.sds-button')).toHaveCSS('padding', '8px')
     await expect(page.locator('.sds-button')).toHaveCSS('border-radius', '4px')
-    await expect(page.locator('.sds-input').first()).toHaveCSS('padding', '8px 12px')
+    await expect(page.locator('.sds-input').first()).toHaveCSS('padding', '7px 12px')
     await expect(page.locator('.sds-input').first()).toHaveCSS('border-top-width', '1px')
     await expect(page.locator('[disabled]')).toHaveCSS('background-color', 'rgb(225, 226, 227)')
     await expect(page.locator('#host-button')).toHaveCSS('padding', '0px')
@@ -531,8 +532,8 @@ test('composed navigation recipes own sizing, typography, and link presentation'
 
 test('the playground chooses heading sizes explicitly', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('.sds-page-header h1')).toHaveCSS('font-size', '24px')
-  await expect(page.locator('#intro-title')).toHaveCSS('font-size', '36px')
+  await expect(page.locator('main#top > .sds-page-header h1')).toHaveCSS('font-size', '30px')
+  await expect(page.locator('#intro-title')).toHaveCSS('font-size', '24px')
   await expect(page.locator('#actions-title')).toHaveCSS('font-size', '24px')
 })
 
@@ -552,7 +553,7 @@ test('native recipes render and preserve platform behavior', async ({
 
   const fileInput = page.locator('#file-input')
   await expect(fileInput).toHaveAttribute('type', 'file')
-  const fileUpload = page.locator('.sds-file-upload')
+  const fileUpload = page.locator('.sds-file-upload').filter({ has: fileInput })
   await expect(fileUpload).toHaveCSS('border-top-style', 'dashed')
   await expect(fileUpload.locator('..')).toHaveCSS('grid-column-end', '-1')
   await expect(fileInput).toHaveCSS('position', 'absolute')
@@ -595,7 +596,7 @@ test('native recipes render and preserve platform behavior', async ({
     pagination.locator('a[aria-label="Previous page"]'),
   ).not.toHaveAttribute('href')
 
-  const inputGroup = page.locator('.sds-input-group')
+  const inputGroup = page.locator('.sds-input-group:has(> #budget-input)')
   await expect(inputGroup).toHaveCSS('display', 'flex')
   await expect(inputGroup.locator('.sds-input-addon').first()).toHaveCSS(
     'white-space',
@@ -737,24 +738,60 @@ test('native recipes render and preserve platform behavior', async ({
 
 test('every generated recipe and pattern snapshot matches its displayed example', async ({ page }) => {
   await page.goto('/')
-  const audit = await page.evaluate(() => [...document.querySelectorAll('[data-example-tools]')].map(tools => {
-    const snippet = tools.nextElementSibling
-    const example = snippet.nextElementSibling
+  const audit = await page.evaluate(() => [...document.querySelectorAll('[data-example-container]')]
+    .filter(container => !container.querySelector('[data-copy-layout]')).map(container => {
+    const tools = container.querySelector(':scope > [data-example-tools]')
+    const snippet = container.querySelector(':scope > [data-example-source]')
+    const pattern = container.querySelector('[data-copy-example]')
+    const example = pattern ?? container
     const clone = example.cloneNode(true)
+    if (!pattern) {
+      const title = clone.querySelector(':scope > [data-example-tools] :is(h3, h4)')
+      const preview = clone.querySelector(':scope > [data-example-preview]')
+      const comments = document.createTreeWalker(preview, NodeFilter.SHOW_COMMENT)
+      let comment
+      while ((comment = comments.nextNode())) {
+        if (comment.textContent === 'playground example heading') {
+          comment.replaceWith(title)
+          break
+        }
+      }
+      clone.replaceChildren(...preview.childNodes)
+    }
     for (const element of [clone, ...clone.querySelectorAll('*')]) {
       element.removeAttribute('data-copy-layout')
       element.removeAttribute('data-copy-example')
+      element.removeAttribute('data-recipe-script')
+      element.removeAttribute('data-search-terms')
+      element.removeAttribute('data-example-container')
     }
     for (const control of clone.querySelectorAll('[data-copy-target]')) {
       const target = control.getAttribute('data-copy-target')
       if (target) clone.querySelector(`#${CSS.escape(target)}`)?.remove()
       control.remove()
     }
-    const actual = snippet.querySelector('code').textContent
-    return { name: tools.querySelector('strong').textContent, matches: actual === clone.outerHTML, expected: clone.outerHTML, actual }
+    const normalize = element => {
+      for (const child of [...element.childNodes]) {
+        if (child.nodeType === Node.TEXT_NODE && !child.textContent.trim()) child.remove()
+        else if (child.nodeType === Node.ELEMENT_NODE && !child.matches('pre, code, textarea')) normalize(child)
+      }
+      return element.outerHTML
+    }
+    const actual = new DOMParser().parseFromString(snippet.querySelector('code').textContent, 'text/html')
+    return {
+      name: tools.querySelector('h3, h4').textContent,
+      script: example.dataset.recipeScript,
+      expected: normalize(clone),
+      actual: normalize(actual.body.firstElementChild),
+      source: snippet.querySelector('code').textContent,
+    }
   }))
   expect(audit).toHaveLength(await page.locator('[data-copy-example], #composition > article, #forms > article, #content > article, #prose > article, #navigation > article, #loading > article, #actions > article, #feedback > article, #structure > article').count())
-  for (const result of audit) expect(result.actual, result.name).toBe(result.expected)
+  for (const result of audit) {
+    const script = result.script ? await readFile(`docs/examples/${result.script}.js`, 'utf8') : null
+    expect(result.actual, result.name).toBe(result.expected)
+    if (script) expect(result.source.endsWith(`\n<script type="module">\n${script}\n</script>`)).toBe(true)
+  }
   expect(await page.locator('#copy-cluster-markup code').textContent()).toBe(await page.locator('#cluster-example').evaluate(element => element.outerHTML))
 })
 
@@ -778,7 +815,7 @@ test('every layout and standalone page export preserves its displayed markup', a
       main.replaceWith(semanticMain)
     }
     const snippets = [...document.querySelectorAll('#layouts > article details')]
-    const findMarkup = label => snippets.find(details => details.querySelector(':scope > summary')?.textContent === label)?.querySelector('code')?.textContent
+    const findMarkup = label => snippets.find(details => details.dataset.sourceLabel === label)?.querySelector('code')?.textContent
     const layout = findMarkup(`${name} layout HTML`)
     const pageMarkup = findMarkup(`${name} page HTML`)
     const pageDocument = new DOMParser().parseFromString(pageMarkup, 'text/html')
@@ -976,7 +1013,7 @@ for (const [name, variant, theme] of [
 for (const pattern of ['dashboard', 'directory', 'settings', 'article']) {
   test(`a copied ${pattern} pattern composes into a standalone page`, async ({ page }) => {
     await page.goto('/#patterns')
-    const layout = await page.locator('#layouts summary').filter({ hasText: /^Simple application page HTML$/ }).locator('..').locator('code').textContent()
+    const layout = await page.locator('#layouts details[data-source-label="Simple application page HTML"] code').textContent()
     const copy = page.getByRole('button', { name: `Copy ${pattern} markup`, exact: true })
     await page.evaluate(() => {
       Object.defineProperty(navigator, 'clipboard', {

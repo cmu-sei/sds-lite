@@ -22,10 +22,10 @@
   :where(sds-combobox > output:not(:empty)) {
     padding: var(--sds-space-sm) var(--sds-space-md);
     border: 1px solid var(--sds-color-border-default);
-    border-radius: var(--sds-radius-control);
+    border-radius: var(--sds-radius-floating);
     color: var(--sds-color-text-muted);
     background: var(--sds-color-surface-default);
-    box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+    box-shadow: var(--sds-shadow-floating);
     font-size: 0.875rem;
   }
 
@@ -39,9 +39,9 @@
     padding: var(--sds-space-xs);
     overflow: auto;
     border: 1px solid var(--sds-color-border-default);
-    border-radius: var(--sds-radius-control);
+    border-radius: var(--sds-radius-floating);
     background: var(--sds-color-surface-default);
-    box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+    box-shadow: var(--sds-shadow-floating);
     list-style: none;
   }
 

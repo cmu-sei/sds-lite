@@ -11,10 +11,23 @@ All distributed rules live in:
 ```
 
 Recipe defaults live in `sds.components`. Layout and spacing utilities live in
-the later `sds.utilities` layer, so composition can override recipe defaults
-while keeping zero-specificity selectors.
+the later `sds.utilities` layer, so composition can override recipe defaults.
+SDS uses `:where()` to keep selector specificity generally low or zero.
 
 Unlayered application CSS overrides SDS Lite without specificity escalation.
+
+## Interaction cursors
+
+SDS actions and choice controls use `pointer`, including buttons, pagination,
+selects, checkboxes, radios, and their recipe labels. Text inputs and textareas
+keep text-selection cursors, including readonly fields. Panel drag handles use
+`grab` and `grabbing`. Static content and unrelated host controls are not changed.
+
+Unavailable controls use `not-allowed` styling. Native `disabled` prevents
+activation without suppressing pointer hit testing. Recipes that block pointer
+events for ARIA-disabled or busy actions keep that behavior; the cursor may come
+from the element underneath. Application code must still prevent keyboard and
+programmatic activation of ARIA-disabled actions.
 
 ## Layout properties
 
@@ -49,6 +62,26 @@ Use a spacing attribute when a token value is enough:
 See [Layout](../components/layout.md#spacing-utilities) for the complete
 logical-property interface. Use authored CSS for values outside the token scale.
 
+`--sds-surface-inset` defaults to `--sds-space-xl` (24px) and controls default
+card padding, dialog padding, and panel-region padding. Spacing attributes
+remain explicit per-element overrides.
+
+## Control metrics
+
+```text
+--sds-control-height-xs
+--sds-control-height-sm
+--sds-control-height-md
+--sds-control-height-lg
+--sds-control-height-xl
+```
+
+Defaults are `1.5rem`, `2rem`, `2.5rem`, `3rem`, and `3.5rem`. Comfortable
+buttons use all five; inputs, selects, and input wrappers use `sm` through
+`lg`. Border widths are included in their shared single-line metrics, while
+multiline text and textareas can grow. Compact and icon buttons retain their
+own sizing.
+
 ## Radius
 
 ```text
@@ -58,6 +91,7 @@ logical-property interface. Use authored CSS for values outside the token scale.
 --sds-radius-full
 --sds-radius-control
 --sds-radius-container
+--sds-radius-floating
 ```
 
 ## Elevation
@@ -68,7 +102,15 @@ logical-property interface. Use authored CSS for values outside the token scale.
 --sds-shadow-lg
 --sds-shadow-xl
 --sds-shadow-overlay
+--sds-shadow-floating
+--sds-shadow-modal
 ```
+
+Cards use the raised shadow. Dropdowns, popovers, combobox surfaces, and toasts
+share the floating shadow (an alias of `--sds-shadow-lg`); dialogs and panels
+share the modal shadow (an alias of `--sds-shadow-xl`). Tooltips retain the
+lighter raised shadow. Borders remain independently semantic: form borders
+are stronger than decorative surface borders.
 
 ## Motion
 
@@ -88,7 +130,56 @@ logical-property interface. Use authored CSS for values outside the token scale.
 --sds-font-serif
 --sds-font-body
 --sds-font-heading
+--sds-typography-heading-weight
+--sds-type-title-size
+--sds-type-title-leading
+--sds-type-title-weight
+--sds-type-body-size
+--sds-type-body-leading
+--sds-type-body-size-sm
+--sds-type-body-leading-sm
 ```
+
+Shared heading metrics are also public: `--sds-type-h{1-6}-size`,
+`--sds-type-h{1-6}-leading`, `--sds-type-h{1-6}-size-sm`, and
+`--sds-type-h{1-6}-leading-sm` (replace `{1-6}` with a heading level).
+The complete property list is:
+
+```text
+--sds-type-h1-size
+--sds-type-h1-leading
+--sds-type-h1-size-sm
+--sds-type-h1-leading-sm
+--sds-type-h2-size
+--sds-type-h2-leading
+--sds-type-h2-size-sm
+--sds-type-h2-leading-sm
+--sds-type-h3-size
+--sds-type-h3-leading
+--sds-type-h3-size-sm
+--sds-type-h3-leading-sm
+--sds-type-h4-size
+--sds-type-h4-leading
+--sds-type-h4-size-sm
+--sds-type-h4-leading-sm
+--sds-type-h5-size
+--sds-type-h5-leading
+--sds-type-h5-size-sm
+--sds-type-h5-leading-sm
+--sds-type-h6-size
+--sds-type-h6-leading
+--sds-type-h6-size-sm
+--sds-type-h6-leading-sm
+```
+
+Default-size prose headings use the large metrics; prose's explicit `sm` and
+`lg` variants retain their own heading scales. Explicit SEI heading utilities
+use the small or large metrics according to their responsive rules. Article
+flow, letter spacing, and editorial font choices remain separate from UI titles.
+
+The UI title defaults are `1.25rem` / `1.75rem`, weight 500 in Forge and
+400 in Plaid. Existing SEI heading sizes and caption styles are unchanged.
+See [typography](../components/prose.md).
 
 ## Semantic colors
 
@@ -131,7 +222,7 @@ General roles:
 
 Focusable controls share `--sds-color-focus-ring` (blue 300 in light mode,
 blue 700 in dark mode).
-Form borders use `--sds-color-form-border` (gray 200 in light mode, gray 800
+Form borders use `--sds-color-form-border` (gray 400 in light mode, gray 500
 in dark mode).
 
 Every semantic tone has the same six roles:

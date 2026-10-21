@@ -47,26 +47,30 @@ of separate CSS imports.
 ### 2. Write semantic HTML
 
 Add `data-sds-root` to the element that contains your interface. For a standalone
-page, also add `sds-document`:
+page, put it and `sds-document` on `<body>`:
 
 ```html
-<main data-sds-root class="sds-document">
-  <h1 class="sds-text-h3">Project Atlas</h1>
-  <p>Your project is ready.</p>
-  <button class="sds-button" type="button">Open project</button>
-</main>
+<body data-sds-root class="sds-document">
+  <main class="sds-page">
+    <h1 class="sds-text-h3">Project Atlas</h1>
+    <p>Your project is ready.</p>
+    <button class="sds-button" type="button">Open project</button>
+  </main>
+</body>
 ```
 
 `data-sds-root` supplies the theme and inherited body typography.
-`sds-document` adds page background, zero margin, and minimum viewport height;
-omit it for embedded regions. Recipe classes still opt controls into SDS appearance.
+`sds-document` adds page background, zero margin, and minimum viewport height.
+For an embedded region, use `data-sds-root` on its container without
+`sds-document`. Recipe classes still opt controls into SDS appearance.
 See [which root to use](./docs/guides/theming.md#choose-a-styling-boundary) for
 host typography overrides and font-loading requirements.
 
 ## Add components
 
-Place recipe markup inside the root above. Classes opt elements into SDS
-appearance; unmarked elements retain inherited or browser styles:
+Place recipe markup inside the root above. Classes opt components into SDS
+appearance; recipes can also style their owned descendants, such as field
+labels and prose content. Unrelated host elements are not globally restyled:
 
 ```html
 <article class="sds-card">
@@ -77,7 +81,8 @@ appearance; unmarked elements retain inherited or browser styles:
 ```
 
 Heading levels express document structure, not visual size. Choose a style from
-`.sds-text-h1` through `.sds-text-h6` independently of the heading level.
+`.sds-text-h1` through `.sds-text-h6` independently of the heading level, or use
+`.sds-text-title` for compact dialog, panel, and popover titles.
 
 ## Interactive behavior
 
@@ -140,8 +145,8 @@ Forge is the default theme. Select a theme and color scheme on any SDS root:
 ```
 
 Themes are `forge` and `plaid`. Color schemes are `light`, `dark`, and
-`system`. Specialized SEI application and brochure shells use one additional
-stylesheet:
+`system`. Specialized SEI application, simple application, documentation, and
+brochure shells use one additional stylesheet:
 
 ```js
 import '@cmu-sei/sds-lite/brand.css'
@@ -152,7 +157,7 @@ import '@cmu-sei/sds-lite/brand.css'
 SDS Lite targets modern browsers and ships no polyfills. Interactive recipes
 use Custom Elements, the Popover API, and `HTMLDialogElement`. Styles use
 modern CSS including cascade layers, `:where()`, `:has()`, `light-dark()`,
-`color-mix()`, and container queries.
+`color-mix()`, container queries, and `@scope` for application-shell styling.
 
 See [Browser support](./docs/guides/browser-support.md) for integration policy
 and fallback guidance.

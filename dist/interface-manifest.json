@@ -166,6 +166,14 @@
       }
     },
     {
+      "name": "title",
+      "category": "Content and data display",
+      "classes": ["sds-text-title"],
+      "elements": ["h1", "h2", "h3", "h4", "h5", "h6"],
+      "description": "Compact sentence-case UI title, 1.25rem/1.75rem by default without viewport scaling; Forge uses medium sans-serif and Plaid uses regular serif.",
+      "options": {}
+    },
+    {
       "name": "text",
       "category": "Content and data display",
       "classes": ["sds-text-lead", "sds-text-body", "sds-text-caption1", "sds-text-caption2"],
@@ -213,6 +221,22 @@
         "data-sds-shape": "text",
         "data-sds-block": false
       }
+    },
+    {
+      "name": "segmented",
+      "category": "Actions and forms",
+      "classes": ["sds-segmented", "sds-segment"],
+      "elements": ["div", "label"],
+      "description": "Neutral segmented track with raised checked segments and optional decorative SVG icons. Native radios select one submitted value and checkboxes select several; checked, invalid, disabled, and focus states remain native.",
+      "options": {}
+    },
+    {
+      "name": "selection-card",
+      "category": "Actions and forms",
+      "classes": ["sds-selection-card"],
+      "elements": ["label"],
+      "description": "Whole-card native radio or checkbox selection with checked, invalid, disabled, and focus states. Do not nest additional interactive controls inside the label.",
+      "options": {}
     },
     {
       "name": "link",
@@ -274,9 +298,12 @@
       "name": "input-group",
       "category": "Actions and forms",
       "classes": ["sds-input-group", "sds-input-addon"],
-      "description": "Native form control with a visible prefix or suffix.",
+      "description": "One continuous field surface around one native input, select, or textarea, with optional decorative SVGs, embedded actions, and sds-input-addon parts for visibly separated prefixes or suffixes.",
       "options": {
         "data-sds-size": ["sm", "md", "lg"]
+      },
+      "optionTargets": {
+        "data-sds-size": ".sds-input-group"
       },
       "defaults": {
         "data-sds-size": "md"
@@ -344,11 +371,14 @@
       "category": "Actions and forms",
       "classes": [
         "sds-file-input",
+        "sds-file-list",
+        "sds-file-item",
+        "sds-file-details",
         "sds-file-upload",
         "sds-file-upload-action",
         "sds-file-upload-surface"
       ],
-      "description": "Native file input and composed upload surface.",
+      "description": "Native file input, composed upload surface, and responsive file queue rows.",
       "options": {
         "data-sds-size": ["sm", "md", "lg"]
       },
@@ -605,7 +635,7 @@
     {
       "name": "table",
       "category": "Content and data",
-      "classes": ["sds-table", "sds-table-container", "sds-table-footer"],
+      "classes": ["sds-table", "sds-table-container", "sds-table-footer", "sds-table-toolbar", "sds-table-selection"],
       "description": "Application data table and overflow container.",
       "options": {
         "data-sds-size": ["sm", "md", "lg"],
@@ -686,7 +716,18 @@
       "category": "Layout",
       "classes": ["sds-sidebar", "sds-sidebar-close", "sds-sidebar-layout"],
       "description": "Persistent or mobile navigation layout.",
-      "options": {}
+      "options": {
+        "data-sds-density": ["compact"]
+      },
+      "optionTargets": {
+        "data-sds-density": ".sds-sidebar"
+      },
+      "omissionDefaults": {
+        "data-sds-density": "comfortable"
+      },
+      "defaults": {
+        "data-sds-density": "comfortable"
+      }
     },
     {
       "name": "dialog",
@@ -914,7 +955,7 @@
     },
     {
       "name": "Documentation site", "kind": "layout",
-      "recipes": ["application-shell", "cluster", "button", "sidebar", "link", "prose", "stack", "heading", "dialog", "form", "field", "form-control"],
+      "recipes": ["application-shell", "cluster", "button", "sidebar", "link", "prose", "stack", "heading", "title", "dialog", "form", "field", "form-control"],
       "customElements": [], "stylesheets": ["sds.css", "brand.css"], "assets": ["package/assets/sei-wordmark.svg"], "requiresSetup": true,
       "parts": [{"selector": ".sds-app-masthead", "minimum": 1}, {"selector": ".sds-app-header > .sds-app-navigation", "minimum": 1}, {"selector": ".sds-app-layout > .sds-app-body > .sds-app-main", "minimum": 1}, {"selector": ".sds-sidebar[popover] > .sds-app-toc", "minimum": 1}, {"selector": ".sds-app-content > .sds-prose", "minimum": 1}, {"selector": ".sds-app-content > .sds-app-toc", "minimum": 1}, {"selector": "dialog.sds-dialog", "minimum": 1}],
       "applicationResponsibilities": ["Supply search results and navigation destinations.", "Keep desktop and mobile navigation and table-of-contents links synchronized with heading IDs.", "Preserve brand assets, accessible names, and required legal content."]

@@ -6,7 +6,9 @@ Browser validation, autofill, keyboard behavior, and submission remain native.
 For styling and setup, follow the [quick start](../getting-started.md).
 
 Find: [fields](#form-and-field), [combobox](#combobox), [inputs and selects](#controls),
+[input groups](#input-group),
 [range](#range), [validation](#help-and-validation), [choices](#checkbox-and-radio),
+[segments](#segmented-controls), [selectable cards](#selectable-cards),
 [switch](#switch), or [file upload](#file-input).
 
 ## Form and field
@@ -87,7 +89,8 @@ when matches return, the query clears, or focus leaves. Escape dismisses it.
 
 ### Events
 
-Enter or click selects an option. Native `input` and `change` fire first,
+Enter selects the active suggestion; clicking selects that option.
+Standard `input` and `change` events fire first,
 then `sds-select` exposes `detail.value` and the original `detail.option`.
 The named input submits visible text, not a separate record ID.
 
@@ -148,11 +151,26 @@ with `aria-describedby`; use native types and constraints before custom validati
 
 [Form fields](#form-and-field), [validation](#help-and-validation), [combobox](#combobox).
 
-## Input prefix and suffix
+Single-line inputs, selects, and input wrappers share 32px (`sm`), 40px
+(`md`), and 48px (`lg`) heights with comfortable buttons, at a 16px root font
+size. Large controls use 18px text. Textareas retain their multiline sizing,
+and control corners remain theme-aware at every size. Placeholders and field
+help use normal, not italic, text; keep a visible label rather than relying
+on a placeholder.
 
-Use `.sds-input-group` when a visible unit or symbol belongs next to a native
-control. Keep the accessible name on the control; hide a decorative symbol or
-include meaningful unit text in the label.
+## Input group
+
+Use `.sds-input-group` for one native input, select, or textarea with optional
+icons, actions, prefixes, or suffixes. The group owns one continuous field
+surface by default; no variant attribute is needed. DOM order places the parts.
+Keep the accessible name, form name, and validation on the native control.
+Use `.sds-field` outside the group when you also need label and help layout.
+
+### Prefixes and suffixes
+
+Add `.sds-input-addon` only to noninteractive prefix or suffix text that
+needs its own background and separator. Icons and action buttons do not need
+this class. Affixes and actions can coexist in the same group.
 
 ```html
 <div class="sds-field">
@@ -168,16 +186,72 @@ include meaningful unit text in the label.
 ### Options
 
 `data-sds-size` on `.sds-input-group` accepts `sm`, `md`, or `lg` and sizes the
-control and add-ons together. The default is `md`.
+control and its parts together. Without a group size, the control's size is
+used; otherwise the default is `md`. An explicit group size takes precedence.
+Selects retain their native selection behavior and textareas remain multiline.
+
+### Embedded icons and actions
+
+One `.sds-input-group` supplies the entire field surface. Add a native input
+and optional SVG icons or named buttons as direct children. For a field with
+only decorative icons, make the wrapper a native label: clicking the icon
+or padding focuses the input without JavaScript or an ID/`for` pair.
+
+```html
+<label class="sds-input-group">
+  <span class="sds-sr-only">Search</span>
+  <svg aria-hidden="true" viewBox="0 0 24 24">
+    <circle cx="10" cy="10" r="6" fill="none" stroke="currentColor"></circle>
+    <path d="m15 15 5 5" fill="none" stroke="currentColor"></path>
+  </svg>
+  <input class="sds-input" name="query" type="search" placeholder="Search">
+</label>
+```
+
+No position markers or separate button size attributes are needed.
+
+| Field size | Action target | Icon |
+|---|---|---|
+| `sm` | 24px | 16px |
+| `md` | 32px | 18px |
+| `lg` | 40px | 20px |
+
+```html
+<div class="sds-input-group" data-sds-size="sm">
+  <input class="sds-input" aria-label="Search" type="search">
+  <button class="sds-button" type="button" aria-label="Clear search">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+```
+
+Use a plain `aria-hidden="true"` SVG for a decorative search icon, not a
+button. The native input's label provides its accessible name.
+
+DOM order places a leading icon, the flexible input, and trailing actions.
+The wrapper owns the single border and background. Input focus highlights
+the entire field; each action retains its own keyboard focus indicator.
+Embedded actions use neutral hover and pressed backgrounds automatically.
+Readonly, disabled, and `aria-invalid="true"` appearance follow the native
+control. Disabling a control does not disable its action buttons.
 
 ### Accessibility
 
-Include meaningful units in the label and hide decorative symbols. SDS Lite
-supplies shared borders and spacing; validation and submission remain native.
+Include meaningful units in the label and hide decorative symbols.
+Use label text inside a wrapping label or an external label connected to
+the native input. For fields with action buttons, keep a `div` wrapper;
+do not nest buttons inside a label. A separate `<label for="input-id">`
+can wrap a decorative icon to focus that input without JavaScript.
+Hide decorative SVGs with `aria-hidden="true"` and name icon-only actions with `aria-label`.
+Use `type="button"` except for an intentional submit/search action.
+Application code owns action behavior and disables buttons when appropriate.
+SDS supplies forced-colors focus and respects reduced-motion preferences.
 
 ### Related
 
-[Controls](#controls), [help and validation](#help-and-validation).
+[Complete input actions](../guides/composition-patterns.md#input-actions),
+[advanced table search](../examples/table-selection.html),
+[prefixes and suffixes](#prefixes-and-suffixes), [help and validation](#help-and-validation).
 
 ## Range
 
@@ -282,7 +356,7 @@ Application code owns validation timing and message content.
 
 ### Options
 
-Use `data-sds-orientation="horizontal"` on `.sds-field`. It stacks below `40rem`;
+Use `data-sds-orientation="horizontal"` on `.sds-field`. It stacks at `40rem` and below;
 the default orientation is vertical.
 
 ### Accessibility
@@ -315,6 +389,19 @@ Wrap the native input in `.sds-choice`:
 
 Use native `checked`, `disabled`, and `required`. Give radio options the same
 `name` and different submitted `value`s.
+For a partially selected checkbox group, set the native JavaScript
+`.indeterminate` property; there is no HTML `indeterminate` attribute.
+SDS renders a mixed-state dash, including when the input is disabled:
+
+```js
+selectAll.checked = selectedCount > 0 && selectedCount === totalCount
+selectAll.indeterminate = selectedCount > 0 && selectedCount < totalCount
+```
+
+Set both properties whenever the group changes. `indeterminate` changes the
+presentation and accessible mixed state, not the checkbox's submitted value.
+In forced colors, native checkbox/radio appearance preserves platform state
+indicators.
 
 ### Accessibility
 
@@ -341,6 +428,87 @@ Radio buttons select one value from a group:
 ### Related
 
 [Switch](#switch) for immediately applied settings, [form and field](#form-and-field).
+
+## Segmented controls
+
+Use `.sds-segmented` for a soft neutral track and `.sds-segment` on its
+labels. The checked segment has a raised surface, subtle border, and shadow:
+
+```html
+<fieldset class="sds-fieldset">
+  <legend>View</legend>
+  <div class="sds-segmented">
+    <label class="sds-segment">
+      <input class="sds-radio" type="radio" name="view" value="list" checked>
+      List
+    </label>
+    <label class="sds-segment">
+      <input class="sds-radio" type="radio" name="view" value="grid">
+      Grid
+    </label>
+  </div>
+</fieldset>
+```
+
+### Options
+
+No recipe-specific options. Native `checked`, `disabled`, and
+`aria-invalid="true"` style the containing segment. Use radios with one
+shared `name` for one choice; use checkboxes with submitted `value`s for
+several independent choices. Segments wrap when space is constrained.
+Optional direct SVG icons inherit the text color and size; mark decorative
+icons `aria-hidden="true"`. The selected surface adapts to light and dark
+color schemes without adding a semantic color to an ordinary choice.
+Selection and hover use short color, border, and elevation transitions.
+Reduced-motion preferences disable those transitions through the shared
+SDS motion policy; form and keyboard behavior remain native.
+
+### Accessibility
+
+Keep each input inside its label and provide a legend. Inputs remain
+focusable and participate in native keyboard interaction, submission,
+validation, and reset. Do not assign tab roles: use tabs only for associated
+content panels. Checked state has a border as well as a background.
+
+### Related
+
+[Working selection form](../examples/selection.html),
+[toggle buttons](./actions.md#toggle-buttons), [tabs](./navigation.md#tabs).
+
+## Selectable cards
+
+Use a whole-card label around a radio or checkbox and its description:
+
+```html
+<fieldset class="sds-fieldset">
+  <legend>Project template</legend>
+  <label class="sds-selection-card">
+    <input class="sds-radio" type="radio" name="template" value="research" checked>
+    <span><strong>Research</strong><br>Start with a research workflow.</span>
+  </label>
+  <label class="sds-selection-card">
+    <input class="sds-radio" type="radio" name="template" value="review">
+    <span><strong>Review</strong><br>Start with a review checklist.</span>
+  </label>
+</fieldset>
+```
+
+### Options
+
+No recipe-specific options. Checked, disabled, invalid, and keyboard-focus
+appearance follow the contained native input. Use a checkbox for independent
+choices, or radios sharing a name for an exclusive choice.
+
+### Accessibility
+
+Keep the control visible and the group named. Do not nest links, buttons,
+or other interactive content inside the label. Use a separate neighboring
+link when a choice needs additional information.
+
+### Related
+
+[Working selection form](../examples/selection.html),
+[segmented controls](#segmented-controls), [card](./data-display.md#card).
 
 ## Switch
 
@@ -426,7 +594,7 @@ For a full upload surface:
       </span>
       <strong>Click to upload or drag and drop files here</strong>
       <small id="supporting-files-help">
-        Select PDF or Word files. Each file must be smaller than 10 MB.
+        Select PDF or Word files. Each file must be smaller than 10 MiB.
       </small>
     </div>
   </div>
@@ -440,6 +608,11 @@ opens the file picker; dropping files onto it uses the browser's native drop
 behavior where supported. SDS Lite does not implement custom drag-and-drop
 handling. Omit those wrappers when the visible compact native input is
 preferred.
+
+The sample restriction is application-owned, not enforced by these classes.
+The [upload workflow example](../examples/file-upload.html) accepts PDF files
+strictly smaller than `10 * 1024 * 1024` bytes (10 MiB); its UI labels that
+limit “10 MB.”
 
 On a composed upload, size adjusts the outer padding, drop-area padding,
 action, icon, and supporting text together. On a native file input, it adjusts

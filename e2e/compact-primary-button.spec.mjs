@@ -76,7 +76,7 @@ test('catalog shows every compact button variant across tones', async ({
   const matrix = page.locator(
     'article[aria-labelledby="compact-button-tones-heading"]',
   )
-  const toneGroups = matrix.locator(':scope > .sds-grid > [data-sds-tone]')
+  const toneGroups = matrix.locator(':scope > [data-example-preview] > .sds-grid > [data-sds-tone]')
 
   await expect(toneGroups).toHaveCount(6)
   for (const toneGroup of await toneGroups.all()) {

@@ -1,5 +1,18 @@
 import { expect, test } from '@playwright/test'
 
+async function setPointerTimestamps(page, timestamps) {
+  await page.evaluate(times => {
+    let index = 0
+    for (const type of ['pointerdown', 'pointermove', 'pointerup']) {
+      document.addEventListener(type, event => {
+        const time = times[index++]
+        if (time === undefined) throw new Error('Unexpected pointer event in gesture')
+        Object.defineProperty(event, 'timeStamp', { value: time })
+      }, { capture: true })
+    }
+  }, timestamps)
+}
+
 async function sampleSurface(page, selector, action) {
   return page.locator(selector).first().evaluate(async (surface, requestedAction) => {
     const samples = []
@@ -62,22 +75,21 @@ test('modal and panel shared styling preserves their distinct surfaces', async (
       await expect(surface).toHaveCSS('overflow', 'auto')
       await expect(surface).toHaveCSS('display', selector === '#catalog-dialog' ? 'grid' : 'flex')
       const heading = surface.locator('.sds-dialog-header h2, :scope > header h2')
-      const originalHeading = await heading.evaluate(element => ({
-        className: element.className,
-        fontSize: getComputedStyle(element).fontSize,
-        fontWeight: getComputedStyle(element).fontWeight,
-      }))
-      await heading.evaluate(element => element.className = '')
-      await expect(heading).toHaveCSS('font-size', '24px')
-      await expect(heading).toHaveCSS('font-weight', '300')
+      await expect(heading).toHaveClass('sds-text-title')
+      await expect(heading).toHaveCSS('font-size', '20px')
+      await expect(heading).toHaveCSS('font-weight', '500')
       await expect(heading).toHaveCSS('line-height', '28px')
-      await heading.evaluate((element, className) => element.className = className, originalHeading.className)
-      await expect(heading).toHaveCSS('font-size', originalHeading.fontSize)
-      await expect(heading).toHaveCSS('font-weight', originalHeading.fontWeight)
+      await heading.evaluate(element => element.className = '')
+      await expect(heading).toHaveCSS('font-size', '20px')
+      await expect(heading).toHaveCSS('font-weight', '500')
+      await expect(heading).toHaveCSS('line-height', '28px')
+      await heading.evaluate(element => element.className = 'sds-text-title')
       const footer = surface.locator('.sds-dialog-footer, :scope > footer')
       await expect(footer).toHaveCSS('display', 'flex')
       await expect(footer).toHaveCSS('justify-content', 'flex-end')
-      await expect(footer.locator('.sds-button:not([data-sds-variant]), .sds-button[data-sds-variant="filled"]')).toHaveCSS('order', '1')
+      for (const action of await footer.locator('.sds-button').all()) {
+        await expect(action).toHaveCSS('order', '0')
+      }
       await surface.evaluate(element => element.close())
       await expect(surface).toBeHidden()
     }
@@ -149,7 +161,7 @@ for (const [selector, axis, direction] of [
 
     const handle = panel.locator(':scope > ._sds-panel-handle')
     await expect(handle).toHaveAttribute('aria-hidden', 'true')
-    await page.waitForTimeout(200)
+    await expect(panel).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
     const handleBox = await handle.boundingBox()
     const panelBox = await panel.boundingBox()
     expect(handleBox).not.toBeNull()
@@ -172,6 +184,143 @@ for (const [selector, axis, direction] of [
     await expect(panel).not.toBeVisible()
     await expect(panel).not.toHaveAttribute('open')
   })
+
+  test(`${selector} can be grabbed again while a short drag settles open`, async ({ page }) => {
+    const panel = page.locator(selector)
+    await panel.evaluate(element => {
+      element.style.setProperty('--sds-duration-normal', '1s')
+      element.showModal()
+    })
+    await expect(panel).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+    const handle = panel.locator(':scope > ._sds-panel-handle')
+    const drag = async (distance, hold = 0) => {
+      const box = await handle.boundingBox()
+      expect(box).not.toBeNull()
+      const x = box.x + box.width / 2
+      const y = box.y + box.height / 2
+      await page.mouse.move(x, y)
+      await page.mouse.down()
+      if (hold) {
+        const grabbed = await panel.boundingBox()
+        await page.waitForTimeout(hold)
+        const held = await panel.boundingBox()
+        expect(held.x).toBeCloseTo(grabbed.x, 0)
+        expect(held.y).toBeCloseTo(grabbed.y, 0)
+      }
+      await page.mouse.move(
+        x + (axis === 'x' ? distance * direction : 0),
+        y + (axis === 'y' ? distance * direction : 0),
+        { steps: 3 },
+      )
+    }
+    await drag(24)
+    await page.waitForTimeout(100)
+    await page.mouse.up()
+    await drag(100, 300)
+    await page.mouse.up()
+    await expect(panel).not.toHaveAttribute('open')
+  })
+
+  for (const [name, distances, closes] of [
+    ['keeps dismissal committed after retreating to 13px', [48, 13], true],
+    ['cancels committed dismissal when returning to 12px', [48, 12], false],
+    ['cancels committed dismissal when returning to the start', [48, 0], false],
+    ['recommits dismissal after canceling and crossing 48px again', [48, 12, 48, 13], true],
+  ]) {
+    test(`${selector} ${name}`, async ({ page }) => {
+      const panel = page.locator(selector)
+      await panel.evaluate(element => element.showModal())
+      const handle = panel.locator(':scope > ._sds-panel-handle')
+      await handle.hover()
+      const box = await handle.boundingBox()
+      expect(box).not.toBeNull()
+      const x = box.x + box.width / 2
+      const y = box.y + box.height / 2
+      await page.mouse.down()
+      for (const distance of distances) {
+        await page.mouse.move(
+          x + (axis === 'x' ? distance * direction : 0),
+          y + (axis === 'y' ? distance * direction : 0),
+        )
+      }
+      // The commitment must survive a pause, without velocity projection.
+      await page.waitForTimeout(100)
+      await page.mouse.up()
+      if (closes) {
+        await expect(panel).not.toBeVisible()
+        await expect(panel).not.toHaveAttribute('open')
+      } else {
+        await expect(panel).toHaveAttribute('open')
+        await expect.poll(() => panel.evaluate(element => element.style.transform)).toBe('')
+      }
+    })
+  }
+
+  test(`${selector} does not revive canceled dismissal through velocity projection`, async ({ page }) => {
+    const panel = page.locator(selector)
+    await panel.evaluate(element => element.showModal())
+    const handle = panel.locator(':scope > ._sds-panel-handle')
+    await handle.hover()
+    const box = await handle.boundingBox()
+    expect(box).not.toBeNull()
+    const x = box.x + box.width / 2
+    const y = box.y + box.height / 2
+    await setPointerTimestamps(page, [1000, 1010, 1020, 1200, 1210])
+    await page.mouse.down()
+    for (const distance of [48, 12, 28]) {
+      await page.mouse.move(
+        x + (axis === 'x' ? distance * direction : 0),
+        y + (axis === 'y' ? distance * direction : 0),
+      )
+    }
+    await page.mouse.up()
+    await expect(panel).toHaveAttribute('open')
+    await expect.poll(() => panel.evaluate(element => element.style.transform)).toBe('')
+  })
+
+  for (const width of [1440, 390]) {
+    test(`${selector} uses a fixed 48px drag-dismiss threshold at every size at ${width}px`, async ({
+      page,
+    }) => {
+      test.setTimeout(30_000)
+      const panel = page.locator(selector)
+      await page.setViewportSize({ width, height: 900 })
+      for (const size of ['sm', 'md', 'lg', 'xl']) {
+        await panel.evaluate((element, size) => { element.dataset.sdsWidth = size }, size)
+        for (const distance of [47, 48]) {
+          await panel.evaluate(element => element.showModal())
+          await expect(panel).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+          const handle = panel.locator(':scope > ._sds-panel-handle')
+          await handle.hover()
+          const handleBox = await handle.boundingBox()
+          expect(handleBox).not.toBeNull()
+
+          const startX = handleBox.x + handleBox.width / 2
+          const startY = handleBox.y + handleBox.height / 2
+          const travel = distance * direction
+          await page.mouse.move(startX, startY)
+          await page.mouse.down()
+          await page.mouse.move(
+            startX + (axis === 'x' ? travel : 0),
+            startY + (axis === 'y' ? travel : 0),
+            { steps: 5 },
+          )
+          await expect.poll(() => panel.evaluate(element => element.style.transform)).not.toBe('')
+          // Pause so velocity projection cannot hide the distance threshold.
+          await page.waitForTimeout(100)
+          await page.mouse.up()
+
+          if (distance < 48) {
+            await expect(panel).toHaveAttribute('open')
+            await expect.poll(() => panel.evaluate(element => element.style.transform)).toBe('')
+            await panel.evaluate(element => element.close())
+          }
+          await expect(panel, `${selector}: ${width}px viewport, ${size} size, ${distance}px drag`).not.toBeVisible()
+          await expect(panel).not.toHaveAttribute('open')
+        }
+      }
+    })
+  }
 }
 
 test('preventing a dragged panel cancel returns it to the open position', async ({
@@ -228,6 +377,126 @@ test('a short deliberate panel drag settles back open', async ({ page }) => {
   await expect
     .poll(() => panel.evaluate((element) => element.style.transform))
     .toBe('')
+})
+
+test('a quick outward flick dismisses a panel even after holding its handle', async ({ page }) => {
+  const panel = page.locator('#panel-bottom')
+  await panel.evaluate(element => element.showModal())
+  await page.waitForTimeout(200)
+  const handle = panel.locator(':scope > ._sds-panel-handle')
+  await handle.hover()
+  const handleBox = await handle.boundingBox()
+  expect(handleBox).not.toBeNull()
+  const startX = handleBox.x + handleBox.width / 2
+  const startY = handleBox.y + handleBox.height / 2
+  await page.mouse.move(startX, startY)
+  await page.mouse.down()
+  await page.waitForTimeout(500)
+  await page.mouse.move(startX, startY + 8)
+  await page.waitForTimeout(60)
+  await page.mouse.move(startX, startY + 28)
+  await page.mouse.up()
+  await expect(panel).not.toBeVisible()
+  await expect(panel).not.toHaveAttribute('open')
+})
+
+for (const eventType of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+  test(`${eventType} respects the final pointer position and cancellation`, async ({ page }) => {
+    const panel = page.locator('#panel-bottom')
+    await panel.evaluate(element => element.showModal())
+    const handle = panel.locator(':scope > ._sds-panel-handle')
+    await handle.hover()
+    const handleBox = await handle.boundingBox()
+    const panelBox = await panel.boundingBox()
+    expect(handleBox).not.toBeNull()
+    expect(panelBox).not.toBeNull()
+    const startX = handleBox.x + handleBox.width / 2
+    const startY = handleBox.y + handleBox.height / 2
+    await handle.evaluate(element => {
+      element.addEventListener('pointerdown', event => {
+        element.dataset.pointerId = String(event.pointerId)
+      }, { once: true })
+    })
+    await page.mouse.down()
+    await page.mouse.move(startX, startY + (eventType === 'pointerup' ? 20 : 48))
+    await page.waitForTimeout(100)
+    await handle.dispatchEvent(eventType, {
+      pointerId: Number(await handle.getAttribute('data-pointer-id')),
+      pointerType: 'mouse',
+      isPrimary: true,
+      clientX: startX,
+      clientY: startY + panelBox.height * 0.3,
+    })
+    await page.mouse.up()
+
+    if (eventType !== 'pointerup') {
+      await expect(panel).toHaveAttribute('open')
+      await expect.poll(() => panel.evaluate(element => element.style.transform)).toBe('')
+    } else {
+      await expect(panel).not.toBeVisible()
+      await expect(panel).not.toHaveAttribute('open')
+    }
+  })
+}
+
+test('a quick flick with equal pointer timestamps does not bounce back', async ({ page }) => {
+  const panel = page.locator('#panel-bottom')
+  await panel.evaluate(element => element.showModal())
+  const handle = panel.locator(':scope > ._sds-panel-handle')
+  await handle.hover()
+  const box = await handle.boundingBox()
+  expect(box).not.toBeNull()
+  const x = box.x + box.width / 2
+  const y = box.y + box.height / 2
+  await setPointerTimestamps(page, Array(5).fill(1000))
+  await page.mouse.down()
+  await page.mouse.move(x, y + 28, { steps: 3 })
+  await page.mouse.up()
+  await expect(panel).not.toBeVisible()
+  await expect(panel).not.toHaveAttribute('open')
+})
+
+for (const [name, timestamps] of [
+  ['a quick outward flick tolerates a one-pixel release wobble', [1000, 1010, 1020, 1030, 1040]],
+  ['a flick retains movement spanning the sampling-window boundary', [1000, 1010, 1040, 1110, 1120]],
+]) {
+  test(name, async ({ page }) => {
+    const panel = page.locator('#panel-bottom')
+    await panel.evaluate(element => element.showModal())
+    const handle = panel.locator(':scope > ._sds-panel-handle')
+    await handle.hover()
+    const box = await handle.boundingBox()
+    expect(box).not.toBeNull()
+    const x = box.x + box.width / 2
+    const y = box.y + box.height / 2
+    await setPointerTimestamps(page, timestamps)
+    await page.mouse.down()
+    await page.mouse.move(x, y + 8)
+    await page.mouse.move(x, y + 36)
+    await page.mouse.move(x, y + 35)
+    await page.mouse.up()
+    await expect(panel).not.toBeVisible()
+    await expect(panel).not.toHaveAttribute('open')
+  })
+}
+
+test('a deliberate inward reversal cancels flick projection', async ({ page }) => {
+  const panel = page.locator('#panel-bottom')
+  await panel.evaluate(element => element.showModal())
+  const handle = panel.locator(':scope > ._sds-panel-handle')
+  await handle.hover()
+  const box = await handle.boundingBox()
+  expect(box).not.toBeNull()
+  const x = box.x + box.width / 2
+  const y = box.y + box.height / 2
+  await setPointerTimestamps(page, [1000, 1010, 1020, 1030, 1040])
+  await page.mouse.down()
+  await page.mouse.move(x, y + 8)
+  await page.mouse.move(x, y + 36)
+  await page.mouse.move(x, y + 20)
+  await page.mouse.up()
+  await expect(panel).toHaveAttribute('open')
+  await expect.poll(() => panel.evaluate(element => element.style.transform)).toBe('')
 })
 
 test('popover opens after hover delay, stays open over content, and closes after leaving', async ({

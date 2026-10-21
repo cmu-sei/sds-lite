@@ -57,6 +57,7 @@
     color: var(--sds-color-text-default);
     background: var(--sds-color-surface-default);
     font-weight: 400;
+    text-align: start;
     vertical-align: top;
   }
 
@@ -72,7 +73,7 @@
     border-block-end: 0;
   }
 
-  :where(.sds-table tfoot td) {
+  :where(.sds-table tfoot td, .sds-card > .sds-table-footer) {
     padding-block: var(--sds-space-lg);
     border-block-start: 1px solid var(--sds-color-border-default);
     border-block-end: 0;
@@ -80,8 +81,9 @@
   }
 
   :where(.sds-table-footer) {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     gap: var(--sds-space-lg);
     align-items: center;
   }
@@ -90,28 +92,136 @@
     margin: 0;
   }
 
-  :where(.sds-table-footer > .sds-pagination) {
-    justify-self: center;
+  :where(.sds-table-footer > :is(.sds-pagination-status, form, .sds-cluster)) {
+    flex: 1 1 14rem;
+  }
+
+  :where(.sds-table-footer > :is(form, .sds-cluster)) {
+    justify-content: flex-end;
   }
 
   :where(.sds-table-footer > form) {
     display: flex;
     gap: var(--sds-space-sm);
     align-items: center;
-    justify-self: end;
   }
 
   :where(.sds-table-footer > form > .sds-select) {
     inline-size: auto;
   }
 
-  @media (max-width: 40rem) {
-    :where(.sds-table-footer) {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
+  :where(.sds-table-footer > .sds-cluster > .sds-select) {
+    inline-size: auto;
+  }
 
+  :where(.sds-card:has(> .sds-table-toolbar)) {
+    overflow: clip;
+  }
+
+  :where(.sds-table-toolbar, .sds-table-selection) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-sm) var(--sds-space-lg);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sds-space-md) var(--sds-space-lg);
+    border-block-end: 1px solid var(--sds-color-border-default);
+  }
+
+  :where(.sds-table-toolbar .sds-select) {
+    inline-size: auto;
+    max-inline-size: 12rem;
+    border-color: transparent;
+    background-color: transparent;
+  }
+
+  :where(.sds-table-toolbar) :is(.sds-button, .sds-select):not(:where(.sds-input-group > *)) {
+    min-block-size: 2rem;
+    block-size: 2rem;
+    padding-block: 0;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  :where(.sds-table-toolbar) .sds-button[data-sds-tone="neutral"] {
+    --sds-button-rest-color: var(--sds-color-text-default);
+  }
+
+  :where(.sds-table-toolbar) .sds-select:not(:disabled):hover {
+    background-color: var(--sds-color-interactive-subtle-hover);
+  }
+
+  :where(.sds-table-toolbar, .sds-table) .sds-button[data-sds-shape="icon"] {
+    font-size: 1rem;
+  }
+
+  :where(.sds-table-toolbar .sds-input-group) {
+    inline-size: 12rem;
+    max-inline-size: 100%;
+  }
+
+  :where(.sds-table-selection) {
+    color: var(--sds-color-info-text);
+    background: var(--sds-color-info-surface);
+    font-size: 0.875rem;
+  }
+
+  :where(.sds-card:has(> .sds-table-toolbar) .sds-table) {
+    min-inline-size: 48rem;
+    border: 0;
+    border-radius: 0;
+  }
+
+  :where(.sds-card:has(> .sds-table-toolbar) .sds-table tbody :is(th, td)) {
+    padding-block: var(--sds-space-sm);
+    vertical-align: middle;
+  }
+
+  :where(.sds-card:has(> .sds-table-toolbar) .sds-table thead th) {
+    padding-block: var(--sds-space-xs);
+  }
+
+  :where(.sds-card > .sds-table-footer) {
+    padding: var(--sds-space-md) var(--sds-space-lg);
+  }
+
+  :where(.sds-card:has(> .sds-table-toolbar) td small) {
+    color: var(--sds-color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  :where(.sds-table :is(th, td):has(> input[type="checkbox"])) {
+    inline-size: 2.5rem;
+    vertical-align: middle;
+  }
+
+  :where(.sds-table) :is(thead .sds-button, tbody th > .sds-button):not(:where([data-sds-density="compact"], [data-sds-shape="icon"])) {
+    min-block-size: 1.5rem;
+    padding: 0;
+    line-height: 1.25;
+  }
+
+  :where(.sds-table [aria-sort] svg) {
+    inline-size: 1em;
+    block-size: 1em;
+    transition: transform var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  :where(.sds-table [aria-sort="descending"] svg) {
+    transform: rotate(180deg);
+  }
+
+  :where(.sds-table td:last-child:has(> sds-dropdown), .sds-table th:last-child:has(> .sds-sr-only)) {
+    text-align: end;
+  }
+
+  :where(.sds-table tbody tr:has(input[type="checkbox"]:checked) :is(th, td)) {
+    background: var(--sds-color-info-surface);
+  }
+
+  @media (max-width: 40rem) {
     :where(.sds-table-footer > .sds-pagination-status) {
       flex-basis: 100%;
     }

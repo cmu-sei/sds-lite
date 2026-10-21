@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Advanced data table</title>
+  <link rel="stylesheet" href="../../dist/sds.css">
+  <script type="module" src="../../dist/package/auto.js"></script>
+</head>
+<body class="sds-document" data-sds-root>
+  <main class="sds-page"><article class="sds-card sds-stack" id="table-selection-recipe">
+              <h1 class="sds-text-h3">Advanced data table</h1>
+              <form id="table-selection-example" class="sds-stack">
+                <button type="submit" hidden>Apply filters</button>
+                <div class="sds-card" data-sds-padding="none">
+                  <div class="sds-table-toolbar">
+                    <div class="sds-cluster" data-sds-gap="xs" role="group" aria-label="Task filters">
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-sds-tone="neutral" data-task-scope="mine" aria-pressed="false">My tasks</button>
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-sds-tone="neutral" data-task-scope="unassigned" aria-pressed="false">Unassigned</button>
+                      <label class="sds-sr-only" for="selection-assignee">Assignee</label>
+                      <select id="selection-assignee" class="sds-select" data-sds-size="sm" data-assignee-filter="">
+                        <option value="all">Assignee</option><option>Jamie Carter</option><option>Morgan Lee</option><option>Riley Thompson</option><option>Casey Martinez</option><option>Jordan Kim</option><option>Alex Patel</option><option>Samira Hassan</option><option>Chris Walker</option>
+                      </select>
+                      <label class="sds-sr-only" for="selection-state">Task status</label>
+                      <select id="selection-state" class="sds-select" data-sds-size="sm" data-status-filter="">
+                        <option value="all">Status</option><option value="open">Open</option><option value="submitted">Submitted</option><option value="approved">Approved</option>
+                      </select>
+                    </div>
+                    <div class="sds-cluster" data-sds-gap="xs">
+                      <label class="sds-input-group" data-sds-size="sm">
+                        <span class="sds-sr-only">Search tasks</span>
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="1.8"></circle><path d="m15 15 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                        <input id="selection-search" class="sds-input" type="search" placeholder="Search">
+                      </label>
+                      <button class="sds-button" type="button" data-sds-shape="icon" data-sort-order="" aria-label="Reverse task sort">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 7 3-3 3 3M8 4v16m5-3 3 3 3-3m-3 3V4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
+                      </button>
+                      <sds-dropdown hide-caret="" width="sm">
+                        <button class="sds-button" type="button" data-sds-shape="icon" aria-label="Table options" popovertarget="task-table-menu" aria-controls="task-table-menu" aria-expanded="false" aria-haspopup="menu"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg></button>
+                        <menu id="task-table-menu" class="sds-dropdown-menu" popover="auto" role="menu" aria-orientation="vertical"><li role="none"><button class="sds-button" type="reset" role="menuitem" tabindex="-1">Reset table</button></li><li role="none"><button class="sds-button" type="button" data-export-results="" role="menuitem" tabindex="-1">Export filtered tasks</button></li></menu>
+                      </sds-dropdown>
+                    </div>
+                  </div>
+                  <div class="sds-table-selection" hidden>
+                    <strong data-selected-count="">0 selected</strong>
+                    <div class="sds-cluster" data-sds-gap="sm">
+                      <button class="sds-button" type="button" data-sds-density="compact" data-bulk-action="">Mark approved</button>
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-export-selected="">Export selected</button>
+                      <button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" data-clear-selection="">Clear selection</button>
+                    </div>
+                  </div>
+                  <div class="sds-table-container" tabindex="0" role="region" aria-label="Project tasks">
+                  <table class="sds-table" data-sds-row-highlight="">
+                    <caption class="sds-sr-only">Project tasks</caption>
+                    <thead><tr>
+                      <th scope="col"><input class="sds-checkbox" type="checkbox" data-select-all="" aria-label="Select all tasks on this page"></th>
+                      <th scope="col" aria-sort="ascending"><button class="sds-button" type="button" data-sds-variant="text" data-sds-tone="neutral" data-sds-density="compact" data-sort="">Task<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 13V3m-4 4 4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></th>
+                      <th scope="col">Description</th><th scope="col">Assignee</th><th scope="col">Status / Priority</th><th scope="col"><span class="sds-sr-only">Actions</span></th>
+                    </tr></thead>
+                    <tbody><tr><td colspan="6">Load the example JavaScript to browse the task data.</td></tr></tbody>
+                  </table>
+                  </div>
+                  <div class="sds-table-footer">
+                      <p class="sds-pagination-status" data-table-status="" role="status"></p>
+                      <nav class="sds-pagination" aria-label="Task result pages"><ul></ul></nav>
+                      <div class="sds-cluster" data-sds-gap="sm">
+                        <label class="sds-sr-only" for="selection-page-size">Rows per page</label>
+                        <select id="selection-page-size" class="sds-select" data-sds-size="sm" data-page-size=""><option value="10">10 rows</option><option value="25">25 rows</option><option value="50">50 rows</option></select>
+                      </div>
+                  </div>
+                </div>
+                <p class="sds-text-body" data-sds-size="sm">Demo data. Changes stay on this page. Selection clears when filters or pages change.</p>
+                <p class="sds-sr-only" data-table-announcement="" role="status"></p>
+                <dialog id="task-details-dialog" class="sds-dialog" aria-labelledby="task-details-title">
+                  <header class="sds-dialog-header"><h3 id="task-details-title" class="sds-text-title">Task details</h3></header>
+                  <div class="sds-stack"><p data-task-description=""></p><p data-task-assignee=""></p><p data-task-status=""></p></div>
+                  <footer class="sds-dialog-footer"><button class="sds-button" type="button" data-close-task="">Close task details</button></footer>
+                </dialog>
+              </form>
+            </article></main>
+  <script type="module" src="./table-selection.js"></script>
+</body>
+</html>

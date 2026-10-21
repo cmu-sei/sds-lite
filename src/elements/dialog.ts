@@ -3,23 +3,28 @@ let registered = false
 type PanelSide = 'bottom' | 'left' | 'right'
 
 interface PanelDrag {
+  dismissal: 'pending' | 'committed' | 'cancelled'
   distance: number
   dragging: boolean
   frame: number | null
   handle: HTMLElement
-  lastDistance: number
   lastTime: number
   panel: HTMLDialogElement
   pointerId: number
+  samples: { distance: number; time: number }[]
   side: PanelSide
   startCrossCoordinate: number
   startCoordinate: number
-  velocity: number
 }
 
 const dragStartDistance = 6
+const dragCloseDistance = 48
+const dragCancelDistance = 12
+const velocitySampleDuration = 80
+const velocitySampleLimit = 8
 const velocityProjectionTime = 180
 let activeDrag: PanelDrag | null = null
+const panelSettles = new WeakMap<HTMLDialogElement, () => void>()
 const originalPanelStyles = new WeakMap<
   HTMLDialogElement,
   {
@@ -81,6 +86,7 @@ function panelTransform(side: PanelSide, distance: number): string {
 }
 
 function resetPanelDrag(panel: HTMLDialogElement): void {
+  panelSettles.get(panel)?.()
   const originalStyles = originalPanelStyles.get(panel)
   if (!originalStyles) return
 
@@ -131,9 +137,13 @@ function settlePanel(
       ? 'var(--sds-easing-exit)'
       : 'var(--sds-easing-enter)'
 
-  const finish = (): void => {
+  const stop = (): void => {
     view.clearTimeout(timeout)
     panel.removeEventListener('transitionend', handleTransitionEnd)
+    panelSettles.delete(panel)
+  }
+  const finish = (): void => {
+    stop()
     if (destination === 'close' && panel.open) panel.close()
     resetPanelDrag(panel)
   }
@@ -142,6 +152,7 @@ function settlePanel(
   }
   const timeout = view.setTimeout(finish, 250)
 
+  panelSettles.set(panel, stop)
   panel.addEventListener('transitionend', handleTransitionEnd)
   if (destination === 'close') {
     const size = panelSize(panel, drag.side)
@@ -170,38 +181,54 @@ function handlePointerDown(event: PointerEvent): void {
 
   const handle = event.target.closest<HTMLElement>('._sds-panel-handle')
   const panel = handle?.closest<HTMLDialogElement>('dialog.sds-panel[open]')
+  const stopSettle = panel && panelSettles.get(panel)
   if (
     !handle ||
     !panel ||
     handle.parentElement !== panel ||
-    originalPanelStyles.has(panel)
+    (originalPanelStyles.has(panel) && !stopSettle)
   ) {
     return
   }
 
   const side = panelSide(panel)
-  originalPanelStyles.set(panel, {
-    backdropOpacity: panel.style.getPropertyValue(
-      '--sds-panel-backdrop-opacity',
-    ),
-    handleCursor: handle.style.cursor,
-    transform: panel.style.transform,
-    transitionDuration: panel.style.transitionDuration,
-    transitionTimingFunction: panel.style.transitionTimingFunction,
-  })
+  let distance = 0
+  if (stopSettle) {
+    const matrix = new DOMMatrixReadOnly(
+      panel.ownerDocument.defaultView?.getComputedStyle(panel).transform,
+    )
+    distance = Math.max(
+      0,
+      side === 'bottom' ? matrix.m42 : side === 'left' ? -matrix.m41 : matrix.m41,
+    )
+    stopSettle()
+    panel.style.transitionDuration = '0s'
+    panel.style.transform = panelTransform(side, distance)
+    handle.style.cursor = 'grabbing'
+  } else {
+    originalPanelStyles.set(panel, {
+      backdropOpacity: panel.style.getPropertyValue(
+        '--sds-panel-backdrop-opacity',
+      ),
+      handleCursor: handle.style.cursor,
+      transform: panel.style.transform,
+      transitionDuration: panel.style.transitionDuration,
+      transitionTimingFunction: panel.style.transitionTimingFunction,
+    })
+  }
   activeDrag = {
-    distance: 0,
-    dragging: false,
+    dismissal: 'pending',
+    distance,
+    dragging: Boolean(stopSettle),
     frame: null,
     handle,
-    lastDistance: 0,
     lastTime: event.timeStamp,
     panel,
     pointerId: event.pointerId,
+    samples: [{ distance, time: event.timeStamp }],
     side,
     startCrossCoordinate: crossCoordinate(event, side),
-    startCoordinate: primaryCoordinate(event, side),
-    velocity: 0,
+    startCoordinate: primaryCoordinate(event, side) - distance,
   }
   handle.setPointerCapture(event.pointerId)
 }
@@ -231,14 +258,38 @@ function handlePointerMove(event: PointerEvent): void {
   }
 
   event.preventDefault()
-  const elapsed = event.timeStamp - drag.lastTime
-  if (elapsed > 0) {
-    const instantaneousVelocity = (distance - drag.lastDistance) / elapsed
-    drag.velocity = drag.velocity * 0.7 + instantaneousVelocity * 0.3
+  if (distance !== drag.distance) {
+    const time = event.timeStamp
+    const windowStart = time - velocitySampleDuration
+    const firstRecent = drag.samples.findIndex(
+      sample => sample.time >= windowStart,
+    )
+    if (firstRecent < 0) {
+      // Exclude hold time while retaining an anchor for the first movement.
+      drag.samples = [{
+        distance: drag.distance,
+        time: windowStart,
+      }]
+    } else if (firstRecent > 0) {
+      const before = drag.samples[firstRecent - 1]
+      const after = drag.samples[firstRecent]
+      const progress = (windowStart - before.time) / (after.time - before.time)
+      drag.samples = drag.samples.slice(firstRecent)
+      drag.samples.unshift({
+        distance: before.distance + (after.distance - before.distance) * progress,
+        time: windowStart,
+      })
+    }
+    drag.samples.push({ distance, time })
+    drag.samples = drag.samples.slice(-velocitySampleLimit)
+    drag.lastTime = time
   }
   drag.distance = distance
-  drag.lastDistance = distance
-  drag.lastTime = event.timeStamp
+  if (distance >= dragCloseDistance) {
+    drag.dismissal = 'committed'
+  } else if (distance <= dragCancelDistance && drag.dismissal === 'committed') {
+    drag.dismissal = 'cancelled'
+  }
 
   if (drag.frame === null) {
     const view = drag.panel.ownerDocument.defaultView
@@ -249,6 +300,8 @@ function handlePointerMove(event: PointerEvent): void {
 function finishPointerDrag(event: PointerEvent, cancelled: boolean): void {
   const drag = activeDrag
   if (!drag || event.pointerId !== drag.pointerId) return
+
+  if (!cancelled) handlePointerMove(event)
 
   activeDrag = null
   releasePointer(drag)
@@ -263,13 +316,26 @@ function finishPointerDrag(event: PointerEvent, cancelled: boolean): void {
     applyPanelDrag(drag)
   }
 
-  const size = panelSize(drag.panel, drag.side)
+  const firstSample = drag.samples[0]
+  const lastSample = drag.samples[drag.samples.length - 1]
+  const reversed = drag.samples.some(
+    sample => sample.distance - drag.distance > dragStartDistance,
+  )
   const releaseVelocity =
-    event.timeStamp - drag.lastTime > 80 ? 0 : Math.max(0, drag.velocity)
+    event.timeStamp - drag.lastTime > velocitySampleDuration || reversed
+      ? 0
+      : Math.max(
+          0,
+          (lastSample.distance - firstSample.distance) /
+            Math.max(1, lastSample.time - firstSample.time),
+        )
   const projectedDistance =
     drag.distance + releaseVelocity * velocityProjectionTime
   const shouldClose =
-    !cancelled && drag.distance > 0 && projectedDistance >= size * 0.45
+    !cancelled &&
+    drag.distance > 0 &&
+    (drag.dismissal === 'committed' ||
+      (drag.dismissal === 'pending' && projectedDistance >= dragCloseDistance))
 
   if (!shouldClose) {
     settlePanel(drag, 'open')

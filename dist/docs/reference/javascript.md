@@ -53,12 +53,18 @@ for the toaster. It sets up `<sds-toast>` without `/auto`.
 
 `duration` must be a positive finite number. Calling `notify()` outside a
 browser throws because it creates DOM.
+`title`, `dismissLabel`, and `regionLabel` localize generated text.
+`dismissLabel` defaults to `Dismiss notification`; `regionLabel` defaults
+to `Notifications` and only names a new or otherwise unnamed toaster.
+Existing authored toaster names are preserved. Empty accessibility labels
+throw `TypeError`.
 
 ## Toast element
 
 ```ts
-import '@cmu-sei/sds-lite'
+import { setupSds } from '@cmu-sei/sds-lite'
 
+setupSds()
 const toast = document.querySelector('sds-toast')
 toast?.show()
 toast?.close('programmatic')
@@ -80,8 +86,12 @@ open or close events.
 
 `<sds-tabs>` reflects `value`, `activation`, `orientation`, `size`, `tone`,
 and `variant` through typed properties. Setting `value` selects the enabled
-tab whose native `value` attribute matches. An unknown value throws
+tab whose native `value` attribute matches, falling back to its ID when that
+attribute is absent. Setting an unknown value on a connected element throws
 `RangeError`; setting a property does not dispatch `sds-change`.
+Horizontal arrow navigation follows the tab list's computed text
+direction: Left advances in RTL and Right advances in LTR. Vertical
+navigation remains Down/Up, and Home/End follow DOM order in both directions.
 
 ## Dropdown and popover elements
 

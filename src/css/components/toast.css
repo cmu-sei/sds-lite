@@ -9,14 +9,11 @@
     inline-size: 100%;
     max-inline-size: 24rem;
     padding: var(--sds-space-lg);
-    border: 1px solid
-      light-dark(transparent, var(--sds-gray-700));
-    border-radius: var(--sds-radius-control);
+    border: 1px solid var(--sds-color-border-default);
+    border-radius: var(--sds-radius-floating);
     color: var(--sds-color-text-default);
     background: var(--sds-color-surface-raised);
-    box-shadow:
-      var(--sds-shadow-lg),
-      0 0 0 1px rgb(0 0 0 / 5%);
+    box-shadow: var(--sds-shadow-floating);
     visibility: hidden;
     opacity: 0;
     pointer-events: auto;

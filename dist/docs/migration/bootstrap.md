@@ -26,6 +26,12 @@ buttons and navigation stays links.
 | `btn btn-link` | `data-sds-variant="text"` |
 | `btn-sm`, `btn-lg` | `data-sds-size="sm"`, `"lg"` |
 
+Button modifiers require the base `btn` class. For `btn-outline-*`, supported
+suffixes are `primary`, `secondary`, `success`, `danger`, `warning`, `info`,
+`light`, and `dark`; light/dark map to neutral. Although the tool also assigns
+`sds-button` to `<input class="btn">`, the documented button recipe targets
+buttons and links; review input-button markup manually.
+
 ```html
 <!-- Before -->
 <a class="btn btn-outline-primary" href="/projects">Projects</a>
@@ -50,6 +56,8 @@ buttons and navigation stays links.
 | `form-control-sm`, `form-select-sm` | `data-sds-size="sm"` |
 | `form-control-lg`, `form-select-lg` | `data-sds-size="lg"` |
 
+Size modifiers require `form-control` or `form-select` on the same element.
+
 Native `type`, `name`, `value`, `required`, `disabled`, and ARIA attributes
 are preserved.
 
@@ -66,6 +74,11 @@ are preserved.
 | `table-hover` | `data-sds-row-highlight` |
 | `table-sm` | `data-sds-size="sm"` |
 
+Size and visual modifiers require the corresponding base recipe class.
+Supported context colors are `primary` → `info`, `secondary` → `neutral`,
+`success`, `danger`, `warning`, `info`, and `light`/`dark` → `neutral`.
+Other spinner text-color utilities are retained rather than mapped.
+
 Dismissible alerts and tables with unsupported visual modifiers remain
 unchanged with a warning because they require structural or design review.
 Alerts and badges with unknown context colors also remain unchanged rather
@@ -81,9 +94,9 @@ than being assigned a guessed semantic tone.
   families are included in the retained-marker report.
 - `data-bs-*` behavior, Sass variables, icons, and application scripts are not
   converted.
-- Dynamic `class`, `className`, or Vue `:class` values are left unchanged with
-  a warning. Make the Bootstrap classes static or migrate that expression by
-  hand.
+- Dynamic `class`/`className` values are warned about and skipped. Native
+  control mappings also check Vue `:class` bindings, but recipe mappings such
+  as alerts can still rewrite a static class alongside a dynamic binding.
+  Review mixed static/dynamic classes manually.
 - Review light/dark button mappings. They become a neutral SDS Lite tone, not
   an exact Bootstrap color.
-

@@ -3,6 +3,9 @@
 Styles and accessible behavior for semantic HTML. No framework or runtime
 dependencies required.
 
+Unless noted otherwise, pixel equivalents assume a 16px root font size.
+Dimensions expressed in `rem` scale with the root font size.
+
 ## Start here
 
 | I want to... | Start here |
@@ -26,8 +29,15 @@ dependencies required.
 
 ## Build
 
+- [Interactive playground](../index.html): search components, application recipes,
+  and page starters from Overview. Preview examples and copy component HTML,
+  complete workflows with JavaScript, or full starter pages with setup.
+  The playground uses the same shipped classes and utilities as NPM and CDN
+  applications.
 - [Component recipes](./components/README.md): copy a minimal example and look up its options.
-- [Composition patterns](./guides/composition-patterns.md): accordions, error summaries, workflow steps, split actions, and sortable tables.
+- [Choose by purpose](./components/README.md#choose-by-purpose): distinguish similar-looking recipes before choosing one.
+- [Composition patterns](./guides/composition-patterns.md): complete copyable selection forms, table bulk actions, input actions, date ranges, uploads, and native composition guidance.
+- [Coverage and ownership](./components/README.md#coverage-and-ownership): distinguish built-in behavior, application recipes, and features intentionally not provided.
 - [Accessibility](./guides/accessibility.md): names, keyboard behavior, validation, contrast, and testing responsibilities.
 - [Browser support](./guides/browser-support.md): platform requirements and fallback policy.
 

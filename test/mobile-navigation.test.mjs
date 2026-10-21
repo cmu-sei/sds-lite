@@ -56,11 +56,11 @@ test('mobile menu controls rely on icon-button defaults', () => {
 test('mobile menu icons use centered, font-independent geometry', () => {
   const documentedMarkup = `${catalogHtml}\n${documentation}`
   const menuIcons = documentedMarkup.match(
-    /<button\b(?=[^>]*\bpopovertarget=)[^>]*>\s*<svg\b(?=[^>]*\baria-hidden="true")(?=[^>]*\bviewBox="0 0 24 24")/gs,
+    /<button\b(?=[^>]*\bpopovertarget=)(?=[^>]*\baria-label="Open navigation")[^>]*>\s*<svg\b(?=[^>]*\baria-hidden="true")(?=[^>]*\bviewBox="0 0 24 24")/gs,
   )
 
   assert.doesNotMatch(documentedMarkup, /&#9776;|☰/)
-  assert.equal(menuIcons?.length, 5)
+  assert.equal(menuIcons?.length, 2)
   assert.match(
     buttonCss,
     /\[data-sds-shape="icon"\]\s*>\s*svg[^}]*\{[^}]*inline-size:\s*1em[^}]*block-size:\s*1em/s,

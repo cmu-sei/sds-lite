@@ -56,23 +56,29 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 |---|---|
 | `.sds-fieldset` | Explicit border and shape for a native fieldset. |
 | `.sds-button` | Action styling for native buttons and links. |
+| `.sds-segmented` | Neutral segmented track with raised checked segments and optional decorative SVG icons. Native radios select one submitted value and checkboxes select several; checked, invalid, disabled, and focus states remain native. |
+| `.sds-segment` | Neutral segmented track with raised checked segments and optional decorative SVG icons. Native radios select one submitted value and checkboxes select several; checked, invalid, disabled, and focus states remain native. |
+| `.sds-selection-card` | Whole-card native radio or checkbox selection with checked, invalid, disabled, and focus states. Do not nest additional interactive controls inside the label. |
 | `.sds-link` | Link styling with semantic tone and emphasis. |
 | `.sds-field` | Label, control, help, and validation layout. |
 | `.sds-form` | Narrow vertical form layout. |
 | `.sds-input` | Explicit hooks for native form controls. |
 | `.sds-select` | Explicit hooks for native form controls. |
-| `.sds-input-group` | Native form control with a visible prefix or suffix. |
-| `.sds-input-addon` | Native form control with a visible prefix or suffix. |
+| `.sds-input-group` | One continuous field surface around one native input, select, or textarea, with optional decorative SVGs, embedded actions, and sds-input-addon parts for visibly separated prefixes or suffixes. |
+| `.sds-input-addon` | One continuous field surface around one native input, select, or textarea, with optional decorative SVGs, embedded actions, and sds-input-addon parts for visibly separated prefixes or suffixes. |
 | `.sds-range` | Native range input styling. |
 | `.sds-combobox-list` | Suggestion list for a native text input. |
 | `.sds-choice` | Checkbox or radio with label text. |
 | `.sds-checkbox` | Checkbox or radio with label text. |
 | `.sds-radio` | Checkbox or radio with label text. |
 | `.sds-switch` | Native checkbox with switch appearance. |
-| `.sds-file-input` | Native file input and composed upload surface. |
-| `.sds-file-upload` | Native file input and composed upload surface. |
-| `.sds-file-upload-action` | Native file input and composed upload surface. |
-| `.sds-file-upload-surface` | Native file input and composed upload surface. |
+| `.sds-file-input` | Native file input, composed upload surface, and responsive file queue rows. |
+| `.sds-file-list` | Native file input, composed upload surface, and responsive file queue rows. |
+| `.sds-file-item` | Native file input, composed upload surface, and responsive file queue rows. |
+| `.sds-file-details` | Native file input, composed upload surface, and responsive file queue rows. |
+| `.sds-file-upload` | Native file input, composed upload surface, and responsive file queue rows. |
+| `.sds-file-upload-action` | Native file input, composed upload surface, and responsive file queue rows. |
+| `.sds-file-upload-surface` | Native file input, composed upload surface, and responsive file queue rows. |
 | `.sds-action-group` | Responsive layout for related actions. |
 
 ### Feedback and loading
@@ -112,6 +118,8 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-table` | Application data table and overflow container. |
 | `.sds-table-container` | Application data table and overflow container. |
 | `.sds-table-footer` | Application data table and overflow container. |
+| `.sds-table-toolbar` | Application data table and overflow container. |
+| `.sds-table-selection` | Application data table and overflow container. |
 
 ### Layout
 
@@ -161,6 +169,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-text-h4` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-h5` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-h6` | Explicit SEI heading scale independent of semantic level, responsive at 48rem unless a fixed size is selected. |
+| `.sds-text-title` | Compact sentence-case UI title, 1.25rem/1.75rem by default without viewport scaling; Forge uses medium sans-serif and Plaid uses regular serif. |
 | `.sds-text-lead` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-body` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-caption1` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |

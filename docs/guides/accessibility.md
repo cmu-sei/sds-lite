@@ -170,3 +170,26 @@ Include names, announced state changes, keyboard navigation, focus return,
 and notifications. Test touch interactions and zoom on actual mobile devices
 when mobile support is required. Desktop engine and responsive-layout checks
 do not substitute for those results.
+
+## Manual testing matrix
+
+The following is a recording template, **not evidence of completed testing**.
+No manual result for the current version is asserted by this table. Before
+an adoption or release assessment, record the exact SDS version, OS,
+browser/assistive-technology versions, tester, date, result, and linked
+evidence. Use pass, fail (with a tracked issue), or not tested; never infer a
+manual pass from automated browser checks.
+
+| Environment | Required exercises | Result |
+|---|---|---|
+| VoiceOver + Safari on macOS | Names, native choices, segments, cards, mixed checkbox state, tabs, combobox selections, tag removal focus, overlays, notifications | Not tested |
+| NVDA + Firefox on Windows | Same exercises, including validation announcements and keyboard focus return | Not tested |
+| NVDA + Chrome on Windows | Same exercises, including live status messages and repeated notifications | Not tested |
+| VoiceOver + Safari on an iOS device | Touch exploration, input actions, file picker, zoom and reflow, overlays | Not tested |
+| TalkBack + Chrome on an Android device | Touch exploration, native selection, form errors, notifications | Not tested |
+| Keyboard, zoom, and forced colors | LTR/RTL arrows, 200%/400% zoom, narrow layouts, visible selected/mixed/focus states | Not tested |
+
+For the new composition examples, also exercise empty results, zero/all/partial
+selection, form reset, invalid dates, clipboard denial, upload cancellation,
+and server/network failures. Announced state and focus placement matter as
+much as visual appearance.

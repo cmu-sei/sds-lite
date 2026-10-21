@@ -147,14 +147,13 @@
     .sds-panel > section,
     .sds-panel > footer
   ) {
-    padding: var(--sds-space-xl);
+    padding: var(--sds-surface-inset);
   }
 
   :where(.sds-panel > header) {
     position: sticky;
     z-index: 1;
     inset-block-start: 0;
-    align-items: center;
     background: color-mix(
       in srgb,
       var(--sds-color-surface-raised) 50%,

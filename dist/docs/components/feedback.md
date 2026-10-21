@@ -51,8 +51,9 @@ Choose the native element that matches the interaction:
 
 ### Options
 
-`data-sds-size` accepts `sm` or `md`; `sm` is the default. For tone targets,
-see the tag rows in the [recipe interface](../reference/recipes.md).
+`data-sds-size` accepts `sm` or `md`; `sm` is the default.
+`data-sds-tone="danger"` customizes interactive color on a `button.sds-tag`
+or `.sds-tag-action`; other semantic tones are not tag options.
 
 ### Accessibility
 
@@ -167,26 +168,45 @@ notify('Your project was saved.', {
 
 | Option | Values | Default |
 |---|---|---|
-| `container` | An `HTMLElement` or toaster owner | First SDS root, then `body` |
+| `container` | An `HTMLElement`, including an existing toaster | Search the document for a toaster; otherwise create one in the first SDS root or `body` |
 | `title` | String | `Notification` |
 | `tone` | All semantic tones | `info` |
 | `duration` | Positive milliseconds | `5000` |
 | `persistent` | Boolean | `false` |
 | `urgent` | Boolean; changes role to `alert` | `false` |
+| `dismissLabel` | Localized close-button name | `Dismiss notification` |
+| `regionLabel` | Localized name for a new or unnamed toaster | `Notifications` |
 
 `notify()` creates or reuses `.sds-toaster`, registers `<sds-toast>`, and
 removes the closed toast after its exit motion. It can be imported during SSR
 but must only be called in a browser. Invalid durations throw `RangeError`.
+Empty or non-string `dismissLabel` and `regionLabel` values throw `TypeError`.
+With `container`, the toaster search is scoped to that element; a new toaster
+is appended there if none exists.
+Use `title`, `dismissLabel`, and `regionLabel` to translate generated text.
+An existing toaster's authored accessible name is preserved:
+
+```js
+notify('Modifications enregistrees.', {
+  title: 'Enregistre',
+  dismissLabel: 'Fermer la notification',
+  regionLabel: 'Notifications du projet',
+})
+```
 
 ### Events
 
 The returned toast emits bubbling `sds-open` and `sds-close` events. Close
 detail contains `reason`: `dismiss`, `programmatic`, or `timeout`.
+`notify()` opens synchronously; listen on its container before calling it
+to observe `sds-open`. Authored toasts emit these events through `show()` and
+`close()`, not direct changes to the `open` attribute.
 
 ### Accessibility
 
-Use `urgent: true` or `role="alert"` only for urgent information. Timers pause
-on hover and focus. Persistent toasts need a close control; use persistence
+Use `urgent: true` or `role="alert"` only for urgent information. Hover and focus
+cancel the timer; the full duration restarts after both end.
+Persistent toasts need a close control; use persistence
 when users must read or act. Auto-dismiss only nonessential status available elsewhere.
 
 ### Authored toast
@@ -228,11 +248,15 @@ when users must read or act. Auto-dismiss only nonessential status available els
 | `role` | `status`, `alert` | `status` |
 | `aria-atomic` | `"true"` | Added on upgrade |
 
+Invalid authored `duration` attributes fall back to `5000`; assigning an
+invalid `.duration` property throws `RangeError`.
+
 #### Programmatic control
 
 ```ts
-import '@cmu-sei/sds-lite'
+import { setupSds } from '@cmu-sei/sds-lite'
 
+setupSds()
 const toast = document.querySelector('sds-toast')
 if (toast) {
   toast.tone = 'success'

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Segmented controls and selectable cards</title>
+  <link rel="stylesheet" href="../../dist/sds.css">
+  <script type="module" src="../../dist/package/auto.js"></script>
+</head>
+<body class="sds-document" data-sds-root>
+  <main class="sds-page"><article class="sds-card sds-stack" id="selection-recipes">
+              <h1 class="sds-text-h3">Segmented controls and selectable cards</h1>
+              <form id="selection-example" class="sds-stack">
+                <fieldset class="sds-fieldset sds-stack">
+                  <legend>View</legend>
+                  <div class="sds-segmented">
+                    <label class="sds-segment"><input class="sds-radio" type="radio" name="view" value="list" checked><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M10 4C5 4 1 10 1 10s4 6 9 6 9-6 9-6-4-6-9-6Zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path></svg>List</label>
+                    <label class="sds-segment"><input class="sds-radio" type="radio" name="view" value="grid"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M2 2h6v6H2zm10 0h6v6h-6zM2 12h6v6H2zm10 0h6v6h-6z"></path></svg>Grid</label>
+                    <label class="sds-segment"><input class="sds-radio" type="radio" name="view" value="map" disabled>Map (unavailable)</label>
+                  </div>
+                </fieldset>
+                <fieldset class="sds-fieldset sds-stack">
+                  <legend>Visible layers</legend>
+                  <div class="sds-segmented">
+                    <label class="sds-segment"><input class="sds-checkbox" type="checkbox" name="layer[]" value="roads" checked>Roads</label>
+                    <label class="sds-segment"><input class="sds-checkbox" type="checkbox" name="layer[]" value="places">Places</label>
+                  </div>
+                </fieldset>
+                <fieldset class="sds-fieldset sds-stack">
+                  <legend>Project template</legend>
+                  <label class="sds-selection-card">
+                    <input class="sds-radio" type="radio" name="template" value="research" checked>
+                    <span><strong>Research</strong><br>Start with a research workflow.</span>
+                  </label>
+                  <label class="sds-selection-card">
+                    <input class="sds-radio" type="radio" name="template" value="review">
+                    <span><strong>Review</strong><br>Start with a review checklist.</span>
+                  </label>
+                </fieldset>
+                <div class="sds-cluster" data-sds-gap="sm" role="group" aria-label="Immediate display options">
+                  <button class="sds-button" data-sds-variant="outlined" type="button" aria-pressed="false">Show archived</button>
+                  <button class="sds-tag" type="button" aria-pressed="false">Favorites</button>
+                </div>
+                <p>Native choices submit values. Toggle buttons demonstrate immediate actions, not form values.</p>
+                <div class="sds-action-group">
+                  <button class="sds-button" type="submit">Show submitted choices</button>
+                  <button class="sds-button" type="reset" data-sds-variant="text">Reset choices</button>
+                </div>
+                <p role="status"></p>
+              </form>
+            </article></main>
+  <script type="module" src="./selection.js"></script>
+</body>
+</html>

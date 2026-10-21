@@ -54,7 +54,9 @@ The input and buttons should now be styled. Browser validation and form
 submission remain native; your application supplies save and cancel behavior.
 
 For an embedded region, omit `sds-document` to keep page background and sizing
-unchanged. See [styling boundaries](./guides/theming.md#choose-a-styling-boundary)
+unchanged. When you control the whole document, move `data-sds-root` and
+`sds-document` to `<body>` and keep `sds-page` on `<main>`; this also removes
+the browser's default body margin. See [styling boundaries](./guides/theming.md#choose-a-styling-boundary)
 for host typography overrides, or [themes](./guides/theming.md#theme-and-color-scheme)
 to change the default Forge/light appearance.
 

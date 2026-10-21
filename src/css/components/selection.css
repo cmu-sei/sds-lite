@@ -1,0 +1,113 @@
+@layer sds.components {
+  :where(.sds-segmented) {
+    display: inline-flex;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    flex-wrap: wrap;
+    gap: var(--sds-space-2xs);
+    margin: 0;
+    padding: var(--sds-space-2xs);
+    border: 0;
+    border-radius: var(--sds-radius-container);
+    background: var(--sds-color-surface-subtle);
+  }
+
+  :where(.sds-segment) {
+    position: relative;
+    display: inline-flex;
+    min-block-size: 2.25rem;
+    gap: var(--sds-space-xs);
+    align-items: center;
+    justify-content: center;
+    padding: var(--sds-space-xs) var(--sds-space-md);
+    border: 1px solid transparent;
+    border-radius: var(--sds-radius-control);
+    color: var(--sds-color-text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      color var(--sds-duration-normal) var(--sds-easing-standard),
+      background-color var(--sds-duration-normal) var(--sds-easing-standard),
+      border-color var(--sds-duration-normal) var(--sds-easing-standard),
+      box-shadow var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  :where(.sds-segment > input) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  :where(.sds-segment > svg) {
+    inline-size: 1em;
+    block-size: 1em;
+    flex: none;
+    fill: currentColor;
+  }
+
+  :where(.sds-segment):has(input:checked) {
+    border-color: var(--sds-color-border-default);
+    color: var(--sds-color-text-default);
+    background: var(--sds-color-surface-default);
+    box-shadow: var(--sds-shadow-sm);
+  }
+
+  @media (hover: hover) {
+    :where(.sds-segment):has(input:not(:disabled)):hover {
+      color: var(--sds-color-text-default);
+    }
+  }
+
+  :where(.sds-selection-card) {
+    display: flex;
+    gap: var(--sds-space-md);
+    align-items: flex-start;
+    padding: var(--sds-space-lg);
+    border: 1px solid var(--sds-color-border-default);
+    border-radius: var(--sds-radius-container);
+    color: var(--sds-color-text-default);
+    background: var(--sds-color-surface-default);
+    cursor: pointer;
+  }
+
+  :where(.sds-selection-card > input) {
+    flex: none;
+    margin-block-start: var(--sds-space-xs);
+  }
+
+  :where(.sds-selection-card):has(input:checked) {
+    border-color: var(--sds-color-info-border);
+    color: var(--sds-color-info-text);
+    background: var(--sds-color-info-surface);
+  }
+
+  :where(.sds-segment, .sds-selection-card):has(input:focus-visible) {
+    outline: 2px solid var(--sds-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  :where(.sds-segment, .sds-selection-card):has(input[aria-invalid="true"]) {
+    border-color: var(--sds-color-danger-border);
+  }
+
+  :where(.sds-segment, .sds-selection-card):has(input:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (forced-colors: active) {
+    :where(.sds-segment, .sds-selection-card):has(input:checked) {
+      border-color: Highlight;
+      outline: 1px solid Highlight;
+      outline-offset: -3px;
+    }
+
+    :where(.sds-segment, .sds-selection-card):has(input:focus-visible) {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  }
+}

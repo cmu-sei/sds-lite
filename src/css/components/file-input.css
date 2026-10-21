@@ -6,6 +6,7 @@
     border: 1px dashed var(--sds-color-form-border);
     border-radius: var(--sds-radius-container);
     background: var(--sds-color-surface-default);
+    cursor: pointer;
   }
 
   :where(.sds-file-upload-surface) {
@@ -105,6 +106,7 @@
   :where(.sds-file-input) {
     display: block;
     inline-size: fit-content;
+    max-inline-size: 100%;
     min-inline-size: 0;
     padding: var(--sds-space-xs);
     overflow: hidden;
@@ -127,7 +129,7 @@
     padding: 0;
     border: 0;
     opacity: 0;
-    cursor: pointer;
+    cursor: inherit;
   }
 
   :where(.sds-file-upload:has(input[type="file"]:focus-visible)) {
@@ -137,6 +139,80 @@
 
   :where(.sds-file-upload:has(input[type="file"]:disabled)) {
     opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  :where(.sds-file-list) {
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--sds-color-border-default);
+    border-radius: var(--sds-radius-container);
+    list-style: none;
+  }
+
+  :where(.sds-file-list:empty) {
+    display: none;
+  }
+
+  :where(.sds-file-item) {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    gap: var(--sds-space-sm) var(--sds-space-md);
+    align-items: center;
+    padding: var(--sds-space-md);
+  }
+
+  :where(.sds-file-item + .sds-file-item) {
+    border-block-start: 1px solid var(--sds-color-border-default);
+  }
+
+  :where(.sds-file-item > svg) {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    align-self: start;
+    color: var(--sds-color-text-muted);
+    fill: none;
+    stroke: currentColor;
+  }
+
+  :where(.sds-file-details) {
+    display: grid;
+    min-inline-size: 0;
+    gap: var(--sds-space-xs);
+    overflow-wrap: anywhere;
+  }
+
+  :where(.sds-file-details > strong) {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  :where(.sds-file-details > small) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-xs) var(--sds-space-md);
+    color: var(--sds-color-text-muted);
+    font-size: 0.75rem;
+    font-style: normal;
+  }
+
+  :where(.sds-file-item > .sds-action-group) {
+    grid-column: 2;
+  }
+
+  :where(.sds-file-item > .sds-action-group > button) {
+    min-block-size: 2rem;
+  }
+
+  @media (min-width: 48rem) {
+    :where(.sds-file-item) {
+      grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+    }
+
+    :where(.sds-file-item > .sds-action-group) {
+      grid-column: 3;
+      grid-row: 1;
+    }
   }
 
   :where(
@@ -175,6 +251,9 @@
     border-color: var(--sds-color-form-invalid);
   }
 
+  :where(
+    .sds-file-input:disabled
+  ),
   :where(
     .sds-file-input:disabled
   )::file-selector-button {
