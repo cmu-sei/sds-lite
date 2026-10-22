@@ -320,6 +320,12 @@
   }
 
   @scope (.sds-app) to (.sds-app) {
+  :where(:scope:is([data-sds-variant="application"], :not([data-sds-variant])) .sds-sidebar > nav [aria-current="page"],
+    :scope:is([data-sds-variant="application"], :not([data-sds-variant])) .sds-sidebar > nav [aria-current="location"],
+    :scope:is([data-sds-variant="application"], :not([data-sds-variant])) .sds-sidebar > nav details:not([open]):has([aria-current="page"], [aria-current="location"]) > summary) {
+    background: var(--sds-color-surface-subtle);
+  }
+
   :where(:scope[data-sds-variant="documentation"] .sds-sidebar) {
     border-inline-end: 0;
     font-size: 0.875rem;
