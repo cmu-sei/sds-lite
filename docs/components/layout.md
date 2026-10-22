@@ -314,7 +314,9 @@ Do not add `popover` to a contained standalone sidebar.
 Use native `details` and `summary` for expandable groups, with a child `ul`
 inside each `details`. The default application sidebar uses full-width 40px
 rows and a 4px current-item edge indicator. Group summaries use 14px semibold
-text with the default text color; ordinary application and standalone items
+text. In application shells (`application` or omitted), current items also
+have a subtle gray background, including collapsed groups containing the
+current link. Group summaries use the default text color; ordinary application and standalone items
 use 14px regular text, with semibold text for the current item. Child links
 use 24px inline-start padding, a 12px indentation step from top-level rows.
 Group headings retain sentence case and separate groups using their existing

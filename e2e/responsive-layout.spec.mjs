@@ -876,6 +876,57 @@ test('documentation sidebars use compact text without header or footer separator
   }
 })
 
+for (const width of [1440, 390]) {
+  for (const colorScheme of ['light', 'dark']) {
+    test(`application sidebar current items use a subtle background at ${width}px in ${colorScheme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' })
+      await page.goto('/#layouts')
+      const root = page.locator('[data-copy-layout="Application"]')
+      await root.evaluate(element => { element.closest('details').open = true })
+      const sidebar = root.locator('.sds-sidebar')
+      if (width <= 1024) {
+        await sidebar.evaluate(element => element.showPopover())
+      }
+      await sidebar.locator('nav').evaluate(nav => {
+        nav.innerHTML = `<ul>
+          <li><a href="#overview">Inactive</a></li>
+          <li><details open><summary>Active group</summary><ul>
+            <li><a href="#layouts" aria-current="page">Current</a></li>
+          </ul></details></li>
+        </ul>`
+      })
+      const current = sidebar.getByRole('link', { name: 'Current', exact: true })
+      const group = sidebar.locator('summary')
+      const expected = await sidebar.evaluate(element => {
+        const reference = document.createElement('span')
+        reference.style.backgroundColor = 'var(--sds-color-surface-subtle)'
+        element.append(reference)
+        const color = getComputedStyle(reference).backgroundColor
+        reference.remove()
+        return color
+      })
+      expect(expected).not.toBe(await sidebar.evaluate(element => getComputedStyle(element).backgroundColor))
+      for (const variant of ['application', null]) {
+        await root.evaluate((element, variant) => {
+          if (variant) element.setAttribute('data-sds-variant', variant)
+          else element.removeAttribute('data-sds-variant')
+        }, variant)
+        for (const value of ['page', 'location']) {
+          await sidebar.locator('details').evaluate(element => { element.open = true })
+          await current.evaluate((element, value) => element.setAttribute('aria-current', value), value)
+          await expect(current).toHaveCSS('background-color', expected)
+          await expect(current).toHaveCSS('border-left-width', '4px')
+          await expect(group).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+          await expect(sidebar.getByRole('link', { name: 'Inactive', exact: true })).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+          await sidebar.locator('details').evaluate(element => { element.open = false })
+          await expect(group).toHaveCSS('background-color', expected)
+        }
+      }
+    })
+  }
+}
+
 test('application sidebars do not inherit documentation tree styling', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/#layouts')
