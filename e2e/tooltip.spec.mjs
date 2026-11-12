@@ -3,6 +3,8 @@ import { expect, test } from '@playwright/test'
 test('Escape cancels delayed popover opening and preserves Escape for its modal', async ({ page }) => {
   await page.goto('/')
   await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.clock.install()
+  await page.clock.pauseAt(new Date())
   await page.evaluate(() => {
     const dialog = document.createElement('dialog')
     dialog.id = 'delayed-popover-dialog'
@@ -15,14 +17,18 @@ test('Escape cancels delayed popover opening and preserves Escape for its modal'
   const dialog = page.locator('#delayed-popover-dialog')
   const trigger = dialog.getByRole('button', { name: 'Delayed details', exact: true })
   await expect(trigger).toBeFocused()
+  await page.clock.fastForward(499)
+  expect(await dialog.locator('section').evaluate(element => element.matches(':popover-open'))).toBe(false)
   await page.keyboard.press('Escape')
   await expect(dialog).toBeHidden()
-  await page.waitForTimeout(650)
+  await page.clock.fastForward(650)
   expect(await dialog.locator('section').evaluate(element => element.matches(':popover-open'))).toBe(false)
 })
 
 test('Escape cancels a pending popover while its trigger remains focused', async ({ page }) => {
   await page.goto('/')
+  await page.clock.install()
+  await page.clock.pauseAt(new Date())
   await page.evaluate(() => {
     document.body.insertAdjacentHTML('beforeend', '<sds-popover id="pending-popover"><button type="button">Pending details</button><section>Details</section></sds-popover>')
   })
@@ -31,10 +37,11 @@ test('Escape cancels a pending popover while its trigger remains focused', async
   await trigger.focus()
   await trigger.press('Escape')
   await expect(trigger).toBeFocused()
-  await page.waitForTimeout(650)
+  await page.clock.fastForward(650)
   expect(await popover.locator('section').evaluate(element => element.matches(':popover-open'))).toBe(false)
   await trigger.evaluate(element => element.blur())
   await trigger.focus()
+  await page.clock.fastForward(500)
   await expect(popover.locator('section')).toBeVisible()
 })
 test('tooltip sizes match the SEI Design System defaults', async ({ page }) => {

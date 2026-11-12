@@ -2979,8 +2979,8 @@ test('section anchors remain visible below the application navigation', async ({
   }
 })
 
-test('mobile application navigation stays pinned while page titles scroll away at every viewport', async ({ page }) => {
-  for (const width of [390, 768, 1024, 1440]) {
+for (const width of [390, 768, 1024, 1440]) {
+  test(`mobile application navigation stays pinned while page titles scroll away at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 })
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/')
@@ -2992,7 +2992,7 @@ test('mobile application navigation stays pinned while page titles scroll away a
       .toBeLessThan(0)
     if (width > 1024) {
       await expect(shellHeader).toBeHidden()
-      continue
+      return
     }
     await expect.poll(() => shellHeader.evaluate(element => element.getBoundingClientRect().top))
       .toBeCloseTo(0, 1)
@@ -3005,8 +3005,8 @@ test('mobile application navigation stays pinned while page titles scroll away a
     await expect(sidebar).toBeHidden()
     await expect(menu).toBeFocused()
     await expect(menu).toBeInViewport()
-  }
-})
+  })
+}
 
 test('section anchors scroll the page without moving the desktop sidebar', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
