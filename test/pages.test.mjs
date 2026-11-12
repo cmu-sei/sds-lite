@@ -105,6 +105,10 @@ test('Pages verification follows annotated tags and uses only read-only release 
   assert.equal(await verifyPagesRelease(handoff, execute), true)
   assert.equal(commands.length, 5)
   assert.ok(commands.every((command) => command[1] === 'api' || command[1] === 'view'))
+  assert.equal(await verifyPagesRelease(handoff, (command, args) => {
+    const result = execute(command, args)
+    return args[0] === 'view' ? [result] : result
+  }), true)
   await assert.rejects(verifyPagesRelease(handoff, () => { throw new Error('Registry unavailable') }), /unavailable/)
 })
 
@@ -151,7 +155,10 @@ test('the isolated Pages build leaves distribution bytes and npm package content
   }
   const before = await distributionHashes()
   const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-  const pack = () => JSON.parse(commandOutput(npm, ['pack', '--dry-run', '--ignore-scripts', '--json']))[0].files
+  const pack = () => {
+    const reports = JSON.parse(commandOutput(npm, ['pack', '--dry-run', '--ignore-scripts', '--json']))
+    return Object.values(reports)[0].files
+  }
   const filesBefore = pack()
   commandOutput(process.execPath, ['scripts/build-pages.mjs'])
   assert.deepEqual(await distributionHashes(), before)

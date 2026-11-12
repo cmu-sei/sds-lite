@@ -46,8 +46,94 @@ as the browser evaluates it, which may be before hydration. Use `/auto` only
 through a dynamic import inside a hook that runs after hydration, or use
 `setupSds()` as shown above.
 
+The optional `/documentation` entry also runs setup when evaluated in the
+browser. Dynamically import it after hydration when using documentation controls;
+do not import it from a shared SSR entry.
+
 See [Framework integration](./frameworks.md#copy-ready-ssr-setups) for Next.js,
 Nuxt, SvelteKit, Astro, Remix, and Angular examples.
+
+## Django and Jinja form fields
+
+Server-rendered forms do not need hydration. Load SDS CSS and `/auto` once
+in the base page; render normal named controls, CSRF inputs, and error
+messages on every response. Keep framework validation and escaping enabled.
+
+### Django partial
+
+This template uses the optional `django-widget-tweaks` helper in the consuming
+Django application so attributes can be added without replacing Django's widget
+rendering. It is not an SDS dependency. Enable its `widget_tweaks` template
+library in that application before using this partial.
+
+Save the following as your application's `forms/sds_field.html`:
+
+```django
+{% load widget_tweaks %}
+{% if field.is_hidden %}
+  {{ field }}
+{% else %}
+  <div class="sds-field">
+    {{ field.label_tag }}
+    {% with help_id=field.auto_id|add:"-help" error_id=field.auto_id|add:"-errors" %}
+      {% with descriptions=help_id|add:" "|add:error_id invalid=field.errors|yesno:"true,false" %}
+        {% render_field field class+=control_class aria-describedby=descriptions aria-invalid=invalid %}
+      {% endwith %}
+      <small id="{{ help_id }}">{{ field.help_text }}</small>
+      <small id="{{ error_id }}" data-sds-tone="danger">{% for error in field.errors %}{{ error }}{% if not forloop.last %} {% endif %}{% endfor %}</small>
+    {% endwith %}
+  </div>
+{% endif %}
+```
+
+Use the control recipe appropriate to the existing widget:
+
+```django
+<form class="sds-form" method="post">
+  {% csrf_token %}
+  {% include "forms/sds_field.html" with field=form.title control_class="sds-input" only %}
+  {% include "forms/sds_field.html" with field=form.owner control_class="sds-select" only %}
+  <button class="sds-button" type="submit">Save</button>
+</form>
+```
+
+Pass unique form prefixes when forms repeat. Keep Django's automatic IDs
+enabled, since the partial uses `field.auto_id`. The helper preserves widget
+values, selected options, and required/disabled state. A compound widget such
+as a radio group, split date/time, or multiple-checkbox field needs a dedicated
+fieldset/legend partial and its own control classes; do not put one input class
+on a widget's outer container. Include non-field errors in a focused
+[error summary](./composition-patterns.md#error-summary).
+
+### Jinja macro
+
+This framework-independent macro supplies the wrapper and message IDs; its
+caller renders the actual native control. Keep HTML autoescaping enabled.
+Store the macro in the consuming application's `forms/sds_field.html`:
+
+```jinja
+{% macro field(id, label, help='', errors=()) %}
+  <div class="sds-field">
+    <label for="{{ id }}">{{ label }}</label>
+    {{ caller(id ~ '-help ' ~ id ~ '-errors', 'true' if errors else 'false') }}
+    <small id="{{ id }}-help">{{ help }}</small>
+    <small id="{{ id }}-errors" data-sds-tone="danger">{{ errors|join(' ') }}</small>
+  </div>
+{% endmacro %}
+```
+
+```jinja
+{% from "forms/sds_field.html" import field %}
+{% call(described_by, invalid) field('title', 'Title', 'Use a short name.', errors=errors.get('title', [])) %}
+  <input class="sds-input" id="title" name="title" value="{{ values.get('title', '') }}" required aria-describedby="{{ described_by }}" aria-invalid="{{ invalid }}">
+{% endcall %}
+```
+
+Put the call inside a normal POST form with the framework's CSRF field. Use
+`sds-select` for selects and preserve selected options; use `sds-input` for
+textareas and preserve their text content. Never apply `safe` to user values or
+validation messages. Both examples keep help/error elements present so every
+`aria-describedby` reference resolves even when there are no messages.
 
 ## The pre-authored path
 

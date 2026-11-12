@@ -1,6 +1,48 @@
 import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 
+test('copied detail patterns reflow and keep stretched table rows as one native link', async ({ page }) => {
+  const source = await readFile('docs/guides/composition-patterns.md', 'utf8')
+  const sections = ['Linked rows and numeric columns', 'Detail lists', 'Main content and side panel'].map(heading => {
+    const start = source.indexOf(`## ${heading}\n`)
+    const end = source.indexOf('\n## ', start + 1)
+    return source.slice(start, end === -1 ? undefined : end)
+  })
+  const blocks = language => sections.flatMap(section => Array.from(section.matchAll(new RegExp('```' + language + '\\n([\\s\\S]*?)```', 'g')), match => match[1]))
+  await page.setContent(`<!doctype html><body data-sds-root><main style="padding:16px">${blocks('html').join('\n')}</main></body>`)
+  await page.addStyleTag({ path: 'dist/sds.css' })
+  await page.addStyleTag({ content: blocks('css').join('\n') })
+  await page.locator('.record-link').evaluate(element => {
+    element.addEventListener('click', event => {
+      event.preventDefault()
+      element.dataset.activations = String(Number(element.dataset.activations ?? 0) + 1)
+    })
+  })
+  const link = page.locator('.record-link')
+  await expect(page.locator('.record-table tbody a')).toHaveCount(1)
+  await expect(link).toHaveAttribute('href', '/requests/42')
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 })
+    const list = page.locator('.record-details')
+    await expect(list.locator('dt')).toHaveCount(3)
+    const columns = await list.locator(':scope > div').first().evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length)
+    expect(columns).toBe(width === 1440 ? 2 : 1)
+    const layoutColumns = await page.locator('.record-layout').evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length)
+    expect(layoutColumns).toBe(width === 1440 ? 2 : 1)
+    await expect(page.locator('td.numeric')).toHaveCSS('text-align', 'end')
+    await page.locator('td.numeric').scrollIntoViewIfNeeded()
+    const cell = await page.locator('td.numeric').boundingBox()
+    await page.mouse.click(cell.x + cell.width / 2, cell.y + cell.height / 2)
+    await expect(link).toHaveAttribute('data-activations', width === 1440 ? '1' : '2')
+    await page.getByRole('button', { name: 'Export', exact: true }).click()
+    await expect(link).toHaveAttribute('data-activations', width === 1440 ? '1' : '2')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  }
+  await link.focus()
+  await page.keyboard.press('Enter')
+  await expect(link).toHaveAttribute('data-activations', '3')
+})
+
 test('copied final migration examples style native controls', async ({ page }) => {
   const source = await readFile('docs/migration/index.md', 'utf8')
   const examples = Array.from(source.matchAll(/```html\s*\n([\s\S]*?)```/g), (match) => match[1])
@@ -819,11 +861,17 @@ test('every layout and standalone page export preserves its displayed markup', a
     const layout = findMarkup(`${name} layout HTML`)
     const pageMarkup = findMarkup(`${name} page HTML`)
     const pageDocument = new DOMParser().parseFromString(pageMarkup, 'text/html')
+    const normalizeMarkup = markup => {
+      const template = document.createElement('template')
+      template.innerHTML = markup
+      for (const link of template.content.querySelectorAll('.sds-app-toc a[aria-current="location"]')) link.removeAttribute('aria-current')
+      return template.innerHTML
+    }
     return {
       name,
-      expected: clone.outerHTML,
-      layout,
-      page: pageDocument.body.firstElementChild?.outerHTML,
+      expected: normalizeMarkup(clone.outerHTML),
+      layout: normalizeMarkup(layout),
+      page: normalizeMarkup(pageDocument.body.firstElementChild?.outerHTML),
       theme: pageDocument.body.dataset.sdsTheme,
       expectedTheme: example.dataset.sdsTheme,
       stylesheetCount: pageDocument.head.querySelectorAll('link[rel="stylesheet"]').length,
@@ -835,13 +883,14 @@ test('every layout and standalone page export preserves its displayed markup', a
     expect(result.layout, `${result.name} layout`).toBe(result.expected)
     expect(result.page, `${result.name} page`).toBe(result.expected)
     expect(result.theme).toBe(result.expectedTheme)
-    expect(result.stylesheetCount).toBe(2)
-    expect(result.scriptCount).toBe(1)
+    expect(result.stylesheetCount).toBe(result.name === 'Documentation site' ? 3 : 2)
+    expect(result.scriptCount).toBe(result.name === 'Documentation site' ? 2 : 1)
   }
 })
 
 test('every copy control writes its complete displayed code to the clipboard', async ({ page }) => {
   await page.goto('/')
+  await page.clock.install()
   await page.evaluate(() => {
     window.copiedSnippets = []
     Object.defineProperty(navigator, 'clipboard', {
@@ -854,10 +903,16 @@ test('every copy control writes its complete displayed code to the clipboard', a
     for (const button of document.querySelectorAll('[data-copy-target]')) {
       const target = document.getElementById(button.dataset.copyTarget)
       const expected = target?.textContent
+      const originalName = button.getAttribute('aria-label') ?? button.textContent.trim()
+      const labelMatches = originalName.includes(button.textContent.trim())
       const before = window.copiedSnippets.length
       button.click()
       await Promise.resolve()
-      results.push({ target: button.dataset.copyTarget, expected, actual: window.copiedSnippets[before] })
+      results.push({
+        target: button.dataset.copyTarget, expected, actual: window.copiedSnippets[before],
+        originalName, labelMatches,
+        feedbackName: button.getAttribute('aria-label') ?? button.textContent.trim(),
+      })
     }
     return results
   })
@@ -866,8 +921,14 @@ test('every copy control writes its complete displayed code to the clipboard', a
   for (const result of audit) {
     expect(result.expected, result.target).toBeTruthy()
     expect(result.actual, result.target).toBe(result.expected)
+    expect(result.labelMatches, result.target).toBe(true)
+    expect(result.feedbackName, result.target).toBe('Copied')
   }
   await expect(page.locator('#copy-status')).toHaveText('Example copied to clipboard.')
+  await page.clock.fastForward(2000)
+  expect(await page.locator('[data-copy-target]').evaluateAll(buttons => buttons.map(button =>
+    button.getAttribute('aria-label') ?? button.textContent.trim(),
+  ))).toEqual(audit.map(result => result.originalName))
 })
 
 test('API disclosures copy their example markup and announce success', async ({
@@ -917,7 +978,7 @@ for (const [name, variant, theme] of [
       })
     })
     await expect(page.locator(`#layouts [data-sds-variant="${variant}"]`)).toHaveAttribute('data-sds-theme', theme)
-    const target = await page.getByRole('button', { name: `Copy ${name} page`, exact: true }).getAttribute('data-copy-target')
+    const target = await page.getByRole('button', { name: `Copy page: ${name}`, exact: true }).getAttribute('data-copy-target')
     const copy = page.locator(`[data-copy-target="${target}"]`)
     await copy.click()
     await expect(copy).toHaveText('Copied')
@@ -928,15 +989,17 @@ for (const [name, variant, theme] of [
     expect(markup).toContain('/dist/auto.js')
     expect(markup).not.toContain('data-copy-')
     expect(markup).not.toContain('#composition')
-    await page.getByRole('button', { name: `Copy ${name} layout`, exact: true }).click()
+    await page.getByRole('button', { name: `Copy layout: ${name}`, exact: true }).click()
     const layoutMarkup = await page.evaluate(() => window.copiedMarkup)
     expect(layoutMarkup).not.toContain('<!doctype')
     expect(layoutMarkup).toContain(`data-sds-theme="${theme}"`)
     await page.route('https://cdn.jsdelivr.net/**', async (route) => {
       const file = new URL(route.request().url()).pathname.split('/dist/')[1]
-      await route.fulfill({ path: `dist/${file}` })
+      await route.fulfill({ path: `dist/${file}`, headers: { 'access-control-allow-origin': '*' } })
     })
+    await page.goto('about:blank')
     await page.setContent(markup)
+    await page.waitForLoadState('networkidle')
     await expect(page.locator('main')).toHaveCount(1)
     await expect(page.locator('#page-content')).toBeVisible()
     await expect(page.locator('.sds-app')).toHaveCSS('display', 'flex')
@@ -969,7 +1032,7 @@ for (const [name, variant, theme] of [
         await expect(page.locator(href)).toBeInViewport()
       }
       const search = page.getByRole('search', { name: 'Documentation search' })
-      await page.getByRole('button', { name: 'Search documentation', exact: true }).click()
+      await page.getByRole('link', { name: 'Search documentation', exact: true }).click()
       await expect(page.getByRole('dialog', { name: 'Search documentation', exact: true })).toBeVisible()
       await search.getByRole('searchbox').fill('installation')
       expect(await search.locator('form').evaluate(form => ({ action: form.getAttribute('action'), query: new FormData(form).get('q') }))).toEqual({ action: '/search', query: 'installation' })
@@ -1014,7 +1077,7 @@ for (const pattern of ['dashboard', 'directory', 'settings', 'article']) {
   test(`a copied ${pattern} pattern composes into a standalone page`, async ({ page }) => {
     await page.goto('/#patterns')
     const layout = await page.locator('#layouts details[data-source-label="Simple application page HTML"] code').textContent()
-    const copy = page.getByRole('button', { name: `Copy ${pattern} markup`, exact: true })
+    const copy = page.getByRole('button', { name: `Copy HTML: ${pattern}`, exact: true })
     await page.evaluate(() => {
       Object.defineProperty(navigator, 'clipboard', {
         configurable: true,

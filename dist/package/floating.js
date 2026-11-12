@@ -1,4 +1,4 @@
-//#region src/elements/floating.ts
+// src/elements/floating.ts
 var e = [
 	"top",
 	"right",
@@ -149,22 +149,16 @@ var f = class {
 		this.openTimer !== null && clearTimeout(this.openTimer), this.closeTimer !== null && clearTimeout(this.closeTimer), this.openTimer = null, this.closeTimer = null;
 	}
 	show() {
-		this.openTimer = null, !this.isOpen() && (this.positioner.reset(), this.surface.showPopover(), this.positioner.position());
+		this.openTimer = null, this.isOpen() || (this.positioner.reset(), this.surface.showPopover(), this.positioner.position());
 	}
 	scheduleOpen(e) {
-		if (this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, !(this.isOpen() || this.openTimer !== null)) {
-			if (e === 0) {
-				this.show();
-				return;
-			}
-			this.openTimer = setTimeout(() => this.show(), e);
-		}
+		this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, this.isOpen() || this.openTimer !== null || (e === 0 ? this.show() : this.openTimer = setTimeout(() => this.show(), e));
 	}
 	scheduleClose() {
 		this.openTimer !== null && clearTimeout(this.openTimer), this.openTimer = null, this.isOpen() && this.closeTimer === null && (this.closeTimer = setTimeout(() => {
 			this.closeTimer = null;
 			let e = document.activeElement;
-			!this.pointerInside && !this.anchor.contains(e) && !this.surface.contains(e) && this.surface.hidePopover();
+			this.pointerInside || this.anchor.contains(e) || this.surface.contains(e) || this.surface.hidePopover();
 		}, this.closeDelay));
 	}
 	handlePointerEnter = () => {
@@ -186,8 +180,9 @@ var f = class {
 		this.isOpen() ? this.positioner.position() : this.positioner.reset();
 	};
 	handleKeydown = (e) => {
-		e.key === "Escape" && this.isOpen() && (e.preventDefault(), this.clearTimers(), this.surface.hidePopover());
+		if (e.key !== "Escape") return;
+		let t = this.isOpen();
+		this.clearTimers(), t && (e.preventDefault(), this.surface.hidePopover());
 	};
 };
-//#endregion
 export { p as FloatingHoverController, f as FloatingPositioner, u as computeFloatingPosition, n as resolveFloatingPlacement };

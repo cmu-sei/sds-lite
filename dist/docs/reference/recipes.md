@@ -12,6 +12,8 @@ An option with an `on` target belongs on that element, not necessarily on the re
 
 | Attribute | Values | Default | Purpose |
 |---|---|---|---|
+| `data-sds-action` | `toggle-color-scheme`, `toggle-fullscreen`, `copy-code`, `toggle-complete-code`, `toggle-code-fullscreen`, `navigation-back` |  | Opt-in documentation presentation action, enhanced by the optional documentation entry point. |
+| `data-sds-code-slot` | `default`, `complete` |  | Identifies the abbreviated or complete code inside a code block. |
 | `data-sds-root` | Presence |  | Establishes SDS Lite theme tokens, color scheme, and inherited body typography without applying control recipes. |
 | `data-sds-theme` | `forge`, `plaid` | forge | Selects an SDS Lite theme. |
 | `data-sds-color-scheme` | `light`, `dark`, `system` | light | Selects a light, dark, or system color scheme. |
@@ -72,7 +74,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | badge | `.sds-badge` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `light`, `light-border`, `dark` (when omitted: solid; reset by removing the attribute)<br>`data-sds-size`: `sm`, `md` (default: `md`) | Compact status or category. |
 | tag | `.sds-tag`<br>`.sds-tag-counter`<br>`.sds-tag-label` |  | `data-sds-size`: `sm`, `md` (default: `sm`)<br>`data-sds-tone`: `danger` (on `button.sds-tag`) (when omitted: neutral; reset by removing the attribute) | Static or interactive category with an optional counter. |
 | tag-action | `.sds-tag-action` |  | `data-sds-tone`: `danger` (when omitted: info; reset by removing the attribute) | Independent action inside a tag. |
-| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (when omitted: subtle; reset by removing the attribute)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-inset` (omitted by default)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (omitted by default) | Contextual message in page content. |
+| callout | `.sds-callout`<br>`.sds-callout-timestamp` |  | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`)<br>`data-sds-variant`: `outline`, `bold` (when omitted: subtle; reset by removing the attribute)<br>`data-sds-size`: `xs`, `sm`, `md`, `lg` (default: `md`)<br>`data-sds-callout-color`: `indigo`, `teal` (when omitted: semantic tone; reset by removing the attribute)<br>`data-sds-inset` (omitted by default)<br>`data-sds-callout-close` (on `.sds-callout [data-sds-callout-close]`) (omitted by default) | Contextual message in page content. |
 | toast-region | `.sds-toaster` |  | `data-sds-toast-open`: id (on `[data-sds-toast-open]`) (when omitted: no target; reset by removing the attribute)<br>`data-sds-toast-close` (on `sds-toast [data-sds-toast-close]`) (omitted by default) | Fixed notification region. |
 | spinner | `.sds-spinner` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Animated loading indicator. |
 | progress | `.sds-progress` | `<progress>` | `data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `info`)<br>`data-sds-size`: `sm`, `md`, `lg` (default: `md`) | Native task progress styling. |
@@ -89,7 +91,7 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | datapoint | `.sds-datapoint` |  | `data-sds-size`: `sm`, `md`, `lg`, `xl` (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (default: `neutral`) | Label, value, and context. |
 | list | `.sds-list`<br>`.sds-list-item`<br>`.sds-list-marker` |  | `data-sds-divided` (on `.sds-list`) (omitted by default) | Structured content list. |
 | timeline | `.sds-timeline`<br>`.sds-timeline-item`<br>`.sds-timeline-marker` |  | `data-sds-orientation`: `horizontal`, `vertical` (on `.sds-timeline`) (default: `vertical`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-timeline-item`) (when omitted: unaccented; reset by removing the attribute) | Vertical or horizontal event sequence.<br>Requires: Add tabindex="0" to a horizontal timeline so keyboard users can reach horizontally overflowed content. |
-| table | `.sds-table`<br>`.sds-table-container`<br>`.sds-table-footer`<br>`.sds-table-toolbar`<br>`.sds-table-selection` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-table`) (default: `md`)<br>`data-sds-density`: `compact` (on `.sds-table`) (when omitted: comfortable; reset by removing the attribute)<br>`data-sds-standalone` (on `.sds-table`) (omitted by default)<br>`data-sds-row-highlight` (on `.sds-table`) (omitted by default)<br>`data-sds-sticky`: `start`, `end` (on `.sds-table th, .sds-table td`) (when omitted: none; reset by removing the attribute) | Application data table and overflow container. |
+| table | `.sds-table`<br>`.sds-table-container`<br>`.sds-table-footer`<br>`.sds-table-toolbar`<br>`.sds-table-selection` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-table`) (default: `md`)<br>`data-sds-density`: `compact` (on `.sds-table`) (when omitted: comfortable; reset by removing the attribute)<br>`data-sds-standalone` (on `.sds-table`) (omitted by default)<br>`data-sds-row-highlight` (on `.sds-table`) (omitted by default)<br>`data-sds-sort-arrow` (on `.sds-table [aria-sort] [data-sds-sort-arrow]`) (omitted by default)<br>`data-sds-sort-chevron` (on `.sds-table [aria-sort] svg[data-sds-sort-chevron]`) (omitted by default)<br>`data-sds-sticky`: `start`, `end` (on `.sds-table th, .sds-table td`) (when omitted: none; reset by removing the attribute) | Application data table and overflow container. |
 
 ## Layout
 
@@ -114,18 +116,20 @@ An option with an `on` target belongs on that element, not necessarily on the re
 | tabs-parts | `.sds-tab`<br>`.sds-tab-list`<br>`.sds-tab-panel` |  |  | Generated or server-rendered tab structure. |
 | dropdown-parts | `.sds-dropdown-menu`<br>`.sds-dropdown-divider`<br>`.sds-dropdown-label` |  | `data-sds-tone`: `danger` (on `.sds-dropdown-menu button, .sds-dropdown-menu a`) (when omitted: neutral; reset by removing the attribute) | Dropdown menu surface, separator, and label. |
 | floating-parts | `.sds-popover-content`<br>`.sds-tooltip-content` |  |  | Popover and tooltip surfaces. |
+| search-results | `.sds-search-results` |  |  | Scrollable search result links. Applications supply results and mark their keyboard-active link with aria-current=true. Uses documentation.css. |
 
 ## Prose
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
+| code-block | `.sds-code-block`<br>`.sds-code-tooltip-content` |  | `data-sds-tone`: `neutral`, `info`, `danger` (default: `neutral`) | Code example with native header, action navigation, optional alternate code, and live output. Uses documentation.css and the optional documentation runtime. |
 | prose | `.sds-prose`<br>`.sds-prose-lead`<br>`.sds-not-prose`<br>`.sds-sr-only` |  | `data-sds-size`: `sm`, `md`, `lg` (on `.sds-prose`) (default: `md`)<br>`data-sds-tone`: `neutral`, `accent`, `info`, `success`, `warning`, `danger` (on `.sds-prose`) (default: `neutral`) | Long-form semantic typography and opt-out. |
 
 ## Application shells
 
 | Recipe | Classes | Elements | Options | Purpose |
 |---|---|---|---|---|
-| application-shell | `.sds-app`<br>`.sds-app-action-bar`<br>`.sds-app-body`<br>`.sds-app-brand`<br>`.sds-app-brand-prefix`<br>`.sds-app-footer`<br>`.sds-app-footer-brand`<br>`.sds-app-footer-content`<br>`.sds-app-footer-legal`<br>`.sds-app-footer-middle`<br>`.sds-app-footer-top`<br>`.sds-app-header`<br>`.sds-app-layout`<br>`.sds-app-main`<br>`.sds-app-content`<br>`.sds-app-masthead`<br>`.sds-app-navigation`<br>`.sds-app-toc`<br>`.sds-sei-wordmark`<br>`.sds-app-container`<br>`.sds-app-footer-about`<br>`.sds-app-footer-actions`<br>`.sds-app-footer-links`<br>`.sds-app-footer-main`<br>`.sds-app-footer-navigation`<br>`.sds-app-header-content`<br>`.sds-cmu-wordmark` |  | `data-sds-variant`: `application`, `simple`, `documentation`, `brochure` (on `.sds-app`) (default: `application`) | SEI application, simple, documentation, and brochure shells. |
+| application-shell | `.sds-app`<br>`.sds-app-action-bar`<br>`.sds-app-body`<br>`.sds-app-brand`<br>`.sds-app-brand-prefix`<br>`.sds-app-footer`<br>`.sds-app-footer-brand`<br>`.sds-app-footer-content`<br>`.sds-app-footer-legal`<br>`.sds-app-footer-middle`<br>`.sds-app-footer-top`<br>`.sds-app-header`<br>`.sds-app-layout`<br>`.sds-app-main`<br>`.sds-app-content`<br>`.sds-app-masthead`<br>`.sds-app-navigation`<br>`.sds-navigation-panel`<br>`.sds-app-toc`<br>`.sds-app-pagination`<br>`.sds-sei-wordmark`<br>`.sds-app-container`<br>`.sds-app-footer-about`<br>`.sds-app-footer-actions`<br>`.sds-app-footer-links`<br>`.sds-app-footer-main`<br>`.sds-app-footer-navigation`<br>`.sds-app-header-content`<br>`.sds-cmu-wordmark` |  | `data-sds-variant`: `application`, `simple`, `documentation`, `brochure` (on `.sds-app`) (default: `application`) | SEI application, simple, documentation, and brochure shells. |
 
 ## Compositions
 
@@ -257,13 +261,13 @@ Application responsibilities:
 
 ### Documentation site
 
-Kind: layout. Stylesheets: `sds.css`, `brand.css`. JavaScript setup: required.
+Kind: layout. Stylesheets: `sds.css`, `brand.css`, `documentation.css`. JavaScript setup: required.
 
-Recipes: `application-shell`, `cluster`, `button`, `sidebar`, `link`, `prose`, `stack`, `heading`, `title`, `dialog`, `form`, `field`, `form-control`.
+Recipes: `application-shell`, `cluster`, `button`, `sidebar`, `link`, `prose`, `stack`, `heading`, `title`, `dialog`, `form`, `field`, `form-control`, `code-block`, `list`, `search-results`.
 
-Custom elements: none.
+Custom elements: `<sds-tooltip>`.
 
-Assets: `package/assets/sei-wordmark.svg`.
+Assets: `package/assets/sei-wordmark.svg`, `documentation.js`.
 
 | Required part | Minimum count |
 |---|---|

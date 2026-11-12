@@ -13,6 +13,8 @@ test('the package keeps one small primary interface', () => {
   assert.deepEqual(Object.keys(packageJson.exports), [
     '.',
     './auto',
+    './documentation',
+    './documentation.css',
     './react',
     './vue',
     './html-data.json',
@@ -40,6 +42,7 @@ test('all JavaScript entries are safe to import during SSR', async () => {
   const entries = [
     '@cmu-sei/sds-lite',
     '@cmu-sei/sds-lite/auto',
+    '@cmu-sei/sds-lite/documentation',
     '@cmu-sei/sds-lite/react',
     '@cmu-sei/sds-lite/vue',
   ]
@@ -48,6 +51,7 @@ test('all JavaScript entries are safe to import during SSR', async () => {
   assert.equal(typeof modules[0].notify, 'function')
   assert.equal(typeof modules[0].setupSds, 'function')
   assert.equal(typeof modules[1].notify, 'function')
+  assert.equal(typeof modules[2].setupSdsDocumentation, 'function')
 })
 
 test('browser-only helpers fail clearly when called during SSR', async () => {
@@ -89,6 +93,8 @@ test('the application build includes stable CDN entries', async () => {
   for (const filename of [
     'auto.js',
     'brand.css',
+    'documentation.css',
+    'documentation.js',
     'interface-manifest.schema.json',
     'sds.css',
     'sds.js',
@@ -179,6 +185,18 @@ test('the default stylesheet omits specialized brand shells', async () => {
   assert.doesNotMatch(stylesheet, /\.sds-app-footer-main/)
   assert.match(brand, /\.sds-app-header/)
   assert.match(brand, /\.sds-app-footer-main/)
+})
+
+test('documentation presentation is opt-in and independently published', async () => {
+  const styles = await readFile('dist/documentation.css', 'utf8')
+  const source = await readFile('dist/documentation.js', 'utf8')
+  assert.match(styles, /sds-code-block/)
+  assert.match(styles, /sds-search-results/)
+  assert.match(source, /setupSdsDocumentation/)
+  for (const filename of ['dist/sds.css', 'dist/auto.js']) {
+    assert.doesNotMatch(await readFile(filename, 'utf8'), /sds-code-block|toggle-color-scheme/)
+  }
+  assert.match(await readFile('dist/package/documentation.d.ts', 'utf8'), /setupSdsDocumentation/)
 })
 
 test('brand styles share one external wordmark asset', async () => {

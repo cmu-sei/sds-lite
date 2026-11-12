@@ -142,6 +142,13 @@ Apply the recipe class directly to the control:
 | `readonly` | Native input/textarea state | Editable |
 | `aria-invalid="true"` | Invalid semantics and appearance | Valid or unknown |
 
+Single-line inputs, selects, and input wrappers share 32px (`sm`), 40px
+(`md`), and 48px (`lg`) heights with comfortable buttons, at a 16px root font
+size. Large controls use 18px text. Textareas retain their multiline sizing,
+and control corners remain theme-aware at every size. Placeholders and field
+help use normal, not italic, text; keep a visible label rather than relying
+on a placeholder.
+
 ### Accessibility
 
 Give every control a label and use `name` for submitted values. Connect help
@@ -150,13 +157,6 @@ with `aria-describedby`; use native types and constraints before custom validati
 ### Related
 
 [Form fields](#form-and-field), [validation](#help-and-validation), [combobox](#combobox).
-
-Single-line inputs, selects, and input wrappers share 32px (`sm`), 40px
-(`md`), and 48px (`lg`) heights with comfortable buttons, at a 16px root font
-size. Large controls use 18px text. Textareas retain their multiline sizing,
-and control corners remain theme-aware at every size. Placeholders and field
-help use normal, not italic, text; keep a visible label rather than relying
-on a placeholder.
 
 ## Input group
 

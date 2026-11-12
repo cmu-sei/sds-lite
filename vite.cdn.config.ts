@@ -1,14 +1,15 @@
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   publicDir: false,
   build: {
     lib: {
-      entry: 'src/auto.ts',
+      entry: mode === 'documentation' ? 'src/documentation.ts' : 'src/auto.ts',
       formats: ['es'],
-      fileName: () => 'auto.js',
+      fileName: () => mode === 'documentation' ? 'documentation.js' : 'auto.js',
+      cssFileName: 'documentation',
     },
     outDir: 'dist',
     emptyOutDir: false,
   },
-})
+}))

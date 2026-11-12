@@ -28,7 +28,8 @@
   ],
   "sideEffects": [
     "**/*.css",
-    "./dist/package/auto.js"
+    "./dist/package/auto.js",
+    "./dist/package/documentation.js"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
@@ -36,6 +37,7 @@
   "files": [
     "LICENSE",
     "dist/brand.css",
+    "dist/documentation.css",
     "dist/package",
     "dist/sds.css",
     "!dist/custom-elements.json",
@@ -59,6 +61,11 @@
       "types": "./dist/package/auto.d.ts",
       "import": "./dist/package/auto.js"
     },
+    "./documentation": {
+      "types": "./dist/package/documentation.d.ts",
+      "import": "./dist/package/documentation.js"
+    },
+    "./documentation.css": "./dist/documentation.css",
     "./react": {
       "types": "./framework-types/react.d.ts",
       "import": "./framework-types/empty.js"
@@ -78,7 +85,7 @@
     "generate:interface": "node scripts/generate-interface.mjs",
     "prebuild": "node scripts/generate-interface.mjs --check && node scripts/generate-examples.mjs",
     "dev": "vite",
-    "build": "tsc && vite build && vite build --config vite.library.config.ts && vite build --config vite.cdn.config.ts && vite build --config vite.cdn.api.config.ts && tsc -p tsconfig.declarations.json && node scripts/prepare-package.mjs",
+    "build": "tsc && vite build && vite build --config vite.library.config.ts && vite build --config vite.cdn.config.ts && vite build --config vite.cdn.config.ts --mode documentation && vite build --config vite.cdn.api.config.ts && tsc -p tsconfig.declarations.json && node scripts/prepare-package.mjs",
     "preview": "vite preview",
     "release:prepare": "node scripts/prepare-release.mjs",
     "test": "npm run test:validation && npm run test:browser",
@@ -91,15 +98,15 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "packageManager": "npm@11.6.4",
+  "packageManager": "npm@12.2.1",
   "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.63.0",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "ajv": "^8.20.0",
-    "happy-dom": "^20.14.5",
-    "html-validate": "^10.17.0",
+    "happy-dom": "^21.0.4",
+    "html-validate": "^11.18.0",
     "typescript": "~7.0.2",
-    "vite": "^8.3.2"
+    "vite": "^8.3.5"
   },
   "allowScripts": {
     "fsevents@2.3.3": true

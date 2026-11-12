@@ -186,6 +186,11 @@ context:
 `data-sds-tone` accepts all semantic tones and defaults to `neutral`.
 Use smaller sizes for several metrics and `xl` for a primary summary metric.
 
+Value type scales down with the tile's available width, up to the selected
+size, so monetary amounts such as `$123,456.78` fit narrower summary tiles.
+Unusually long values may wrap rather than overflow; keep the full formatted
+amount in the text instead of clipping it or relying on a tooltip.
+
 ### Accessibility
 
 Include a readable label, value, and any units. Explain meaning in text, not color alone.
@@ -320,6 +325,13 @@ Use native structure, a caption, and scoped headers:
 | `data-sds-standalone` on table | Presence | No raised shadow |
 | `data-sds-row-highlight` on table | Presence | No hover surface |
 | `data-sds-sticky` on cells | `start`, `end` | Normal cell |
+| `data-sds-sort-arrow` on a sort indicator | Presence; upward arrow rotates for descending sort | Omitted |
+| `data-sds-sort-chevron` on a sort SVG | Presence; rightward chevron rotates upward or downward | Omitted |
+
+Place sort indicators inside a header with `aria-sort`. Application code owns
+sorting and updates `aria-sort`; the optional documentation runtime adds
+`data-sds-sort-arrow` to its generated indicator when no
+`template[data-sds-sort-icon]` is provided.
 
 Apply the same `data-sds-sticky` value to the header and every cell in that
 column. Table size changes body-row vertical padding: `sm` uses 4px, `md` uses 8px,

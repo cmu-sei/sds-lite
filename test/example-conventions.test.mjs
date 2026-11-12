@@ -12,6 +12,11 @@ test('application recipe setup functions can be imported during server rendering
   }
 })
 
+test('native submit-once recipe imports without browser globals', async () => {
+  const { setupSubmitOnce } = await import('../docs/examples/submit-once.js?ssr')
+  assert.equal(typeof setupSubmitOnce, 'function')
+})
+
 test('authored copy snippets use public classes and self-contained native relationships', async () => {
   const window = new Window()
   try {

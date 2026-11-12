@@ -430,7 +430,7 @@ test('the playground uses only package styles and built-in presentation hooks', 
       mainSource.matchAll(/^import ['"](.+\.css)['"]$/gm),
       (match) => match[1],
     ),
-    ['./style.css', './brand.css'],
+    ['./style.css', './brand.css', './documentation.css'],
   )
 
   for (const element of document.querySelectorAll('[class]')) {
@@ -438,5 +438,11 @@ test('the playground uses only package styles and built-in presentation hooks', 
       assert.doesNotMatch(className, /^demo-/)
     }
   }
-  assert.equal(document.querySelector('[style]'), null)
+  for (const element of document.querySelectorAll('[style]')) {
+    assert.ok(element.matches('.sds-code-block pre code span'), 'Inline styles are only allowed for syntax-colored code spans')
+    for (let index = 0; index < element.style.length; index += 1) {
+      const property = element.style.item(index)
+      assert.match(property, /^--shiki-(light|dark)(-font-style|-font-weight)?$/)
+    }
+  }
 })

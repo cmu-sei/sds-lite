@@ -1,6 +1,6 @@
 import { FloatingPositioner as e } from "./floating.js";
-import { a as t, i as n, r, t as i } from "./internals-CEyyQZKd.js";
-//#region src/elements/combobox.ts
+import { a as t, i as n, r, t as i } from "./internals-LhR95Qm6.js";
+// src/elements/combobox.ts
 var a = typeof HTMLElement > "u" ? class {} : HTMLElement, o = class extends a {
 	input = null;
 	list = null;
@@ -22,7 +22,7 @@ var a = typeof HTMLElement > "u" ? class {} : HTMLElement, o = class extends a {
 			console.warn("<sds-combobox> requires a direct child text or search input, a direct child ul with li options, and optionally one output for empty results.");
 			return;
 		}
-		!a.labels?.length && !a.hasAttribute("aria-label") && !a.hasAttribute("aria-labelledby") && console.warn("<sds-combobox> requires an accessible name on its input."), t(a, "sds-combobox-input");
+		a.labels?.length || a.hasAttribute("aria-label") || a.hasAttribute("aria-labelledby") || console.warn("<sds-combobox> requires an accessible name on its input."), t(a, "sds-combobox-input");
 		let c = t(o, "sds-combobox-list");
 		a.setAttribute("role", "combobox"), a.setAttribute("aria-autocomplete", "list"), a.setAttribute("aria-controls", c), a.setAttribute("aria-expanded", "false"), a.removeAttribute("aria-activedescendant"), o.classList.add("sds-combobox-list"), o.setAttribute("role", "listbox"), o.setAttribute("popover", "manual"), o.hidden = !0, this.input = a, this.list = o, this.emptyStatus = s ?? null, this.positioner = new e(a, o, () => "block-end-start", () => void 0), s && (this.emptyPositioner = new e(a, s, () => "block-end-start", () => void 0)), this.refreshOptions(), a.addEventListener("focus", this.handleFocus, { signal: r }), a.addEventListener("input", this.handleInput, { signal: r }), a.addEventListener("compositionend", this.handleCompositionEnd, { signal: r }), a.addEventListener("keydown", this.handleKeydown, { signal: r }), a.addEventListener("blur", this.handleBlur, { signal: r }), o.addEventListener("mousedown", this.handleMouseDown, { signal: r }), o.addEventListener("click", this.handleClick, { signal: r }), a.form?.addEventListener("reset", this.handleFormReset, { signal: r }), window.addEventListener("resize", this.handleReposition, { signal: r }), window.addEventListener("scroll", this.handleReposition, {
 			capture: !0,
@@ -67,11 +67,7 @@ var a = typeof HTMLElement > "u" ? class {} : HTMLElement, o = class extends a {
 	updateEmptyStatus() {
 		if (!this.emptyStatus || !this.input || !this.list) return;
 		let e = !this.suppressOpen && !this.input.disabled && !this.input.readOnly && document.activeElement === this.input && this.input.value.trim() !== "" && this.list.getAttribute("aria-busy") !== "true" && this.options.every((e) => e.hidden) ? this.emptyStatus.getAttribute("data-empty-message")?.trim() || "No results found." : "";
-		if (!e) {
-			this.clearEmptyStatus();
-			return;
-		}
-		this.emptyStatus.textContent !== e && (this.emptyStatus.textContent = e), this.emptyStatus.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.emptyPositioner?.position();
+		e ? (this.emptyStatus.textContent !== e && (this.emptyStatus.textContent = e), this.emptyStatus.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.emptyPositioner?.position()) : this.clearEmptyStatus();
 	}
 	updateMatches() {
 		if (this.input && this.list) {
@@ -79,11 +75,7 @@ var a = typeof HTMLElement > "u" ? class {} : HTMLElement, o = class extends a {
 				let e = (this.matchQuery ?? this.input.value).trim().toLocaleLowerCase();
 				for (let t of this.options) t.hidden = !t.textContent?.toLocaleLowerCase().includes(e);
 			}
-			if (this.emptyStatus && queueMicrotask(() => this.updateEmptyStatus()), this.activeOption && !this.selectableOptions().includes(this.activeOption) && this.setActive(null), !(!this.suppressOpen && !this.input.disabled && !this.input.readOnly && this.selectableOptions().length > 0 && document.activeElement === this.input)) {
-				this.close();
-				return;
-			}
-			this.list.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.list.matches(":popover-open") || (this.list.hidden = !1, this.positioner?.reset(), this.list.showPopover()), this.positioner?.position(), this.input.setAttribute("aria-expanded", "true");
+			this.emptyStatus && queueMicrotask(() => this.updateEmptyStatus()), this.activeOption && !this.selectableOptions().includes(this.activeOption) && this.setActive(null), !this.suppressOpen && !this.input.disabled && !this.input.readOnly && this.selectableOptions().length > 0 && document.activeElement === this.input ? (this.list.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.list.matches(":popover-open") || (this.list.hidden = !1, this.positioner?.reset(), this.list.showPopover()), this.positioner?.position(), this.input.setAttribute("aria-expanded", "true")) : this.close();
 		}
 	}
 	select(e) {
@@ -157,5 +149,4 @@ var a = typeof HTMLElement > "u" ? class {} : HTMLElement, o = class extends a {
 function s() {
 	r("sds-combobox", o);
 }
-//#endregion
 export { o as SdsComboboxElement, s as registerSdsCombobox };

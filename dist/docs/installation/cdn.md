@@ -92,7 +92,7 @@ behavior:
 </script>
 ```
 
-The self-contained `auto.js` file sets up all SDS Lite behavior and exports
+The self-contained `auto.js` file sets up core SDS Lite behavior and exports
 `notify()`. Importing it again from the same URL reuses the loaded module.
 If you need to control setup yourself, use the standalone, side-effect-free
 `sds.js` instead and call `setupSds()` after the DOM is ready (or after
@@ -119,7 +119,11 @@ per-element CDN entries to choose or coordinate.
 >
 ```
 
-Use it in addition to `sds.css` for SEI application or brochure layouts.
+Use it in addition to `sds.css` for [SEI shells](../components/layout.md#sei-application-shells).
+
+For the [documentation shell's optional presentation and controls](../components/layout.md#documentation-presentation),
+also load `documentation.css` after `brand.css` and `documentation.js` as a
+module alongside `auto.js`. Use the same release tag for every file.
 
 ## Content Security Policy
 
@@ -157,5 +161,8 @@ setup instead, copy `sds.js` alongside the stylesheet and import
 `setupSds()` or `notify()` from it; it has no dependent files. Keep
 `brand.css` and `package/assets/` together when using branded shells,
 because `brand.css` references the wordmark from `package/assets/`.
+
+When using documentation controls, copy `documentation.css` and
+`documentation.js` too. They are separate from the core bundles.
 
 [Browse component recipes →](../components/README.md)

@@ -8,12 +8,636 @@ const gridColumnWidths = {
   '2xl': 512,
 }
 
+async function documentationRuntimeFixture(page, content, scheme = 'light') {
+  await page.route('**/__documentation-regression__', route => route.fulfill({
+    contentType: 'text/html',
+    body: `<!doctype html><html><head>
+      <link rel="stylesheet" href="/src/style.css?direct">
+      <link rel="stylesheet" href="/src/brand.css?direct">
+      <link rel="stylesheet" href="/src/documentation.css?direct">
+      <script type="module" src="/src/documentation.ts"></script>
+      </head><body class="sds-document" data-sds-root data-sds-theme="forge" data-sds-color-scheme="${scheme}">${content}</body></html>`,
+  }))
+  await page.goto('/__documentation-regression__')
+}
+
+test('documentation tables sort text and decimal values by keyboard with accessible headers', async ({ page }) => {
+  await documentationRuntimeFixture(page, `<div class="sds-app" data-sds-variant="documentation"><article class="sds-prose" data-sds-tone="info">
+    <table><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody>
+      <tr><td>Beta</td><td>9.12</td></tr><tr><td>Alpha</td><td>9.5</td></tr><tr><td>Gamma</td><td>-1</td></tr>
+    </tbody></table>
+    <table class="sds-table" id="merged"><thead><tr><th colspan="2">Merged</th></tr></thead><tbody><tr><td>One</td><td>Two</td></tr></tbody></table>
+  </article></div>`)
+  const table = page.locator('table').first()
+  const score = table.getByRole('button', { name: 'Sort by Score' })
+  await expect(score).toBeVisible()
+  await expect(table).toHaveClass('sds-table')
+  const header = table.locator('th').last()
+  const typography = await header.evaluate(element => {
+    const style = getComputedStyle(element)
+    return { color: style.color, fontSize: style.fontSize, fontWeight: style.fontWeight, lineHeight: style.lineHeight }
+  })
+  for (const [property, value] of Object.entries(typography)) {
+    await expect(score).toHaveCSS(property.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`), value)
+  }
+  await expect(score.locator('[data-sds-sort-arrow]')).toHaveCSS('opacity', '0')
+  await score.press('Enter')
+  await expect(score.locator('[data-sds-sort-arrow]')).toHaveCSS('opacity', '1')
+  await expect(table.locator('tbody td:last-child')).toHaveText(['-1', '9.12', '9.5'])
+  await expect(table.locator('th').last()).toHaveAttribute('aria-sort', 'ascending')
+  await score.press('Space')
+  await expect(table.locator('tbody td:last-child')).toHaveText(['9.5', '9.12', '-1'])
+  await expect(table.locator('th').last()).toHaveAttribute('aria-sort', 'descending')
+  await table.getByRole('button', { name: 'Sort by Name' }).click()
+  await expect(table.locator('tbody td:first-child')).toHaveText(['Alpha', 'Beta', 'Gamma'])
+  await expect(table.locator('th').last()).toHaveAttribute('aria-sort', 'none')
+  await expect(page.locator('#merged button')).toHaveCount(0)
+})
+
+test('documentation TOCs preserve heading levels and reject invalid or cross-shell targets', async ({ page }) => {
+  await documentationRuntimeFixture(page, `
+    <div class="sds-app" data-sds-variant="documentation">
+      <main class="sds-app-main"><h2 id="section">Section</h2><h3 id="detail">Detail</h3><h5 id="preview">Preview heading</h5><p id="paragraph">Not a heading</p></main>
+      <nav class="sds-app-toc" aria-label="On this page"><ul>
+        <li><a href="#section">Section</a></li><li><a href="#detail">Detail</a></li><li><a href="#preview">Preview heading</a></li>
+        <li><a href="#paragraph">Paragraph</a></li><li><a href="#missing">Missing</a></li><li><a href="#%ZZ">Malformed</a></li><li><a href="#other">Other shell</a></li>
+      </ul></nav>
+    </div>
+    <div class="sds-app" data-sds-variant="documentation"><h2 id="other">Other shell</h2></div>`)
+  const links = page.getByRole('navigation', { name: 'On this page' }).getByRole('link')
+  await expect(links).toHaveText(['Section', 'Detail', 'Preview heading'])
+})
+
+for (const mode of ['light', 'dark', 'forced-colors']) {
+  test(`documentation search focus outline stays inset in ${mode} mode`, async ({ page }) => {
+    await page.emulateMedia({ forcedColors: mode === 'forced-colors' ? 'active' : 'none' })
+    await documentationRuntimeFixture(page, `
+      <dialog class="sds-dialog"><h2>Search</h2>
+        <input class="sds-input" type="search" aria-label="Search" autofocus>
+        <div class="sds-search-results"><ul class="sds-list">
+          ${Array.from({ length: 30 }, (_, index) => `<li class="sds-list-item"><a href="#result-${index}"><span>Result ${index + 1}</span><small>Documentation</small></a></li>`).join('')}
+        </ul></div>
+      </dialog>`, mode === 'dark' ? 'dark' : 'light')
+    const dialog = page.getByRole('dialog')
+    await page.locator('dialog').evaluate(element => element.showModal())
+    await dialog.getByRole('searchbox').press('ArrowDown')
+    const results = dialog.locator('.sds-search-results')
+    const links = results.getByRole('link')
+    for (const link of [links.first(), links.last()]) {
+      await link.focus()
+      await expect(link).toBeFocused()
+      await expect(link).toHaveCSS('outline-style', 'solid')
+      await expect(link).toHaveCSS('outline-width', '2px')
+      await expect(link).toHaveCSS('outline-offset', '-2px')
+      if (mode !== 'forced-colors') {
+        const textColor = await link.evaluate(element => getComputedStyle(element).color)
+        await expect(link).toHaveCSS('outline-color', textColor)
+      }
+      const row = await link.boundingBox()
+      const viewport = await results.boundingBox()
+      expect(row.y).toBeGreaterThanOrEqual(viewport.y - 1)
+      expect(row.y + row.height).toBeLessThanOrEqual(viewport.y + viewport.height + 1)
+      expect(row.x).toBeGreaterThanOrEqual(viewport.x - 1)
+      expect(row.x + row.width).toBeLessThanOrEqual(viewport.x + viewport.width + 1)
+    }
+    expect(await results.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+  })
+}
+
+for (const width of [390, 884]) {
+  test(`documentation mobile navigation slides into a child panel at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await documentationRuntimeFixture(page, `
+      <div class="sds-app" data-sds-variant="documentation"><div class="sds-app-layout">
+        <aside id="mobile-menu" class="sds-sidebar" popover="auto">
+          <header><strong>CERT Secure Coding</strong></header>
+          <nav class="sds-app-navigation" aria-label="Documentation sections"><ul>
+            <li><a href="/">Home</a></li>
+            <li><details class="sds-navigation-panel"><summary>Coding Standards</summary>
+              <div><button type="button" data-sds-action="navigation-back">Go Back</button><strong>Coding Standards</strong>
+                <ul><li><a href="/android/">Android</a></li><li><a href="/c/">C</a></li>
+                  <li><details class="sds-navigation-panel"><summary>Reference</summary><div>
+                    <button type="button" data-sds-action="navigation-back">Go Back</button><strong>Reference</strong>
+                    <ul><li><a href="/reference/">Headings</a></li></ul>
+                  </div></details></li>
+                </ul>
+              </div>
+            </details></li>
+          </ul></nav>
+          <nav class="sds-app-toc" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#intro">Introduction</a></li></ul></nav>
+        </aside>
+        <main class="sds-app-main"><h2 id="intro">Introduction</h2></main>
+      </div></div>`)
+    const drawer = page.locator('#mobile-menu')
+    await drawer.evaluate(element => element.showPopover())
+    const trigger = drawer.locator('.sds-app-navigation > ul > li > .sds-navigation-panel > summary')
+    const home = drawer.getByRole('link', { name: 'Home', exact: true })
+    await expect(home).toBeVisible()
+    await expect(drawer.getByRole('link', { name: 'Android', exact: true })).toBeHidden()
+    await trigger.focus()
+    await trigger.press('Enter')
+    const back = drawer.getByRole('button', { name: 'Go Back', exact: true })
+    await expect(back).toBeVisible()
+    await drawer.locator('header').click()
+    await expect(back).toBeVisible()
+    await expect(home).toBeHidden()
+    await expect(trigger).toBeHidden()
+    await expect(drawer.locator('.sds-app-toc')).toBeHidden()
+    await expect(drawer.getByRole('link', { name: 'Android', exact: true })).toBeVisible()
+    await expect(trigger).toHaveCSS('font-size', '18px')
+    const bounds = await back.boundingBox()
+    expect(bounds.x).toBeGreaterThanOrEqual(0)
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width)
+    await back.click()
+    await expect(home).toBeVisible()
+    await expect(trigger).toBeFocused()
+    await expect(drawer.locator('.sds-app-toc')).toBeVisible()
+    await trigger.press('Enter')
+    await expect(back).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(drawer).toBeHidden()
+    await expect(drawer.locator('.sds-navigation-panel[open]')).toHaveCount(0)
+    await drawer.evaluate(element => element.showPopover())
+    await expect(home).toBeVisible()
+    await trigger.focus()
+    await trigger.press('Enter')
+    const nestedTrigger = drawer.getByText('Reference', { exact: true }).filter({ visible: true })
+    await nestedTrigger.click()
+    await expect(drawer.getByRole('link', { name: 'Headings', exact: true })).toBeVisible()
+    await expect(drawer.getByRole('link', { name: 'Android', exact: true })).toBeHidden()
+    await back.click()
+    await expect(nestedTrigger).toBeFocused()
+    await expect(drawer.getByRole('link', { name: 'Android', exact: true })).toBeVisible()
+    await drawer.evaluate(element => element.hidePopover())
+    await expect(drawer.locator('.sds-navigation-panel[open]')).toHaveCount(0)
+    await drawer.evaluate(element => element.showPopover())
+    await expect(home).toBeVisible()
+    await expect(drawer.getByRole('link', { name: 'Android', exact: true })).toBeHidden()
+    await drawer.getByRole('link', { name: 'Introduction', exact: true }).click()
+    await expect(drawer).toBeHidden()
+  })
+}
+
+test('documentation mobile panel motion and controls use shared theme recipes', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await documentationRuntimeFixture(page, `
+    <div class="sds-app" data-sds-variant="documentation"><div class="sds-app-layout">
+      <aside id="themed-menu" class="sds-sidebar" popover="auto">
+        <span class="sds-text-h3" hidden>Theme typography</span>
+        <header><a href="/">CERT Secure Coding</a><button class="sds-sidebar-close sds-button" type="button" data-sds-shape="icon" data-sds-density="compact" data-sds-variant="text" popovertarget="themed-menu" popovertargetaction="hide" aria-label="Close navigation">&times;</button></header>
+        <nav class="sds-app-navigation"><ul><li><a href="/">Home</a></li><li>
+          <details class="sds-navigation-panel"><summary>Coding Standards</summary><div>
+            <button type="button" data-sds-action="navigation-back"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>Go Back</button>
+            <strong>Coding Standards</strong><ul><li><a href="/c/">C Coding Standard</a></li></ul>
+          </div></details>
+        </li></ul></nav>
+      </aside>
+    </div></div>`)
+  const drawer = page.locator('#themed-menu')
+  await drawer.evaluate(element => element.showPopover())
+  const close = drawer.getByRole('button', { name: 'Close navigation', exact: true })
+  await expect(close).toHaveCSS('font-size', '32px')
+  const closeBounds = await close.boundingBox()
+  expect(closeBounds.width).toBeGreaterThanOrEqual(44)
+  expect(closeBounds.height).toBeGreaterThanOrEqual(44)
+  const title = drawer.locator('header > a')
+  await expect(title).toHaveCSS('font-size', '20px')
+  const titleBounds = await title.boundingBox()
+  expect(Math.abs(titleBounds.y + titleBounds.height / 2 - closeBounds.y - closeBounds.height / 2)).toBeLessThan(1)
+  const trigger = drawer.locator('summary')
+  await expect(trigger).toHaveCSS('align-items', 'center')
+  expect(await trigger.evaluate(element => getComputedStyle(element, '::after').marginBlockStart)).toBe('0px')
+  await trigger.click()
+  await expect.poll(() => drawer.evaluate(element => element.getAnimations({ subtree: true }).filter(animation => animation instanceof CSSAnimation && animation.animationName === 'sds-navigation-enter' && animation.playState === 'running').length)).toBeGreaterThan(0)
+  const back = drawer.getByRole('button', { name: 'Go Back', exact: true })
+  await expect(back).toHaveCSS('align-items', 'center')
+  await expect(back).toHaveCSS('font-size', '20px')
+  await expect(back).toHaveCSS('line-height', '28px')
+  for (const theme of ['forge', 'plaid']) {
+    await page.locator('body').evaluate((element, value) => { element.dataset.sdsTheme = value }, theme)
+    for (const scheme of ['light', 'dark']) {
+      await page.locator('body').evaluate((element, value) => { element.dataset.sdsColorScheme = value }, scheme)
+      await expect(back).toHaveCSS('font-family', await drawer.locator('.sds-text-h3').evaluate(element => getComputedStyle(element).fontFamily))
+      await expect(back).toHaveCSS('font-weight', await drawer.locator('.sds-text-h3').evaluate(element => getComputedStyle(element).fontWeight))
+      await expect.poll(() => drawer.evaluate(element => {
+        const back = element.querySelector('[data-sds-action="navigation-back"]')
+        const close = element.querySelector('.sds-sidebar-close')
+        return getComputedStyle(back).color === getComputedStyle(close).color
+      })).toBe(true)
+    }
+  }
+  await back.click()
+  await expect.poll(() => drawer.evaluate(element => element.getAnimations({ subtree: true }).filter(animation => animation instanceof CSSAnimation && ['sds-navigation-exit', 'sds-navigation-return'].includes(animation.animationName) && animation.playState === 'running').length)).toBeGreaterThan(0)
+  await expect(drawer.getByRole('link', { name: 'Home', exact: true })).toBeVisible()
+})
+
+test('documentation runtime restores preferences only for independently controlled roots', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('sds-color-scheme', 'dark')
+    localStorage.setItem('sds-color-scheme:controlled', 'dark')
+    localStorage.setItem('sds-color-scheme:uncontrolled', 'dark')
+  })
+  await documentationRuntimeFixture(page, `
+    <main id="controlled" data-sds-root data-sds-color-scheme="system"><button data-sds-action="toggle-color-scheme"><svg aria-hidden="true"></svg><svg aria-hidden="true"></svg></button></main>
+    <section id="independent" data-sds-root data-sds-color-scheme="system"><button data-sds-action="toggle-color-scheme"><svg aria-hidden="true"></svg><svg aria-hidden="true"></svg></button></section>
+    <section id="uncontrolled" data-sds-root data-sds-color-scheme="system">Independent region</section>`)
+  const controlled = page.locator('#controlled')
+  const independent = page.locator('#independent')
+  await expect(controlled).toHaveAttribute('data-sds-color-scheme', 'dark')
+  await expect(independent).toHaveAttribute('data-sds-color-scheme', 'system')
+  await expect(page.locator('#uncontrolled')).toHaveAttribute('data-sds-color-scheme', 'system')
+  await controlled.getByRole('button', { name: 'Switch to light mode' }).click()
+  expect(await page.evaluate(() => localStorage.getItem('sds-color-scheme:controlled'))).toBe('light')
+  expect(await page.evaluate(() => localStorage.getItem('sds-color-scheme'))).toBe('dark')
+  await expect(independent).toHaveAttribute('data-sds-color-scheme', 'system')
+})
+
 const clusterStackWidths = {
   sm: 480,
   md: 640,
   lg: 768,
   xl: 1024,
 }
+
+test('documentation runtime retains page preferences without sharing them with anonymous roots', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.addInitScript(() => localStorage.setItem('sds-color-scheme', 'dark'))
+  await documentationRuntimeFixture(page, `
+    <button id="page-theme" data-sds-action="toggle-color-scheme"><svg aria-hidden="true"></svg><svg aria-hidden="true"></svg></button>
+    <main data-sds-root data-sds-color-scheme="system"><button id="anonymous-theme" data-sds-action="toggle-color-scheme"><svg aria-hidden="true"></svg><svg aria-hidden="true"></svg></button></main>`, 'system')
+  await expect(page.locator('body')).toHaveAttribute('data-sds-color-scheme', 'dark')
+  await expect(page.locator('main')).toHaveAttribute('data-sds-color-scheme', 'system')
+  await page.locator('#anonymous-theme').click()
+  await page.locator('#anonymous-theme').click()
+  await expect(page.locator('main')).toHaveAttribute('data-sds-color-scheme', 'light')
+  expect(await page.evaluate(() => localStorage.getItem('sds-color-scheme'))).toBe('dark')
+  await expect(page.locator('#page-theme')).toHaveAttribute('aria-label', 'Switch to light mode')
+})
+
+test('documentation runtime preserves modal Escape before background navigation dismissal', async ({ page }) => {
+  await documentationRuntimeFixture(page, `
+    <nav class="sds-app-navigation"><details id="background-menu" open><summary>Menu</summary><a href="#">Item</a></details></nav>
+    <dialog id="native-modal" class="sds-dialog" aria-label="Modal"><label>Query<input autofocus></label></dialog>`)
+  const dialog = page.getByRole('dialog', { name: 'Modal', exact: true })
+  await page.locator('#native-modal').evaluate(element => element.showModal())
+  await dialog.locator('input').focus()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+  await expect(page.locator('#background-menu')).toHaveAttribute('open')
+  const summary = page.getByText('Menu', { exact: true })
+  await summary.focus()
+  await page.keyboard.press('Escape')
+  await expect(page.locator('#background-menu')).not.toHaveAttribute('open')
+  await expect(summary).toBeFocused()
+})
+
+test('documentation runtime updates controls for document-element root changes', async ({ page }) => {
+  await documentationRuntimeFixture(page, '<button data-sds-action="toggle-color-scheme">Theme</button>')
+  await page.evaluate(() => {
+    document.body.removeAttribute('data-sds-root')
+    document.documentElement.dataset.sdsRoot = ''
+    document.documentElement.dataset.sdsColorScheme = 'light'
+  })
+  const button = page.locator('button')
+  await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode')
+  await page.locator('html').evaluate(element => { element.dataset.sdsColorScheme = 'dark' })
+  await expect(button).toHaveAttribute('aria-label', 'Switch to light mode')
+  await expect(button).toHaveAttribute('aria-pressed', 'true')
+})
+
+test('documentation runtime updates controls for root attribute and system scheme changes', async ({ page }) => {
+  await documentationRuntimeFixture(page, `
+    <main id="changing-theme" data-sds-root data-sds-color-scheme="light"><button data-sds-action="toggle-color-scheme"><svg aria-hidden="true"></svg><svg aria-hidden="true"></svg></button></main>`)
+  const root = page.locator('#changing-theme')
+  const button = root.locator('button')
+  await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode')
+  await root.evaluate(element => { element.dataset.sdsColorScheme = 'dark' })
+  await expect(button).toHaveAttribute('aria-label', 'Switch to light mode')
+  await expect(button).toHaveAttribute('aria-pressed', 'true')
+  await expect(button).toHaveAttribute('title', 'Switch to light mode')
+  await expect(button.locator('svg').first()).toBeHidden()
+  await expect(button.locator('svg').nth(1)).toBeVisible()
+  await page.emulateMedia({ colorScheme: 'light' })
+  await root.evaluate(element => { element.dataset.sdsColorScheme = 'system' })
+  await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode')
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(button).toHaveAttribute('aria-label', 'Switch to light mode')
+  await root.evaluate(element => element.removeAttribute('data-sds-root'))
+  await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode')
+  await expect(button).toHaveAttribute('aria-pressed', 'false')
+})
+
+for (const width of [1440, 390]) {
+  test(`documentation runtime code fullscreen preserves its nested root at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await documentationRuntimeFixture(page, `
+      <section id="code-theme" data-sds-root data-sds-theme="plaid" data-sds-color-scheme="dark" style="--sds-color-text-default:rgb(11,222,33);--sds-font-body:Georgia,serif;--sds-radius-control:0.375rem">
+        <div class="sds-app" data-sds-variant="documentation"><main class="sds-app-main"><article class="sds-prose">
+          <div id="nested-code" class="sds-code-block"><header><strong>Code example</strong><nav><button data-sds-action="toggle-code-fullscreen" hidden>Fullscreen</button></nav></header>
+            <div data-sds-code-slot="default"><pre><code><span style="--shiki-light:#123456;--shiki-dark:#fedcba">return 0;</span></code></pre></div>
+          </div>
+        </article></main></div>
+      </section>`)
+    const block = page.locator('#nested-code')
+    const presentation = () => block.evaluate(element => {
+      const style = getComputedStyle(element)
+      return { root: element.closest('[data-sds-root]').id, scheme: style.colorScheme, color: style.color, font: style.fontFamily, radius: style.borderRadius, code: getComputedStyle(element.querySelector('code span')).color }
+    })
+    const before = await presentation()
+    const button = page.getByRole('button', { name: 'Fullscreen', exact: true })
+    await button.click()
+    const dialog = page.getByRole('dialog', { name: 'Code example', exact: true })
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+    expect(await presentation()).toEqual(before)
+    const bounds = await dialog.boundingBox()
+    expect(bounds.x).toBeGreaterThanOrEqual(0)
+    expect(bounds.y).toBeGreaterThanOrEqual(0)
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width)
+    expect(bounds.y + bounds.height).toBeLessThanOrEqual(900)
+    await page.keyboard.press('Escape')
+    await expect(dialog).toHaveCount(0)
+    expect(await presentation()).toEqual(before)
+    await expect(button).toBeFocused()
+  })
+}
+
+for (const width of [1440, 1024, 390]) {
+  for (const scheme of ['light', 'dark']) {
+    test(`documentation sidebar tree matches reference at ${width}px in ${scheme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      const icon = '<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M2 2h12v12H2z"></path></svg>'
+      await documentationRuntimeFixture(page, `<div class="sds-app" data-sds-variant="documentation">
+        <div class="sds-app-layout"><aside class="sds-sidebar" popover="auto">
+          <header><strong>${icon}ScribeAI</strong></header>
+          <nav class="sds-app-navigation"><ul><li><a href="#">Home</a></li></ul></nav>
+          <nav aria-label="Documentation"><ul>
+            <li><a href="#features">${icon}Key Features</a><details open>
+              <summary><span class="sds-sr-only">Toggle Key Features</span></summary><ul>
+                <li><a href="#suggestions">${icon}Real-Time Suggestions</a></li>
+                <li><a href="#languages">${icon}Multilingual Support</a><details open>
+                  <summary><span class="sds-sr-only">Toggle Multilingual Support</span></summary><ul>
+                    <li><a href="#chinese" aria-current="page">${icon}Chinese</a></li>
+                    <li><a href="#english">English</a></li>
+                  </ul>
+                </details></li>
+              </ul>
+            </details></li>
+            <li><details><summary>${icon}Installation Guide</summary><ul>
+              <li><a href="#installation" aria-current="location">Getting Started</a></li>
+            </ul></details></li>
+          </ul></nav>
+        </aside><main>Content</main></div></div>`, scheme)
+      const sidebar = page.locator('.sds-sidebar')
+      if (width < 1024) await sidebar.evaluate(element => element.showPopover())
+      const tree = sidebar.getByRole('navigation', { name: 'Documentation', exact: true })
+      const features = tree.getByRole('link', { name: 'Key Features', exact: true })
+      const languages = tree.getByRole('link', { name: 'Multilingual Support', exact: true })
+      const chinese = tree.getByRole('link', { name: 'Chinese', exact: true })
+      const installation = tree.getByText('Installation Guide', { exact: true })
+      for (const item of [features, languages, chinese, installation]) {
+        await expect(item).toHaveCSS('font-size', '14px')
+        await expect(item).toHaveCSS('font-weight', '400')
+        await expect(item).toHaveCSS('line-height', '20px')
+        await expect(item).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+      }
+      const suggestions = tree.getByRole('link', { name: 'Real-Time Suggestions', exact: true })
+      await expect(suggestions).toHaveCSS('padding', '6px 8px')
+      await expect(suggestions).toHaveCSS('min-height', '32px')
+      const toggle = tree.getByText('Toggle Key Features', { exact: true }).locator('..')
+      await expect(toggle).toHaveCSS('width', '28px')
+      await expect(toggle).toHaveCSS('height', '32px')
+      await expect(toggle).toHaveCSS('border-radius', '4px')
+      await expect(toggle).toHaveCSS('align-items', 'center')
+      const toggleBounds = await toggle.boundingBox()
+      const featuresBounds = await features.boundingBox()
+      expect(toggleBounds.x - featuresBounds.x - featuresBounds.width).toBeCloseTo(4, 0)
+      await features.evaluate(element => { element.style.inlineSize = '90px' })
+      await expect.poll(() => features.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(32)
+      const firstLineCenter = await features.evaluate(element => {
+        const text = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())
+        if (!text) throw new Error('Sidebar link must contain a text label')
+        const range = document.createRange()
+        range.setStart(text, 0)
+        range.setEnd(text, 1)
+        const bounds = range.getBoundingClientRect()
+        return bounds.y + bounds.height / 2
+      })
+      const wrappedToggleBounds = await toggle.boundingBox()
+      expect(Math.abs(wrappedToggleBounds.y + wrappedToggleBounds.height / 2 - firstLineCenter)).toBeLessThanOrEqual(1)
+      await features.evaluate(element => element.style.removeProperty('inline-size'))
+      await expect(tree.locator(':scope > ul > li > details > ul').first()).toHaveCSS('border-left-width', '2px')
+      await expect(tree.locator('details details > ul')).toHaveCSS('border-left-width', '0px')
+      const marker = await chinese.evaluate(element => {
+        const style = getComputedStyle(element)
+        const before = getComputedStyle(element, '::before')
+        return { overflow: style.overflowX, color: style.color, markerColor: before.backgroundColor, x: element.getBoundingClientRect().x + parseFloat(before.left) }
+      })
+      expect(marker.overflow).toBe('visible')
+      expect(marker.markerColor).toBe(marker.color)
+      expect(marker.x).toBeCloseTo((await tree.locator(':scope > ul > li > details > ul').first().boundingBox()).x, 0)
+      await languages.locator('+ details').evaluate(element => { element.open = false })
+      await expect(languages).toHaveCSS('color', marker.color)
+      await expect(languages).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+      await toggle.click()
+      await page.mouse.move(0, 0)
+      await expect(features.locator('+ details')).not.toHaveAttribute('open')
+      await expect(features).toHaveCSS('color', marker.color)
+      await expect(toggle).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+      for (const root of [features, installation]) {
+        await expect(root).toHaveCSS('border-left-width', '0px')
+        expect(await root.evaluate(element => getComputedStyle(element, '::before').content)).toBe('none')
+      }
+      for (const value of ['page', 'location']) {
+        await features.evaluate((element, value) => element.setAttribute('aria-current', value), value)
+        expect(await features.evaluate(element => getComputedStyle(element, '::before').content)).toBe('none')
+        await expect(features).toHaveCSS('color', marker.color)
+      }
+      await features.evaluate(element => element.removeAttribute('aria-current'))
+      await toggle.focus()
+      await page.keyboard.press('Enter')
+      await expect(features.locator('+ details')).toHaveAttribute('open')
+      for (const svg of await tree.locator('svg').all()) {
+        await expect(svg).toHaveCSS('width', '16px')
+        await expect(svg).toHaveCSS('height', '16px')
+      }
+      if (width >= 1024) {
+        await expect(sidebar.locator(':scope > header strong')).toHaveCSS('font-weight', '600')
+      }
+      await sidebar.evaluate(element => { element.dataset.sdsDensity = 'compact' })
+      await expect(features).toHaveCSS('padding', '4px 8px')
+    })
+  }
+}
+
+for (const width of [1440, 1280, 1024, 390]) {
+  test(`documentation reference grid at ${width}px needs no consumer CSS`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/')
+    await page.setContent(`<!doctype html><html><head>
+      <link rel="stylesheet" href="${new URL(page.url()).origin}/src/style.css?direct">
+      <link rel="stylesheet" href="${new URL(page.url()).origin}/src/brand.css?direct">
+      <link rel="stylesheet" href="${new URL(page.url()).origin}/src/documentation.css?direct">
+    </head><body class="sds-document" data-sds-root>
+      <div class="sds-app" data-sds-variant="documentation">
+        <div class="sds-app-masthead"><a href="/"><span class="sds-sei-wordmark"></span></a><div class="sds-cluster" data-sds-gap="sm"><button class="sds-button" data-sds-shape="icon" data-sds-size="sm">G</button><button class="sds-button" data-sds-shape="icon" data-sds-size="sm" data-sds-action="toggle-fullscreen">F</button><button class="sds-button" data-sds-shape="icon" data-sds-size="sm" data-sds-action="toggle-color-scheme">T</button><button class="sds-button" data-sds-shape="icon" data-sds-size="sm">S</button></div></div>
+        <header class="sds-app-header"><a class="sds-app-brand" href="/">CERT Secure Coding</a><nav class="sds-app-navigation"><ul><li><a href="/">Home</a></li></ul></nav></header>
+        <div class="sds-app-layout"><aside class="sds-sidebar" popover="auto"><nav><ul><li><a href="#guidelines">Guidelines</a><details><summary><span class="sds-sr-only">Toggle Guidelines navigation</span></summary><ul><li><a href="#guidelines">Rules</a></li></ul></details></li></ul></nav></aside>
+          <div class="sds-app-body"><main class="sds-app-main"><div class="sds-app-content">
+            <article class="sds-prose"><h1>Concurrency (CON)</h1><h2 id="guidelines">Guidelines</h2><p>Documentation content.</p></article>
+            <nav class="sds-app-toc"><strong>On this page</strong><ul><li><a href="#guidelines">Guidelines</a></li></ul></nav>
+          </div></main></div>
+        </div><footer class="sds-app-footer">Legal</footer>
+      </div></body></html>`)
+    await page.waitForLoadState('networkidle')
+    const shell = page.locator('.sds-app')
+    await expect(shell.locator('.sds-app-masthead')).toHaveCSS('height', width < 1024 ? '66px' : '76px')
+    const article = await shell.locator('article').boundingBox()
+    expect(article.x).toBeCloseTo(width >= 1024 ? width / 4 + 20 : 16, 0)
+    expect(article.width).toBeCloseTo(width >= 1280 ? width / 2 - 40 : width === 1024 ? 645.333 : width - 32, 0)
+    await expect(shell.locator('.sds-sidebar')).toHaveCSS('display', width >= 1024 ? 'flex' : 'none')
+    if (width < 1024) await expect(shell.locator('.sds-sidebar')).toHaveCSS('overscroll-behavior-y', 'contain')
+    await expect(shell.locator('.sds-sidebar summary a')).toHaveCount(0)
+    if (width >= 1024) {
+      const toggle = shell.locator('.sds-sidebar summary')
+      const link = shell.locator('.sds-sidebar > nav > ul > li > a')
+      const toggleBounds = await toggle.boundingBox()
+      const linkBounds = await link.boundingBox()
+      expect(toggleBounds.x - linkBounds.x - linkBounds.width).toBeCloseTo(4, 0)
+      expect(toggleBounds.y).toBeCloseTo(linkBounds.y, 0)
+      await expect(link).toHaveCSS('padding-inline-end', '8px')
+      await toggle.click()
+      await expect(shell.locator('.sds-sidebar details')).toHaveAttribute('open')
+    }
+    await expect(shell.locator('.sds-app-content > .sds-app-toc')).toHaveCSS('display', width >= 1280 ? 'block' : 'none')
+    await expect(shell.locator('h1')).toHaveCSS('font-size', width < 768 ? '30px' : '36px')
+    await expect(shell.locator('article')).toHaveCSS('font-size', width < 768 ? '14px' : '16px')
+    await expect(shell.locator('.sds-app-masthead .sds-button:visible')).toHaveCount(width < 1024 ? 2 : 4)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await shell.locator('.sds-sidebar').evaluate(element => element.remove())
+    const withoutSidebar = await shell.locator('article').boundingBox()
+    expect(withoutSidebar.x).toBeCloseTo(article.x, 0)
+    expect(withoutSidebar.width).toBeCloseTo(article.width, 0)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  })
+}
+
+for (const width of [1280, 390]) {
+  test(`documentation mobile-only navigation drawer at ${width}px preserves the reading column`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await documentationRuntimeFixture(page, `<div class="sds-app" data-sds-variant="documentation">
+      <header class="sds-app-header"><a class="sds-app-brand" href="#home">Documentation</a>
+        <button class="sds-button" popovertarget="mobile-only-navigation" aria-label="Open site navigation">Menu</button>
+      </header>
+      <div class="sds-app-layout"><aside id="mobile-only-navigation" class="sds-sidebar" popover="auto" aria-label="Site navigation">
+        <header><strong>Documentation</strong><button class="sds-sidebar-close sds-button" popovertarget="mobile-only-navigation" popovertargetaction="hide" aria-label="Close site navigation">Close</button></header>
+        <nav class="sds-app-navigation" aria-label="Documentation sections"><ul><li><a href="#home">Home</a></li><li><a href="#guides">Guides</a></li></ul></nav>
+        <nav class="sds-app-toc"><strong>On this page</strong><ul><li><a href="#home">Welcome</a></li></ul></nav>
+      </aside><div class="sds-app-body"><main class="sds-app-main"><div class="sds-app-content">
+        <article class="sds-prose"><h1 id="home">Welcome</h1><p>Documentation content.</p></article>
+      </div></main></div></div>
+    </div>`)
+    const drawer = page.getByRole('complementary', { name: 'Site navigation', includeHidden: true })
+    const toggle = page.getByRole('button', { name: 'Open site navigation', includeHidden: true })
+    await expect(drawer).toBeHidden()
+    const article = await page.locator('article').boundingBox()
+    expect(article.x).toBeCloseTo(width >= 1024 ? width / 4 + 20 : 16, 0)
+    if (width >= 1024) await expect(toggle).toBeHidden()
+    else {
+      await expect(toggle).toBeVisible()
+      await toggle.focus()
+      await toggle.press('Enter')
+      await expect(drawer).toBeVisible()
+      await expect(drawer.getByRole('link', { name: 'Home', exact: true })).toBeVisible()
+      await expect(drawer.getByRole('link', { name: 'Guides', exact: true })).toBeVisible()
+      await page.keyboard.press('Escape')
+      await expect(drawer).toBeHidden()
+      await expect(toggle).toBeFocused()
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  })
+}
+
+for (const width of [1024, 1440]) {
+  for (const [rows, behavior] of [[2, 'boundary'], [60, 'internal'], [60, 'boundary']]) {
+    test(`documentation sidebar wheel scrolling ${behavior} at ${width}px with ${rows} links`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/')
+      await page.setContent(`<!doctype html><html><head><link rel="stylesheet" href="http://127.0.0.1:4173/src/style.css?direct"><link rel="stylesheet" href="http://127.0.0.1:4173/src/brand.css?direct"></head>
+        <body class="sds-document" data-sds-root><div class="sds-app" data-sds-variant="documentation">
+          <header class="sds-app-header">Documentation</header><div class="sds-app-layout">
+            <aside class="sds-sidebar" popover="auto"><nav aria-label="Pages"><ul>${Array.from({ length: rows }, (_, index) => `<li><a href="#content">Page ${index + 1}</a></li>`).join('')}</ul></nav></aside>
+            <div class="sds-app-body"><main class="sds-app-main" id="content">${'<p>Documentation content.</p>'.repeat(100)}</main></div>
+          </div></div></body></html>`)
+      await page.waitForLoadState('networkidle')
+      const navigation = page.getByRole('navigation', { name: 'Pages', exact: true })
+      const sidebar = page.locator('.sds-sidebar')
+      const scroller = await navigation.evaluate(element => element.scrollHeight > element.clientHeight)
+        ? navigation
+        : sidebar
+      if (rows === 60 && behavior === 'boundary') {
+        await scroller.evaluate(element => { element.scrollTop = element.scrollHeight })
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+      }
+      await sidebar.hover({ position: { x: 20, y: 20 } })
+      const before = await page.evaluate(() => scrollY)
+      await page.mouse.wheel(0, behavior === 'internal' ? 200 : 400)
+      if (behavior === 'internal') {
+        await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBeGreaterThanOrEqual(190)
+        expect(await page.evaluate(() => scrollY)).toBe(before)
+      } else {
+        await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(before)
+      }
+    })
+  }
+}
+
+test('optional documentation runtime tracks sections, theme, and code controls', async ({ page }) => {
+  await page.goto('/')
+  await page.setContent(`<!doctype html><html><head><link rel="stylesheet" href="http://127.0.0.1:4173/src/style.css?direct"><link rel="stylesheet" href="http://127.0.0.1:4173/src/documentation.css?direct"></head><body data-sds-root data-sds-color-scheme="light">
+    <button class="sds-button" data-sds-shape="icon" data-sds-action="toggle-color-scheme"><svg aria-hidden="true"></svg><svg aria-hidden="true"></svg></button>
+    <nav class="sds-app-navigation" aria-label="Documentation"><details><summary>More</summary><a href="#first">First section</a></details></nav>
+    <div class="sds-app" data-sds-variant="documentation"><main class="sds-app-main"><article><h2 id="first">First</h2><p>Content</p><h2 id="second">Second</h2></article></main>
+    <nav class="sds-app-toc"><ul><li><a href="#first">First</a></li><li><a href="#second">Second</a></li></ul></nav></div>
+    <figure class="sds-code-block"><header><strong>Example</strong><nav><button data-sds-action="copy-code" hidden>Copy</button><button data-sds-action="toggle-complete-code" aria-pressed="false" hidden>Complete</button><button data-sds-action="toggle-code-fullscreen" aria-pressed="false" hidden>Fullscreen</button></nav></header><div data-sds-code-slot="default"><pre><code>return 0;</code></pre></div><div data-sds-code-slot="complete" hidden><pre><code>int main() { return 0; }</code></pre></div><output class="sds-sr-only"></output></figure>
+    <script type="module" src="http://127.0.0.1:4173/src/documentation.ts?runtime-fixture"></script>
+  </body></html>`)
+  await expect(page.getByRole('button', { name: 'Switch to dark mode' })).toBeVisible()
+  await expect(page.locator('[data-sds-action="toggle-color-scheme"] > svg').nth(1)).toBeHidden()
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click()
+  await expect(page.locator('body')).toHaveAttribute('data-sds-color-scheme', 'dark')
+  await expect(page.locator('[data-sds-action="toggle-color-scheme"] > svg').first()).toBeHidden()
+  await page.getByText('More', { exact: true }).click()
+  await page.locator('#first').click()
+  await expect(page.locator('.sds-app-navigation details')).not.toHaveAttribute('open')
+  await page.getByText('More', { exact: true }).click()
+  await page.keyboard.press('Escape')
+  await expect(page.locator('.sds-app-navigation details')).not.toHaveAttribute('open')
+  await expect(page.getByText('More', { exact: true })).toBeFocused()
+  await page.getByRole('button', { name: 'Switch to light mode' }).click()
+  await expect(page.locator('body')).toHaveAttribute('data-sds-color-scheme', 'light')
+  await page.getByRole('button', { name: 'Complete', exact: true }).click()
+  await expect(page.locator('[data-sds-code-slot="complete"]')).toBeVisible()
+  await expect(page.locator('[data-sds-code-slot="default"]')).toBeHidden()
+  await page.getByRole('button', { name: 'Fullscreen', exact: true }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Fullscreen', exact: true })).toBeFocused()
+  await page.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => { window.__copied = text } } }) })
+  await page.getByRole('button', { name: 'Copy', exact: true }).click()
+  await expect.poll(() => page.evaluate(() => window.__copied)).toBe('int main() { return 0; }')
+  await expect(page.locator('output')).toHaveText('Code copied.')
+  await expect(page.locator('.sds-app-toc a[href="#first"]')).toHaveAttribute('aria-current', 'location')
+  await page.locator('#first').evaluate(element => { element.style.marginBottom = '1500px' })
+  await page.locator('#second').scrollIntoViewIfNeeded()
+  await expect(page.locator('.sds-app-toc a[href="#second"]')).toHaveAttribute('aria-current', 'location')
+})
 
 for (const width of [1440, 390]) {
   for (const name of ['Application', 'Simple application', 'Documentation site', 'Brochure']) {
@@ -35,7 +659,7 @@ for (const width of [1440, 390]) {
         await page.evaluate(() => window.scrollTo(0, 100))
         await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(100)
         const headerBottom = await shell.locator(':scope > .sds-app-header').evaluate(element => element.getBoundingClientRect().bottom)
-        expect(await shell.locator('.sds-sidebar').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(headerBottom, 0)
+        expect(await shell.locator('.sds-sidebar').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(headerBottom + 29, 0)
         expect(await shell.locator('.sds-app-main > .sds-app-toc').evaluate(element => element.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom)
         await page.evaluate(() => window.scrollTo(0, 0))
       }
@@ -52,7 +676,7 @@ for (const width of [1440, 390]) {
         expect(await shell.locator(':scope > .sds-app-header').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(0, 0)
         const headerBottom = await shell.locator(':scope > .sds-app-header').evaluate(element => element.getBoundingClientRect().bottom)
         if (width > 1024) {
-          expect(await shell.locator('.sds-sidebar').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(headerBottom, 0)
+          expect(await shell.locator('.sds-sidebar').evaluate(element => element.getBoundingClientRect().top)).toBeCloseTo(headerBottom + 29, 0)
           expect(await shell.locator('.sds-app-main > .sds-app-toc').evaluate(element => element.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom)
         }
         await page.evaluate(() => { location.hash = 'documentation-installation' })
@@ -99,8 +723,12 @@ for (const width of [1440, 390]) {
           outer.dataset.sdsVariant = variant
           const layout = document.createElement('div')
           layout.className = 'sds-app-layout'
+          layout.style.padding = '0'
+          layout.style.gap = '0'
+          layout.style.gridTemplateColumns = 'minmax(0, 1fr)'
           const body = document.createElement('div')
           body.className = 'sds-app-body'
+          body.style.gridColumn = 'auto'
           element.replaceWith(outer)
           outer.append(layout)
           layout.append(body)
@@ -485,11 +1113,11 @@ for (const [name, panelId, openLabel, closeLabel, side] of [
             const list = element.closest('ul')
             return element.getBoundingClientRect().left - list.getBoundingClientRect().left - parseFloat(getComputedStyle(list).borderLeftWidth)
           })
-          expect(inset).toBeCloseTo(8, 0)
+          expect(inset).toBeCloseTo(0, 0)
           await link.evaluate(element => { element.setAttribute('aria-current', 'location') })
           const marker = await link.evaluate(element => {
-            const style = getComputedStyle(element, '::before')
-            return { width: style.width, left: element.getBoundingClientRect().left + parseFloat(style.left), guideLeft: element.closest('ul').getBoundingClientRect().left }
+            const style = getComputedStyle(element)
+            return { width: style.borderLeftWidth, left: element.getBoundingClientRect().left, guideLeft: element.closest('ul').getBoundingClientRect().left }
           })
           expect(marker.width).toBe('2px')
           expect(marker.left).toBeCloseTo(marker.guideLeft, 0)
@@ -639,6 +1267,36 @@ test('simple shell keeps its avatar account control beside the brand on mobile',
   }
 })
 
+test('simple shell keeps a long primary navigation in its own scrolling mobile row', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 })
+  await page.goto('/#layouts')
+  const root = page.locator('[data-copy-layout="Simple application"]')
+  await root.evaluate(element => {
+    element.closest('details').open = true
+    const navigation = document.createElement('nav')
+    navigation.setAttribute('aria-label', 'Primary sections')
+    const list = document.createElement('ul')
+    for (const name of ['Overview', 'Assignments', 'Approvals', 'Reports', 'Settings', 'Administration']) {
+      const item = document.createElement('li')
+      const link = document.createElement('a')
+      link.href = '#layouts'
+      link.textContent = name
+      item.append(link)
+      list.append(item)
+    }
+    navigation.append(list)
+    element.querySelector('.sds-app-header').append(navigation)
+  })
+  const navigation = root.getByRole('navigation', { name: 'Primary sections' })
+  await expect(navigation).toHaveCSS('overflow-x', 'auto')
+  expect(await navigation.evaluate(element => {
+    const brand = element.parentElement.querySelector('.sds-app-brand').getBoundingClientRect()
+    return element.scrollWidth > element.clientWidth && element.getBoundingClientRect().top >= brand.bottom
+  })).toBe(true)
+  await expect(root.getByRole('button', { name: 'Alex Morgan', exact: true })).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+})
+
 test('persistent sidebar example keeps content inset from its navigation', async ({ page }) => {
   await page.goto('/#composition')
   const layout = page.locator('[data-example-container]').filter({
@@ -664,23 +1322,34 @@ test('sidebar trees align optional icons and retain guide lines through expanded
   const root = page.locator('[data-copy-layout="Documentation site"]')
   await root.evaluate(element => { element.closest('details').open = true })
   const sidebar = root.locator('.sds-sidebar')
-  const groups = sidebar.locator('details')
+  const groups = sidebar.getByRole('navigation', { name: 'Documentation pages' }).locator('details')
   const parent = groups.first()
   const child = groups.nth(1)
   const summary = child.locator(':scope > summary')
   const installation = child.getByRole('link', { name: 'Installation' })
   const current = sidebar.getByRole('link', { name: 'Introduction', exact: true })
+  for (const disclosure of await sidebar.locator('summary').all()) {
+    await expect(disclosure).toHaveCSS('font-weight', '400')
+  }
+  await summary.evaluate(element => { element.style.inlineSize = '150px' })
+  await expect.poll(() => summary.evaluate(element => {
+    const icon = element.querySelector('svg').getBoundingClientRect()
+    const style = getComputedStyle(element)
+    const firstLineCenter = element.getBoundingClientRect().top + parseFloat(style.paddingTop) + parseFloat(style.lineHeight) / 2
+    return Math.abs(icon.top + icon.height / 2 - firstLineCenter)
+  })).toBeLessThanOrEqual(1)
+  await summary.evaluate(element => { element.style.removeProperty('inline-size') })
   await expect(parent.locator(':scope > ul')).toHaveCSS('border-left-width', '2px')
   await expect(child.locator(':scope > ul')).toHaveCSS('border-left-width', '0px')
   for (const list of await sidebar.locator('details > ul').all()) {
-    await expect(list).toHaveCSS('margin-left', '16px')
+    await expect(list).toHaveCSS('margin-left', await list.evaluate(element => element.matches('nav details details > ul') ? '0px' : '16px'))
   }
   await expect(sidebar.locator(':scope > .sds-app-navigation')).not.toBeVisible()
   await expect.poll(() => sidebar.evaluate(element => {
     const heading = element.querySelector('header strong').getBoundingClientRect()
     const firstRow = element.querySelector('nav[aria-label="Documentation pages"] > ul > li > details > summary').getBoundingClientRect()
     return firstRow.top - heading.bottom
-  })).toBeCloseTo(4, 0)
+  })).toBeCloseTo(16, 0)
   for (const icon of await sidebar.locator('nav svg').all()) {
     await expect(icon).toHaveCSS('width', '16px')
     await expect(icon).toHaveCSS('height', '16px')
@@ -734,6 +1403,39 @@ test('sidebar trees align optional icons and retain guide lines through expanded
   await expect(installation).toBeVisible()
 })
 
+for (const width of [1440, 390]) {
+  test(`editorial navigation and table of contents match reference typography at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/#layouts')
+    const root = page.locator('[data-copy-layout="Documentation site"]')
+    await root.evaluate(element => { element.closest('details').open = true })
+    if (width === 390) await root.getByRole('button', { name: 'Open documentation navigation' }).click()
+    const toc = width === 390 ? root.locator('.sds-sidebar > .sds-app-toc') : root.locator('.sds-app-content > .sds-app-toc')
+    await expect(toc).toHaveCSS('border-left-width', '0px')
+    await expect(toc.locator('strong')).toHaveCSS('font-weight', '600')
+    const link = toc.getByRole('link').first()
+    await link.evaluate(element => { element.removeAttribute('aria-current') })
+    await expect(link).toHaveCSS('font-size', '14px')
+    await expect(link).toHaveCSS('line-height', '20px')
+    await expect(link).toHaveCSS('padding-top', '6px')
+    await expect(link).toHaveCSS('padding-left', '20px')
+    await expect(link).toHaveCSS('border-left-width', '2px')
+    await expect(link).toHaveCSS('font-weight', '400')
+    await link.evaluate(element => { element.setAttribute('aria-current', 'location') })
+    await expect(link).toHaveCSS('font-weight', '600')
+    await expect.poll(() => link.evaluate(element => getComputedStyle(element).borderLeftColor === getComputedStyle(element).color)).toBe(true)
+    if (width === 1440) {
+      const primary = root.locator(':scope > .sds-app-header > .sds-app-navigation a').first()
+      await expect(primary).toHaveCSS('font-size', '14px')
+      await expect(primary).toHaveCSS('font-weight', '600')
+      const brochure = page.locator('[data-copy-layout="Brochure"]')
+      await brochure.evaluate(element => { element.closest('details').open = true })
+      await expect(brochure.locator('.sds-app-header-content > nav a').first()).toHaveCSS('font-size', '14px')
+      await expect(brochure.locator('.sds-app-header-content > nav a').first()).toHaveCSS('font-weight', '600')
+    }
+  })
+}
+
 test('documentation content uses a continuous surface without a sidebar edge', async ({ page }) => {
   await page.goto('/#layouts')
   const root = page.locator('[data-copy-layout="Documentation site"]')
@@ -769,21 +1471,36 @@ test('documentation header matches primary tabs, site title, and compact utility
     const current = root.locator('.sds-app-header .sds-app-navigation [aria-current="page"]')
     const inactive = root.locator('.sds-app-header .sds-app-navigation a:not([aria-current])')
     const brand = root.locator('.sds-app-header > .sds-app-brand')
-    await expect(current).toHaveCSS('border-bottom-width', '2px')
-    await expect(current).toHaveCSS('border-bottom-color', await current.evaluate(element => getComputedStyle(element).color))
+    await expect(current).toHaveCSS('border-bottom-width', '0px')
+    await expect.poll(() => current.evaluate(element => {
+      const style = getComputedStyle(element)
+      return style.boxShadow.includes('inset') && style.boxShadow.includes('-2px') && style.boxShadow.includes(style.color)
+    })).toBe(true)
     await expect(current).toHaveCSS('font-size', '14px')
-    await expect(current).toHaveCSS('padding-top', '16px')
-    await expect(inactive).toHaveCSS('border-bottom-color', 'rgba(0, 0, 0, 0)')
+    await expect(current).toHaveCSS('padding-top', '20px')
+    await expect(inactive).toHaveCSS('box-shadow', 'none')
     await expect(brand).toHaveText('Documentation Site')
-    await expect(brand).toHaveCSS('font-size', width > 1024 ? '18px' : '16px')
+    await expect(brand).toHaveCSS('font-size', '18px')
     await expect(brand).toHaveCSS('font-weight', '600')
     await expect(brand.locator('svg')).toHaveCSS('width', '16px')
     await expect(brand.locator('svg')).toHaveAttribute('aria-hidden', 'true')
     for (const action of await root.locator('.sds-app-masthead .sds-button').all()) {
       await expect(action).toHaveCSS('font-size', '20px')
-      await expect(action.locator('svg')).toHaveCSS('width', '20px')
+      await expect(action.locator('svg').first()).toHaveCSS('width', '20px')
+      await expect(action.locator('svg').first()).toHaveAttribute('aria-hidden', 'true')
       await expect(action).toHaveAttribute('data-sds-size', 'sm')
       await expect(action).toHaveAttribute('data-sds-density', 'compact')
+    }
+    const utilities = root.locator('.sds-app-masthead')
+    await expect(utilities.locator('.sds-button')).toHaveCount(3)
+    await expect(utilities.locator('hr')).toHaveCSS('width', '1px')
+    await expect(utilities.locator('hr')).toHaveCSS('height', '24px')
+    await expect(utilities.locator('hr')).toHaveAttribute('aria-hidden', 'true')
+    const displayControls = utilities.locator('[data-sds-action]')
+    await expect(displayControls).toHaveCount(1)
+    for (const control of await displayControls.all()) {
+      if (width >= 1024) await expect(control).toBeVisible()
+      else await expect(control).toBeHidden()
     }
     await expect(root.getByRole('navigation', { name: 'Documentation footer' }).getByRole('link').first()).toHaveCSS('border-bottom-width', '0px')
     if (width > 1024) expect(await current.evaluate(element => {
@@ -804,6 +1521,163 @@ test('documentation header matches primary tabs, site title, and compact utility
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   }
+})
+
+test('documentation masthead uses reference artwork without fullscreen', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/#layouts')
+  const root = page.locator('[data-copy-layout="Documentation site"]')
+  await root.evaluate(element => { element.closest('details').open = true })
+  await expect(root.locator('[data-sds-action="toggle-fullscreen"]')).toHaveCount(0)
+  await expect(root.locator('.sds-app-masthead a[title="GitHub"] svg')).toHaveAttribute('viewBox', '0 0 12 13')
+  await expect(root.locator('.sds-app-masthead a[title="GitHub"] path')).toHaveAttribute('d', /^M4\.05469 9\.82812/)
+  await expect(root.locator('.sds-app-masthead a[aria-haspopup="dialog"] path')).toHaveAttribute('d', /^m19\.6 21l-6\.3-6\.3/)
+  await expect(root.locator('.sds-app-header > button path')).toHaveAttribute('d', 'M3 18v-2h18v2zm0-5v-2h18v2zm0-5V6h18v2z')
+  const theme = root.locator('[data-sds-action="toggle-color-scheme"]')
+  for (const scheme of ['light', 'dark']) {
+    await page.locator('body').evaluate((element, value) => { element.dataset.sdsColorScheme = value }, scheme)
+    await expect(theme).toHaveAttribute('aria-pressed', String(scheme === 'dark'))
+    const icon = theme.locator(scheme === 'light' ? 'svg:first-child' : 'svg:last-child')
+    await expect(icon).toBeVisible()
+    await expect(icon.locator('path')).toHaveAttribute('d', scheme === 'light' ? /^M14 22q-2\.05/ : /^M11 5V1/)
+  }
+})
+
+test('documentation header dropdowns use primary tab styling in light and dark schemes', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/#layouts')
+  const root = page.locator('[data-copy-layout="Documentation site"]')
+  await root.evaluate(element => {
+    element.closest('details').open = true
+    element.querySelector('.sds-app-header .sds-app-navigation > ul').insertAdjacentHTML('beforeend', `
+      <li><sds-dropdown><button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" popovertarget="documentation-tab-menu">Coding Standards</button>
+      <menu id="documentation-tab-menu" class="sds-dropdown-menu" popover><li><a role="menuitem" href="#layouts">Android</a></li></menu></sds-dropdown></li>`)
+  })
+  const button = root.getByRole('button', { name: 'Coding Standards', exact: true })
+  for (const scheme of ['light', 'dark']) {
+    await root.evaluate((element, value) => { element.dataset.sdsColorScheme = value }, scheme)
+    await page.mouse.move(0, 0)
+    await expect(button).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(button).toHaveCSS('padding', '20px 16px')
+    await expect(button).toHaveCSS('border-radius', '0px')
+    await expect(button).toHaveCSS('font-size', '14px')
+    await expect(button).toHaveCSS('font-weight', '600')
+    const inactiveTab = root.locator('.sds-app-header .sds-app-navigation a:not([aria-current])').first()
+    await expect(button).toHaveCSS('color', await inactiveTab.evaluate(element => getComputedStyle(element).color))
+    const bounds = await button.boundingBox()
+    const header = await root.locator('.sds-app-header').boundingBox()
+    expect(header.y + header.height - bounds.y - bounds.height).toBeLessThanOrEqual(1)
+    await button.hover()
+    await expect.poll(() => button.evaluate(element => getComputedStyle(element).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)')
+    await button.focus()
+    await button.press('Enter')
+    await expect(root.locator('#documentation-tab-menu')).toBeVisible()
+    const menuItem = root.getByRole('menuitem', { name: 'Android', exact: true })
+    await expect(menuItem).toHaveCSS('padding', '8px 12px')
+    await expect(menuItem).toHaveCSS('font-weight', '400')
+    await page.keyboard.press('Escape')
+    await expect(root.locator('#documentation-tab-menu')).toBeHidden()
+    await expect(button).toBeFocused()
+    await button.evaluate(element => element.setAttribute('aria-current', 'page'))
+    await expect.poll(() => button.evaluate(element => {
+      const style = getComputedStyle(element)
+      return style.boxShadow.includes('inset') && style.boxShadow.includes('-2px') && style.boxShadow.includes(style.color)
+    })).toBe(true)
+    await button.evaluate(element => element.removeAttribute('aria-current'))
+  }
+  await root.locator('.sds-sidebar > .sds-app-navigation > ul').evaluate(element => {
+    element.insertAdjacentHTML('beforeend', `<li><a href="#layouts">Coding reference</a></li>
+      <li><sds-dropdown><button class="sds-button" type="button" data-sds-density="compact" data-sds-variant="text" popovertarget="documentation-mobile-tab-menu">Coding Standards</button>
+      <menu id="documentation-mobile-tab-menu" class="sds-dropdown-menu" popover><li><a role="menuitem" href="#layouts">Android</a></li></menu></sds-dropdown></li>`)
+  })
+  await page.setViewportSize({ width: 390, height: 900 })
+  await root.getByRole('button', { name: 'Open documentation navigation', exact: true }).click()
+  const drawer = root.locator('.sds-sidebar')
+  const mobileButton = drawer.getByRole('button', { name: 'Coding Standards', exact: true })
+  const reference = drawer.getByRole('link', { name: 'Coding reference', exact: true })
+  for (const scheme of ['light', 'dark']) {
+    await root.evaluate((element, value) => { element.dataset.sdsColorScheme = value }, scheme)
+    await page.mouse.move(0, 0)
+    await expect(mobileButton).toHaveCSS('padding', await reference.evaluate(element => getComputedStyle(element).padding))
+    await expect(mobileButton).toHaveCSS('font-size', await reference.evaluate(element => getComputedStyle(element).fontSize))
+    await expect(mobileButton).toHaveCSS('border-radius', '0px')
+    await expect(mobileButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(mobileButton).toHaveCSS('color', await reference.evaluate(element => getComputedStyle(element).color))
+    const row = await reference.boundingBox()
+    const trigger = await mobileButton.boundingBox()
+    expect(trigger.x).toBeCloseTo(row.x, 0)
+    expect(trigger.width).toBeCloseTo(row.width, 0)
+    await mobileButton.hover()
+    await expect.poll(() => mobileButton.evaluate(element => getComputedStyle(element).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)')
+    await mobileButton.focus()
+    await mobileButton.press('Enter')
+    await expect(root.locator('#documentation-mobile-tab-menu')).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(root.locator('#documentation-mobile-tab-menu')).toBeHidden()
+    await expect(mobileButton).toBeFocused()
+    await mobileButton.evaluate(element => element.setAttribute('aria-current', 'page'))
+    await expect.poll(() => mobileButton.evaluate(element => {
+      const style = getComputedStyle(element)
+      return style.borderInlineStartColor === style.color && style.borderInlineStartWidth === '4px'
+    })).toBe(true)
+    await mobileButton.evaluate(element => element.removeAttribute('aria-current'))
+  }
+})
+
+test('documentation code blocks match reference colors, typography, and icon controls', async ({ page }) => {
+  await page.goto('/#layouts')
+  const root = page.locator('[data-copy-layout="Documentation site"]')
+  await root.evaluate(element => { element.closest('details').open = true })
+  const block = root.locator('.sds-code-block')
+  await expect(block.locator('header > strong > svg')).toHaveCSS('width', '20px')
+  await expect(block.locator('header > strong')).toHaveCSS('font-weight', '400')
+  await expect(block.locator('header')).toHaveCSS('height', '53px')
+  await expect(block.locator('pre')).toHaveCSS('padding', '16px')
+  await expect(block.locator('pre')).toHaveCSS('margin', '16px 0px')
+  await expect(block.locator('pre code')).toHaveCSS('font-size', '16px')
+  await expect(block.locator('pre code')).toHaveCSS('line-height', '24px')
+  for (const action of await block.locator('button').all()) {
+    await expect(action).toHaveAttribute('data-sds-shape', 'icon')
+    await expect(action).toHaveCSS('color', 'rgb(89, 90, 92)')
+    await expect(action.locator('svg').first()).toHaveCSS('width', '16px')
+    await expect(action).not.toHaveText(/\S/)
+  }
+  await page.evaluate(() => {
+    window.__copied = ''
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => { window.__copied = text } } })
+  })
+  await block.getByRole('button', { name: 'Copy code', exact: true }).click()
+  await expect.poll(() => page.evaluate(() => window.__copied)).toBe("const response = await fetch('/projects');\nconst projects = await response.json();")
+  await expect(block.locator('output')).toHaveText('Code copied.')
+  for (const [scheme, background, borders, headers] of [
+    ['light', 'rgb(255, 255, 255)', ['rgb(188, 190, 192)', 'rgb(116, 203, 238)', 'rgb(249, 161, 164)'], ['rgb(248, 248, 248)', 'rgb(238, 249, 253)', 'rgb(255, 245, 245)']],
+    ['dark', 'rgb(0, 0, 0)', ['rgb(48, 49, 50)', 'rgb(4, 54, 115)', 'rgb(96, 0, 0)'], ['rgb(27, 28, 29)', 'rgb(2, 27, 58)', 'rgb(49, 5, 12)']],
+  ]) {
+    await page.locator('body').evaluate((element, scheme) => { element.dataset.sdsColorScheme = scheme }, scheme)
+    for (const [index, tone] of ['neutral', 'info', 'danger'].entries()) {
+      await block.evaluate((element, tone) => { element.dataset.sdsTone = tone }, tone)
+      await expect(block).toHaveCSS('border-color', borders[index])
+      await expect(block).toHaveCSS('background-color', background)
+      await expect(block.locator('header')).toHaveCSS('background-color', headers[index])
+    }
+  }
+  await page.setViewportSize({ width: 390, height: 1000 })
+  await expect(block).toBeVisible()
+  expect(await block.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
+  await block.getByRole('button', { name: 'Toggle code fullscreen', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'List projects', exact: true })
+  await expect(dialog).toBeVisible()
+  await expect(block.locator('[data-sds-action="toggle-code-fullscreen"]')).toHaveAttribute('aria-pressed', 'true')
+  await expect(block.locator('[data-sds-action="toggle-code-fullscreen"] > svg').first()).toBeHidden()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toHaveCount(0)
+  await expect(block.getByRole('button', { name: 'Toggle code fullscreen', exact: true })).toBeFocused()
+  await block.locator('header > strong').evaluate(element => element.remove())
+  await expect(block.locator('header')).toHaveCSS('position', 'absolute')
+  await expect(block.locator('header')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+  await expect(block.locator('header')).toHaveCSS('border-bottom-width', '0px')
+  await expect(block.getByRole('button', { name: 'Toggle code fullscreen', exact: true })).toBeVisible()
 })
 
 test('documentation footer has a centered shield divider and right-aligned public links', async ({ page }) => {
@@ -871,8 +1745,8 @@ test('documentation sidebars use compact text without header or footer separator
     const firstLink = sidebar.getByRole('navigation', { name: 'Documentation pages', exact: true }).getByRole('link').first()
     await expect(firstLink).toHaveCSS('font-size', '14px')
     await expect(firstLink).toHaveCSS('min-height', '32px')
-    await expect(firstLink).toHaveCSS('padding-top', '4px')
-    await expect(firstLink).toHaveCSS('padding-bottom', '4px')
+    await expect(firstLink).toHaveCSS('padding-top', '6px')
+    await expect(firstLink).toHaveCSS('padding-bottom', '6px')
   }
 })
 
@@ -954,6 +1828,117 @@ test('application sidebars do not inherit documentation tree styling', async ({ 
   }
 })
 
+for (const width of [1440, 390]) {
+  for (const scheme of ['light', 'dark']) {
+    test(`standalone and application sidebars have identical presentation at ${width}px in ${scheme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' })
+      const content = `<header><strong>Project Atlas</strong></header><nav aria-label="Project"><ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><button type="button">Action</button></li>
+        <li><a href="#disabled" aria-disabled="true">Unavailable</a></li>
+        <li><details open><summary>Group</summary><ul><li><a href="#team">Team</a></li></ul></details></li>
+        <li><details><summary>Current group</summary><ul><li><a href="#current" aria-current="page">Current</a></li></ul></details></li>
+        </ul></nav><footer><p>Project navigation</p></footer>`
+      await documentationRuntimeFixture(page, `
+        <div class="sds-sidebar-layout"><aside id="standalone" class="sds-sidebar">${content}</aside><main>Content</main></div>
+        <div class="sds-app" data-sds-variant="application"><div class="sds-app-layout"><aside id="application" class="sds-sidebar" popover="auto">${content}</aside><main>Content</main></div></div>`, scheme)
+      const standalone = page.locator('#standalone')
+      const application = page.locator('#application')
+      if (width <= 1024) await application.evaluate(element => element.showPopover())
+      await expect(standalone).toHaveCSS('padding', '0px')
+      await expect(application).toHaveCSS('padding', '0px')
+      const styles = async sidebar => sidebar.evaluate(element => {
+        const properties = ['display', 'box-sizing', 'font-family', 'font-size', 'font-weight', 'line-height', 'color', 'background-color', 'min-height', 'padding', 'margin', 'border-width', 'border-color', 'border-radius', 'gap', 'align-items', 'text-align', 'text-decoration-line', 'opacity']
+        return [...element.querySelectorAll('header, nav, footer, nav a, nav button, nav summary, nav ul')].map(item => {
+          const style = getComputedStyle(item)
+          const marker = getComputedStyle(item, '::after')
+          return {
+            style: Object.fromEntries(properties.map(property => [property, style.getPropertyValue(property)])),
+            marker: { content: marker.content, transform: marker.transform, color: marker.color },
+          }
+        })
+      })
+      for (const density of ['default', 'compact']) {
+        for (const sidebar of [standalone, application]) {
+          await sidebar.evaluate((element, density) => {
+            if (density === 'compact') element.dataset.sdsDensity = density
+            else element.removeAttribute('data-sds-density')
+          }, density)
+          await expect(sidebar).toHaveCSS('font-size', density === 'compact' ? '14px' : '16px')
+        }
+        for (const current of ['page', 'location']) {
+          for (const open of [false, true]) {
+            for (const sidebar of [standalone, application]) {
+              await sidebar.locator('details').last().evaluate((element, { current, open }) => {
+                element.open = open
+                element.querySelector('a').setAttribute('aria-current', current)
+              }, { current, open })
+            }
+            await expect.poll(() => styles(standalone)).toEqual(await styles(application))
+          }
+        }
+      }
+      if (width > 1024) {
+        for (const role of ['link', 'button']) {
+          const name = role === 'link' ? 'Overview' : 'Action'
+          const left = standalone.getByRole(role, { name, exact: true })
+          const right = application.getByRole(role, { name, exact: true })
+          await left.hover()
+          const hovered = await left.evaluate(element => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }))
+          await right.hover()
+          expect(await right.evaluate(element => ({ color: getComputedStyle(element).color, background: getComputedStyle(element).backgroundColor }))).toEqual(hovered)
+        }
+      }
+    })
+  }
+}
+
+test('standalone and application sidebar items share semibold text without changing editorial variants', async ({ page }) => {
+  await page.goto('/')
+  await page.evaluate(() => {
+    const wrapper = document.createElement('div')
+    wrapper.className = 'sds-app'
+    wrapper.dataset.sdsVariant = 'application'
+    wrapper.innerHTML = ['standalone', 'application', 'default', 'documentation', 'simple', 'brochure'].map(variant => `
+      <div class="${variant === 'standalone' ? 'sds-sidebar-layout' : 'sds-app'}" id="sidebar-weight-${variant}" ${['standalone', 'default'].includes(variant) ? '' : `data-sds-variant="${variant}"`}>
+        ${variant === 'standalone' ? '' : '<div class="sds-app-layout">'}<aside class="sds-sidebar"><nav><ul>
+          <li><a href="#">Unselected</a></li><li><a href="#" aria-current="page">Selected</a></li>
+          <li><button type="button">Action</button></li>
+          <li><details open><summary>Group</summary><ul><li><a href="#">Nested item</a></li></ul></details></li>
+          <li><details><summary>Selected group</summary><ul><li><a href="#" aria-current="page">Selected child</a></li></ul></details></li>
+        </ul></nav></aside>${variant === 'standalone' ? '' : '</div>'}
+      </div>`).join('')
+    document.body.append(wrapper)
+  })
+  for (const scheme of ['light', 'dark']) {
+    await page.locator('body').evaluate((element, value) => { element.dataset.sdsColorScheme = value }, scheme)
+    for (const variant of ['standalone', 'application', 'default', 'documentation', 'simple', 'brochure']) {
+      const sidebar = page.locator(`#sidebar-weight-${variant} .sds-sidebar`)
+      const application = ['standalone', 'application', 'default'].includes(variant)
+      const color = await sidebar.evaluate((element, isApplication) => {
+        const probe = document.createElement('span')
+        probe.style.color = isApplication
+          ? 'color-mix(in srgb, var(--sds-color-text-muted) 75%, var(--sds-color-text-default))'
+          : 'var(--sds-color-text-muted)'
+        element.append(probe)
+        const result = getComputedStyle(probe).color
+        probe.remove()
+        return result
+      }, application)
+      for (const item of await sidebar.locator('a:not([aria-current]), button, summary').all()) {
+        await expect(item).toHaveCSS('font-weight', application ? '600' : '400')
+        if (await item.evaluate(element => !element.matches('summary:has(+ ul [aria-current])'))) {
+          await expect(item).toHaveCSS('color', color)
+        }
+      }
+      for (const item of await sidebar.locator('a[aria-current]').all()) {
+        await expect(item).toHaveCSS('font-weight', variant === 'documentation' ? '400' : '600')
+      }
+    }
+  }
+})
+
 test('table density changes body rows without resizing headers or footers', async ({ page }) => {
   await page.goto('/#patterns')
   const table = page.locator('[data-copy-example="dashboard"] .sds-table')
@@ -998,6 +1983,7 @@ test('embedded captioned tables join caption and body borders without an outer o
 for (const theme of ['forge', 'plaid']) {
   for (const scheme of ['light', 'dark']) {
     test(`standalone table card frame paints continuous edges in ${theme} ${scheme}`, async ({ page }, testInfo) => {
+      test.setTimeout(30_000)
       await page.emulateMedia({ reducedMotion: 'reduce' })
       await page.goto('/#content')
       await page.locator('[data-sds-root]').first().evaluate((element, values) => {
@@ -1425,6 +2411,9 @@ test('component and layout size presets map to their documented dimensions', asy
   page,
 }) => {
   await page.goto('/')
+  await page.locator('.sds-datapoint[data-sds-size="xl"]').first().evaluate(element => {
+    element.style.inlineSize = '600px'
+  })
 
   const dimensions = await page.evaluate(() => {
     const style = (selector) => getComputedStyle(document.querySelector(selector))
@@ -1803,6 +2792,23 @@ test('card insets stay fixed while toaster edge spacing scales fluidly', async (
   expect(await spacingAt(1440)).toEqual({ card: '24px', toaster: '24px' })
 })
 
+test('datapoints keep long monetary values inside narrow tiles', async ({ page }) => {
+  await page.goto('/')
+  const datapoint = page.locator('.sds-datapoint').first()
+  await datapoint.evaluate(element => {
+    element.style.inlineSize = '160px'
+    element.style.boxSizing = 'content-box'
+    element.querySelector('strong').textContent = '$123,456.78'
+  })
+  for (const size of ['sm', 'md', 'lg', 'xl']) {
+    await datapoint.evaluate((element, size) => { element.dataset.sdsSize = size }, size)
+    await expect.poll(() => datapoint.evaluate(element => {
+      const value = element.querySelector('strong')
+      return value.scrollWidth <= value.clientWidth && element.scrollWidth <= element.clientWidth
+    })).toBe(true)
+  }
+})
+
 test('badges keep their intrinsic height inside grids', async ({ page }) => {
   await page.goto('/')
   await page.locator('#getting-started > details > summary').click()
@@ -1973,8 +2979,8 @@ test('section anchors remain visible below the application navigation', async ({
   }
 })
 
-test('mobile application navigation stays pinned while page titles scroll away at every viewport', async ({ page }) => {
-  for (const width of [390, 768, 1024, 1440]) {
+for (const width of [390, 768, 1024, 1440]) {
+  test(`mobile application navigation stays pinned while page titles scroll away at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 })
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/')
@@ -1986,7 +2992,7 @@ test('mobile application navigation stays pinned while page titles scroll away a
       .toBeLessThan(0)
     if (width > 1024) {
       await expect(shellHeader).toBeHidden()
-      continue
+      return
     }
     await expect.poll(() => shellHeader.evaluate(element => element.getBoundingClientRect().top))
       .toBeCloseTo(0, 1)
@@ -1999,8 +3005,8 @@ test('mobile application navigation stays pinned while page titles scroll away a
     await expect(sidebar).toBeHidden()
     await expect(menu).toBeFocused()
     await expect(menu).toBeInViewport()
-  }
-})
+  })
+}
 
 test('section anchors scroll the page without moving the desktop sidebar', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })

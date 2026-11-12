@@ -1,4 +1,4 @@
-//#region src/elements/floating.ts
+// src/elements/floating.ts
 var e = [
 	"top",
 	"right",
@@ -149,22 +149,16 @@ var f = class {
 		this.openTimer !== null && clearTimeout(this.openTimer), this.closeTimer !== null && clearTimeout(this.closeTimer), this.openTimer = null, this.closeTimer = null;
 	}
 	show() {
-		this.openTimer = null, !this.isOpen() && (this.positioner.reset(), this.surface.showPopover(), this.positioner.position());
+		this.openTimer = null, this.isOpen() || (this.positioner.reset(), this.surface.showPopover(), this.positioner.position());
 	}
 	scheduleOpen(e) {
-		if (this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, !(this.isOpen() || this.openTimer !== null)) {
-			if (e === 0) {
-				this.show();
-				return;
-			}
-			this.openTimer = setTimeout(() => this.show(), e);
-		}
+		this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, this.isOpen() || this.openTimer !== null || (e === 0 ? this.show() : this.openTimer = setTimeout(() => this.show(), e));
 	}
 	scheduleClose() {
 		this.openTimer !== null && clearTimeout(this.openTimer), this.openTimer = null, this.isOpen() && this.closeTimer === null && (this.closeTimer = setTimeout(() => {
 			this.closeTimer = null;
 			let e = document.activeElement;
-			!this.pointerInside && !this.anchor.contains(e) && !this.surface.contains(e) && this.surface.hidePopover();
+			this.pointerInside || this.anchor.contains(e) || this.surface.contains(e) || this.surface.hidePopover();
 		}, this.closeDelay));
 	}
 	handlePointerEnter = () => {
@@ -186,7 +180,9 @@ var f = class {
 		this.isOpen() ? this.positioner.position() : this.positioner.reset();
 	};
 	handleKeydown = (e) => {
-		e.key === "Escape" && this.isOpen() && (e.preventDefault(), this.clearTimers(), this.surface.hidePopover());
+		if (e.key !== "Escape") return;
+		let t = this.isOpen();
+		this.clearTimers(), t && (e.preventDefault(), this.surface.hidePopover());
 	};
 }, m = 0;
 function h(e, t) {
@@ -235,8 +231,7 @@ function C(e, t) {
 	if (n && n !== t) throw Error(`Cannot register ${e}: another constructor already uses that name.`);
 	n || customElements.define(e, t);
 }
-//#endregion
-//#region src/elements/combobox.ts
+// src/elements/combobox.ts
 var ee = typeof HTMLElement > "u" ? class {} : HTMLElement, te = class extends ee {
 	input = null;
 	list = null;
@@ -258,7 +253,7 @@ var ee = typeof HTMLElement > "u" ? class {} : HTMLElement, te = class extends e
 			console.warn("<sds-combobox> requires a direct child text or search input, a direct child ul with li options, and optionally one output for empty results.");
 			return;
 		}
-		!n.labels?.length && !n.hasAttribute("aria-label") && !n.hasAttribute("aria-labelledby") && console.warn("<sds-combobox> requires an accessible name on its input."), h(n, "sds-combobox-input");
+		n.labels?.length || n.hasAttribute("aria-label") || n.hasAttribute("aria-labelledby") || console.warn("<sds-combobox> requires an accessible name on its input."), h(n, "sds-combobox-input");
 		let a = h(r, "sds-combobox-list");
 		n.setAttribute("role", "combobox"), n.setAttribute("aria-autocomplete", "list"), n.setAttribute("aria-controls", a), n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant"), r.classList.add("sds-combobox-list"), r.setAttribute("role", "listbox"), r.setAttribute("popover", "manual"), r.hidden = !0, this.input = n, this.list = r, this.emptyStatus = i ?? null, this.positioner = new f(n, r, () => "block-end-start", () => void 0), i && (this.emptyPositioner = new f(n, i, () => "block-end-start", () => void 0)), this.refreshOptions(), n.addEventListener("focus", this.handleFocus, { signal: e }), n.addEventListener("input", this.handleInput, { signal: e }), n.addEventListener("compositionend", this.handleCompositionEnd, { signal: e }), n.addEventListener("keydown", this.handleKeydown, { signal: e }), n.addEventListener("blur", this.handleBlur, { signal: e }), r.addEventListener("mousedown", this.handleMouseDown, { signal: e }), r.addEventListener("click", this.handleClick, { signal: e }), n.form?.addEventListener("reset", this.handleFormReset, { signal: e }), window.addEventListener("resize", this.handleReposition, { signal: e }), window.addEventListener("scroll", this.handleReposition, {
 			capture: !0,
@@ -303,11 +298,7 @@ var ee = typeof HTMLElement > "u" ? class {} : HTMLElement, te = class extends e
 	updateEmptyStatus() {
 		if (!this.emptyStatus || !this.input || !this.list) return;
 		let e = !this.suppressOpen && !this.input.disabled && !this.input.readOnly && document.activeElement === this.input && this.input.value.trim() !== "" && this.list.getAttribute("aria-busy") !== "true" && this.options.every((e) => e.hidden) ? this.emptyStatus.getAttribute("data-empty-message")?.trim() || "No results found." : "";
-		if (!e) {
-			this.clearEmptyStatus();
-			return;
-		}
-		this.emptyStatus.textContent !== e && (this.emptyStatus.textContent = e), this.emptyStatus.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.emptyPositioner?.position();
+		e ? (this.emptyStatus.textContent !== e && (this.emptyStatus.textContent = e), this.emptyStatus.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.emptyPositioner?.position()) : this.clearEmptyStatus();
 	}
 	updateMatches() {
 		if (this.input && this.list) {
@@ -315,11 +306,7 @@ var ee = typeof HTMLElement > "u" ? class {} : HTMLElement, te = class extends e
 				let e = (this.matchQuery ?? this.input.value).trim().toLocaleLowerCase();
 				for (let t of this.options) t.hidden = !t.textContent?.toLocaleLowerCase().includes(e);
 			}
-			if (this.emptyStatus && queueMicrotask(() => this.updateEmptyStatus()), this.activeOption && !this.selectableOptions().includes(this.activeOption) && this.setActive(null), !(!this.suppressOpen && !this.input.disabled && !this.input.readOnly && this.selectableOptions().length > 0 && document.activeElement === this.input)) {
-				this.close();
-				return;
-			}
-			this.list.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.list.matches(":popover-open") || (this.list.hidden = !1, this.positioner?.reset(), this.list.showPopover()), this.positioner?.position(), this.input.setAttribute("aria-expanded", "true");
+			this.emptyStatus && queueMicrotask(() => this.updateEmptyStatus()), this.activeOption && !this.selectableOptions().includes(this.activeOption) && this.setActive(null), !this.suppressOpen && !this.input.disabled && !this.input.readOnly && this.selectableOptions().length > 0 && document.activeElement === this.input ? (this.list.style.minWidth = `${this.input.getBoundingClientRect().width}px`, this.list.matches(":popover-open") || (this.list.hidden = !1, this.positioner?.reset(), this.list.showPopover()), this.positioner?.position(), this.input.setAttribute("aria-expanded", "true")) : this.close();
 		}
 	}
 	select(e) {
@@ -393,11 +380,10 @@ var ee = typeof HTMLElement > "u" ? class {} : HTMLElement, te = class extends e
 function w() {
 	C("sds-combobox", te);
 }
-//#endregion
-//#region src/elements/dialog.ts
+// src/elements/dialog.ts
 var T = !1, E = 6, D = 48, ne = 12, O = 80, re = 180, k = null, A = /* @__PURE__ */ new WeakMap(), j = /* @__PURE__ */ new WeakMap();
 function ie(e) {
-	let t = e.getAttribute("commandfor");
+	let t = e.getAttribute("commandfor") ?? (e.getAttribute("aria-haspopup") === "dialog" ? e.getAttribute("aria-controls") : null);
 	if (t) {
 		let e = document.getElementById(t);
 		return e instanceof HTMLDialogElement && e.matches(".sds-dialog, .sds-panel") ? e : null;
@@ -546,20 +532,22 @@ function U(e) {
 	for (let t of e.querySelectorAll("dialog.sds-panel")) H(t);
 }
 function W(e) {
-	if (!(e.target instanceof Element)) return;
-	let t = e.target.closest("[commandfor], dialog.sds-dialog [command], dialog.sds-panel [command]");
+	if (e.defaultPrevented || !(e.target instanceof Element)) return;
+	let t = e.target.closest("[commandfor], a[aria-haspopup=\"dialog\"][aria-controls], dialog.sds-dialog [command], dialog.sds-panel [command]");
 	if (t) {
-		let n = ie(t);
-		if (!n) return;
-		let r = t.getAttribute("command");
-		if ((r === "show-modal" || r === "close" || r === "request-close") && e.preventDefault(), r === "show-modal") ae(n, !0);
-		else if (r === "close") n.close(t.getAttribute("data-sds-return-value") ?? "");
-		else if (r === "request-close") {
-			let e = Reflect.get(n, "requestClose");
-			if (typeof e == "function") e.call(n, t.getAttribute("data-sds-return-value") ?? "");
+		let n = t.matches("a[href][aria-haspopup=\"dialog\"]");
+		if (n && (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) return;
+		let r = ie(t);
+		if (!r) return;
+		let i = t.getAttribute("command") ?? (n ? "show-modal" : null);
+		if ((i === "show-modal" || i === "close" || i === "request-close") && e.preventDefault(), i === "show-modal") n && t.focus({ preventScroll: !0 }), ae(r, !0);
+		else if (i === "close") r.close(t.getAttribute("data-sds-return-value") ?? "");
+		else if (i === "request-close") {
+			let e = Reflect.get(r, "requestClose");
+			if (typeof e == "function") e.call(r, t.getAttribute("data-sds-return-value") ?? "");
 			else {
 				let e = new Event("cancel", { cancelable: !0 });
-				n.dispatchEvent(e) && n.close(t.getAttribute("data-sds-return-value") ?? "");
+				r.dispatchEvent(e) && r.close(t.getAttribute("data-sds-return-value") ?? "");
 			}
 		}
 		return;
@@ -594,8 +582,7 @@ function G() {
 		subtree: !0
 	});
 }
-//#endregion
-//#region src/elements/dropdown.ts
+// src/elements/dropdown.ts
 var K = typeof HTMLElement > "u" ? class {} : HTMLElement, ce = class extends K {
 	static observedAttributes = [
 		"open",
@@ -652,41 +639,23 @@ var K = typeof HTMLElement > "u" ? class {} : HTMLElement, ce = class extends K 
 		this.connection.disconnect(), this.positioner = null, this.trigger = null, this.menu = null, this.items = [];
 	}
 	attributeChangedCallback(e, t, n) {
-		if (t !== n && this.isConnected) {
-			if (e === "open") {
-				n === null ? this.hide() : this.show();
-				return;
-			}
-			this.isSurfaceOpen() && (this.positioner?.reset(), this.positioner?.position());
-		}
+		t !== n && this.isConnected && (e === "open" ? n === null ? this.hide() : this.show() : this.isSurfaceOpen() && (this.positioner?.reset(), this.positioner?.position()));
 	}
 	show() {
-		if (!this.menu) {
-			this.open = !0;
-			return;
-		}
-		this.isSurfaceOpen() || (this.collectItems(), this.positioner?.reset(), this.menu.showPopover(), this.positioner?.position());
+		this.menu ? this.isSurfaceOpen() || (this.collectItems(), this.positioner?.reset(), this.menu.showPopover(), this.positioner?.position()) : this.open = !0;
 	}
 	hide() {
-		if (!this.menu) {
-			this.open = !1;
-			return;
-		}
-		this.isSurfaceOpen() && this.menu.hidePopover();
+		this.menu ? this.isSurfaceOpen() && this.menu.hidePopover() : this.open = !1;
 	}
 	isSurfaceOpen() {
 		return this.menu?.matches(":popover-open") ?? !1;
 	}
 	collectItems() {
-		if (!this.menu) {
-			this.items = [];
-			return;
+		if (!this.menu) this.items = [];
+		else {
+			for (let e of this.menu.querySelectorAll(":scope > li")) e.hasAttribute("role") || e.setAttribute("role", "none");
+			this.items = Array.from(this.menu.querySelectorAll("button, a[href], [role=\"menuitem\"]")).filter((e) => !e.closest("[role=\"menuitem\"] [role=\"menuitem\"]")).map((e) => (e.setAttribute("role", "menuitem"), e.tabIndex = -1, e)).filter((e) => !e.closest("[hidden], [inert]") && (!(e instanceof HTMLButtonElement) || !e.matches(":disabled")));
 		}
-		for (let e of this.menu.querySelectorAll(":scope > li")) e.hasAttribute("role") || e.setAttribute("role", "none");
-		this.items = Array.from(this.menu.querySelectorAll("button, a[href], [role=\"menuitem\"]")).filter((e) => !e.closest("[role=\"menuitem\"] [role=\"menuitem\"]")).map((e) => (e.setAttribute("role", "menuitem"), e.tabIndex = -1, e)).filter((e) => !(e instanceof HTMLButtonElement) || !e.disabled);
-	}
-	showAndFocus(e = 0) {
-		this.show(), this.items[e]?.focus();
 	}
 	hideAndRestoreFocus() {
 		this.hide(), this.trigger?.focus();
@@ -703,8 +672,10 @@ var K = typeof HTMLElement > "u" ? class {} : HTMLElement, ce = class extends K 
 		e.newState === "open" && (this.collectItems(), this.positioner?.reset()), this.trigger?.setAttribute("aria-expanded", String(e.newState === "open"));
 	};
 	handleTriggerKeydown = (e) => {
+		if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "Enter" && e.key !== " ") return;
+		e.preventDefault(), this.show(), this.collectItems();
 		let t = e.key === "ArrowUp" ? this.items.length - 1 : 0;
-		(e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") && (e.preventDefault(), this.isSurfaceOpen() ? this.items[t]?.focus() : this.showAndFocus(t));
+		this.items[t]?.focus();
 	};
 	handleMenuKeydown = (e) => {
 		this.collectItems();
@@ -722,20 +693,13 @@ var K = typeof HTMLElement > "u" ? class {} : HTMLElement, ce = class extends K 
 	handleMenuClick = (e) => {
 		if (!(e.target instanceof Element)) return;
 		let t = e.target.closest("[role=\"menuitem\"]");
-		if (t) {
-			if (t.getAttribute("aria-disabled") === "true" || t instanceof HTMLButtonElement && t.disabled) {
-				e.preventDefault();
-				return;
-			}
-			this.hide();
-		}
+		t && (t.getAttribute("aria-disabled") === "true" || t instanceof HTMLButtonElement && t.disabled ? e.preventDefault() : this.hide());
 	};
 };
 function le() {
 	C("sds-dropdown", ce);
 }
-//#endregion
-//#region src/elements/popover.ts
+// src/elements/popover.ts
 var ue = typeof HTMLElement > "u" ? class {} : HTMLElement, de = class extends ue {
 	static observedAttributes = [
 		"open",
@@ -788,27 +752,13 @@ var ue = typeof HTMLElement > "u" ? class {} : HTMLElement, de = class extends u
 		this.connection.disconnect(), this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
 	}
 	attributeChangedCallback(e, t, n) {
-		if (t !== n && this.isConnected) {
-			if (e === "open") {
-				n === null ? this.hide() : this.show();
-				return;
-			}
-			this.content?.matches(":popover-open") && (this.positioner?.reset(), this.positioner?.position());
-		}
+		t !== n && this.isConnected && (e === "open" ? n === null ? this.hide() : this.show() : this.content?.matches(":popover-open") && (this.positioner?.reset(), this.positioner?.position()));
 	}
 	show() {
-		if (!this.content) {
-			this.open = !0;
-			return;
-		}
-		this.content.matches(":popover-open") || this.content.showPopover();
+		this.content ? this.content.matches(":popover-open") || this.content.showPopover() : this.open = !0;
 	}
 	hide() {
-		if (!this.content) {
-			this.open = !1;
-			return;
-		}
-		this.content.matches(":popover-open") && this.content.hidePopover();
+		this.content ? this.content.matches(":popover-open") && this.content.hidePopover() : this.open = !1;
 	}
 	handleToggle = () => {
 		let e = this.content?.matches(":popover-open") ?? !1;
@@ -822,8 +772,7 @@ var ue = typeof HTMLElement > "u" ? class {} : HTMLElement, de = class extends u
 function fe() {
 	C("sds-popover", de);
 }
-//#endregion
-//#region src/elements/sidebar.ts
+// src/elements/sidebar.ts
 var q = !1, J = /* @__PURE__ */ new WeakMap();
 function Y(e) {
 	let t = J.get(e);
@@ -838,8 +787,7 @@ function pe() {
 		e.propertyName === "transform" && e.target instanceof HTMLElement && e.target.matches(".sds-sidebar[sds-closing]") && Y(e.target);
 	}, !0));
 }
-//#endregion
-//#region src/elements/tabs.ts
+// src/elements/tabs.ts
 var me = "sds-change", he = typeof HTMLElement > "u" ? class {} : HTMLElement, ge = class extends he {
 	static observedAttributes = ["value", "orientation"];
 	tabs = [];
@@ -990,8 +938,7 @@ var me = "sds-change", he = typeof HTMLElement > "u" ? class {} : HTMLElement, g
 function _e() {
 	C("sds-tabs", ge);
 }
-//#endregion
-//#region src/elements/tooltip.ts
+// src/elements/tooltip.ts
 var ve = typeof HTMLElement > "u" ? class {} : HTMLElement, ye = class extends ve {
 	static observedAttributes = [
 		"placement",
@@ -1043,8 +990,7 @@ var ve = typeof HTMLElement > "u" ? class {} : HTMLElement, ye = class extends v
 function be() {
 	C("sds-tooltip", ye);
 }
-//#endregion
-//#region src/elements/toast.ts
+// src/elements/toast.ts
 var X = 5e3, xe = 250, Se = typeof HTMLElement > "u" ? class {} : HTMLElement, Z = class extends Se {
 	static observedAttributes = [
 		"open",
@@ -1088,14 +1034,10 @@ var X = 5e3, xe = 250, Se = typeof HTMLElement > "u" ? class {} : HTMLElement, Z
 		t !== n && this.isConnected && (e === "open" && n === null ? this.clearAutoHide() : this.open && this.scheduleAutoHide());
 	}
 	show() {
-		if (this.open) {
-			this.scheduleAutoHide();
-			return;
-		}
-		this.open = !0, this.dispatchEvent(new CustomEvent("sds-open", {
+		this.open ? this.scheduleAutoHide() : (this.open = !0, this.dispatchEvent(new CustomEvent("sds-open", {
 			bubbles: !0,
 			composed: !0
-		}));
+		})));
 	}
 	close(e = "programmatic") {
 		this.open && (this.open = !1, this.dispatchEvent(new CustomEvent("sds-close", {
@@ -1120,7 +1062,7 @@ var X = 5e3, xe = 250, Se = typeof HTMLElement > "u" ? class {} : HTMLElement, Z
 		!this.matches(":hover") && !this.contains(document.activeElement) && this.scheduleAutoHide();
 	};
 	handleFocusOut = (e) => {
-		(!(e.relatedTarget instanceof Node) || !this.contains(e.relatedTarget)) && this.resumeAutoHide();
+		e.relatedTarget instanceof Node && this.contains(e.relatedTarget) || this.resumeAutoHide();
 	};
 }, Q = !1;
 function Ce() {
@@ -1154,13 +1096,10 @@ function we(e, t = {}) {
 	let s = document.createElement("button");
 	return s.type = "button", s.className = "sds-button", s.setAttribute("data-sds-shape", "icon"), s.setAttribute("data-sds-toast-close", ""), s.setAttribute("aria-label", t.dismissLabel ?? "Dismiss notification"), s.textContent = "×", i.append(a, o, s), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), xe), { once: !0 }), r.append(i), i.show(), i;
 }
-//#endregion
-//#region src/sds.ts
+// src/sds.ts
 function Te() {
 	w(), G(), le(), fe(), pe(), _e(), $(), be();
 }
-//#endregion
-//#region src/auto.ts
+// src/auto.ts
 Te();
-//#endregion
 export { we as notify };

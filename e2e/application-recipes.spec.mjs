@@ -282,6 +282,93 @@ test('input actions preserve values, dispatch edits, reset concealment, and repo
   await expect(form.getByRole('button', { name: 'Show password', exact: true })).toHaveAttribute('aria-pressed', 'false')
 })
 
+test('clipboard input actions show a temporary copied state and reset safely', async ({ page }) => {
+  await page.clock.install()
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: {
+      writeText: async value => { window.copiedValue = value },
+    } })
+  })
+  const form = page.locator('#input-actions-example')
+  const button = form.locator('[data-copy-value]')
+  const original = await button.innerHTML()
+  await button.click()
+  await expect(button).toHaveAccessibleName('Copied URL')
+  await expect(form.getByRole('status')).toHaveText('Project URL copied.')
+  expect(await page.evaluate(() => window.copiedValue)).toBe(await form.locator('input[readonly]').inputValue())
+  expect(await button.innerHTML()).not.toBe(original)
+  await page.clock.fastForward(2000)
+  await expect(button).toHaveAccessibleName('Copy URL')
+  expect(await button.innerHTML()).toBe(original)
+  await button.click()
+  await expect(button).toHaveAccessibleName('Copied URL')
+  await form.getByRole('button', { name: 'Reset fields' }).click()
+  await page.clock.runFor(1)
+  await expect(button).toHaveAccessibleName('Copy URL')
+})
+
+test('native submit-once preserves submitter values, blocks repeats, and restores on pageshow', async ({ page }) => {
+  await page.goto('/docs/examples/input-actions.html')
+  const submissions = []
+  await page.route('**/submit-once-target', async route => {
+    submissions.push(route.request().postData())
+    await route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Saved</title><p>Saved</p>' })
+  })
+  await page.evaluate(async () => {
+    const form = document.createElement('form')
+    form.id = 'submit-once-example'
+    form.method = 'post'
+    form.action = '/submit-once-target'
+    form.target = 'submit-once-result'
+    form.innerHTML = '<label>Entry<input class="sds-input" name="entry" required value="Atlas"></label><button class="sds-button" type="submit" name="intent" value="save">Save</button>'
+    const frame = document.createElement('iframe')
+    frame.name = 'submit-once-result'
+    frame.hidden = true
+    document.querySelector('main').append(form, frame)
+    const { setupSubmitOnce } = await import('/docs/examples/submit-once.js')
+    setupSubmitOnce(form)
+    setupSubmitOnce(form)
+    form.requestSubmit(form.querySelector('button'))
+    form.requestSubmit(form.querySelector('button'))
+  })
+  const form = page.locator('#submit-once-example')
+  await expect(form).toHaveAttribute('aria-busy', 'true')
+  await expect(form.locator('.sds-spinner')).toHaveCount(1)
+  await expect(form.locator('button')).not.toBeDisabled()
+  await expect.poll(() => submissions.length).toBe(1)
+  expect(new URLSearchParams(submissions[0]).get('intent')).toBe('save')
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })))
+  await expect(form).not.toHaveAttribute('aria-busy')
+  await expect(form.locator('.sds-spinner')).toHaveCount(0)
+  await expect(form.locator('button')).not.toHaveAttribute('aria-busy')
+  await form.evaluate(element => { element.requestSubmit(element.querySelector('button')) })
+  await expect.poll(() => submissions.length).toBe(2)
+})
+
+test('submit-once leaves validation and canceled submissions retryable', async ({ page }) => {
+  const state = await page.evaluate(async () => {
+    const form = document.createElement('form')
+    form.innerHTML = '<input class="sds-input" name="entry" required><button class="sds-button" type="submit">Save</button>'
+    document.querySelector('main').append(form)
+    const { setupSubmitOnce } = await import('/docs/examples/submit-once.js')
+    setupSubmitOnce(form)
+    let attempts = 0
+    form.addEventListener('submit', event => {
+      attempts += 1
+      event.preventDefault()
+    })
+    form.requestSubmit()
+    const invalidAttempts = attempts
+    form.querySelector('input').value = 'Atlas'
+    form.requestSubmit()
+    await Promise.resolve()
+    form.requestSubmit()
+    await Promise.resolve()
+    return { invalidAttempts, attempts, busy: form.hasAttribute('aria-busy'), spinners: form.querySelectorAll('.sds-spinner').length }
+  })
+  expect(state).toEqual({ invalidAttempts: 0, attempts: 2, busy: false, spinners: 0 })
+})
+
 test('embedded icons and actions share one field border and preserve input and button focus', async ({ page }) => {
   const fields = page.locator('#input-actions-example .sds-input-group, #table-selection-example .sds-input-group')
   await expect(fields).toHaveCount(4)
@@ -427,7 +514,7 @@ test('upload queue uses the shared drop zone and opens the native picker from it
   const point = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 }
   expect(await input.evaluate((element, point) => document.elementFromPoint(point.x, point.y) === element, point)).toBe(true)
   const chooser = page.waitForEvent('filechooser')
-  await page.mouse.click(point.x, point.y)
+  await input.click()
   await (await chooser).setFiles({
     name: 'surface.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-example'),
   })
@@ -562,7 +649,7 @@ test('catalog searches familiar names and copied recipes run with their JavaScri
       writeText: async text => { window.copiedRecipe = text },
     } })
   })
-  await page.getByRole('button', { name: 'Copy multiple-selection form HTML + JavaScript', exact: true }).click()
+  await page.getByRole('button', { name: 'Copy HTML + JS: multiple-selection form', exact: true }).click()
   const copied = await page.evaluate(() => window.copiedRecipe)
   expect(copied).toContain('<script type="module">')
   expect(copied).toContain("new FormData(form).getAll('topic')")
@@ -656,7 +743,7 @@ test('all six application recipes export executable, self-contained HTML and Jav
         writeText: async text => { window.copiedRecipe = text },
       } })
     })
-    await page.getByRole('button', { name: `Copy ${name.toLowerCase()} HTML + JavaScript`, exact: true }).click()
+    await page.getByRole('button', { name: `Copy HTML + JS: ${name.toLowerCase()}`, exact: true }).click()
     const copied = await page.evaluate(() => window.copiedRecipe)
     expect(copied).toContain('<script type="module">')
     const errors = []

@@ -1,5 +1,5 @@
-import { a as e, i as t, l as n, n as r, r as i, t as a } from "./internals-CEyyQZKd.js";
-//#region src/elements/tabs.ts
+import { a as e, i as t, l as n, n as r, r as i, t as a } from "./internals-LhR95Qm6.js";
+// src/elements/tabs.ts
 var o = "sds-change", s = typeof HTMLElement > "u" ? class {} : HTMLElement, c = class extends s {
 	static observedAttributes = ["value", "orientation"];
 	tabs = [];
@@ -150,5 +150,4 @@ var o = "sds-change", s = typeof HTMLElement > "u" ? class {} : HTMLElement, c =
 function l() {
 	i("sds-tabs", c);
 }
-//#endregion
 export { c as SdsTabsElement, l as registerSdsTabs };

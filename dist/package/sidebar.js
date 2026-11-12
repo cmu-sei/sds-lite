@@ -1,4 +1,4 @@
-//#region src/elements/sidebar.ts
+// src/elements/sidebar.ts
 var e = !1, t = /* @__PURE__ */ new WeakMap();
 function n(e) {
 	let n = t.get(e);
@@ -13,5 +13,4 @@ function r() {
 		e.propertyName === "transform" && e.target instanceof HTMLElement && e.target.matches(".sds-sidebar[sds-closing]") && n(e.target);
 	}, !0));
 }
-//#endregion
 export { r as registerSdsSidebar };

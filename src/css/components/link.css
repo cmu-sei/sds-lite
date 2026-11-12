@@ -39,7 +39,10 @@
     transition-timing-function: linear;
   }
 
-  :where(.sds-link[data-sds-variant="cta"])::after {
+  :where(
+    .sds-link[data-sds-variant="cta"],
+    .sds-dropdown-menu a[role="menuitem"][data-sds-variant="cta"]
+  )::after {
     display: inline-block;
     inline-size: 0.5rem;
     block-size: 0.5rem;
@@ -83,7 +86,10 @@
       text-decoration: underline;
     }
 
-    :where(.sds-link[data-sds-variant="cta"]:hover)::after {
+    :where(
+      .sds-link[data-sds-variant="cta"]:hover,
+      .sds-dropdown-menu a[role="menuitem"][data-sds-variant="cta"]:hover
+    )::after {
       transform: translate(0.125rem, -0.0625rem) rotate(45deg);
     }
   }

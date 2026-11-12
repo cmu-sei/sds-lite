@@ -6,6 +6,7 @@ const packageDirectory = `${distributionDirectory}/package`
 
 const stylesheets = new Map([
   ['brand.css', 'brand.css'],
+  ['documentation.css', 'documentationStyles.css'],
   ['sds.css', 'styles.css'],
 ])
 for (const [filename, sourceFilename] of stylesheets) {

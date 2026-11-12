@@ -1,6 +1,6 @@
 import { FloatingPositioner as e } from "./floating.js";
-import { a as t, c as n, i as r, l as i, n as a, o, r as s, s as c, t as l } from "./internals-CEyyQZKd.js";
-//#region src/elements/dropdown.ts
+import { a as t, c as n, i as r, l as i, n as a, o, r as s, s as c, t as l } from "./internals-LhR95Qm6.js";
+// src/elements/dropdown.ts
 var u = typeof HTMLElement > "u" ? class {} : HTMLElement, d = class extends u {
 	static observedAttributes = [
 		"open",
@@ -57,41 +57,23 @@ var u = typeof HTMLElement > "u" ? class {} : HTMLElement, d = class extends u {
 		this.connection.disconnect(), this.positioner = null, this.trigger = null, this.menu = null, this.items = [];
 	}
 	attributeChangedCallback(e, t, n) {
-		if (t !== n && this.isConnected) {
-			if (e === "open") {
-				n === null ? this.hide() : this.show();
-				return;
-			}
-			this.isSurfaceOpen() && (this.positioner?.reset(), this.positioner?.position());
-		}
+		t !== n && this.isConnected && (e === "open" ? n === null ? this.hide() : this.show() : this.isSurfaceOpen() && (this.positioner?.reset(), this.positioner?.position()));
 	}
 	show() {
-		if (!this.menu) {
-			this.open = !0;
-			return;
-		}
-		this.isSurfaceOpen() || (this.collectItems(), this.positioner?.reset(), this.menu.showPopover(), this.positioner?.position());
+		this.menu ? this.isSurfaceOpen() || (this.collectItems(), this.positioner?.reset(), this.menu.showPopover(), this.positioner?.position()) : this.open = !0;
 	}
 	hide() {
-		if (!this.menu) {
-			this.open = !1;
-			return;
-		}
-		this.isSurfaceOpen() && this.menu.hidePopover();
+		this.menu ? this.isSurfaceOpen() && this.menu.hidePopover() : this.open = !1;
 	}
 	isSurfaceOpen() {
 		return this.menu?.matches(":popover-open") ?? !1;
 	}
 	collectItems() {
-		if (!this.menu) {
-			this.items = [];
-			return;
+		if (!this.menu) this.items = [];
+		else {
+			for (let e of this.menu.querySelectorAll(":scope > li")) e.hasAttribute("role") || e.setAttribute("role", "none");
+			this.items = Array.from(this.menu.querySelectorAll("button, a[href], [role=\"menuitem\"]")).filter((e) => !e.closest("[role=\"menuitem\"] [role=\"menuitem\"]")).map((e) => (e.setAttribute("role", "menuitem"), e.tabIndex = -1, e)).filter((e) => !e.closest("[hidden], [inert]") && (!(e instanceof HTMLButtonElement) || !e.matches(":disabled")));
 		}
-		for (let e of this.menu.querySelectorAll(":scope > li")) e.hasAttribute("role") || e.setAttribute("role", "none");
-		this.items = Array.from(this.menu.querySelectorAll("button, a[href], [role=\"menuitem\"]")).filter((e) => !e.closest("[role=\"menuitem\"] [role=\"menuitem\"]")).map((e) => (e.setAttribute("role", "menuitem"), e.tabIndex = -1, e)).filter((e) => !(e instanceof HTMLButtonElement) || !e.disabled);
-	}
-	showAndFocus(e = 0) {
-		this.show(), this.items[e]?.focus();
 	}
 	hideAndRestoreFocus() {
 		this.hide(), this.trigger?.focus();
@@ -108,8 +90,10 @@ var u = typeof HTMLElement > "u" ? class {} : HTMLElement, d = class extends u {
 		e.newState === "open" && (this.collectItems(), this.positioner?.reset()), this.trigger?.setAttribute("aria-expanded", String(e.newState === "open"));
 	};
 	handleTriggerKeydown = (e) => {
+		if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "Enter" && e.key !== " ") return;
+		e.preventDefault(), this.show(), this.collectItems();
 		let t = e.key === "ArrowUp" ? this.items.length - 1 : 0;
-		(e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") && (e.preventDefault(), this.isSurfaceOpen() ? this.items[t]?.focus() : this.showAndFocus(t));
+		this.items[t]?.focus();
 	};
 	handleMenuKeydown = (e) => {
 		this.collectItems();
@@ -127,17 +111,10 @@ var u = typeof HTMLElement > "u" ? class {} : HTMLElement, d = class extends u {
 	handleMenuClick = (e) => {
 		if (!(e.target instanceof Element)) return;
 		let t = e.target.closest("[role=\"menuitem\"]");
-		if (t) {
-			if (t.getAttribute("aria-disabled") === "true" || t instanceof HTMLButtonElement && t.disabled) {
-				e.preventDefault();
-				return;
-			}
-			this.hide();
-		}
+		t && (t.getAttribute("aria-disabled") === "true" || t instanceof HTMLButtonElement && t.disabled ? e.preventDefault() : this.hide());
 	};
 };
 function f() {
 	s("sds-dropdown", d);
 }
-//#endregion
 export { d as SdsDropdownElement, f as registerSdsDropdown };

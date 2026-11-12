@@ -40,6 +40,11 @@ function registryCommand(args, { allowMissing = false } = {}) {
   return result.stdout
 }
 
+function registryResponse(output) {
+  const result = JSON.parse(output)
+  return Array.isArray(result) && result.length === 1 ? result[0] : result
+}
+
 export async function inspectReleaseArtifact(tarball, packageName, version, isDraft, execute = registryCommand) {
   if (!isAbsolute(tarball)) throw new Error('Release tarball path must be absolute')
   if (!/^@[a-z0-9-]+\/[a-z0-9._-]+$/.test(packageName)) throw new Error('A scoped package name is required')
@@ -47,7 +52,7 @@ export async function inspectReleaseArtifact(tarball, packageName, version, isDr
   if (typeof isDraft !== 'boolean') throw new Error('GitHub release draft state is required')
   const result = execute(['view', `${packageName}@${version}`, 'dist.shasum', '--json'], { allowMissing: true })
   if (result === null) return false
-  const checksum = JSON.parse(result)
+  const checksum = registryResponse(result)
   if (typeof checksum !== 'string' || !/^[a-f0-9]{40}$/i.test(checksum)) {
     throw new Error('Could not verify published package checksum')
   }
@@ -61,12 +66,12 @@ export async function inspectReleaseArtifact(tarball, packageName, version, isDr
 
 export function checkReleaseDistTag(packageName, version, distTag, execute = registryCommand) {
   if (!/^@[a-z0-9-]+\/[a-z0-9._-]+$/.test(packageName)) throw new Error('A scoped package name is required')
-  return resolveReleaseDistTag(version, distTag, JSON.parse(execute(['view', packageName, 'dist-tags', '--json'])))
+  return resolveReleaseDistTag(version, distTag, registryResponse(execute(['view', packageName, 'dist-tags', '--json'])))
 }
 
 export function ensureReleaseDistTag(packageName, version, distTag, execute = registryCommand) {
   if (!/^@[a-z0-9-]+\/[a-z0-9._-]+$/.test(packageName)) throw new Error('A scoped package name is required')
-  const readTags = () => JSON.parse(execute(['view', packageName, 'dist-tags', '--json']))
+  const readTags = () => registryResponse(execute(['view', packageName, 'dist-tags', '--json']))
   if (resolveReleaseDistTag(version, distTag, readTags())) {
     execute(['dist-tag', 'add', `${packageName}@${version}`, distTag])
   }

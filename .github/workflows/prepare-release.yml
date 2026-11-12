@@ -71,7 +71,7 @@ jobs:
           scope: '@cmu-sei'
 
       - name: Use the pinned npm version
-        run: npm install --global npm@11.6.4
+        run: npm install --global npm@12.2.1
 
       - name: Require previous releases to be complete
         env:

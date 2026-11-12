@@ -159,6 +159,174 @@ Application code sorts the rows and moves `aria-sort` to the active column.
 Keep filtering, pagination, and selection as separate controls rather than
 turning a semantic table into an application grid.
 
+## Linked rows and numeric columns
+
+Keep one real link per record. Extend its hit area with application CSS, not
+an `onclick` on the row. The link still supports keyboard activation,
+open-in-new-tab, and the browser's link menu. Keep the table in its normal
+semantic structure:
+
+```html
+<div class="sds-table-container">
+  <table class="sds-table record-table" data-sds-row-highlight>
+    <caption>Travel requests</caption>
+    <thead><tr><th scope="col">Request</th><th scope="col" class="numeric">Amount</th><th scope="col">Actions</th></tr></thead>
+    <tbody>
+      <tr>
+        <th scope="row"><a class="sds-link record-link" href="/requests/42">TR-42</a></th>
+        <td class="numeric">$123,456.78</td>
+        <td><button class="sds-button" type="button" data-sds-variant="text">Export</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+```css
+.record-table tbody tr { position: relative; }
+.record-link::after { position: absolute; inset: 0; content: ""; }
+.record-table td :is(a, button, input, select) { position: relative; z-index: 1; }
+.record-table tr:focus-within { outline: 2px solid var(--sds-color-focus-ring); outline-offset: -2px; }
+.record-table .numeric { text-align: end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.record-table .numeric > button { margin-inline-start: auto; }
+```
+
+Apply `numeric` to both the header and cells of a number or currency column.
+Format values using the application's locale and currency rules; align the
+formatted text without parsing or changing submitted values. The stretched
+link prevents ordinary text selection in the row. Omit it for editable tables
+or tables where copying cell text is the primary workflow. Do not duplicate
+links in every cell or add `role="link"` and `tabindex` to the row.
+
+## Detail lists
+
+Use a native description list for labels and values. The following
+application CSS provides two columns and stacks them based on the list's
+available width, including inside side panels:
+
+```html
+<dl class="record-details">
+  <div><dt>Request</dt><dd>TR-42</dd></div>
+  <div><dt>Requested by</dt><dd>Alex Morgan</dd></div>
+  <div><dt>Total</dt><dd>$123,456.78</dd></div>
+</dl>
+```
+
+```css
+.record-details { container-type: inline-size; margin: 0; }
+.record-details > div { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(0, 2fr); gap: var(--sds-space-sm) var(--sds-space-lg); padding-block: var(--sds-space-sm); }
+.record-details dt { font-weight: 600; }
+.record-details dd { margin: 0; overflow-wrap: anywhere; }
+@container (max-width: 30rem) {
+  .record-details > div { grid-template-columns: minmax(0, 1fr); }
+}
+```
+
+Keep each term before its description. A missing value should have meaningful
+text such as "Not assigned" rather than an empty cell.
+
+## Main content and side panel
+
+Use normal document flow for persistent supplementary information, not
+`.sds-sidebar-layout` (navigation) or `.sds-panel` (a modal drawer).
+The following application layout keeps the main content first on small screens:
+
+```html
+<div class="record-layout">
+  <section class="sds-stack" aria-labelledby="request-title">
+    <h2 id="request-title">Travel request TR-42</h2>
+    <p>Request details and supporting documents.</p>
+  </section>
+  <aside class="sds-stack" aria-labelledby="history-title">
+    <h2 id="history-title">Status history</h2>
+    <ol class="sds-timeline">
+      <li class="sds-timeline-item">Submitted</li>
+      <li class="sds-timeline-item" aria-current="step">In review</li>
+    </ol>
+  </aside>
+</div>
+```
+
+```css
+.record-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(14rem, 1fr); gap: var(--sds-space-xl); }
+.record-layout > * { min-inline-size: 0; }
+@media (max-width: 64rem) {
+  .record-layout { grid-template-columns: minmax(0, 1fr); }
+}
+```
+
+## Account menu and responsive navigation
+
+In a Simple shell, put a primary `<nav><ul>...</ul></nav>` directly in
+`.sds-app-header`. At widths up to `48rem`, it moves to its own scrolling
+row without widening the page. Give the navigation an accessible name.
+
+Use a popover for account information and a native POST form for logout;
+this keeps the form out of an ARIA action menu:
+
+```html
+<sds-popover>
+  <button class="sds-button" type="button" data-sds-variant="text" aria-label="Account: Alex Morgan" popovertarget="account-menu">
+    <span class="sds-avatar" data-sds-size="sm" aria-hidden="true">AM</span>
+    <span class="account-name">Alex Morgan</span>
+  </button>
+  <section id="account-menu" class="sds-popover-content" popover="auto" aria-label="Account">
+    <p>Alex Morgan</p>
+    <form method="post" action="/logout">
+      <button class="sds-button" type="submit" data-sds-variant="text">Log out</button>
+    </form>
+  </section>
+</sds-popover>
+```
+
+```css
+@media (max-width: 30rem) {
+  .account-name { display: none; }
+}
+```
+
+Render the application's CSRF token in the logout form and use its actual
+logout URL. The trigger retains its full accessible name when the visible
+name is hidden. Keep only the initials decorative; do not hide the button
+itself or remove it from the keyboard order.
+
+## Submit once for native forms
+
+Copy [submit-once.js](../examples/submit-once.js) into your application and
+initialize each ordinary server-submitted form after rendering:
+
+```html
+<form id="request-form" class="sds-form" action="/requests" method="post">
+  <div class="sds-field">
+    <label for="request-name">Request name</label>
+    <input id="request-name" class="sds-input" name="name" required>
+  </div>
+  <button class="sds-button" type="submit" name="intent" value="save">Save</button>
+</form>
+```
+
+```js
+import { setupSubmitOnce } from './submit-once.js'
+
+const reset = setupSubmitOnce(document.querySelector('#request-form'))
+```
+
+The recipe ignores repeated submit events, adds an `aria-hidden` spinner,
+marks the form and clicked button busy, and restores them on `pageshow`,
+including Back/Forward cache restoration. Native validation still runs.
+It does not disable the submitter, so its `name` and `value` reach the server.
+A canceled submit remains retryable; `method="dialog"` is left alone.
+Calling setup twice does not add duplicate listeners.
+
+Include your CSRF token. Use this recipe for full-page native submissions;
+AJAX applications should own their pending state and call their own reset
+after success or failure. Call the returned `reset()` after any application
+abort that does not navigate. `form.submit()` bypasses submit events; use
+`requestSubmit()` for programmatic submission. A client guard cannot prevent
+network retries or requests from another tab: use server-side idempotency
+or duplicate validation for important writes. `/auto` deliberately does not
+intercept all forms.
+
 ## Table selection and bulk actions
 
 Copy the [advanced task table](../examples/table-selection.html) and
@@ -208,7 +376,9 @@ automatically scales its icons and action buttons.
 Password visibility preserves the field value and updates a stable
 toggle's `aria-pressed`. Clearing search dispatches a bubbling standard
 `input` event and returns focus. Copying uses the Clipboard API and
-reports failures with a manual-copy alternative.
+shows a checkmark and "Copied URL" accessible label for two seconds,
+then restores the original icon and name. Reset also clears the copied state.
+Failures retain a manual-copy alternative and are announced in the live region.
 
 Keep input labels and native autocomplete attributes. Use `type="button"`
 for each action so it cannot submit a containing form. Reset conceals the

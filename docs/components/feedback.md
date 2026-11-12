@@ -116,6 +116,7 @@ does not hide tag state behind a component event API.
 | `data-sds-tone` | All semantic tones | `neutral` |
 | `data-sds-variant` | `outline`, `bold` | Subtle surface |
 | `data-sds-size` | `xs`, `sm`, `md`, `lg` | `md` |
+| `data-sds-callout-color` | `indigo`, `teal`; overrides semantic tone colors | Semantic tone |
 | `data-sds-inset` | Presence; removes rounding | Rounded |
 
 Callout sizes scale typography and padding together. Use `xs` and `sm` for

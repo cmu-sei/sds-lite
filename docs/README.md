@@ -24,6 +24,7 @@ Dimensions expressed in `rem` scale with the root font size.
 |---|---|
 | React, Vue, Angular, or Svelte | [Framework integration](./guides/frameworks.md) |
 | SSR or hydration | [Server rendering](./guides/server-rendering.md) |
+| Django or Jinja forms | [Field partials](./guides/server-rendering.md#django-and-jinja-form-fields) |
 | Existing component library | [Migration guides](./migration/index.md) |
 | SEI Design System | [Incremental SEI adoption](./guides/theming.md#sei-adoption) |
 
@@ -48,5 +49,6 @@ Dimensions expressed in `rem` scale with the root font size.
 | Imports and entry points | [Package imports](./reference/imports.md) |
 | Functions, properties, and events | [JavaScript API](./reference/javascript.md) |
 | Theme tokens and cascade layers | [CSS API](./reference/css.md) |
+| Categorical and sequential chart colors | [Chart palettes](./reference/css.md#chart-colors) |
 | Classes, attributes, and defaults | [Recipe interface](./reference/recipes.md) |
 | Machine-readable contracts | [Public interface](./reference/public-interface.md) |

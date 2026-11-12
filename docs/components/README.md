@@ -42,6 +42,8 @@ Similar-looking recipes are not always interchangeable:
 | Collapsible content, disclosure | [Disclosure](./navigation.md#disclosure) |
 | Columns, responsive grid | [Grid](./layout.md#grid) |
 | Dialog, modal | [Dialog](./overlays.md#dialog) |
+| Documentation shell | [Documentation site](./layout.md#documentation-site) |
+| TOC tracking, theme controls, code blocks | [Documentation presentation](./layout.md#documentation-presentation) |
 | Dropdown, action menu | [Dropdown menu](./navigation.md#dropdown-menu) |
 | Empty state, no results | [Empty state](./loading.md#empty-state) |
 | File upload | [File input](./forms.md#file-input) |
@@ -57,6 +59,11 @@ Similar-looking recipes are not always interchangeable:
 | Date range, reporting period | [Date range](../guides/composition-patterns.md#date-range) |
 | Multi-select, submitted record IDs | [Multiple-selection form](../guides/composition-patterns.md#multiple-selection-form) |
 | Bulk actions, select-all, table filters | [Table selection](../guides/composition-patterns.md#table-selection-and-bulk-actions) |
+| Clickable table rows, numeric and money columns | [Linked rows](../guides/composition-patterns.md#linked-rows-and-numeric-columns) |
+| Description list, label/value details | [Detail lists](../guides/composition-patterns.md#detail-lists) |
+| Main content and supplementary panel | [Detail layout](../guides/composition-patterns.md#main-content-and-side-panel) |
+| Account menu, logout, scrolling header links | [Account navigation](../guides/composition-patterns.md#account-menu-and-responsive-navigation) |
+| Busy form, repeat-submit prevention | [Submit once](../guides/composition-patterns.md#submit-once-for-native-forms) |
 | Upload progress, cancellation, retry | [Upload workflow](../guides/composition-patterns.md#upload-workflow) |
 | Link | [Link](./actions.md#link) |
 | List | [List](./data-display.md#list) |
@@ -113,7 +120,7 @@ by `/auto`. Search the playground by familiar name to find either kind.
 | Status and notifications | [Feedback](./feedback.md) | Badge, tag, callout, toast |
 | Structured information | [Data display](./data-display.md) | Avatar, card, datapoint, list, timeline, table |
 | Page composition | [Layout](./layout.md) | Grid, Cluster, Stack, page, sidebar |
-| SEI-branded shells | [Layout](./layout.md#sei-application-shells) | Application, simple application, brochure |
+| SEI-branded shells | [Layout](./layout.md#sei-application-shells) | Application, simple application, documentation, brochure |
 | Selection and menus | [Navigation](./navigation.md) | Breadcrumb, skip link, tabs, pagination, dropdown, disclosure |
 | Floating and modal content | [Overlays](./overlays.md) | Tooltip, popover, dialog, panel |
 | Waiting and no-results states | [Loading](./loading.md) | Progress, meter, spinner, skeleton, empty state |

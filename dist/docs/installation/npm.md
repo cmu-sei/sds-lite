@@ -45,8 +45,10 @@ The package has no runtime or peer dependencies.
 ### Token-free bundled evaluation from source
 
 If you cannot use GitHub Packages credentials, build a package locally from
-a reviewed checkout instead. Use Node.js 20.19.0 or newer and the pinned npm
-11.6.4. Building uses the public development dependencies:
+a reviewed checkout instead. Use the Node.js 24.21.0 version pinned in
+`.nvmrc` and the pinned npm 12.2.1. These build prerequisites are separate
+from the installed library's Node.js requirement. Building uses the public
+development dependencies:
 
 ```sh
 npm install
@@ -61,6 +63,49 @@ commit and archive checksum in your dependency review records. This is a
 local evaluation path, not a claim that SDS Lite is published on npmjs.org.
 Public-registry publication still requires package-owner configuration and
 a deliberate release-workflow change.
+
+## Internal registries and vendored archives
+
+Organizations can import a reviewed NPM archive into an internal registry
+such as Artifactory, or vendor its extracted browser files. SDS Lite does not
+currently publish directly to an SEI Artifactory instance. That requires an
+approved organization registry, credentials, and release configuration; it is
+not a consumer-side switch.
+
+Obtain the exact released archive through authenticated GitHub Packages,
+or use the reviewed-checkout build above. Record its origin and checksum:
+
+```sh
+npm pack @cmu-sei/sds-lite@0.7.1 --ignore-scripts --registry=https://npm.pkg.github.com
+shasum -a 256 cmu-sei-sds-lite-0.7.1.tgz > cmu-sei-sds-lite-0.7.1.tgz.sha256
+shasum -a 256 -c cmu-sei-sds-lite-0.7.1.tgz.sha256
+npm install --save-exact ./cmu-sei-sds-lite-0.7.1.tgz
+```
+
+Use a trusted channel for the checksum; a checksum shipped alongside an
+untrusted archive is not proof of authenticity. Keep the lockfile and
+integrity metadata. Have registry administrators import the same reviewed
+archive, with its version and provenance intact, before changing the scope's
+registry URL in consumer configuration. Do not copy a GitHub access token
+into a shared archive or repository.
+
+For a no-build server application, extract `dist/sds.css`, `dist/brand.css`,
+and the complete `dist/package/` module tree from the archive into a versioned
+static directory. Load `dist/package/auto.js` with `type="module"`; keep all
+of its sibling modules and assets at their original relative paths. The
+repository/CDN's standalone `dist/auto.js` is a different delivery artifact
+and is not in the NPM archive. Preserve any asset URLs referenced by CSS.
+Do not mix browser files from different versions.
+
+### Release differences
+
+Review [release notes](https://github.com/cmu-sei/sds-lite/releases) before
+updating a pinned version. The GitHub comparison view also exposes exact
+changes, for example
+[0.6.2 to 0.7.1](https://github.com/cmu-sei/sds-lite/compare/v0.6.2...v0.7.1).
+Keep the reviewed versions, archive checksum, and application smoke-test
+results with the dependency update. Minor `0.x` versions can change interfaces;
+do not treat a successful download as a completed migration.
 
 ## Recommended setup
 
@@ -167,8 +212,8 @@ option values for documentation, linting, and migration tools.
 
 ## Specialized application shells
 
-SEI application and brochure shells are intentionally not in the lightweight
-default CSS. Add:
+SEI application, simple application, documentation, and brochure shells require
+an additional stylesheet. Add:
 
 ```js
 import '@cmu-sei/sds-lite/brand.css'

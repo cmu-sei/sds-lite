@@ -147,3 +147,24 @@ test('commands inside a dialog infer the nearest dialog target', async () => {
   assert.equal(dialog?.open, false)
   assert.equal(dialog?.returnValue, 'saved')
 })
+
+test('prevented clicks do not execute dialog commands', () => {
+  document.body.innerHTML = `
+    <button commandfor="prevented-dialog" command="show-modal">Open</button>
+    <dialog id="prevented-dialog" class="sds-dialog">
+      <button command="close">Close</button>
+    </dialog>
+  `
+  const dialog = document.querySelector('dialog')
+  const open = document.querySelector('[command="show-modal"]')
+  const close = dialog.querySelector('[command="close"]')
+  open.addEventListener('click', (event) => event.preventDefault())
+  close.addEventListener('click', (event) => event.preventDefault())
+
+  open.click()
+  assert.equal(dialog.open, false)
+  dialog.showModal()
+  close.click()
+  assert.equal(dialog.open, true)
+  dialog.close()
+})

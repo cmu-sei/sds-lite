@@ -1,4 +1,4 @@
-//#region src/elements/internals.ts
+// src/elements/internals.ts
 var e = 0;
 function t(t, n) {
 	if (t.id) return t.id;
@@ -46,5 +46,4 @@ function l(e, t) {
 	if (n && n !== t) throw Error(`Cannot register ${e}: another constructor already uses that name.`);
 	n || customElements.define(e, t);
 }
-//#endregion
 export { t as a, s as c, n as i, a as l, r as n, o, l as r, i as s, c as t };
