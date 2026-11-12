@@ -514,7 +514,7 @@ test('upload queue uses the shared drop zone and opens the native picker from it
   const point = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 }
   expect(await input.evaluate((element, point) => document.elementFromPoint(point.x, point.y) === element, point)).toBe(true)
   const chooser = page.waitForEvent('filechooser')
-  await page.mouse.click(point.x, point.y)
+  await input.click()
   await (await chooser).setFiles({
     name: 'surface.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-example'),
   })
