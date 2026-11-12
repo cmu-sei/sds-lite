@@ -24,7 +24,6 @@ export declare class SdsDropdownElement extends HTMLElementBase {
     hide(): void;
     private isSurfaceOpen;
     private collectItems;
-    private showAndFocus;
     private hideAndRestoreFocus;
     private handleToggle;
     private handleBeforeToggle;

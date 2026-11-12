@@ -203,14 +203,49 @@
     line-height: 1.25;
   }
 
-  :where(.sds-table [aria-sort] svg) {
+  :where(.sds-table [aria-sort] :is(svg, [data-sds-sort-arrow])) {
     inline-size: 1em;
     block-size: 1em;
     transition: transform var(--sds-duration-normal) var(--sds-easing-standard);
   }
 
-  :where(.sds-table [aria-sort="descending"] svg) {
+  :where(.sds-table [aria-sort="descending"] :is(svg, [data-sds-sort-arrow])) {
     transform: rotate(180deg);
+  }
+
+  :where(.sds-table [aria-sort] svg[data-sds-sort-chevron]) { transform: rotate(-90deg); }
+  :where(.sds-table [aria-sort="descending"] svg[data-sds-sort-chevron]) { transform: rotate(90deg); }
+
+  .sds-prose .sds-table thead th[aria-sort] > .sds-button {
+    border: 0;
+    border-radius: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    outline-offset: -2px;
+  }
+
+  .sds-prose .sds-table thead th[aria-sort] > .sds-button:focus-visible {
+    outline: 2px solid currentColor;
+  }
+
+  .sds-prose .sds-table thead th[aria-sort] > .sds-button :is(svg, [data-sds-sort-arrow]) {
+    opacity: 0;
+    transition: opacity var(--sds-duration-normal) var(--sds-easing-standard), transform var(--sds-duration-normal) var(--sds-easing-standard);
+  }
+
+  .sds-prose .sds-table thead th[aria-sort] > .sds-button > :is(svg, [data-sds-sort-arrow]) {
+    flex: 0 0 1em;
+    min-inline-size: 1em;
+  }
+
+  .sds-prose .sds-table thead th[aria-sort="none"]:is(:hover, :focus-within) > .sds-button :is(svg, [data-sds-sort-arrow]) {
+    opacity: 0.5;
+  }
+
+  .sds-prose .sds-table thead th:is([aria-sort="ascending"], [aria-sort="descending"]) > .sds-button :is(svg, [data-sds-sort-arrow]) {
+    opacity: 1;
+    transition: transform var(--sds-duration-normal) var(--sds-easing-standard);
   }
 
   :where(.sds-table td:last-child:has(> sds-dropdown), .sds-table th:last-child:has(> .sds-sr-only)) {

@@ -215,6 +215,23 @@ solid-button treatment.
 </sds-dropdown>
 ```
 
+### CTA menu item
+
+Add `data-sds-variant="cta"` to a menu link to show the trailing arrow and its
+hover motion while preserving the dropdown menu item's typography and layout.
+This is the same arrow treatment used by CTA links; do not add `.sds-link` to a
+menu item.
+
+```html
+<menu>
+  <li role="none">
+    <a role="menuitem" href="/features" data-sds-variant="cta">Features</a>
+  </li>
+  <li role="none"><hr class="sds-dropdown-divider"></li>
+  <li><a href="/features/code">Code</a></li>
+</menu>
+```
+
 ### Options
 
 | Option | Values | Default |
@@ -247,7 +264,8 @@ dropdown.addEventListener('sds-toggle', (event) => {
 Dropdowns support:
 
 - Enter, Space, Arrow Down, or Arrow Up to open and focus an item;
-- Up/Down, Home, and End to navigate items, skipping native disabled buttons;
+- Up/Down, Home, and End to navigate items, skipping native disabled buttons
+  and items inside hidden or inert content;
 - Escape to close and return focus;
 - close after activation;
 - synchronized `aria-expanded`;
@@ -258,6 +276,9 @@ button, an ARIA-disabled menu item remains in the arrow-key sequence; SDS Lite
 prevents its activation. The trigger and menu must be direct children. SDS Lite defaults an omitted
 trigger `type` to `button`; an explicit type is preserved. Missing a direct
 button or identifiable menu prevents enhancement and produces a console warning.
+Use native `hidden` on an item or its containing `<li>` to remove it from both
+the visible menu and keyboard navigation. Items added or removed while the menu
+is closed are included the next time it opens.
 
 ### More examples
 

@@ -240,6 +240,73 @@ Replace `{tone}` with `neutral`, `accent`, `info`, `success`, `warning`, or
 `danger`.
 `accent` uses the purple palette; `info` uses the blue palette.
 
+### Catching token mistakes
+
+The text token is `--sds-color-text-muted`, not `--sds-color-text-subtle`.
+The lists on this page are the public token allowlist; component-private
+properties are not supported overrides. Unknown custom properties are valid
+CSS syntax, so browser parsing and a generic CSS linter do not report typos.
+
+Use a fallback when a missing value would make essential content unreadable:
+
+```css
+.record-note { color: var(--sds-color-text-muted, currentColor); }
+```
+
+A fallback prevents a broken declaration; it does not detect a misspelling.
+Review custom property names against this reference and inspect the resolved
+value on an actual SDS root. For example, in the browser console:
+
+```js
+const styles = getComputedStyle(document.querySelector('[data-sds-root]'))
+for (const name of ['--sds-color-text-muted', '--sds-space-lg']) {
+  console.assert(styles.getPropertyValue(name).trim(), `Undefined token: ${name}`)
+}
+```
+
+If the application uses Stylelint, configure a custom-property reference
+allowlist or plugin rather than only a declaration-name pattern: a
+`--sds-*` naming rule accepts misspelled SDS names. SDS does not install a
+lint plugin into consuming applications.
+
+## Chart colors
+
+Use the categorical palette for unrelated series and the sequential palette
+for ordered magnitudes. Both resolve against the active light/dark scheme:
+
+```text
+--sds-color-chart-category-1
+--sds-color-chart-category-2
+--sds-color-chart-category-3
+--sds-color-chart-category-4
+--sds-color-chart-category-5
+--sds-color-chart-category-6
+--sds-color-chart-sequential-1
+--sds-color-chart-sequential-2
+--sds-color-chart-sequential-3
+--sds-color-chart-sequential-4
+--sds-color-chart-sequential-5
+```
+
+Category colors have no success, danger, or severity meaning. Keep the same
+category-to-token assignment across views. Sequential steps run from lower
+emphasis at `1` to higher emphasis at `5`; they get darker in light mode and
+lighter in dark mode.
+
+```html
+<svg viewBox="0 0 240 80" role="img" aria-labelledby="travel-chart-title">
+  <title id="travel-chart-title">Travel requests: Research 24, Engineering 18</title>
+  <rect x="0" y="8" width="192" height="24" fill="var(--sds-color-chart-category-1)"></rect>
+  <rect x="0" y="48" width="144" height="24" fill="var(--sds-color-chart-category-2)"></rect>
+</svg>
+```
+
+Include visible labels, distinguishable markers or patterns, and an accessible
+data table or textual summary. These colors are not a guarantee of pairwise
+contrast or color-vision accessibility. Do not rely on color alone, use the
+sequential steps as text colors, or interpolate between them without checking
+the resulting contrast against the actual chart background.
+
 ## Primitive colors
 
 Prefer semantic roles for application customization. Primitive colors are

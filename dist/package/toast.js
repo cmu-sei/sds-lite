@@ -1,5 +1,5 @@
-import { c as e, l as t, o as n, r, s as i } from "./internals-CEyyQZKd.js";
-//#region src/elements/toast.ts
+import { c as e, l as t, o as n, r, s as i } from "./internals-LhR95Qm6.js";
+// src/elements/toast.ts
 var a = 5e3, o = 250, s = typeof HTMLElement > "u" ? class {} : HTMLElement, c = class extends s {
 	static observedAttributes = [
 		"open",
@@ -43,14 +43,10 @@ var a = 5e3, o = 250, s = typeof HTMLElement > "u" ? class {} : HTMLElement, c =
 		t !== n && this.isConnected && (e === "open" && n === null ? this.clearAutoHide() : this.open && this.scheduleAutoHide());
 	}
 	show() {
-		if (this.open) {
-			this.scheduleAutoHide();
-			return;
-		}
-		this.open = !0, this.dispatchEvent(new CustomEvent("sds-open", {
+		this.open ? this.scheduleAutoHide() : (this.open = !0, this.dispatchEvent(new CustomEvent("sds-open", {
 			bubbles: !0,
 			composed: !0
-		}));
+		})));
 	}
 	close(e = "programmatic") {
 		this.open && (this.open = !1, this.dispatchEvent(new CustomEvent("sds-close", {
@@ -75,7 +71,7 @@ var a = 5e3, o = 250, s = typeof HTMLElement > "u" ? class {} : HTMLElement, c =
 		!this.matches(":hover") && !this.contains(document.activeElement) && this.scheduleAutoHide();
 	};
 	handleFocusOut = (e) => {
-		(!(e.relatedTarget instanceof Node) || !this.contains(e.relatedTarget)) && this.resumeAutoHide();
+		e.relatedTarget instanceof Node && this.contains(e.relatedTarget) || this.resumeAutoHide();
 	};
 }, l = !1;
 function u() {
@@ -109,5 +105,4 @@ function f(e, t = {}) {
 	let c = document.createElement("button");
 	return c.type = "button", c.className = "sds-button", c.setAttribute("data-sds-shape", "icon"), c.setAttribute("data-sds-toast-close", ""), c.setAttribute("aria-label", t.dismissLabel ?? "Dismiss notification"), c.textContent = "×", i.append(a, s, c), i.addEventListener("sds-close", () => window.setTimeout(() => i.remove(), o), { once: !0 }), r.append(i), i.show(), i;
 }
-//#endregion
 export { c as SdsToastElement, f as notify, d as registerSdsToast };

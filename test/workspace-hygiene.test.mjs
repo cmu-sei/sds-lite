@@ -5,6 +5,8 @@ import test from 'node:test'
 const generatedRootArtifacts = [
   'auto.js',
   'brand.css',
+  'documentation.css',
+  'documentation.js',
   'core.css',
   'dialog.js',
   'dropdown.js',

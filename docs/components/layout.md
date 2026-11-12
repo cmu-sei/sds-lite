@@ -312,17 +312,17 @@ on the current link. This works through nested groups using CSS alone; keep
 Do not add `popover` to a contained standalone sidebar.
 
 Use native `details` and `summary` for expandable groups, with a child `ul`
-inside each `details`. The default application sidebar uses full-width 40px
-rows and a 4px current-item edge indicator. Group summaries use 14px semibold
-text. In application shells (`application` or omitted), current items also
-have a subtle gray background, including collapsed groups containing the
-current link. Group summaries use the default text color; ordinary application and standalone items
-use 14px regular text, with semibold text for the current item. Child links
+inside each `details`. Standalone and application sidebars (`application` or
+omitted) share the same appearance: full-width 40px rows, 14px semibold
+navigation links, buttons, and group summaries, and a 4px current-item edge
+indicator. Unselected items use a muted text color;
+current items use the default text color and a subtle gray background,
+including collapsed groups containing the current link. Child links
 use 24px inline-start padding, a 12px indentation step from top-level rows.
 Group headings retain sentence case and separate groups using their existing
 rows, without added gaps or dividers.
-Documentation tree styling is
-selected by the surrounding `.sds-app[data-sds-variant="documentation"]`,
+Documentation tree styling is selected by the surrounding
+`.sds-app[data-sds-variant="documentation"]`,
 not applied to standalone or application sidebars.
 
 ### More examples
@@ -476,9 +476,19 @@ dividers or chevrons. Documentation's supporting tree remains compact.
 Use `data-sds-variant="documentation" data-sds-theme="forge"` on `.sds-app`.
 Its sidebar uses 14px text, 32px rows, first-level child guide lines, and rounded
 hover backgrounds. Deeper child groups are indented without additional lines.
-Current items use brand-colored text and a thin marker on their first-level
-tree guide, without a filled background. Optional decorative SVG icons go
+Current items use brand-colored text without a filled background. Only nested
+items receive a thin marker on their first-level tree guide; root links and
+group summaries have no left marker, including collapsed current groups.
+Optional decorative SVG icons go
 before the label, occupy a fixed 16px slot, and use `aria-hidden="true"`.
+With the optional documentation stylesheet, tree rows follow the
+[ScribeAI sidebar reference](https://cmu-sei.github.io/sds-docs-template/scribeai/):
+14px regular text with a 20px line height, 6px vertical and 8px horizontal
+padding, and a semibold section heading. Separate page links and native
+disclosures use a 28px-wide chevron control with a 4px gap, centered vertically
+on the label's first line even when it wraps. Collapsing a
+current nested group moves its marker to the page link, not the chevron. Tree markers
+remain visible through nested groups, and long labels wrap without clipping.
 The `.sds-app-masthead` holds SEI branding and utility actions above the
 global `.sds-app-header`, which stays visible at all sizes. A native sidebar
 popover provides right-side mobile navigation, including up to three levels of
@@ -499,6 +509,163 @@ Search opens an SDS dialog containing a native GET form, with results supplied
 by your application. The public SEI footer spans the shell below its columns.
 The [playground starter](../../index.html#layouts) includes complete copyable
 page and layout markup, required brand assets, and automatic sidebar behavior.
+The starter's utility actions follow the [CERT Secure Coding header](https://cmu-sei.github.io/secure-coding-standards/):
+GitHub, a decorative vertical `<hr>`, color scheme, and search.
+Use filled 20px SVG icons with `aria-hidden="true"` inside labeled buttons or
+links. Display controls are hidden below the desktop breakpoint.
+The GitHub artwork is adapted from that site, copyright Carnegie Mellon University,
+under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+### Documentation presentation
+
+For SDS Lite's documentation shell, add the optional documentation stylesheet
+and runtime alongside the core and brand imports:
+
+```js
+import '@cmu-sei/sds-lite/sds.css'
+import '@cmu-sei/sds-lite/brand.css'
+import '@cmu-sei/sds-lite/documentation.css'
+import '@cmu-sei/sds-lite/auto'
+import '@cmu-sei/sds-lite/documentation'
+```
+
+On desktop, the shell reserves a quarter of the layout for the sidebar; the
+reading column and TOC share the remaining area. The TOC appears at `80rem`; at smaller widths
+its authored sidebar counterpart remains available in the mobile menu. Use
+native H1/H2/H3 headings inside `.sds-prose`, without shifted typography classes.
+Nested TOC lists express the heading hierarchy. The optional module updates
+`aria-current="location"` on both authored TOCs while scrolling or following
+fragments. IDs and links remain application-owned.
+Authored TOC links may target headings from H2 through H6 within their own
+shell; missing targets, non-heading targets, and links into another shell are
+removed.
+
+For mobile drill-down navigation, use a `details.sds-navigation-panel` inside
+`.sds-sidebar > .sds-app-navigation`. Its `summary` names the group; its child
+`div` contains a `button[data-sds-action="navigation-back"]`, a heading label,
+and a `ul` of links or nested panels. The documentation runtime manages focus
+and clears open panels when the drawer closes.
+
+For a sidebar group with a landing page, place its link beside `details` in
+the same list item. SDS keeps the labeled native toggle at the row's end:
+
+```html
+<li>
+  <a href="/guidelines/">Guidelines</a>
+  <details>
+    <summary><span class="sds-sr-only">Toggle Guidelines navigation</span></summary>
+    <ul><li><a href="/guidelines/rules/">Rules</a></li></ul>
+  </details>
+</li>
+```
+
+Keep links out of `summary`; nesting a link inside the disclosure toggle
+creates conflicting interactive semantics. Both sibling controls work without
+JavaScript. The optional module dismisses header navigation groups on outside
+clicks and Escape without changing native content disclosures. When a modal is
+open, native modal Escape dismissal takes precedence over background navigation.
+
+Opt into display controls using labeled native buttons with
+`data-sds-action="toggle-color-scheme"` or `data-sds-action="toggle-fullscreen"`.
+The color control targets its closest SDS root. Page-root preferences persist in
+local storage; embedded roots with stable IDs keep separate preferences.
+Anonymous embedded roots change only for the current page session. Saved choices
+are restored only for roots with a color control and an initial `system` scheme.
+Both update `aria-pressed` and their accessible names when root attributes or
+the system scheme change. Document fullscreen is disabled when unsupported.
+With two decorative SVG children,
+the first represents the unpressed state and the second the pressed state.
+
+`.sds-code-block` follows the [documentation template's code blocks](https://cmu-sei.github.io/sds-docs-template/features/codeblocks/).
+Its native `header` contains an optional title with a decorative 20px code icon
+and a `nav` of labeled, icon-only controls; its `pre > code` holds the source.
+Copy and fullscreen controls use 16px SVGs. The playground starter includes
+complete SVG markup and syntax-colored sample code:
+
+```html
+<div class="sds-code-block" data-sds-tone="info">
+  <header>
+    <strong>
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path
+        d="m8 18-6-6 6-6 1.425 1.425-4.6 4.6L9.4 16.6zm8 0-1.425-1.425 4.6-4.6L14.6 7.4 16 6l6 6z"
+        fill="currentColor"></path></svg>
+      Parameter validation
+    </strong>
+    <nav aria-label="Code actions">
+      <button class="sds-button" type="button"
+        data-sds-shape="icon" data-sds-size="sm" data-sds-density="compact"
+        data-sds-variant="text" data-sds-action="copy-code"
+        aria-label="Copy code" title="Copy code" hidden>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path
+          d="M4 23q-.825 0-1.412-.587T2 21V7h2v14h11v2zm4-4q-.825 0-1.412-.587T6 17V3q0-.825.588-1.412T8 1h7l6 6v10q0 .825-.587 1.413T19 19zm6-11h5l-5-5z"
+          fill="currentColor"></path></svg>
+      </button>
+      <button class="sds-button" type="button"
+        data-sds-shape="icon" data-sds-size="sm" data-sds-density="compact"
+        data-sds-variant="text" aria-label="Toggle code fullscreen"
+        data-sds-action="toggle-code-fullscreen"
+        aria-pressed="false" hidden>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path
+          d="M3 21v-8h2v4.6L17.6 5H13V3h8v8h-2V6.4L6.4 19H11v2z"
+          fill="currentColor"></path></svg>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path
+          d="m19.3 20.7-6.3-6.3V18h-2v-7h7v2h-3.6l6.3 6.3zM6 13v-2h3.6L3.3 4.7l1.4-1.4L11 9.6V6h2v7z"
+          fill="currentColor"></path></svg>
+      </button>
+    </nav>
+  </header>
+  <pre><code>return 0;</code></pre>
+  <output class="sds-sr-only"></output>
+</div>
+```
+
+Use `neutral`, `info`, or `danger` for its `data-sds-tone`.
+Neutral blocks have a gray title bar;
+`info` and `danger` use blue and red borders and title bars for compliant and
+non-compliant examples. Author any compliance label explicitly; color alone
+must not convey compliance. Omitting the header's `<strong>` title places
+controls over the code without a title bar.
+Code uses 16px monospace text with 24px line height and 16px padding.
+Controls start hidden and are revealed by the optional module.
+The module wraps code actions in tooltips using `.sds-code-tooltip-content`.
+Authored `sds-tooltip` wrappers with that content class are also supported.
+Its `data-sds-tooltip-label` and `data-sds-copy-icon` hooks preserve labels and
+icons; `data-sds-copied`, `data-sds-copy-check`, and `data-sds-code-fullscreen`
+are runtime-managed state. Navigation similarly manages `data-sds-active`,
+`data-sds-leaving`, `data-sds-returning`, `data-sds-navigation-overview`, and
+`data-sds-navigation-back-label`. Do not author transient state attributes.
+Copying supplies two-second confirmation
+and visible failure feedback through the output. Fullscreen uses an SDS native
+dialog, preserves document position, closes with Escape, and restores focus
+and the authored control label.
+For short/complete examples, wrap each code slot in an element with
+`data-sds-code-slot="default"` or `data-sds-code-slot="complete"`; initially hide
+the complete slot and provide a button with
+`data-sds-action="toggle-complete-code" aria-pressed="false"`.
+Syntax highlighting and source generation remain application-owned. Shiki's
+`--shiki-light` and `--shiki-dark` span variables are supported without a
+consumer stylesheet.
+
+Use `.sds-search-results` around an application-populated `.sds-list` of links.
+Each link may contain a title `span` and muted context `small`.
+`aria-current="true"` identifies the keyboard-active result. The application
+continues to own queries, ranking, keyboard result selection, and URLs; open the
+search surface with the existing [dialog recipe](./overlays.md#dialog). Use a
+semantic link when a standalone fallback page is available:
+
+```html
+<a class="sds-button" href="/search/"
+  aria-haspopup="dialog" aria-controls="documentation-search-dialog">Search</a>
+```
+
+With `auto` setup, an ordinary click opens the referenced SDS dialog. Without
+JavaScript, or with a modified click, the link retains its fallback URL. Put
+`autofocus` on the modal input; Escape restores focus to its opener.
+
+`.sds-app-pagination` styles a labeled native navigation region with
+`a[rel="prev"]` and `a[rel="next"]` links. The application supplies their order
+and destinations. No custom code is required for sidebar popovers, native
+disclosures, dialogs, or dropdown interactions.
 
 ### Application shell
 

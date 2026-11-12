@@ -3,6 +3,16 @@
   "schemaVersion": "1.2.0",
   "globalAttributes": [
     {
+      "name": "data-sds-action",
+      "description": "Opt-in documentation presentation action, enhanced by the optional documentation entry point.",
+      "values": ["toggle-color-scheme", "toggle-fullscreen", "copy-code", "toggle-complete-code", "toggle-code-fullscreen", "navigation-back"]
+    },
+    {
+      "name": "data-sds-code-slot",
+      "description": "Identifies the abbreviated or complete code inside a code block.",
+      "values": ["default", "complete"]
+    },
+    {
       "name": "data-sds-root",
       "description": "Establishes SDS Lite theme tokens, color scheme, and inherited body typography without applying control recipes.",
       "type": "boolean"
@@ -453,17 +463,19 @@
         "data-sds-tone": ["neutral", "accent", "info", "success", "warning", "danger"],
         "data-sds-variant": ["outline", "bold"],
         "data-sds-size": ["xs", "sm", "md", "lg"],
+        "data-sds-callout-color": ["indigo", "teal"],
         "data-sds-inset": [],
         "data-sds-callout-close": []
       },
       "optionTargets": {
         "data-sds-callout-close": ".sds-callout [data-sds-callout-close]"
       },
-      "omissionDefaults": {"data-sds-variant": "subtle"},
+      "omissionDefaults": {"data-sds-variant": "subtle", "data-sds-callout-color": "semantic tone"},
       "defaults": {
         "data-sds-tone": "neutral",
         "data-sds-variant": "subtle",
         "data-sds-size": "md",
+        "data-sds-callout-color": "semantic tone",
         "data-sds-inset": false,
         "data-sds-callout-close": false
       }
@@ -642,6 +654,8 @@
         "data-sds-density": ["compact"],
         "data-sds-standalone": [],
         "data-sds-row-highlight": [],
+        "data-sds-sort-arrow": [],
+        "data-sds-sort-chevron": [],
         "data-sds-sticky": ["start", "end"]
       },
       "optionTargets": {
@@ -649,6 +663,8 @@
         "data-sds-density": ".sds-table",
         "data-sds-standalone": ".sds-table",
         "data-sds-row-highlight": ".sds-table",
+        "data-sds-sort-arrow": ".sds-table [aria-sort] [data-sds-sort-arrow]",
+        "data-sds-sort-chevron": ".sds-table [aria-sort] svg[data-sds-sort-chevron]",
         "data-sds-sticky": ".sds-table th, .sds-table td"
       },
       "omissionDefaults": {"data-sds-density": "comfortable", "data-sds-sticky": "none"},
@@ -657,6 +673,8 @@
         "data-sds-density": "comfortable",
         "data-sds-standalone": false,
         "data-sds-row-highlight": false,
+        "data-sds-sort-arrow": false,
+        "data-sds-sort-chevron": false,
         "data-sds-sticky": "none"
       }
     },
@@ -849,6 +867,21 @@
       "options": {}
     },
     {
+      "name": "code-block",
+      "category": "Prose",
+      "classes": ["sds-code-block", "sds-code-tooltip-content"],
+      "description": "Code example with native header, action navigation, optional alternate code, and live output. Uses documentation.css and the optional documentation runtime.",
+      "options": {"data-sds-tone": ["neutral", "info", "danger"]},
+      "defaults": {"data-sds-tone": "neutral"}
+    },
+    {
+      "name": "search-results",
+      "category": "Navigation and overlays",
+      "classes": ["sds-search-results"],
+      "description": "Scrollable search result links. Applications supply results and mark their keyboard-active link with aria-current=true. Uses documentation.css.",
+      "options": {}
+    },
+    {
       "name": "prose",
       "category": "Prose",
       "classes": ["sds-prose", "sds-prose-lead", "sds-not-prose", "sds-sr-only"],
@@ -887,7 +920,9 @@
         "sds-app-content",
         "sds-app-masthead",
         "sds-app-navigation",
+        "sds-navigation-panel",
         "sds-app-toc",
+        "sds-app-pagination",
         "sds-sei-wordmark",
         "sds-app-container",
         "sds-app-footer-about",
@@ -955,8 +990,8 @@
     },
     {
       "name": "Documentation site", "kind": "layout",
-      "recipes": ["application-shell", "cluster", "button", "sidebar", "link", "prose", "stack", "heading", "title", "dialog", "form", "field", "form-control"],
-      "customElements": [], "stylesheets": ["sds.css", "brand.css"], "assets": ["package/assets/sei-wordmark.svg"], "requiresSetup": true,
+      "recipes": ["application-shell", "cluster", "button", "sidebar", "link", "prose", "stack", "heading", "title", "dialog", "form", "field", "form-control", "code-block", "list", "search-results"],
+      "customElements": ["sds-tooltip"], "stylesheets": ["sds.css", "brand.css", "documentation.css"], "assets": ["package/assets/sei-wordmark.svg", "documentation.js"], "requiresSetup": true,
       "parts": [{"selector": ".sds-app-masthead", "minimum": 1}, {"selector": ".sds-app-header > .sds-app-navigation", "minimum": 1}, {"selector": ".sds-app-layout > .sds-app-body > .sds-app-main", "minimum": 1}, {"selector": ".sds-sidebar[popover] > .sds-app-toc", "minimum": 1}, {"selector": ".sds-app-content > .sds-prose", "minimum": 1}, {"selector": ".sds-app-content > .sds-app-toc", "minimum": 1}, {"selector": "dialog.sds-dialog", "minimum": 1}],
       "applicationResponsibilities": ["Supply search results and navigation destinations.", "Keep desktop and mobile navigation and table-of-contents links synchronized with heading IDs.", "Preserve brand assets, accessible names, and required legal content."]
     },

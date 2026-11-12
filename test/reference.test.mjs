@@ -104,6 +104,10 @@ test('component features are directly discoverable and consistently structured',
   }
 })
 
+test('documentation describes the SDS Lite shell without project-specific terminology', () => {
+  assert.doesNotMatch(reference, /\bCERT-style\b/i)
+})
+
 test('quick start offers one CSS-only path and advanced workflows stay separate', async () => {
   const starter = await readFile('docs/getting-started.md', 'utf8')
   const forms = await readFile('docs/components/forms.md', 'utf8')

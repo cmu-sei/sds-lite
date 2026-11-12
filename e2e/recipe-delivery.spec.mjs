@@ -11,9 +11,10 @@ const recipes = ['selection', 'table-selection', 'multiple-selection', 'input-ac
 test.beforeAll(async () => {
   temporary = await mkdtemp(join(tmpdir(), 'sds-consumer-'))
   const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-  const [archive] = JSON.parse(execFileSync(npm, [
+  const reports = JSON.parse(execFileSync(npm, [
     'pack', '--ignore-scripts', '--json', '--pack-destination', temporary,
   ], { encoding: 'utf8' }))
+  const [archive] = Object.values(reports)
   execFileSync('tar', ['-xzf', join(temporary, archive.filename), '-C', temporary])
   packed = join(temporary, 'package')
 })

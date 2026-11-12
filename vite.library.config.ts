@@ -51,6 +51,8 @@ export default defineConfig({
         brand: 'src/brand.css',
         combobox: 'src/elements/combobox.ts',
         dialog: 'src/elements/dialog.ts',
+        documentation: 'src/documentation.ts',
+        documentationStyles: 'src/documentation.css',
         dropdown: 'src/elements/dropdown.ts',
         floating: 'src/elements/floating.ts',
         popover: 'src/elements/popover.ts',

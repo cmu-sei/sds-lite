@@ -1,5 +1,47 @@
 import { expect, test } from '@playwright/test'
 
+test('chart palettes are distinct and sequential luminance follows the active scheme', async ({ page }) => {
+  await page.goto('/')
+  const palettes = await page.evaluate(() => {
+    const root = document.createElement('section')
+    root.setAttribute('data-sds-root', '')
+    document.body.append(root)
+    const color = name => {
+      const sample = document.createElement('span')
+      sample.style.color = `var(${name})`
+      root.append(sample)
+      const value = getComputedStyle(sample).color
+      sample.remove()
+      return value
+    }
+    const results = ['light', 'dark'].map(scheme => {
+      root.setAttribute('data-sds-color-scheme', scheme)
+      return {
+        categories: Array.from({ length: 6 }, (_, index) => color(`--sds-color-chart-category-${index + 1}`)),
+        sequential: Array.from({ length: 5 }, (_, index) => color(`--sds-color-chart-sequential-${index + 1}`)),
+      }
+    })
+    root.remove()
+    return results
+  })
+  const luminance = color => {
+    const channels = color.match(/[\d.]+/g).slice(0, 3).map(value => {
+      const channel = Number(value) / 255
+      return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+    })
+    return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722
+  }
+  for (const [index, palette] of palettes.entries()) {
+    expect(new Set(palette.categories).size).toBe(6)
+    const levels = palette.sequential.map(luminance)
+    for (let step = 1; step < levels.length; step += 1) {
+      if (index === 0) expect(levels[step]).toBeLessThan(levels[step - 1])
+      else expect(levels[step]).toBeGreaterThan(levels[step - 1])
+    }
+  }
+  expect(palettes[0].categories.every((color, index) => color !== palettes[1].categories[index])).toBe(true)
+})
+
 test('Forge and Plaid expose distinct gray scales', async ({ page }) => {
   await page.goto('/')
   await page.locator('[data-sds-root]').evaluate((root) => {

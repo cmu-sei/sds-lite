@@ -6,9 +6,8 @@ import { registerSdsSidebar as i } from "./sidebar.js";
 import { registerSdsTabs as a } from "./tabs.js";
 import { registerSdsTooltip as o } from "./tooltip.js";
 import { notify as s, registerSdsToast as c } from "./toast.js";
-//#region src/sds.ts
+// src/sds.ts
 function l() {
 	e(), t(), n(), r(), i(), a(), c(), o();
 }
-//#endregion
 export { s as notify, l as setupSds };

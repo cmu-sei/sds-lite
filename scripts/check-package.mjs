@@ -3,10 +3,11 @@ import { readFileSync } from 'node:fs'
 import { gzipSync } from 'node:zlib'
 
 const maximumFileCount = 100
-const maximumUnpackedSize = 750_000
+const maximumUnpackedSize = 850_000
+const maximumDefaultPayload = 35_000
 const maximumCompressedSizes = {
-  'dist/sds.css': 22_000,
-  'dist/brand.css': 3_000,
+  'dist/sds.css': 23_000,
+  'dist/brand.css': 3_300,
   'dist/auto.js': 13_000,
   'dist/sds.js': 13_000,
 }
@@ -54,7 +55,7 @@ if (result.status !== 0) {
 let report
 try {
   const reports = JSON.parse(result.stdout)
-  report = reports[0]
+  report = Object.values(reports)[0]
 } catch {
   fail('npm pack --dry-run did not return valid JSON')
 }
@@ -79,6 +80,12 @@ for (const [filename, limit] of Object.entries(maximumCompressedSizes)) {
   if (compressedSize > limit) {
     errors.push(`${filename} is ${compressedSize} bytes gzipped; limit is ${limit}`)
   }
+}
+const defaultPayload = assetSizes
+  .filter(({ filename }) => ['dist/sds.css', 'dist/auto.js'].includes(filename))
+  .reduce((total, { compressedSize }) => total + compressedSize, 0)
+if (defaultPayload > maximumDefaultPayload) {
+  errors.push(`Default CDN payload is ${defaultPayload} bytes gzipped; limit is ${maximumDefaultPayload}`)
 }
 for (const filename of requiredFiles) {
   if (!files.has(filename)) errors.push(`package is missing ${filename}`)
@@ -108,7 +115,4 @@ for (const { filename, rawSize, compressedSize, limit } of assetSizes) {
     `${filename}: ${rawSize} bytes raw, ${compressedSize} bytes gzip; ${limit - compressedSize} bytes below budget`,
   )
 }
-const defaultPayload = assetSizes
-  .filter(({ filename }) => ['dist/sds.css', 'dist/auto.js'].includes(filename))
-  .reduce((total, { compressedSize }) => total + compressedSize, 0)
-console.log(`Default CDN payload: ${defaultPayload} bytes gzip (CSS + automatic setup)`)
+console.log(`Default CDN payload: ${defaultPayload} bytes gzip (CSS + automatic setup); ${maximumDefaultPayload - defaultPayload} bytes below budget`)

@@ -1,6 +1,8 @@
 @layer sds.components {
   :where(.sds-datapoint) {
+    container-type: inline-size;
     display: grid;
+    min-inline-size: 0;
     color: var(--sds-color-text-default);
     font-size: 1rem;
   }
@@ -12,27 +14,29 @@
   }
 
   :where(.sds-datapoint strong) {
+    min-inline-size: 0;
     color: var(
       --sds-datapoint-color,
       light-dark(var(--sds-gray-600), var(--sds-gray-300))
     );
-    font-size: 1.875rem;
+    font-size: clamp(1rem, 12cqi, var(--sds-datapoint-font-size, 1.875rem));
     font-weight: 700;
     line-height: 1.2;
+    overflow-wrap: anywhere;
   }
 
   :where(.sds-datapoint[data-sds-size="sm"] strong) {
-    font-size: 1.125rem;
+    --sds-datapoint-font-size: 1.125rem;
     line-height: 1.75rem;
   }
 
   :where(.sds-datapoint[data-sds-size="lg"] strong) {
-    font-size: 3rem;
+    --sds-datapoint-font-size: 3rem;
     line-height: 1;
   }
 
   :where(.sds-datapoint[data-sds-size="xl"] strong) {
-    font-size: 4rem;
+    --sds-datapoint-font-size: 4rem;
     line-height: 1;
   }
 

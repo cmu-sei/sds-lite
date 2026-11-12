@@ -1,6 +1,6 @@
 import { FloatingHoverController as e, FloatingPositioner as t } from "./floating.js";
-import { a as n, c as r, i, l as a, o, r as s, t as c } from "./internals-CEyyQZKd.js";
-//#region src/elements/tooltip.ts
+import { a as n, c as r, i, l as a, o, r as s, t as c } from "./internals-LhR95Qm6.js";
+// src/elements/tooltip.ts
 var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 	static observedAttributes = [
 		"placement",
@@ -52,5 +52,4 @@ var l = typeof HTMLElement > "u" ? class {} : HTMLElement, u = class extends l {
 function d() {
 	s("sds-tooltip", u);
 }
-//#endregion
 export { u as SdsTooltipElement, d as registerSdsTooltip };

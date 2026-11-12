@@ -15,6 +15,18 @@ export async function generateExamples(directory = 'docs/examples', check = fals
     const distribution = directory.startsWith('dist/')
     const stylesheet = distribution ? '../../sds.css' : '../../dist/sds.css'
     const behavior = distribution ? '../../auto.js' : '../../dist/package/auto.js'
+    if (distribution) {
+      const shell = window.document.querySelector('[data-copy-layout="Documentation site"]')
+      const icons = {
+        _attribution: 'Documentation header artwork from https://cmu-sei.github.io/secure-coding-standards/; Carnegie Mellon University, CC BY 4.0: https://creativecommons.org/licenses/by/4.0/. Material Symbols by Google: https://github.com/google/material-design-icons (Apache-2.0).',
+        github: shell.querySelector('.sds-app-masthead a[title="GitHub"] svg').outerHTML,
+        'dark-mode': shell.querySelector('[data-sds-action="toggle-color-scheme"] svg:first-child').outerHTML,
+        'light-mode': shell.querySelector('[data-sds-action="toggle-color-scheme"] svg:last-child').outerHTML,
+        search: shell.querySelector('.sds-app-masthead a[aria-haspopup="dialog"] svg').outerHTML,
+        menu: shell.querySelector('.sds-app-header > button svg').outerHTML,
+      }
+      await writeFile('dist/documentation-icons.json', `${JSON.stringify(icons, null, 2)}\n`)
+    }
     const examples = window.document.querySelectorAll('article[data-recipe-script]')
     if (examples.length !== 6) throw new Error('Expected all six application recipes.')
     for (const example of examples) {

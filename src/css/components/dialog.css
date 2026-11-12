@@ -21,6 +21,17 @@
     max-inline-size: 24rem;
   }
 
+  :where(.sds-dialog:has(> .sds-dialog-header + :is(main, section) + .sds-dialog-footer)) {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+
+  :where(.sds-dialog > :is(main, section)) {
+    min-block-size: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
   :where(.sds-dialog[data-sds-width="lg"]) {
     max-inline-size: 42rem;
   }

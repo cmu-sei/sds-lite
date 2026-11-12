@@ -15,9 +15,17 @@ test('the catalog uses only public SDS classes and keeps each preview and copy a
       .flatMap(element => [...element.classList]).filter(name => !allowed.has(name)))]
   }, classes)
   expect(unknown).toEqual([])
-  await expect(page.locator('style:not([data-vite-dev-id]), [style]')).toHaveCount(0)
+  await expect(page.locator('style:not([data-vite-dev-id])')).toHaveCount(0)
+  const supportedInlineStyles = await page.locator('[style]').evaluateAll(elements =>
+    elements.every(element =>
+      element.matches('.sds-code-block pre code span') &&
+      Array.from({ length: element.style.length }, (_, index) => element.style.item(index))
+        .every(property => /^--shiki-(light|dark)(-font-style|-font-weight)?$/.test(property)),
+    ),
+  )
+  expect(supportedInlineStyles).toBe(true)
   for (const style of await page.locator('style[data-vite-dev-id]').all()) {
-    await expect(style).toHaveAttribute('data-vite-dev-id', /\/src\/(?:style|brand)\.css$/)
+    await expect(style).toHaveAttribute('data-vite-dev-id', /\/src\/(?:style|brand|documentation)\.css$/)
   }
   const examples = page.locator('[data-example-container]')
   expect(await examples.count()).toBeGreaterThan(30)
@@ -106,7 +114,7 @@ test('example tools fit mobile screens and copying failure reveals the selectabl
   await page.goto('/#file-upload-recipe')
   const example = page.locator('#file-upload-recipe')
   const tools = example.locator(':scope > [data-example-tools]')
-  const button = tools.getByRole('button', { name: /Copy file queue/ })
+  const button = tools.getByRole('button', { name: /Copy HTML \+ JS: file queue/ })
   const bounds = await button.boundingBox()
   expect(bounds.x).toBeGreaterThanOrEqual(0)
   expect(bounds.x + bounds.width).toBeLessThanOrEqual(390)
@@ -175,14 +183,14 @@ for (const variant of ['standalone', 'application', 'documentation']) {
     await page.addStyleTag({ path: 'dist/sds.css' })
     const link = page.locator('a[href="#selected"]')
     await expect(link).toHaveCSS('font-size', '14px')
-    await expect(link).toHaveCSS('font-weight', '400')
+    await expect(link).toHaveCSS('font-weight', variant === 'documentation' ? '400' : '600')
     await expect(link).toHaveCSS('padding-inline-start', variant === 'documentation' ? '8px' : '24px')
     for (const summary of await page.locator('summary').all()) {
       await expect(summary).toHaveCSS('font-size', '14px')
-      await expect(summary).toHaveCSS('font-weight', '600')
+      await expect(summary).toHaveCSS('font-weight', variant === 'documentation' ? '400' : '600')
       await expect(summary).toHaveCSS('text-transform', 'none')
       const mutedColor = await link.evaluate(element => getComputedStyle(element).color)
-      await expect(summary).not.toHaveCSS('color', mutedColor)
+      await expect(summary).toHaveCSS('color', mutedColor)
     }
     const appearance = summary => summary.evaluate(element => {
       const style = getComputedStyle(element)
@@ -266,7 +274,14 @@ test('sidebar groups align their headings and links and work with the keyboard',
     const link = group.locator('a').first()
     await expect(summary).toHaveCSS('font-size', '14px')
     await expect(summary).toHaveCSS('font-weight', '600')
-    const textColor = await sidebar.evaluate(element => getComputedStyle(element).color)
+    const textColor = await sidebar.evaluate(element => {
+      const probe = document.createElement('span')
+      probe.style.color = 'color-mix(in srgb, var(--sds-color-text-muted) 75%, var(--sds-color-text-default))'
+      element.append(probe)
+      const color = getComputedStyle(probe).color
+      probe.remove()
+      return color
+    })
     await expect(summary).toHaveCSS('color', textColor)
     await expect(link).toHaveCSS('font-size', '14px')
     await expect(link).toHaveCSS('padding-inline-start', '24px')

@@ -60,6 +60,32 @@ import {
   validateReleasePullRequest,
 } from '../scripts/validate-release-pr.mjs'
 
+test('registry checks support legacy and npm 12 JSON responses', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'sds-registry-report-'))
+  try {
+    const tarball = join(directory, 'release.tgz')
+    const contents = 'tested release artifact'
+    await writeFile(tarball, contents)
+    const checksum = createHash('sha1').update(contents).digest('hex')
+    for (const wrap of [value => value, value => [value]]) {
+      assert.equal(await inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.3', false,
+        () => JSON.stringify(wrap(checksum))), true)
+      assert.equal(checkReleaseDistTag('@cmu-sei/sds-lite', '1.2.3', 'latest',
+        () => JSON.stringify(wrap({ latest: '1.2.3' }))), false)
+      assert.doesNotThrow(() => ensureReleaseDistTag('@cmu-sei/sds-lite', '1.2.3', 'latest',
+        () => JSON.stringify(wrap({ latest: '1.2.3' }))))
+      assert.throws(() => checkReleaseDistTag('@cmu-sei/sds-lite', '1.2.3', 'latest',
+        () => JSON.stringify(wrap({ latest: '1.2.4' }))), /backward/)
+    }
+    assert.throws(() => checkReleaseDistTag('@cmu-sei/sds-lite', '1.2.3', 'latest',
+      () => JSON.stringify([{ latest: '1.2.3' }, { latest: '1.2.4' }])), /Could not verify/)
+    await assert.rejects(inspectReleaseArtifact(tarball, '@cmu-sei/sds-lite', '1.2.3', false,
+      () => JSON.stringify(['0'.repeat(40)])), /checksum does not match/)
+  } finally {
+    await rm(directory, { recursive: true, force: true })
+  }
+})
+
 test('release versions use strict Semantic Versioning', () => {
   assert.deepEqual(parseReleaseVersion('1.2.3'), {
     version: '1.2.3',
@@ -776,7 +802,7 @@ test('hotfix preparation isolates stable code, preserves beta history, and refre
       assert.equal(result.status, 0, result.stderr)
       return args[0] === 'diff' ? result.stdout : result.stdout.trim()
     }
-    if (command === 'npm') return JSON.stringify('1.2.3')
+    if (command === 'npm') return JSON.stringify(['1.2.3'])
     if (args.includes('Accept: application/vnd.github.diff')) return `${git('diff', '--binary', beta, fixHead)}\n`
     if (args[0] === 'api') return JSON.stringify({ number: fixNumber, merged_at: '2026-10-06',
       base: { ref: 'main', sha: main, repo: { full_name: 'cmu-sei/sds-lite' } }, head: { sha: fixHead },

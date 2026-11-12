@@ -34,7 +34,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Use the pinned npm version
-        run: npm install --global npm@11.6.4
+        run: npm install --global npm@12.2.1
 
       - name: Select the locked browser image
         id: browser-image
@@ -75,7 +75,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Use the pinned npm version
-        run: npm install --global npm@11.6.4
+        run: npm install --global npm@12.2.1
 
       - name: Install dependencies
         run: npm ci --ignore-scripts

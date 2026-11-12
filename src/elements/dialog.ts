@@ -37,7 +37,8 @@ const originalPanelStyles = new WeakMap<
 >()
 
 function findDialog(trigger: Element): HTMLDialogElement | null {
-  const targetId = trigger.getAttribute('commandfor')
+  const targetId = trigger.getAttribute('commandfor') ??
+    (trigger.getAttribute('aria-haspopup') === 'dialog' ? trigger.getAttribute('aria-controls') : null)
 
   if (targetId) {
     const target = document.getElementById(targetId)
@@ -375,17 +376,19 @@ function enhancePanels(root: ParentNode): void {
 }
 
 function handleClick(event: MouseEvent): void {
-  if (!(event.target instanceof Element)) return
+  if (event.defaultPrevented || !(event.target instanceof Element)) return
 
   const trigger = event.target.closest<HTMLElement>(
-    '[commandfor], dialog.sds-dialog [command], dialog.sds-panel [command]',
+    '[commandfor], a[aria-haspopup="dialog"][aria-controls], dialog.sds-dialog [command], dialog.sds-panel [command]',
   )
 
   if (trigger) {
+    const link = trigger.matches('a[href][aria-haspopup="dialog"]')
+    if (link && (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)) return
     const dialog = findDialog(trigger)
     if (!dialog) return
 
-    const command = trigger.getAttribute('command')
+    const command = trigger.getAttribute('command') ?? (link ? 'show-modal' : null)
 
     if (
       command === 'show-modal' ||
@@ -394,7 +397,10 @@ function handleClick(event: MouseEvent): void {
     ) {
       event.preventDefault()
     }
-    if (command === 'show-modal') openDialog(dialog, true)
+    if (command === 'show-modal') {
+      if (link) trigger.focus({ preventScroll: true })
+      openDialog(dialog, true)
+    }
     else if (command === 'close') {
       dialog.close(trigger.getAttribute('data-sds-return-value') ?? '')
     }

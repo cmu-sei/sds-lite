@@ -1,6 +1,6 @@
 import { FloatingHoverController as e, FloatingPositioner as t } from "./floating.js";
-import { a as n, c as r, i, l as a, n as o, o as s, r as c, s as l, t as u } from "./internals-CEyyQZKd.js";
-//#region src/elements/popover.ts
+import { a as n, c as r, i, l as a, n as o, o as s, r as c, s as l, t as u } from "./internals-LhR95Qm6.js";
+// src/elements/popover.ts
 var d = typeof HTMLElement > "u" ? class {} : HTMLElement, f = class extends d {
 	static observedAttributes = [
 		"open",
@@ -53,27 +53,13 @@ var d = typeof HTMLElement > "u" ? class {} : HTMLElement, f = class extends d {
 		this.connection.disconnect(), this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;
 	}
 	attributeChangedCallback(e, t, n) {
-		if (t !== n && this.isConnected) {
-			if (e === "open") {
-				n === null ? this.hide() : this.show();
-				return;
-			}
-			this.content?.matches(":popover-open") && (this.positioner?.reset(), this.positioner?.position());
-		}
+		t !== n && this.isConnected && (e === "open" ? n === null ? this.hide() : this.show() : this.content?.matches(":popover-open") && (this.positioner?.reset(), this.positioner?.position()));
 	}
 	show() {
-		if (!this.content) {
-			this.open = !0;
-			return;
-		}
-		this.content.matches(":popover-open") || this.content.showPopover();
+		this.content ? this.content.matches(":popover-open") || this.content.showPopover() : this.open = !0;
 	}
 	hide() {
-		if (!this.content) {
-			this.open = !1;
-			return;
-		}
-		this.content.matches(":popover-open") && this.content.hidePopover();
+		this.content ? this.content.matches(":popover-open") && this.content.hidePopover() : this.open = !1;
 	}
 	handleToggle = () => {
 		let e = this.content?.matches(":popover-open") ?? !1;
@@ -87,5 +73,4 @@ var d = typeof HTMLElement > "u" ? class {} : HTMLElement, f = class extends d {
 function p() {
 	c("sds-popover", f);
 }
-//#endregion
 export { f as SdsPopoverElement, p as registerSdsPopover };

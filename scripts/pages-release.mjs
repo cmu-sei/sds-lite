@@ -86,7 +86,10 @@ export async function verifyPagesRelease(handoff, run = execute) {
   const latestVersion = run(process.platform === 'win32' ? 'npm.cmd' : 'npm', [
     'view', `${packageName}@latest`, 'version', '--json', '--registry=https://npm.pkg.github.com',
   ])
-  return pagesReleaseEligible(handoff, { release, tagCommit: commit, latestVersion, manifest })
+  return pagesReleaseEligible(handoff, {
+    release, tagCommit: commit, manifest,
+    latestVersion: Array.isArray(latestVersion) && latestVersion.length === 1 ? latestVersion[0] : latestVersion,
+  })
 }
 
 async function main() {

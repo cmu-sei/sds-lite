@@ -95,7 +95,8 @@ export async function prepareHotfix({ env = process.env, execute = run, cwd = pr
   })()
   if (!/^[1-9][0-9]*$/.test(number)) throw new Error('Paste a merged fix PR link or number')
   const packageJson = JSON.parse(await readFile(join(cwd, 'package.json'), 'utf8'))
-  const latestVersion = JSON.parse(run('npm', ['view', packageJson.name, 'dist-tags.latest', '--json', '--registry=https://npm.pkg.github.com']))
+  const latestResponse = JSON.parse(run('npm', ['view', packageJson.name, 'dist-tags.latest', '--json', '--registry=https://npm.pkg.github.com']))
+  const latestVersion = Array.isArray(latestResponse) && latestResponse.length === 1 ? latestResponse[0] : latestResponse
   const pullRequest = JSON.parse(run('gh', ['api', `repos/${repository}/pulls/${number}`]))
   const diff = run('gh', ['api', '-H', 'Accept: application/vnd.github.diff', `repos/${repository}/pulls/${number}`])
   const merged = JSON.parse(run('gh', ['pr', 'list', '--state', 'merged',

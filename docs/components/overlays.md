@@ -73,6 +73,8 @@ with native Popover visibility.
 Keep trigger and surface as direct children. Hover or focus opens after 500ms;
 moving between them keeps it open. Leaving both closes after a grace period.
 Native click, touch, keyboard, Escape, and light-dismiss behavior remain available.
+Escape also cancels a pending hover or focus opening without consuming the key
+when the popover is still closed.
 Give the trigger a clear name and use meaningful structure inside the surface.
 
 ### Positioning
@@ -116,6 +118,30 @@ Use [commands and dismissal](#commands-and-dismissal) for close policy and retur
 
 Native `cancel` supports preventing a close request; `close` reports completed
 closure. Read `dialog.returnValue` for an authored result.
+
+### Long content
+
+For a bounded scrolling body with visible header and actions, use exactly
+three direct regions: `.sds-dialog-header`, a `<section>` or `<main>`, and
+`.sds-dialog-footer`. Put long content inside the middle region:
+
+```html
+<dialog id="review-dialog" class="sds-dialog" aria-labelledby="review-title">
+  <header class="sds-dialog-header"><h2 id="review-title">Review entries</h2></header>
+  <section tabindex="0" aria-label="Entries">
+    <p>Long review content goes here.</p>
+  </section>
+  <footer class="sds-dialog-footer">
+    <button class="sds-button" type="button" command="close">Done</button>
+  </footer>
+</dialog>
+```
+
+The body scrolls independently on short viewports. Its accessible name and
+tab stop make keyboard scrolling available even when it contains no controls.
+Simple dialogs with direct paragraphs retain whole-dialog scrolling. If a form
+wraps all dialog regions, that form owns its layout; use the three-region
+structure above and associate footer submit buttons with an inner form by `form` ID.
 
 ### Accessibility
 
@@ -296,6 +322,8 @@ Controls inside a dialog or panel infer their nearest dialog when
 Close controls and panel-handle dragging remain available regardless of `closedby`.
 Native `closedby` behavior depends on browser support; SDS also handles backdrop
 clicks for `closedby="any"` by calling `close()` directly.
+Preventing a trigger's `click` event stops SDS command handling, including
+opening a dialog and explicit close commands.
 
 Native dialog events remain available where the browser supports them.
 Prevent `cancel` to reject close requests or panel drag dismissal:

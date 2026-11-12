@@ -510,9 +510,11 @@ export class FloatingHoverController {
   }
 
   private handleKeydown = (event: KeyboardEvent): void => {
-    if (event.key !== 'Escape' || !this.isOpen()) return
-    event.preventDefault()
+    if (event.key !== 'Escape') return
+    const open = this.isOpen()
     this.clearTimers()
+    if (!open) return
+    event.preventDefault()
     this.surface.hidePopover()
   }
 }

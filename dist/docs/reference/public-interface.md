@@ -157,6 +157,7 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-dropdown-label` | Dropdown menu surface, separator, and label. |
 | `.sds-popover-content` | Popover and tooltip surfaces. |
 | `.sds-tooltip-content` | Popover and tooltip surfaces. |
+| `.sds-search-results` | Scrollable search result links. Applications supply results and mark their keyboard-active link with aria-current=true. Uses documentation.css. |
 
 ### Prose and utilities
 
@@ -174,6 +175,8 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-text-body` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-caption1` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
 | `.sds-text-caption2` | Explicit SEI lead, body, and caption typography, responsive at 48rem unless a fixed size is selected. |
+| `.sds-code-block` | Code example with native header, action navigation, optional alternate code, and live output. Uses documentation.css and the optional documentation runtime. |
+| `.sds-code-tooltip-content` | Code example with native header, action navigation, optional alternate code, and live output. Uses documentation.css and the optional documentation runtime. |
 | `.sds-prose` | Long-form semantic typography and opt-out. |
 | `.sds-prose-lead` | Long-form semantic typography and opt-out. |
 | `.sds-not-prose` | Long-form semantic typography and opt-out. |
@@ -200,7 +203,9 @@ Native state remains native: `disabled`, `checked`, `open`, `hidden`,
 | `.sds-app-content` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-app-masthead` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-app-navigation` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-navigation-panel` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-app-toc` | SEI application, simple, documentation, and brochure shells. |
+| `.sds-app-pagination` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-sei-wordmark` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-app-container` | SEI application, simple, documentation, and brochure shells. |
 | `.sds-app-footer-about` | SEI application, simple, documentation, and brochure shells. |

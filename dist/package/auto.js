@@ -1,6 +1,4 @@
-import { notify as e } from "./toast.js";
-import { setupSds as t } from "./sds.js";
-//#region src/auto.ts
-t();
-//#endregion
-export { e as notify };
+export { notify } from "./toast.js";
+import { setupSds as e } from "./sds.js";
+// src/auto.ts
+e();

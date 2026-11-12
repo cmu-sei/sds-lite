@@ -118,7 +118,7 @@ function captures(source, pattern) {
 }
 
 test('the manifest lists every public recipe class', async () => {
-  const files = await filesUnder('src/css', '.css')
+  const files = await filesUnder('src', '.css')
   const css = (
     await Promise.all(files.map((file) => readFile(file, 'utf8')))
   ).join('\n')
@@ -217,6 +217,7 @@ test('recipe omission defaults use audited implementation values', () => {
     ['tag-action:data-sds-tone', 'info'],
     ['badge:data-sds-variant', 'solid'],
     ['callout:data-sds-variant', 'subtle'],
+    ['callout:data-sds-callout-color', 'semantic tone'],
     ['toast-region:data-sds-toast-open', 'no target'],
     ['avatar:data-sds-density', 'comfortable'],
     ['timeline:data-sds-tone', 'unaccented'],

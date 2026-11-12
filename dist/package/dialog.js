@@ -1,7 +1,7 @@
-//#region src/elements/dialog.ts
+// src/elements/dialog.ts
 var e = !1, t = 6, n = 48, r = 12, i = 80, a = 180, o = null, s = /* @__PURE__ */ new WeakMap(), c = /* @__PURE__ */ new WeakMap();
 function l(e) {
-	let t = e.getAttribute("commandfor");
+	let t = e.getAttribute("commandfor") ?? (e.getAttribute("aria-haspopup") === "dialog" ? e.getAttribute("aria-controls") : null);
 	if (t) {
 		let e = document.getElementById(t);
 		return e instanceof HTMLDialogElement && e.matches(".sds-dialog, .sds-panel") ? e : null;
@@ -150,20 +150,22 @@ function w(e) {
 	for (let t of e.querySelectorAll("dialog.sds-panel")) C(t);
 }
 function T(e) {
-	if (!(e.target instanceof Element)) return;
-	let t = e.target.closest("[commandfor], dialog.sds-dialog [command], dialog.sds-panel [command]");
+	if (e.defaultPrevented || !(e.target instanceof Element)) return;
+	let t = e.target.closest("[commandfor], a[aria-haspopup=\"dialog\"][aria-controls], dialog.sds-dialog [command], dialog.sds-panel [command]");
 	if (t) {
-		let n = l(t);
-		if (!n) return;
-		let r = t.getAttribute("command");
-		if ((r === "show-modal" || r === "close" || r === "request-close") && e.preventDefault(), r === "show-modal") u(n, !0);
-		else if (r === "close") n.close(t.getAttribute("data-sds-return-value") ?? "");
-		else if (r === "request-close") {
-			let e = Reflect.get(n, "requestClose");
-			if (typeof e == "function") e.call(n, t.getAttribute("data-sds-return-value") ?? "");
+		let n = t.matches("a[href][aria-haspopup=\"dialog\"]");
+		if (n && (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) return;
+		let r = l(t);
+		if (!r) return;
+		let i = t.getAttribute("command") ?? (n ? "show-modal" : null);
+		if ((i === "show-modal" || i === "close" || i === "request-close") && e.preventDefault(), i === "show-modal") n && t.focus({ preventScroll: !0 }), u(r, !0);
+		else if (i === "close") r.close(t.getAttribute("data-sds-return-value") ?? "");
+		else if (i === "request-close") {
+			let e = Reflect.get(r, "requestClose");
+			if (typeof e == "function") e.call(r, t.getAttribute("data-sds-return-value") ?? "");
 			else {
 				let e = new Event("cancel", { cancelable: !0 });
-				n.dispatchEvent(e) && n.close(t.getAttribute("data-sds-return-value") ?? "");
+				r.dispatchEvent(e) && r.close(t.getAttribute("data-sds-return-value") ?? "");
 			}
 		}
 		return;
@@ -198,5 +200,4 @@ function E() {
 		subtree: !0
 	});
 }
-//#endregion
 export { E as registerSdsDialog };

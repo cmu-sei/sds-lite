@@ -77,6 +77,18 @@
     --sds-orange-900: #281004;
     --sds-orange-950: #140802;
 
+    --sds-color-chart-category-1: light-dark(var(--sds-blue-600), var(--sds-blue-300));
+    --sds-color-chart-category-2: light-dark(var(--sds-purple-600), var(--sds-purple-300));
+    --sds-color-chart-category-3: light-dark(var(--sds-green-600), var(--sds-green-200));
+    --sds-color-chart-category-4: light-dark(var(--sds-orange-600), var(--sds-orange-200));
+    --sds-color-chart-category-5: light-dark(var(--sds-red-600), var(--sds-red-300));
+    --sds-color-chart-category-6: light-dark(var(--sds-gray-600), var(--sds-gray-300));
+    --sds-color-chart-sequential-1: light-dark(var(--sds-blue-100), var(--sds-blue-900));
+    --sds-color-chart-sequential-2: light-dark(var(--sds-blue-300), var(--sds-blue-700));
+    --sds-color-chart-sequential-3: var(--sds-blue-500);
+    --sds-color-chart-sequential-4: light-dark(var(--sds-blue-700), var(--sds-blue-300));
+    --sds-color-chart-sequential-5: light-dark(var(--sds-blue-900), var(--sds-blue-100));
+
     --sds-space-0: 0px;
     --sds-space-2xs: 0.125rem;
     --sds-space-xs: 0.25rem;

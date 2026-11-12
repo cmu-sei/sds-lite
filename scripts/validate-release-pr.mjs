@@ -32,7 +32,8 @@ export function assertCompletedReleases(repository, execute = spawnSync) {
         return pullRequests
       })
     }
-    return JSON.parse(result.stdout)
+    const report = JSON.parse(result.stdout)
+    return program === 'npm' && Array.isArray(report) && report.length === 1 ? report[0] : report
   }
   const pullRequests = command('gh', ['api', '--paginate', '--jq',
     'map({number, merged_at, merge_commit_sha, head: {ref: .head.ref, repo: {full_name: .head.repo.full_name}}, base: {ref: .base.ref}, labels: (.labels | map({name}))}) | tojson',

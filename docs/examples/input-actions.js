@@ -8,6 +8,16 @@ export function setupInputActionsExample() {
   const reveal = form.querySelector('[data-reveal]')
   const search = form.querySelector('input[type="search"]')
   const status = form.querySelector('[role="status"]')
+  const copy = form.querySelector('[data-copy-value]')
+  const copyIcon = copy.firstElementChild.cloneNode(true)
+  let copyTimer
+  let copyVersion = 0
+  const resetCopy = () => {
+    clearTimeout(copyTimer)
+    copyVersion += 1
+    copy.setAttribute('aria-label', 'Copy URL')
+    copy.replaceChildren(copyIcon.cloneNode(true))
+  }
 
   reveal.addEventListener('click', () => {
     const visible = password.type === 'password'
@@ -20,11 +30,23 @@ export function setupInputActionsExample() {
     search.focus()
     status.textContent = 'Search cleared.'
   })
-  form.querySelector('[data-copy-value]').addEventListener('click', async () => {
+  copy.addEventListener('click', async () => {
+    resetCopy()
+    const version = copyVersion
     try {
       await navigator.clipboard.writeText(form.querySelector('input[readonly]').value)
+      if (version !== copyVersion) return
+      copy.setAttribute('aria-label', 'Copied URL')
+      const check = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      check.setAttribute('d', 'M5 12l4 4L19 6')
+      check.setAttribute('fill', 'none')
+      check.setAttribute('stroke', 'currentColor')
+      check.setAttribute('stroke-width', '2')
+      copy.querySelector('svg').replaceChildren(check)
       status.textContent = 'Project URL copied.'
+      copyTimer = setTimeout(resetCopy, 2000)
     } catch (error) {
+      if (version !== copyVersion) return
       status.textContent = 'Copy failed. Select the project URL and copy it manually.'
       console.error('Could not copy the project URL.', error)
     }
@@ -33,6 +55,7 @@ export function setupInputActionsExample() {
     if (event.defaultPrevented) return
     password.type = 'password'
     reveal.setAttribute('aria-pressed', 'false')
+    resetCopy()
     status.textContent = ''
   }, 0))
   form.addEventListener('submit', event => {

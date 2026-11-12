@@ -20,6 +20,67 @@ const fields = [
   '.sds-tag-action',
 ]
 
+test('dropdown navigation excludes hidden and inert items while retaining ARIA-disabled items', async ({ page }) => {
+  await page.goto('/')
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.evaluate(() => {
+    document.body.insertAdjacentHTML('beforeend', `
+      <sds-dropdown id="filtered-menu">
+        <button type="button">Filtered actions</button>
+        <menu>
+          <li hidden><button>Hidden group</button></li>
+          <li><button>First action</button></li>
+          <li><button hidden>Hidden button</button></li>
+          <li><a hidden href="#hidden">Hidden link</a></li>
+          <li inert><button>Inert action</button></li>
+          <li><button disabled>Disabled action</button></li>
+          <li><button aria-disabled="true">Unavailable action</button></li>
+          <li><button>Last action</button></li>
+        </menu>
+      </sds-dropdown>
+    `)
+  })
+  const dropdown = page.locator('#filtered-menu')
+  const trigger = dropdown.locator(':scope > button')
+  await trigger.focus()
+  await trigger.press('ArrowDown')
+  for (const name of ['Hidden group', 'Hidden button', 'Hidden link']) {
+    await expect(dropdown.getByText(name, { exact: true })).toBeHidden()
+  }
+  await expect(dropdown.getByRole('menuitem', { name: 'First action', exact: true })).toBeFocused()
+  await page.keyboard.press('ArrowDown')
+  const unavailable = dropdown.getByRole('menuitem', { name: 'Unavailable action', exact: true })
+  await expect(unavailable).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+  await page.keyboard.press('ArrowDown')
+  await expect(dropdown.getByRole('menuitem', { name: 'Last action', exact: true })).toBeFocused()
+  await page.keyboard.press('ArrowDown')
+  await expect(dropdown.getByRole('menuitem', { name: 'First action', exact: true })).toBeFocused()
+  await page.keyboard.press('End')
+  await expect(dropdown.getByRole('menuitem', { name: 'Last action', exact: true })).toBeFocused()
+  await page.keyboard.press('Home')
+  await expect(dropdown.getByRole('menuitem', { name: 'First action', exact: true })).toBeFocused()
+})
+
+test('ArrowUp opens a dropdown at its current last item after dynamic changes', async ({ page }) => {
+  await page.goto('/')
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const trigger = page.getByRole('button', { name: 'Secondary menu' })
+  const menu = page.locator('#secondary-menu')
+  await menu.evaluate(element => {
+    element.insertAdjacentHTML('beforeend', '<li><button type="button">New action</button></li>')
+  })
+  await trigger.focus()
+  await trigger.press('ArrowUp')
+  await expect(menu.getByRole('menuitem', { name: 'New action', exact: true })).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(trigger).toBeFocused()
+  await menu.getByRole('menuitem', { name: 'New action', exact: true, includeHidden: true }).evaluate(element => element.closest('li').remove())
+  await trigger.press('ArrowUp')
+  await expect(menu.locator('[role="menuitem"]').last()).toBeFocused()
+})
+
 for (const theme of ['forge', 'plaid']) {
   for (const [scheme, color] of [
     ['light', 'rgb(46, 177, 230)'],

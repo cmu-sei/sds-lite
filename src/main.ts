@@ -1,5 +1,7 @@
 import './style.css'
 import './brand.css'
+import './documentation.css'
+import './documentation.ts'
 import { setupSds, type SdsComboboxSelectDetail } from './sds.ts'
 import { setupSelectionExample } from '../docs/examples/selection.js'
 import { setupTableSelectionExample } from '../docs/examples/table-selection.js'
@@ -196,8 +198,11 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
   const markup = clone.outerHTML
   const setup = document.getElementById('cdn-install')?.textContent ?? ''
   const brand = setup.match(/href="([^"]+\/sds\.css)"/)?.[1].replace('/sds.css', '/brand.css')
+  const documentation = clone.dataset.sdsVariant === 'documentation' && brand
+    ? `\n<link rel="stylesheet" href="${brand.replace('/brand.css', '/documentation.css')}">\n<script type="module" src="${brand.replace('/brand.css', '/documentation.js')}"></script>`
+    : ''
   code.textContent = fullPage
-    ? `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${name}</title>\n${setup}\n${brand ? `<link rel="stylesheet" href="${brand}">` : ''}\n</head>\n<body class="sds-document" data-sds-root data-sds-theme="${clone.dataset.sdsTheme}">\n${markup}\n</body>\n</html>`
+    ? `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${name}</title>\n${setup}\n${brand ? `<link rel="stylesheet" href="${brand}">` : ''}${documentation}\n</head>\n<body class="sds-document" data-sds-root data-sds-theme="${clone.dataset.sdsTheme}">\n${markup}\n</body>\n</html>`
     : `${markup}${script ? `\n<script type="module">\n${script}\n</script>` : ''}`
   pre.append(code)
   const prose = document.createElement('div')
@@ -214,8 +219,7 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
   button.dataset.sdsVariant = 'outlined'
   button.dataset.copyTarget = pre.id
   button.textContent = script ? 'Copy HTML + JS' : fullPage ? 'Copy page' : 'Copy HTML'
-  button.setAttribute('aria-label', fullPage ? `Copy ${name.toLowerCase()} page`
-    : script ? `Copy ${name.toLowerCase()} HTML + JavaScript` : `Copy ${name.toLowerCase()} markup`)
+  button.setAttribute('aria-label', `${button.textContent}: ${name.toLowerCase()}`)
   actions.append(button)
   const tools = document.createElement('header')
   tools.className = 'sds-section-header'
@@ -263,7 +267,7 @@ const addCopyExample = (example: HTMLElement, name: string, fullPage = false) =>
     layoutButton.dataset.sdsDensity = 'compact'
     layoutButton.dataset.copyTarget = layoutPre.id
     layoutButton.textContent = 'Copy layout'
-    layoutButton.setAttribute('aria-label', `Copy ${name.toLowerCase()} layout`)
+    layoutButton.setAttribute('aria-label', `Copy layout: ${name.toLowerCase()}`)
     actions.append(layoutButton)
     const preview = example.closest('details')
     if (!preview) throw new Error(`Missing preview disclosure for ${name}.`)
@@ -459,6 +463,8 @@ const copyStatus = document.querySelector<HTMLElement>('#copy-status')
 for (const button of document.querySelectorAll<HTMLButtonElement>(
   '[data-copy-target]',
 )) {
+  const originalLabel = button.textContent
+  const originalAccessibleLabel = button.getAttribute('aria-label')
   button.addEventListener('click', async () => {
     const targetId = button.dataset.copyTarget
     const target = targetId ? document.getElementById(targetId) : null
@@ -469,8 +475,6 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(
       console.error(message)
       return
     }
-
-    const originalLabel = button.textContent
 
     try {
       await navigator.clipboard.writeText(target.textContent ?? '')
@@ -488,8 +492,10 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(
       focusTarget.focus()
     }
 
+    button.removeAttribute('aria-label')
     window.setTimeout(() => {
       button.textContent = originalLabel
+      if (originalAccessibleLabel !== null) button.setAttribute('aria-label', originalAccessibleLabel)
     }, 2000)
   })
 }

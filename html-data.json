@@ -2,6 +2,42 @@
   "version": 1.1,
   "globalAttributes": [
     {
+      "name": "data-sds-action",
+      "description": "Opt-in documentation presentation action, enhanced by the optional documentation entry point.",
+      "values": [
+        {
+          "name": "toggle-color-scheme"
+        },
+        {
+          "name": "toggle-fullscreen"
+        },
+        {
+          "name": "copy-code"
+        },
+        {
+          "name": "toggle-complete-code"
+        },
+        {
+          "name": "toggle-code-fullscreen"
+        },
+        {
+          "name": "navigation-back"
+        }
+      ]
+    },
+    {
+      "name": "data-sds-code-slot",
+      "description": "Identifies the abbreviated or complete code inside a code block.",
+      "values": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "complete"
+        }
+      ]
+    },
+    {
       "name": "data-sds-root",
       "description": "Establishes SDS Lite theme tokens, color scheme, and inherited body typography without applying control recipes."
     },

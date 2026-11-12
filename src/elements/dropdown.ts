@@ -226,13 +226,9 @@ export class SdsDropdownElement extends HTMLElementBase {
       })
       .filter(
         (item) =>
-          (!(item instanceof HTMLButtonElement) || !item.disabled),
+          !item.closest('[hidden], [inert]') &&
+          (!(item instanceof HTMLButtonElement) || !item.matches(':disabled')),
       )
-  }
-
-  private showAndFocus(focusIndex = 0): void {
-    this.show()
-    this.items[focusIndex]?.focus()
   }
 
   private hideAndRestoreFocus(): void {
@@ -269,8 +265,6 @@ export class SdsDropdownElement extends HTMLElementBase {
   }
 
   private handleTriggerKeydown = (event: KeyboardEvent): void => {
-    const focusIndex =
-      event.key === 'ArrowUp' ? this.items.length - 1 : 0
     const opensMenu =
       event.key === 'ArrowDown' ||
       event.key === 'ArrowUp' ||
@@ -280,11 +274,11 @@ export class SdsDropdownElement extends HTMLElementBase {
     if (!opensMenu) return
 
     event.preventDefault()
-    if (this.isSurfaceOpen()) {
-      this.items[focusIndex]?.focus()
-    } else {
-      this.showAndFocus(focusIndex)
-    }
+    this.show()
+    this.collectItems()
+    const focusIndex =
+      event.key === 'ArrowUp' ? this.items.length - 1 : 0
+    this.items[focusIndex]?.focus()
   }
 
   private handleMenuKeydown = (event: KeyboardEvent): void => {

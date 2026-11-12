@@ -22,6 +22,25 @@
     background: var(--sds-color-surface-default);
   }
 
+  :where(.sds-callout[data-sds-callout-color="indigo"]) {
+    --sds-tone-surface: color-mix(in srgb, var(--sds-color-info-surface) 65%, var(--sds-color-accent-surface));
+    --sds-tone-border: color-mix(in srgb, var(--sds-color-info-border) 65%, var(--sds-color-accent-border));
+    --sds-tone-text: color-mix(in srgb, var(--sds-color-info-text) 65%, var(--sds-color-accent-text));
+    --sds-tone-strong: color-mix(in srgb, var(--sds-color-info-strong) 65%, var(--sds-color-accent-strong));
+    --sds-tone-on-strong: var(--sds-color-info-on-strong);
+  }
+
+  :where(.sds-callout[data-sds-callout-color="teal"]) {
+    --sds-tone-surface: color-mix(in srgb, var(--sds-color-success-surface) 50%, var(--sds-color-info-surface));
+    --sds-tone-border: color-mix(in srgb, var(--sds-color-success-border) 50%, var(--sds-color-info-border));
+    --sds-tone-text: color-mix(in srgb, var(--sds-color-success-text) 50%, var(--sds-color-info-text));
+    --sds-tone-strong: color-mix(in srgb, var(--sds-color-success-strong) 50%, var(--sds-color-info-strong));
+    --sds-tone-on-strong: var(--sds-color-success-on-strong);
+  }
+
+  :where(.sds-prose .sds-callout) { margin-block: var(--sds-space-xl); }
+  :where(.sds-callout > :is(p, ul, ol)) { margin-block: 0; }
+
   :where(.sds-callout[data-sds-variant="bold"]) {
     border-color: var(--sds-tone-strong, var(--sds-color-neutral-strong));
     color: var(

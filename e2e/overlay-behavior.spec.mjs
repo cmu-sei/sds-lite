@@ -63,6 +63,81 @@ test.beforeEach(async ({ page }) => {
   await page.waitForTimeout(50)
 })
 
+test('canceling dialog trigger clicks prevents both open and close commands', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.evaluate(() => {
+    document.body.insertAdjacentHTML('beforeend', `
+      <button type="button" commandfor="canceled-command-dialog" command="show-modal">Canceled open</button>
+      <dialog id="canceled-command-dialog" class="sds-dialog" aria-label="Canceled commands">
+        <button type="button" command="close">Canceled close</button>
+      </dialog>
+    `)
+    for (const button of document.querySelectorAll('[commandfor="canceled-command-dialog"], #canceled-command-dialog button')) {
+      button.addEventListener('click', event => event.preventDefault())
+    }
+  })
+  const dialog = page.locator('#canceled-command-dialog')
+  await page.getByRole('button', { name: 'Canceled open', exact: true }).click()
+  await expect(dialog).toBeHidden()
+  await dialog.evaluate(element => element.showModal())
+  await page.getByRole('button', { name: 'Canceled close', exact: true }).click()
+  await expect(dialog).toBeVisible()
+})
+
+test('semantic dialog links enhance normal clicks and retain no-JavaScript navigation', async ({ page, browser }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const markup = '<a class="sds-button" href="http://127.0.0.1:4173/dialog-fallback/" aria-haspopup="dialog" aria-controls="linked-dialog">Search documents</a><dialog id="linked-dialog" class="sds-dialog" aria-label="Search"><input aria-label="Query" autofocus></dialog>'
+  await page.evaluate(markup => document.body.insertAdjacentHTML('beforeend', markup), markup)
+  const link = page.getByRole('link', { name: 'Search documents' })
+  await link.click()
+  await expect(page.getByRole('dialog', { name: 'Search' })).toBeVisible()
+  await expect(page.getByRole('textbox', { name: 'Query' })).toBeFocused()
+  expect(page.url()).not.toContain('dialog-fallback')
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog', { name: 'Search' })).toBeHidden()
+  await expect(link).toBeFocused()
+  const plain = await browser.newPage({ javaScriptEnabled: false })
+  await plain.route('**/dialog-fallback/', route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fallback</title><h1>Fallback page</h1>' }))
+  await plain.setContent(`<!doctype html><html><title>Dialog fallback</title><body>${markup}</body></html>`)
+  await plain.getByRole('link', { name: 'Search documents' }).click()
+  await expect(plain.getByRole('heading', { name: 'Fallback page' })).toBeVisible()
+  await plain.close()
+})
+
+test('structured dialogs scroll their body while keeping headings and actions visible', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 390, height: 400 })
+  await page.evaluate(() => {
+    const dialog = document.createElement('dialog')
+    dialog.id = 'long-content-dialog'
+    dialog.className = 'sds-dialog'
+    dialog.setAttribute('aria-labelledby', 'long-content-title')
+    dialog.innerHTML = '<header class="sds-dialog-header"><h2 id="long-content-title">Review entries</h2></header><section tabindex="0" aria-label="Entries"></section><footer class="sds-dialog-footer"><button class="sds-button" type="button" autofocus>Done</button></footer>'
+    for (let index = 0; index < 40; index += 1) {
+      const paragraph = document.createElement('p')
+      paragraph.textContent = `Entry ${index + 1}`
+      dialog.querySelector('section').append(paragraph)
+    }
+    document.body.append(dialog)
+    dialog.showModal()
+  })
+  const dialog = page.locator('#long-content-dialog')
+  const body = dialog.locator('section')
+  await expect(dialog).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+  await expect(body).toHaveCSS('overflow', 'auto')
+  await expect.poll(() => body.evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true)
+  const positions = () => dialog.evaluate(element => [...element.querySelectorAll('header, footer')].map(region => {
+    const rect = region.getBoundingClientRect()
+    return { top: rect.top, bottom: rect.bottom }
+  }))
+  const before = await positions()
+  expect(before[0].top).toBeGreaterThanOrEqual(0)
+  expect(before[1].bottom).toBeLessThanOrEqual(400)
+  await body.evaluate(element => { element.scrollTop = element.scrollHeight })
+  expect(await positions()).toEqual(before)
+  await expect(dialog.getByRole('button', { name: 'Done' })).toBeInViewport()
+})
+
 test('modal and panel shared styling preserves their distinct surfaces', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   for (const width of [1440, 390]) {
@@ -74,6 +149,10 @@ test('modal and panel shared styling preserves their distinct surfaces', async (
       await expect(surface).toHaveCSS('border-top-width', '1px')
       await expect(surface).toHaveCSS('overflow', 'auto')
       await expect(surface).toHaveCSS('display', selector === '#catalog-dialog' ? 'grid' : 'flex')
+      const close = surface.locator('.sds-dialog-header > .sds-button[data-sds-shape="icon"], :scope > header > .sds-button[data-sds-shape="icon"]')
+      await expect(close).toHaveCSS('font-size', '32px')
+      await expect(close).toHaveCSS('width', '32px')
+      await expect(close).toHaveCSS('height', '32px')
       const heading = surface.locator('.sds-dialog-header h2, :scope > header h2')
       await expect(heading).toHaveClass('sds-text-title')
       await expect(heading).toHaveCSS('font-size', '20px')
@@ -574,7 +653,7 @@ test('disabled dropdown items remain in the keyboard sequence', async ({
 })
 
 test('tooltip opens immediately on hover', async ({ page }) => {
-  const tooltip = page.locator('sds-tooltip').first()
+  const tooltip = page.locator('#structure sds-tooltip').first()
   const trigger = tooltip.locator(':scope > :first-child')
   const content = tooltip.locator(':scope > :nth-child(2)')
 
@@ -585,7 +664,7 @@ test('tooltip opens immediately on hover', async ({ page }) => {
 
 for (const elementName of ['sds-tooltip', 'sds-popover']) {
   test(`${elementName} arrow points into its trigger`, async ({ page }) => {
-    const host = page.locator(elementName).first()
+    const host = page.locator(`#structure ${elementName}`).first()
     const trigger = host.locator(':scope > :first-child')
     const surface = host.locator(':scope > :nth-child(2)')
 

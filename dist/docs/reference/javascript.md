@@ -59,6 +59,22 @@ to `Notifications` and only names a new or otherwise unnamed toaster.
 Existing authored toaster names are preserved. Empty accessibility labels
 throw `TypeError`.
 
+## Documentation controls
+
+The separate `@cmu-sei/sds-lite/documentation` entry exports
+`setupSdsDocumentation()` and automatically initializes in the browser.
+It is safe to import on the server; repeated setup calls are safe.
+For hydrated applications, dynamically import it after hydration:
+
+```js
+await import('@cmu-sei/sds-lite/documentation')
+```
+
+Use it with `documentation.css` for TOC tracking and opt-in display and code
+controls. It does not register core custom elements or generate content.
+See [documentation presentation](../components/layout.md#documentation-presentation)
+for markup, action attributes, preferences, and application responsibilities.
+
 ## Toast element
 
 ```ts

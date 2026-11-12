@@ -526,7 +526,7 @@ To rehearse preparation against the supported stable tag for version `0.2.0` wit
 pushing or publishing, run:
 
 ```sh
-SDS_RELEASE_REHEARSAL=1 npx --yes npm@11.6.4 exec -- node --test --test-name-pattern='supported stable tag' test/release.test.mjs
+SDS_RELEASE_REHEARSAL=1 npx --yes npm@12.2.1 exec -- node --test --test-name-pattern='supported stable tag' test/release.test.mjs
 ```
 
 This opt-in test uses a temporary clone with only the supported stable tag in its
