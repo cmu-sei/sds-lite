@@ -321,6 +321,9 @@ including collapsed groups containing the current link. Child links
 use 24px inline-start padding, a 12px indentation step from top-level rows.
 Group headings retain sentence case and separate groups using their existing
 rows, without added gaps or dividers.
+Disclosure chevrons share a fixed, centered icon slot at every nesting level,
+point toward the content when collapsed (including RTL), and point down when
+expanded.
 Documentation tree styling is selected by the surrounding
 `.sds-app[data-sds-variant="documentation"]`,
 not applied to standalone or application sidebars.

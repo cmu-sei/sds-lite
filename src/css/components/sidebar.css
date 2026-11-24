@@ -114,19 +114,24 @@
   }
 
   :where(.sds-sidebar > nav details > summary)::after {
-    inline-size: 0.5rem;
-    block-size: 0.5rem;
+    inline-size: 1rem;
+    block-size: 1rem;
     flex: 0 0 auto;
-    margin-block-start: 0.35rem;
+    margin-block-start: calc((1lh - 1rem) / 2);
     margin-inline-start: auto;
-    border: solid currentColor;
-    border-width: 0 1px 1px 0;
+    background: currentColor;
+    clip-path: polygon(37.5% 18.75%, 68.75% 50%, 37.5% 81.25%, 31.25% 75%, 56.25% 50%, 31.25% 25%);
     content: "";
-    transform: rotate(45deg);
+    transform: none;
+    forced-color-adjust: none;
   }
 
   :where(.sds-sidebar > nav details[open] > summary)::after {
-    transform: rotate(225deg);
+    transform: rotate(90deg);
+  }
+
+  :where(.sds-sidebar > nav details:not([open]) > summary:dir(rtl))::after {
+    transform: rotate(180deg);
   }
 
   :where(.sds-sidebar > nav details ul) {
@@ -389,12 +394,7 @@
   }
 
   :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details > summary)::after {
-    margin-block-start: calc((1lh - 0.5rem) / 2);
-    transform: rotate(-45deg);
-  }
-
-  :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details[open] > summary)::after {
-    transform: rotate(45deg);
+    margin-block-start: calc((1lh - 1rem) / 2);
   }
 
   :where(:scope[data-sds-variant="documentation"] .sds-sidebar > nav details > ul) {

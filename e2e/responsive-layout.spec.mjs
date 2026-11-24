@@ -54,6 +54,122 @@ test('documentation tables sort text and decimal values by keyboard with accessi
   await expect(page.locator('#merged button')).toHaveCount(0)
 })
 
+test('documentation table cells retain inline padding at every column edge', async ({ page }) => {
+  await documentationRuntimeFixture(page, `<div class="sds-app" data-sds-variant="documentation"><article class="sds-prose">
+    <table><thead><tr><th>Section</th><th>Covers</th></tr></thead><tbody>
+      <tr><th scope="row">Start here</th><td>Install and configure</td></tr>
+    </tbody><tfoot><tr><td colspan="2">More information</td></tr></tfoot></table>
+  </article></div>`)
+  await expect(page.locator('table')).toHaveClass('sds-table')
+  for (const direction of ['ltr', 'rtl']) {
+    await page.locator('article').evaluate((element, value) => { element.dir = value }, direction)
+    const padding = await page.locator('th, td').evaluateAll(cells => cells.map(cell => {
+      const style = getComputedStyle(cell)
+      return [style.paddingInlineStart, style.paddingInlineEnd]
+    }))
+    expect(padding).toEqual(Array.from({ length: 5 }, () => ['12px', '12px']))
+  }
+})
+
+test('documentation tables have no outer border while retaining row separators', async ({ page }) => {
+  await documentationRuntimeFixture(page, `<div class="sds-app" data-sds-variant="documentation"><article class="sds-prose">
+    <table><thead><tr><th>Section</th><th>Covers</th></tr></thead><tbody>
+      <tr><td>Start here</td><td>Install and configure</td></tr>
+      <tr><td>Write content</td><td>Organize pages</td></tr>
+    </tbody></table>
+  </article></div>`)
+  const table = page.locator('table')
+  await expect(table).toHaveClass('sds-table')
+  const border = await table.evaluate(element => {
+    const style = getComputedStyle(element)
+    return [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth]
+  })
+  expect(border).toEqual(['0px', '0px', '0px', '0px'])
+  await expect(table.locator('thead th').first()).toHaveCSS('border-bottom-width', '1px')
+  await expect(table.locator('tbody tr:first-child td').first()).toHaveCSS('border-bottom-width', '1px')
+})
+
+test('built prose table styles preserve insets and leave opted-out recipes unchanged', async ({ page }) => {
+  const rows = '<thead><tr><th>Section</th><th>Covers</th></tr></thead><tbody><tr><td>Start here</td><td>Install and configure</td></tr></tbody>'
+  await page.goto('/')
+  await page.setContent(`<!doctype html><body data-sds-root>
+    <article class="sds-prose">
+      <table id="plain">${rows}</table>
+      <table id="sorted" class="sds-table">${rows}</table>
+      <div class="sds-not-prose"><table id="excluded" class="sds-table">${rows}</table></div>
+      <table id="opted-out" class="sds-table sds-not-prose">${rows}</table>
+    </article>
+    <table id="standalone" class="sds-table">${rows}</table>
+  </body>`)
+  await page.addStyleTag({ path: 'dist/sds.css' })
+  for (const scheme of ['light', 'dark']) {
+    await page.locator('body').evaluate((element, value) => { element.dataset.sdsColorScheme = value }, scheme)
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 900 })
+      for (const id of ['plain', 'sorted']) {
+        const table = page.locator(`#${id}`)
+        await expect(table).toHaveCSS('border-left-width', '0px')
+        await expect(table.locator('th').first()).toHaveCSS('padding-inline-start', '12px')
+        await expect(table.locator('td').last()).toHaveCSS('padding-inline-end', '12px')
+      }
+      for (const id of ['excluded', 'opted-out', 'standalone']) {
+        const table = page.locator(`#${id}`)
+        await expect(table).toHaveCSS('border-left-width', '1px')
+        await expect(table.locator('th').first()).toHaveCSS('padding-inline-start', '16px')
+        await expect(table.locator('td').last()).toHaveCSS('padding-inline-end', '16px')
+      }
+    }
+  }
+})
+
+test('documentation skip targets never frame the content and preserve control focus indicators', async ({ page }) => {
+  await documentationRuntimeFixture(page, `<a class="sds-skip-link" href="#content">Skip to main content</a>
+    <div class="sds-app" data-sds-variant="documentation"><main id="content" class="sds-app-main" tabindex="-1">
+      <article class="sds-prose"><h1>Guide</h1><p>Documentation content.</p>
+        <button class="sds-button" type="button">Action</button></article>
+    </main></div>`)
+  for (const forcedColors of ['none', 'active']) {
+    await page.emulateMedia({ forcedColors })
+    const skip = page.getByRole('link', { name: 'Skip to main content' })
+    await skip.focus()
+    await skip.press('Enter')
+    const main = page.locator('main')
+    await expect(main).toBeFocused()
+    expect(await main.evaluate(element => getComputedStyle(element).outlineStyle)).toBe('none')
+    await page.locator('h1').click()
+    expect(await main.evaluate(element => getComputedStyle(element).outlineStyle)).toBe('none')
+    await skip.focus()
+    await skip.press('Enter')
+    const action = page.getByRole('button', { name: 'Action' })
+    await action.focus()
+    await expect(action).toBeFocused()
+    if (forcedColors === 'active') await expect(action).toHaveCSS('outline-style', 'solid')
+    else await expect(action).not.toHaveCSS('box-shadow', 'none')
+  }
+})
+
+test('documentation prose keeps readable gaps around paragraphs and wrapped tables', async ({ page }) => {
+  await documentationRuntimeFixture(page, `<div class="sds-app" data-sds-variant="documentation"><main class="sds-app-main">
+    <div class="sds-app-content"><article class="sds-prose">
+      <h1>Guide</h1><p id="intro">Introduction.</p>
+      <div class="sds-table-container"><table><thead><tr><th>Section</th><th>Covers</th></tr></thead>
+        <tbody><tr><td>Start here</td><td>Install and configure</td></tr></tbody></table></div>
+      <p id="references">Quick references.</p><p id="details">More details.</p>
+    </article></div></main></div>`)
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+    const gaps = await page.locator('article').evaluate(article => {
+      const bounds = selector => article.querySelector(selector).getBoundingClientRect()
+      return [
+        bounds('.sds-table-container').top - bounds('#intro').bottom,
+        bounds('#references').top - bounds('.sds-table-container').bottom,
+        bounds('#details').top - bounds('#references').bottom,
+      ]
+    })
+    for (const gap of gaps) expect(gap).toBeGreaterThanOrEqual(16)
+  }
+})
+
 test('documentation TOCs preserve heading levels and reject invalid or cross-shell targets', async ({ page }) => {
   await documentationRuntimeFixture(page, `
     <div class="sds-app" data-sds-variant="documentation">
@@ -1370,9 +1486,26 @@ test('sidebar trees align optional icons and retain guide lines through expanded
       parseFloat(marker.left) === -parseFloat(guide.paddingLeft) - parseFloat(guide.borderLeftWidth)
   })).toBe(true)
   const expanded = await summary.evaluate(element => getComputedStyle(element, '::after').transform)
+  const indicatorBox = () => summary.evaluate(element => {
+    const indicator = getComputedStyle(element, '::after')
+    const icon = getComputedStyle(element.querySelector('svg'))
+    return {
+      width: indicator.width,
+      height: indicator.height,
+      marginTop: indicator.marginTop,
+      iconWidth: icon.width,
+      iconHeight: icon.height,
+      iconMarginTop: icon.marginTop,
+    }
+  })
+  const expandedBox = await indicatorBox()
+  expect(expandedBox.width).toBe(expandedBox.iconWidth)
+  expect(expandedBox.height).toBe(expandedBox.iconHeight)
+  expect(expandedBox.marginTop).toBe(expandedBox.iconMarginTop)
   await summary.click()
   await expect(installation).not.toBeVisible()
   expect(await summary.evaluate(element => getComputedStyle(element, '::after').transform)).not.toBe(expanded)
+  expect(await indicatorBox()).toEqual(expandedBox)
   await summary.click()
   await expect(installation).toBeVisible()
   const parentIcon = await parent.locator(':scope > summary svg').boundingBox()
