@@ -152,6 +152,16 @@ Use `sm` for narrow supporting documentation, `md` for general content, and
 `lg` for editorial articles with an `18px` body size and a narrower readable
 line length.
 
+Prose tables use `--sds-space-md` padding on every side of header and data
+cells, including the first and last columns. They retain row separators without
+an outer table border, including when documentation sorting adds `.sds-table`.
+Use `.sds-not-prose` to keep an embedded table recipe's own border and spacing.
+
+The documentation stylesheet uses `--sds-space-lg` separation between
+paragraphs and around table scroll containers. Its main-content skip target
+retains focus without outlining the entire reading region; interactive
+controls retain their keyboard focus indicators.
+
 ### Accessibility
 
 Use a meaningful heading hierarchy, descriptive links, image alternatives,

@@ -12,6 +12,9 @@
     :where(.sds-app-masthead .sds-sei-wordmark)::before { position: absolute; inset: 0 0 50%; background: var(--sds-color-brand); content: ""; }
     :where(.sds-app-content > .sds-app-toc) { padding-block-start: var(--sds-space-lg); }
     :where(.sds-app-content > .sds-prose > h1:first-child) { margin-block-start: var(--sds-space-2xl); }
+    :where(.sds-app-main[tabindex="-1"]:focus) { outline: none; }
+    :where(.sds-prose p:not(:last-child):not(.sds-not-prose, .sds-not-prose *)) { margin-block-end: var(--sds-space-lg); }
+    :where(.sds-prose .sds-table-container:not(.sds-not-prose, .sds-not-prose *)) { margin-block: var(--sds-space-lg); }
     :where(.sds-app-toc a) { padding-inline: 1.25rem; }
     @media (hover: hover) {
       :where(.sds-app-toc a:hover) { background: var(--sds-color-interactive-subtle-hover); }
@@ -97,7 +100,8 @@
       .sds-sidebar > .sds-app-navigation .sds-navigation-panel > summary::before { content: none; }
       .sds-sidebar > .sds-app-navigation .sds-navigation-panel > div > a[data-sds-navigation-overview]::before { content: none; }
       .sds-sidebar > .sds-app-navigation .sds-navigation-panel > div > ul > li > a::before { content: none; }
-      .sds-sidebar > .sds-app-navigation .sds-navigation-panel > summary::after { margin-inline-start: auto; margin-block-start: 0; align-self: center; transform: rotate(-45deg); }
+      .sds-sidebar > .sds-app-navigation .sds-navigation-panel > summary::after { margin-inline-start: auto; margin-block-start: 0; align-self: center; transform: none; }
+      .sds-sidebar > .sds-app-navigation .sds-navigation-panel > summary:dir(rtl)::after { transform: rotate(180deg); }
       .sds-sidebar > .sds-app-navigation .sds-navigation-panel > div { padding: 0; }
       .sds-sidebar > .sds-app-navigation .sds-navigation-panel[open] > div { animation: sds-navigation-enter var(--sds-duration-normal) var(--sds-easing-enter); }
       .sds-sidebar > .sds-app-navigation .sds-navigation-panel[data-sds-leaving] > div { animation: sds-navigation-exit var(--sds-duration-normal) var(--sds-easing-standard) forwards; }

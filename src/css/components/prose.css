@@ -468,7 +468,7 @@
 
   :where(.sds-prose table:not(.sds-not-prose, .sds-not-prose *)) {
     inline-size: 100%;
-    border-color: inherit;
+    border: 0;
     border-collapse: collapse;
     table-layout: auto;
     text-align: start;
@@ -535,20 +535,6 @@
 
   :where(.sds-prose th:not(.sds-not-prose, .sds-not-prose *)) {
     font-weight: 700;
-  }
-
-  :where(
-    .sds-prose th:first-of-type:not(.sds-not-prose, .sds-not-prose *),
-    .sds-prose td:first-of-type:not(.sds-not-prose, .sds-not-prose *)
-  ) {
-    padding-inline-start: 0;
-  }
-
-  :where(
-    .sds-prose th:last-child:not(.sds-not-prose, .sds-not-prose *),
-    .sds-prose td:last-child:not(.sds-not-prose, .sds-not-prose *)
-  ) {
-    padding-inline-end: 0;
   }
 
   :where(.sds-prose[data-sds-size="sm"]) {

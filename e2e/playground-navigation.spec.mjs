@@ -136,6 +136,35 @@ test('example tools fit mobile screens and copying failure reveals the selectabl
 })
 
 for (const width of [1440, 390]) {
+  test(`playground chevrons share the documentation icon and remain centered at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    if (width === 390) await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
+    const group = page.locator('#catalog-sections > li > details').first()
+    const summary = group.locator(':scope > summary')
+    const documentation = page.locator('[data-copy-layout="Documentation site"] nav[aria-label="Documentation pages"] > ul > li > details > summary')
+    const icon = locator => locator.evaluate(element => {
+      const style = getComputedStyle(element, '::after')
+      return { width: style.width, height: style.height, clipPath: style.clipPath }
+    })
+    expect(await icon(summary)).toEqual(await icon(documentation))
+    for (const open of [false, true]) {
+      await group.evaluate((element, value) => { element.open = value }, open)
+      const offset = await summary.evaluate(element => {
+        const row = getComputedStyle(element)
+        const indicator = getComputedStyle(element, '::after')
+        return parseFloat(indicator.marginTop) + parseFloat(indicator.height) / 2 - parseFloat(row.lineHeight) / 2
+      })
+      expect(Math.abs(offset)).toBeLessThanOrEqual(1)
+    }
+    await summary.focus()
+    await summary.press('Enter')
+    await expect(group).not.toHaveAttribute('open')
+    await summary.press('Enter')
+    await expect(group).toHaveAttribute('open')
+    await group.getByRole('link', { name: 'Getting started', exact: true }).click()
+    await expect(page).toHaveURL(/#getting-started$/)
+  })
+
   test(`collapsed playground groups highlight their active descendant and clear when navigation changes at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
     if (width === 390) await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
