@@ -108,6 +108,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     line-height: 1rem;
+    text-align: center;
   }
 
   :where(sds-tooltip[size="sm"] .sds-tooltip-content) {

@@ -278,7 +278,7 @@
   }
   :where(.sds-search-results a > small) { color: var(--sds-color-text-muted); font-size: 0.875rem; }
   :where(.sds-app-pagination) { display: flex; justify-content: space-between; gap: var(--sds-space-lg); margin-block: var(--sds-space-2xl); padding-block-start: var(--sds-space-2xl); border-block-start: 1px solid var(--sds-color-border-default); }
-  :where(.sds-app-pagination > a) { display: inline-flex; align-items: center; gap: var(--sds-space-xs); padding: var(--sds-space-xs) var(--sds-space-sm); border: 1px solid var(--sds-color-border-default); border-radius: var(--sds-radius-control); color: var(--sds-color-text-muted); text-decoration: none; }
+  :where(.sds-app-pagination > a:not(.sds-button)) { display: inline-flex; align-items: center; gap: var(--sds-space-xs); padding: var(--sds-space-xs) var(--sds-space-sm); border: 1px solid var(--sds-color-border-default); border-radius: var(--sds-radius-control); color: var(--sds-color-text-muted); text-decoration: none; }
   :where(.sds-app-pagination > a[rel="next"]) { margin-inline-start: auto; }
   :where(.sds-app-pagination svg) { inline-size: 1rem; block-size: 1rem; }
 }
