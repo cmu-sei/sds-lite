@@ -130,14 +130,27 @@ var f = class {
 	closeDelay;
 	focusOpenDelay;
 	hoverOpenDelay;
+	dismissOnActivation;
 	openTimer = null;
 	closeTimer = null;
 	pointerInside = !1;
+	activationDismissed = !1;
+	pointerLeftSinceActivation = !1;
+	focusKeepsOpen = !0;
+	keyboardFocusPending = !1;
+	pointerX = null;
+	pointerY = null;
 	constructor(e, t, n, r = {}) {
-		this.anchor = e, this.surface = t, this.positioner = n, this.closeDelay = r.closeDelay ?? 120, this.focusOpenDelay = r.focusOpenDelay ?? 0, this.hoverOpenDelay = r.hoverOpenDelay ?? 0;
+		this.anchor = e, this.surface = t, this.positioner = n, this.closeDelay = r.closeDelay ?? 120, this.focusOpenDelay = r.focusOpenDelay ?? 0, this.hoverOpenDelay = r.hoverOpenDelay ?? 0, this.dismissOnActivation = r.dismissOnActivation ?? !1;
 	}
 	observe(e) {
-		this.anchor.addEventListener("pointerenter", this.handlePointerEnter, { signal: e }), this.anchor.addEventListener("pointerleave", this.handlePointerLeave, { signal: e }), this.anchor.addEventListener("focusin", this.handleFocusIn, { signal: e }), this.anchor.addEventListener("focusout", this.handleFocusOut, { signal: e }), this.surface.addEventListener("pointerenter", this.handlePointerEnter, { signal: e }), this.surface.addEventListener("pointerleave", this.handlePointerLeave, { signal: e }), this.surface.addEventListener("focusin", this.handleFocusIn, { signal: e }), this.surface.addEventListener("focusout", this.handleFocusOut, { signal: e }), this.surface.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: e }), this.surface.addEventListener("toggle", this.handleToggle, { signal: e }), document.addEventListener("keydown", this.handleKeydown, { signal: e });
+		this.anchor.addEventListener("pointerenter", this.handlePointerEnter, { signal: e }), this.anchor.addEventListener("pointerleave", this.handlePointerLeave, { signal: e }), this.anchor.addEventListener("focusin", this.handleFocusIn, { signal: e }), this.anchor.addEventListener("focusout", this.handleFocusOut, { signal: e }), this.surface.addEventListener("pointerenter", this.handlePointerEnter, { signal: e }), this.surface.addEventListener("pointerleave", this.handlePointerLeave, { signal: e }), this.surface.addEventListener("focusin", this.handleFocusIn, { signal: e }), this.surface.addEventListener("focusout", this.handleFocusOut, { signal: e }), this.surface.addEventListener("beforetoggle", this.handleBeforeToggle, { signal: e }), this.surface.addEventListener("toggle", this.handleToggle, { signal: e }), document.addEventListener("keydown", this.handleKeydown, { signal: e }), this.dismissOnActivation && (this.anchor.addEventListener("click", this.handleActivation, { signal: e }), document.addEventListener("pointermove", this.handlePointerMove, {
+			capture: !0,
+			signal: e
+		}), document.addEventListener("focusin", this.handleDocumentFocusIn, {
+			capture: !0,
+			signal: e
+		}), document.addEventListener("keyup", this.clearKeyboardFocusPending, { signal: e }));
 	}
 	disconnect() {
 		this.clearTimers();
@@ -152,17 +165,30 @@ var f = class {
 		this.openTimer = null, this.isOpen() || (this.positioner.reset(), this.surface.showPopover(), this.positioner.position());
 	}
 	scheduleOpen(e) {
-		this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, this.isOpen() || this.openTimer !== null || (e === 0 ? this.show() : this.openTimer = setTimeout(() => this.show(), e));
+		this.closeTimer !== null && clearTimeout(this.closeTimer), this.closeTimer = null, this.activationDismissed || this.isOpen() || this.openTimer !== null || (e === 0 ? this.show() : this.openTimer = setTimeout(() => this.show(), e));
 	}
 	scheduleClose() {
 		this.openTimer !== null && clearTimeout(this.openTimer), this.openTimer = null, this.isOpen() && this.closeTimer === null && (this.closeTimer = setTimeout(() => {
 			this.closeTimer = null;
 			let e = document.activeElement;
-			this.pointerInside || this.anchor.contains(e) || this.surface.contains(e) || this.surface.hidePopover();
+			this.pointerInside || this.focusKeepsOpen && this.anchor.contains(e) || this.surface.contains(e) || this.surface.hidePopover();
 		}, this.closeDelay));
 	}
 	handlePointerEnter = () => {
 		this.pointerInside = !0, this.scheduleOpen(this.hoverOpenDelay);
+	};
+	handleActivation = () => {
+		this.activationDismissed = !0, this.pointerLeftSinceActivation = !1, this.focusKeepsOpen = !1, this.keyboardFocusPending = !1, this.clearTimers(), this.isOpen() && this.surface.hidePopover();
+	};
+	handlePointerMove = (e) => {
+		let t = this.pointerX !== e.clientX || this.pointerY !== e.clientY;
+		this.pointerX = e.clientX, this.pointerY = e.clientY, this.activationDismissed && t && e.target instanceof Node && (this.anchor.contains(e.target) ? this.pointerLeftSinceActivation && (this.activationDismissed = !1, this.scheduleOpen(this.hoverOpenDelay)) : this.pointerLeftSinceActivation = !0);
+	};
+	handleDocumentFocusIn = (e) => {
+		this.keyboardFocusPending && e.target instanceof Node && this.anchor.contains(e.target) && (this.activationDismissed = !1, this.focusKeepsOpen = !0), this.keyboardFocusPending = !1;
+	};
+	clearKeyboardFocusPending = () => {
+		this.keyboardFocusPending = !1;
 	};
 	handlePointerLeave = () => {
 		this.pointerInside = !1, this.scheduleClose();
@@ -180,7 +206,7 @@ var f = class {
 		this.isOpen() ? this.positioner.position() : this.positioner.reset();
 	};
 	handleKeydown = (e) => {
-		if (e.key !== "Escape") return;
+		if (this.keyboardFocusPending = e.key === "Tab" && !e.altKey && !e.ctrlKey && !e.metaKey, e.key !== "Escape") return;
 		let t = this.isOpen();
 		this.clearTimers(), t && (e.preventDefault(), this.surface.hidePopover());
 	};

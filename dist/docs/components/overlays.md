@@ -39,7 +39,12 @@ is a nonnegative number of CSS pixels.
 Tooltips open on pointer hover or keyboard focus. They close when neither
 trigger nor content is hovered or focused, on Escape, or when the trigger is
 activated by pointer or keyboard. Activation dismisses the tooltip without
-moving focus; a new hover or focus interaction can open it again.
+moving focus. Dismissed tooltips stay closed when a dialog restores focus to
+the trigger, including when the pointer has not moved. Moving within the
+activated trigger does not reopen it; leaving and re-entering with the pointer
+or Tab/Shift+Tab navigation back to it can open the tooltip again. Retained
+activation focus does not pin a subsequently hovered tooltip open after the
+pointer leaves.
 SDS Lite supplies `aria-describedby` and tooltip semantics.
 Keep text short and noninteractive; do not put essential instructions only in a tooltip.
 

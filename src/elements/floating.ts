@@ -377,6 +377,7 @@ interface FloatingHoverOptions {
   closeDelay?: number
   focusOpenDelay?: number
   hoverOpenDelay?: number
+  dismissOnActivation?: boolean
 }
 
 export class FloatingHoverController {
@@ -386,9 +387,16 @@ export class FloatingHoverController {
   private closeDelay: number
   private focusOpenDelay: number
   private hoverOpenDelay: number
+  private dismissOnActivation: boolean
   private openTimer: ReturnType<typeof setTimeout> | null = null
   private closeTimer: ReturnType<typeof setTimeout> | null = null
   private pointerInside = false
+  private activationDismissed = false
+  private pointerLeftSinceActivation = false
+  private focusKeepsOpen = true
+  private keyboardFocusPending = false
+  private pointerX: number | null = null
+  private pointerY: number | null = null
 
   constructor(
     anchor: HTMLElement,
@@ -402,6 +410,7 @@ export class FloatingHoverController {
     this.closeDelay = options.closeDelay ?? 120
     this.focusOpenDelay = options.focusOpenDelay ?? 0
     this.hoverOpenDelay = options.hoverOpenDelay ?? 0
+    this.dismissOnActivation = options.dismissOnActivation ?? false
   }
 
   observe(signal: AbortSignal): void {
@@ -426,6 +435,20 @@ export class FloatingHoverController {
     })
     this.surface.addEventListener('toggle', this.handleToggle, { signal })
     document.addEventListener('keydown', this.handleKeydown, { signal })
+    if (this.dismissOnActivation) {
+      this.anchor.addEventListener('click', this.handleActivation, { signal })
+      document.addEventListener('pointermove', this.handlePointerMove, {
+        capture: true,
+        signal,
+      })
+      document.addEventListener('focusin', this.handleDocumentFocusIn, {
+        capture: true,
+        signal,
+      })
+      document.addEventListener('keyup', this.clearKeyboardFocusPending, {
+        signal,
+      })
+    }
   }
 
   disconnect(): void {
@@ -454,7 +477,7 @@ export class FloatingHoverController {
   private scheduleOpen(delay: number): void {
     if (this.closeTimer !== null) clearTimeout(this.closeTimer)
     this.closeTimer = null
-    if (this.isOpen() || this.openTimer !== null) return
+    if (this.activationDismissed || this.isOpen() || this.openTimer !== null) return
     if (delay === 0) {
       this.show()
       return
@@ -471,7 +494,7 @@ export class FloatingHoverController {
       const focusedElement = document.activeElement
       if (
         !this.pointerInside &&
-        !this.anchor.contains(focusedElement) &&
+        (!this.focusKeepsOpen || !this.anchor.contains(focusedElement)) &&
         !this.surface.contains(focusedElement)
       ) {
         this.surface.hidePopover()
@@ -482,6 +505,50 @@ export class FloatingHoverController {
   private handlePointerEnter = (): void => {
     this.pointerInside = true
     this.scheduleOpen(this.hoverOpenDelay)
+  }
+
+  private handleActivation = (): void => {
+    this.activationDismissed = true
+    this.pointerLeftSinceActivation = false
+    this.focusKeepsOpen = false
+    this.keyboardFocusPending = false
+    this.clearTimers()
+    if (this.isOpen()) this.surface.hidePopover()
+  }
+
+  private handlePointerMove = (event: PointerEvent): void => {
+    // Closing an overlay can re-enter a trigger without moving the pointer.
+    const moved = this.pointerX !== event.clientX || this.pointerY !== event.clientY
+    this.pointerX = event.clientX
+    this.pointerY = event.clientY
+    if (
+      !this.activationDismissed ||
+      !moved ||
+      !(event.target instanceof Node)
+    ) return
+    if (!this.anchor.contains(event.target)) {
+      this.pointerLeftSinceActivation = true
+      return
+    }
+    if (!this.pointerLeftSinceActivation) return
+    this.activationDismissed = false
+    this.scheduleOpen(this.hoverOpenDelay)
+  }
+
+  private handleDocumentFocusIn = (event: FocusEvent): void => {
+    if (
+      this.keyboardFocusPending &&
+      event.target instanceof Node &&
+      this.anchor.contains(event.target)
+    ) {
+      this.activationDismissed = false
+      this.focusKeepsOpen = true
+    }
+    this.keyboardFocusPending = false
+  }
+
+  private clearKeyboardFocusPending = (): void => {
+    this.keyboardFocusPending = false
   }
 
   private handlePointerLeave = (): void => {
@@ -510,6 +577,8 @@ export class FloatingHoverController {
   }
 
   private handleKeydown = (event: KeyboardEvent): void => {
+    this.keyboardFocusPending =
+      event.key === 'Tab' && !event.altKey && !event.ctrlKey && !event.metaKey
     if (event.key !== 'Escape') return
     const open = this.isOpen()
     this.clearTimers()

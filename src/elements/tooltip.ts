@@ -105,13 +105,11 @@ export class SdsTooltipElement extends HTMLElementBase {
       {
         closeDelay: 0,
         hoverOpenDelay: 0,
+        dismissOnActivation: true,
       },
     )
     this.hoverController.observe(signal)
     this.positioner.observe(signal)
-    trigger.addEventListener('click', () => {
-      if (content.matches(':popover-open')) content.hidePopover()
-    }, { signal })
   }
 
   disconnectedCallback(): void {

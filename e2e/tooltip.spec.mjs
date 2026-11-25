@@ -1,5 +1,100 @@
 import { expect, test } from '@playwright/test'
 
+for (const neighbor of ['Search', 'GitHub']) {
+  test(`activated theme tooltip does not linger while hovering ${neighbor}`, async ({ page }) => {
+    await page.goto('/')
+    await page.evaluate(() => {
+      document.body.insertAdjacentHTML('afterbegin', `
+        <div id="tooltip-neighbors" class="sds-cluster">
+          <sds-tooltip>
+            <button type="button" tabindex="0" data-sds-action="toggle-color-scheme">Theme</button>
+            <span>Theme tooltip</span>
+          </sds-tooltip>
+          <sds-tooltip><button type="button" tabindex="0">Search</button><span>Search tooltip</span></sds-tooltip>
+          <sds-tooltip><a href="#structure" tabindex="0">GitHub</a><span>GitHub tooltip</span></sds-tooltip>
+        </div>`)
+    })
+    const fixture = page.locator('#tooltip-neighbors')
+    const theme = fixture.locator('[data-sds-action="toggle-color-scheme"]')
+    const themeTooltip = theme.locator('..').locator('[role="tooltip"]')
+    const other = fixture.getByRole(neighbor === 'GitHub' ? 'link' : 'button', { name: neighbor, exact: true })
+    const otherTooltip = other.locator('..').locator('[role="tooltip"]')
+    await theme.focus()
+    await theme.hover()
+    await theme.click()
+    await expect(themeTooltip).toBeHidden()
+    const box = await theme.boundingBox()
+    await page.mouse.move(box.x + box.width / 2 + 2, box.y + box.height / 2)
+    await expect(themeTooltip).toBeHidden()
+    await other.hover({ steps: 8 })
+    await expect(otherTooltip).toBeVisible()
+    await expect(fixture.locator('[role="tooltip"]:popover-open')).toHaveCount(1)
+    await expect(theme).toBeFocused()
+
+    await theme.hover({ steps: 8 })
+    await expect(themeTooltip).toBeVisible()
+    await expect(otherTooltip).toBeHidden()
+    await other.hover({ steps: 8 })
+    await expect(themeTooltip).toBeHidden()
+    await expect(otherTooltip).toBeVisible()
+    await expect(fixture.locator('[role="tooltip"]:popover-open')).toHaveCount(1)
+  })
+}
+
+for (const scenario of ['Escape away from trigger', 'Escape over trigger', 'close button after keyboard navigation']) {
+  test(`tooltip dismissal survives dialog focus restoration via ${scenario}`, async ({ page }) => {
+    await page.goto('/')
+    await page.evaluate(() => {
+      document.body.insertAdjacentHTML('beforeend', `
+        <div id="tooltip-focus-fixture">
+          <button type="button" tabindex="0">Before search</button>
+          <sds-tooltip>
+            <button type="button" tabindex="0" commandfor="tooltip-search-dialog" command="show-modal">Open search</button>
+            <span>Search documentation</span>
+          </sds-tooltip>
+          <button type="button" tabindex="0">After search</button>
+          <dialog id="tooltip-search-dialog" class="sds-dialog" aria-label="Search">
+            <input aria-label="Search query" autofocus>
+            <button type="button" tabindex="0" commandfor="tooltip-search-dialog" command="close">Close search</button>
+          </dialog>
+        </div>`)
+    })
+    const fixture = page.locator('#tooltip-focus-fixture')
+    const trigger = fixture.getByRole('button', { name: 'Open search', exact: true })
+    const content = fixture.locator('[role="tooltip"]')
+    const dialog = fixture.getByRole('dialog')
+    await trigger.focus()
+    await expect(content).toBeVisible()
+    if (scenario.startsWith('Escape')) {
+      await trigger.hover()
+      await trigger.click()
+    } else await trigger.press('Enter')
+    await expect(dialog).toBeVisible()
+    await expect(content).toBeHidden()
+    if (scenario === 'close button after keyboard navigation') {
+      await page.keyboard.press('Tab')
+      await expect(dialog.getByRole('button', { name: 'Close search' })).toBeFocused()
+      await dialog.getByRole('button', { name: 'Close search' }).click()
+    } else {
+      if (scenario === 'Escape away from trigger') await page.mouse.move(0, 0)
+      await page.keyboard.press('Escape')
+    }
+    await expect(dialog).toBeHidden()
+    await expect(trigger).toBeFocused()
+    await expect(content).toBeHidden()
+    if (scenario === 'Escape over trigger') {
+      await page.mouse.move(0, 0)
+      await trigger.hover()
+    } else {
+      await page.keyboard.press('Tab')
+      await expect(fixture.getByRole('button', { name: 'After search' })).toBeFocused()
+      await page.keyboard.press('Shift+Tab')
+      await expect(trigger).toBeFocused()
+    }
+    await expect(content).toBeVisible()
+  })
+}
+
 test('tooltip text stays centered at every size regardless of inherited alignment', async ({ page }) => {
   await page.goto('/')
   const tooltip = page.locator('#structure sds-tooltip').first()
@@ -29,6 +124,7 @@ for (const activation of ['pointer', 'Enter', 'Space']) {
     const tooltip = page.locator('#structure sds-tooltip').first()
     const trigger = tooltip.locator('button')
     const content = tooltip.locator('.sds-tooltip-content')
+    await trigger.evaluate(element => { element.tabIndex = 0 })
     await trigger.focus()
     if (activation === 'pointer') await trigger.hover()
     await expect(content).toBeVisible()
@@ -46,8 +142,8 @@ for (const activation of ['pointer', 'Enter', 'Space']) {
     await expect(content).toBeHidden()
     if (activation === 'pointer') await trigger.hover()
     else {
-      await trigger.evaluate(element => element.blur())
-      await trigger.focus()
+      await page.keyboard.press('Tab')
+      await page.keyboard.press('Shift+Tab')
     }
     await expect(content).toBeVisible()
     await page.keyboard.press('Escape')
