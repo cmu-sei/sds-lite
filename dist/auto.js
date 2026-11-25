@@ -978,7 +978,9 @@ var ve = typeof HTMLElement > "u" ? class {} : HTMLElement, ye = class extends v
 		a.add(i), n.classList.add("sds-tooltip-content"), n.setAttribute("role", "tooltip"), n.setAttribute("popover", "manual"), r.setAttribute("aria-describedby", [...a].join(" ")), this.content = n, this.positioner = new f(r, n, () => this.placement, () => this.getAttribute("offset") ?? void 0, 6), this.hoverController = new p(r, n, this.positioner, {
 			closeDelay: 0,
 			hoverOpenDelay: 0
-		}), this.hoverController.observe(e), this.positioner.observe(e);
+		}), this.hoverController.observe(e), this.positioner.observe(e), r.addEventListener("click", () => {
+			n.matches(":popover-open") && n.hidePopover();
+		}, { signal: e });
 	}
 	disconnectedCallback() {
 		this.connection.disconnect(), this.hoverController?.disconnect(), this.hoverController = null, this.positioner = null, this.content = null;

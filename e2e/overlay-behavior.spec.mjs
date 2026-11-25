@@ -581,8 +581,8 @@ test('a deliberate inward reversal cancels flick projection', async ({ page }) =
 test('popover opens after hover delay, stays open over content, and closes after leaving', async ({
   page,
 }) => {
-  await page.clock.install()
-  await page.clock.pauseAt(new Date())
+  await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') })
+  await page.clock.pauseAt(new Date('2026-01-01T01:00:00Z'))
   const popover = page.locator('sds-popover').first()
   const trigger = popover.locator(':scope > button')
   const content = popover.locator(':scope > .sds-popover-content')

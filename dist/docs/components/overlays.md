@@ -29,6 +29,7 @@ Put the trigger first and short description second:
 
 Tooltips support `size`, `placement`, and `offset`. Sizes are `sm`, `md`, `lg`,
 `xl`, and `auto`; the default is `sm`. The default offset is 6 CSS pixels.
+Tooltip text is centered at every size, including when it wraps.
 Placement defaults to `block-start` and follows writing direction.
 Use the [logical placement values](./navigation.md#dropdown-menu); `offset`
 is a nonnegative number of CSS pixels.
@@ -36,7 +37,9 @@ is a nonnegative number of CSS pixels.
 ### Accessibility
 
 Tooltips open on pointer hover or keyboard focus. They close when neither
-trigger nor content is hovered or focused, or on Escape.
+trigger nor content is hovered or focused, on Escape, or when the trigger is
+activated by pointer or keyboard. Activation dismisses the tooltip without
+moving focus; a new hover or focus interaction can open it again.
 SDS Lite supplies `aria-describedby` and tooltip semantics.
 Keep text short and noninteractive; do not put essential instructions only in a tooltip.
 

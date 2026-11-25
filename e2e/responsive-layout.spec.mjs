@@ -170,6 +170,36 @@ test('documentation prose keeps readable gaps around paragraphs and wrapped tabl
   }
 })
 
+for (const variant of ['text', 'outlined']) {
+  test(`pagination ${variant} buttons keep standalone SDS colors in rest, hover, and pressed states`, async ({ page }) => {
+    for (const scheme of ['light', 'dark']) {
+      await documentationRuntimeFixture(page, `<div class="sds-app" data-sds-variant="documentation">
+        <nav class="sds-app-pagination" aria-label="Page navigation">
+          <a class="sds-button" data-sds-density="compact" data-sds-variant="${variant}" data-sds-tone="neutral" href="#next" rel="next">Next page</a>
+          <span><a class="sds-button" data-sds-density="compact" data-sds-variant="${variant}" data-sds-tone="neutral" href="#reference">Reference</a></span>
+        </nav></div>`, scheme)
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      const pagination = page.getByRole('link', { name: 'Next page' })
+      const reference = page.getByRole('link', { name: 'Reference' })
+      for (const state of ['rest', 'hover', 'pressed']) {
+        const styles = []
+        for (const button of [pagination, reference]) {
+          await page.mouse.move(0, 0)
+          if (state !== 'rest') await button.hover()
+          if (state === 'pressed') await page.mouse.down()
+          await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+          styles.push(await button.evaluate(element => {
+            const style = getComputedStyle(element)
+            return [style.color, style.backgroundColor, style.borderTopColor, style.padding, style.gap]
+          }))
+          if (state === 'pressed') await page.mouse.up()
+        }
+        expect(styles[0]).toEqual(styles[1])
+      }
+    }
+  })
+}
+
 test('documentation TOCs preserve heading levels and reject invalid or cross-shell targets', async ({ page }) => {
   await documentationRuntimeFixture(page, `
     <div class="sds-app" data-sds-variant="documentation">

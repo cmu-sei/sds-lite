@@ -133,14 +133,14 @@ test('compact button sizes use a consistent height scale', async ({ page }) => {
   }
 })
 
-test('compact tonal buttons stay borderless in light and dark modes', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-  for (const scheme of ['light', 'dark']) {
-    await page.locator('[data-sds-root]').evaluate((root, value) => {
-      root.setAttribute('data-sds-color-scheme', value)
-    }, scheme)
-    for (const tone of ['neutral', 'accent', 'danger']) {
+for (const scheme of ['light', 'dark']) {
+  for (const tone of ['neutral', 'accent', 'danger']) {
+    test(`compact tonal ${tone} buttons stay borderless in ${scheme} mode`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.goto('/')
+      await page.locator('[data-sds-root]').evaluate((root, value) => {
+        root.setAttribute('data-sds-color-scheme', value)
+      }, scheme)
       const button = page.locator(
         `article[aria-labelledby="compact-button-tones-heading"] [data-sds-tone="${tone}"] [data-sds-variant="tonal"]`,
       )
@@ -151,19 +151,10 @@ test('compact tonal buttons stay borderless in light and dark modes', async ({ p
       await expect(button).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
       await page.mouse.up()
       await button.evaluate((element) => element.setAttribute('aria-disabled', 'true'))
-      const disabled = await page.evaluate(() => {
-        const probe = document.createElement('div')
-        probe.style.borderColor = 'color-mix(in srgb, light-dark(var(--sds-gray-600), var(--sds-gray-400)) 10%, transparent)'
-        document.querySelector('[data-sds-root]').append(probe)
-        const result = getComputedStyle(probe).borderColor
-        probe.remove()
-        return result
-      })
       await expect(button).toHaveCSS('border-color', 'rgba(0, 0, 0, 0)')
-      await button.evaluate((element) => element.removeAttribute('aria-disabled'))
-    }
+    })
   }
-})
+}
 
 test('button density and omitted tones preserve tone colors', async ({
   page,

@@ -1,10 +1,66 @@
 import { expect, test } from '@playwright/test'
 
+test('tooltip text stays centered at every size regardless of inherited alignment', async ({ page }) => {
+  await page.goto('/')
+  const tooltip = page.locator('#structure sds-tooltip').first()
+  const content = tooltip.locator('.sds-tooltip-content')
+  await content.evaluate(element => {
+    element.textContent = 'A longer tooltip description that wraps across multiple lines.'
+  })
+  await tooltip.locator('button').focus()
+
+  for (const alignment of ['left', 'right']) {
+    await tooltip.evaluate((element, value) => {
+      element.style.textAlign = value
+    }, alignment)
+    for (const size of ['sm', 'md', 'lg', 'xl', 'auto']) {
+      await tooltip.evaluate((element, value) => {
+        element.setAttribute('size', value)
+      }, size)
+      await expect(content).toBeVisible()
+      await expect(content).toHaveCSS('text-align', 'center')
+    }
+  }
+})
+
+for (const activation of ['pointer', 'Enter', 'Space']) {
+  test(`tooltips dismiss on ${activation} activation without moving focus`, async ({ page }) => {
+    await page.goto('/')
+    const tooltip = page.locator('#structure sds-tooltip').first()
+    const trigger = tooltip.locator('button')
+    const content = tooltip.locator('.sds-tooltip-content')
+    await trigger.focus()
+    if (activation === 'pointer') await trigger.hover()
+    await expect(content).toBeVisible()
+
+    let focusedAtActivation = true
+    if (activation === 'pointer') {
+      await page.mouse.down()
+      focusedAtActivation = await trigger.evaluate(element => element === document.activeElement)
+      await page.mouse.up()
+    } else await trigger.press(activation)
+    await expect(content).toBeHidden()
+    expect(await trigger.evaluate(element => element === document.activeElement)).toBe(focusedAtActivation)
+
+    await page.mouse.move(0, 0)
+    await expect(content).toBeHidden()
+    if (activation === 'pointer') await trigger.hover()
+    else {
+      await trigger.evaluate(element => element.blur())
+      await trigger.focus()
+    }
+    await expect(content).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(content).toBeHidden()
+    expect(await trigger.evaluate(element => element === document.activeElement)).toBe(focusedAtActivation)
+  })
+}
+
 test('Escape cancels delayed popover opening and preserves Escape for its modal', async ({ page }) => {
   await page.goto('/')
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.clock.install()
-  await page.clock.pauseAt(new Date())
+  await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') })
+  await page.clock.pauseAt(new Date('2026-01-01T01:00:00Z'))
   await page.evaluate(() => {
     const dialog = document.createElement('dialog')
     dialog.id = 'delayed-popover-dialog'
@@ -27,8 +83,8 @@ test('Escape cancels delayed popover opening and preserves Escape for its modal'
 
 test('Escape cancels a pending popover while its trigger remains focused', async ({ page }) => {
   await page.goto('/')
-  await page.clock.install()
-  await page.clock.pauseAt(new Date())
+  await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') })
+  await page.clock.pauseAt(new Date('2026-01-01T01:00:00Z'))
   await page.evaluate(() => {
     document.body.insertAdjacentHTML('beforeend', '<sds-popover id="pending-popover"><button type="button">Pending details</button><section>Details</section></sds-popover>')
   })
